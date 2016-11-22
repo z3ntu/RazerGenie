@@ -1,0 +1,4 @@
+[Project]
+Name=kcm_razerdrivers
+Manager=KDevCMakeManager
+VersionControl=kdevgit
