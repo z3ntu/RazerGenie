@@ -1,6 +1,24 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.12)
 project(kcm_razerdrivers)
 
-add_executable(kcm_razerdrivers main.cpp)
+set(KCM_RAZERDRIVERS_VERSION "0.0.1")
 
-install(TARGETS kcm_razerdrivers RUNTIME DESTINATION bin)
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+
+find_package(KF5ConfigWidgets)
+find_package(KF5I18n NO_MODULE)
+
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+
+include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
+include(FeatureSummary)
+include(CheckIncludeFiles)
+
+add_subdirectory(other)
+add_subdirectory(src)
