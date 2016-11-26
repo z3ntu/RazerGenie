@@ -25,22 +25,18 @@
 
 namespace razermethods
 {
+    /* General methods */
     QStringList getConnectedDevices() {
-        QDBusMessage m = QDBusMessage::createMethodCall("org.razer",
-                                                    "/org/razer",
-                                                    "razer.devices",
-                                                    "getDevices");
-        QDBusMessage response = QDBusConnection::sessionBus().call(m);
-        QStringList serialnrs = response.arguments()[0].toStringList();
-        return serialnrs;
+        QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getDevices");
+        return QDBusMessageToStringList(m);
     }
     
     bool syncDevices(bool yes) {
-        QDBusMessage m = QDBusMessage::createMethodCall("org.razer", "/org/razer", "razer.devices", "syncEffects");
+        QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "syncEffects");
         
         // Set arguments
         QList<QVariant> args;
-        yes ? args.append("True") : args.append("False");
+        yes ? args.append("True") : args.append("False"); // maybe bool works here
         m.setArguments(args);
         
         bool queued = QDBusConnection::sessionBus().send(m);
@@ -49,40 +45,63 @@ namespace razermethods
     }
     
     QString getDriverVersion() {
-        QDBusMessage m = QDBusMessage::createMethodCall("org.razer",
-                                                    "/org/razer",
-                                                    "razer.daemon",
-                                                    "version");
-        QDBusMessage response = QDBusConnection::sessionBus().call(m);
-        return response.arguments()[0].toString();
+        QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
+        return QDBusMessageToString(m);
     }
     
+    /* Device class methods */
     Device::Device(QString s) {
         serial = s;
     }
     
     QString Device::getDeviceName() {
-        QDBusMessage m = QDBusMessage::createMethodCall("org.razer", "/org/razer/device/" + serial, "razer.device.misc", "getDeviceName");
-        QDBusMessage response = QDBusConnection::sessionBus().call(m);
-        return response.arguments()[0].toString();
+        QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceName");
+        return QDBusMessageToString(m);
     }
-        
+    
+    QString Device::getDeviceType() {
+        QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceType");
+        return QDBusMessageToString(m);
+    }
+  
     Device::~Device() {
             
     }
     
+    /* Helper methods */
+    QDBusMessage Device::prepareDeviceQDBusMessage(const QString &interface, const QString &method)
+    {
+        return QDBusMessage::createMethodCall("org.razer", "/org/razer/device/" + serial, interface, method);
+    }
+
+    QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method)
+    {
+        return QDBusMessage::createMethodCall("org.razer", "/org/razer", interface, method);
+    }
+    
+    QString QDBusMessageToString(const QDBusMessage &message)
+    {
+        return QDBusConnection::sessionBus().call(message).arguments()[0].toString();
+    }
+    
+    QStringList QDBusMessageToStringList(const QDBusMessage &message)
+    {
+        return QDBusConnection::sessionBus().call(message).arguments()[0].toStringList();
+    }
 }
+
 
 int main() {
     //std::cout << "Hello, world!" << std::endl;
     //qDebug() << "hello";
+    std::cout << "Driver version: " << razermethods::getDriverVersion().toStdString() << std::endl;
     QStringList serialnrs = razermethods::getConnectedDevices();
     foreach (const QString &str, serialnrs) {
-        std::cout << str.toStdString() << std::endl;
+        std::cout << "-----------------" << std::endl;
+        std::cout << "Serial: " << str.toStdString() << std::endl;
         razermethods::Device device = razermethods::Device(str);
-        std::cout << device.getDeviceName().toStdString() << std::endl;
+        std::cout << "Name:   " << device.getDeviceName().toStdString() << std::endl;
+        std::cout << "Type:   " << device.getDeviceType().toStdString() << std::endl;
     }
-    
-    std::cout << "Driver version: " << razermethods::getDriverVersion().toStdString() << std::endl;
 }
 
