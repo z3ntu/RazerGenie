@@ -6,8 +6,8 @@ set(KCM_RAZERDRIVERS_VERSION "0.0.1")
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-find_package(KF5ConfigWidgets)
-find_package(KF5I18n NO_MODULE)
+find_package(Qt5 REQUIRED COMPONENTS DBus Network)
+find_package(KF5 REQUIRED COMPONENTS ConfigWidgets I18n)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -20,5 +20,6 @@ include(KDECMakeSettings)
 include(FeatureSummary)
 include(CheckIncludeFiles)
 
+add_subdirectory(logo)
 add_subdirectory(other)
 add_subdirectory(src)

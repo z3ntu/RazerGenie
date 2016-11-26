@@ -16,30 +16,23 @@
  *
  */
 
-#ifndef KCM_RAZERDRIVERS_H
-#define KCM_RAZERDRIVERS_H
+#ifndef RAZERMETHODS_H
+#define RAZERMETHODS_H
 
-#include <kcmodule.h>
-#include "ui_kcm_razerdrivers.h"
-#include "ui_item.h"
-#include "razerimagedownloader.h"
-
-class kcm_razerdrivers : public KCModule
+namespace razermethods
 {
-    Q_OBJECT
-public:
-    kcm_razerdrivers(QWidget* parent, const QVariantList& args);
-    ~kcm_razerdrivers();
-public slots:
-    void toggleSync(bool);
-private:
-    Ui::RazerDriversKcmUi ui;
-    Ui::ItemUi ui_item;
-    void getRazerDevices(void);
-    void fillList();
-    void showError(QString);
-    QList<RazerImageDownloader*> downloaderList;
-};
+    QStringList getConnectedDevices();
+    QString getDriverVersion();
+    bool syncDevices(bool yes);
+    
+    class Device {
+    private:
+        QString serial;
+    public:
+        Device(QString serial);
+        ~Device();
+        QString getDeviceName();
+    };
+}
 
-
-#endif
+#endif // RAZERMETHODS_H

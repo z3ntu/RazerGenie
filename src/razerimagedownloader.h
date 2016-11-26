@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2016  Luca Weiss <luca@z3ntu.xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +17,23 @@
  *
  */
 
-#ifndef KCM_RAZERDRIVERS_H
-#define KCM_RAZERDRIVERS_H
+#ifndef RAZERIMAGEDOWNLOADER_H
+#define RAZERIMAGEDOWNLOADER_H
 
-#include <kcmodule.h>
-#include "ui_kcm_razerdrivers.h"
-#include "ui_item.h"
-#include "razerimagedownloader.h"
+#include <QFile>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 
-class kcm_razerdrivers : public KCModule
+class RazerImageDownloader : QObject
 {
     Q_OBJECT
 public:
-    kcm_razerdrivers(QWidget* parent, const QVariantList& args);
-    ~kcm_razerdrivers();
-public slots:
-    void toggleSync(bool);
+    RazerImageDownloader(QUrl url, QNetworkAccessManager *manager, QObject *parent);
+    ~RazerImageDownloader();
 private:
-    Ui::RazerDriversKcmUi ui;
-    Ui::ItemUi ui_item;
-    void getRazerDevices(void);
-    void fillList();
-    void showError(QString);
-    QList<RazerImageDownloader*> downloaderList;
+    QFile *_file;
+private slots:
+    void finished(QNetworkReply* reply);
 };
 
-
-#endif
+#endif // RAZERIMAGEDOWNLOADER_H

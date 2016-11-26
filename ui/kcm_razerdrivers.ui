@@ -6,50 +6,82 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1024</width>
+    <height>700</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>700</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QListView" name="listView">
+  <widget class="QCheckBox" name="syncCheckBox">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>256</width>
-     <height>192</height>
+     <x>190</x>
+     <y>370</y>
+     <width>121</width>
+     <height>23</height>
     </rect>
    </property>
+   <property name="text">
+    <string>Sync devices</string>
+   </property>
   </widget>
-  <widget class="QRadioButton" name="radioButton">
+  <widget class="QLabel" name="versionLabel">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>200</y>
-     <width>111</width>
-     <height>23</height>
+     <y>370</y>
+     <width>211</width>
+     <height>19</height>
     </rect>
    </property>
    <property name="text">
-    <string>RadioB&amp;utton</string>
+    <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="KPageView" name="kpageview">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>20</y>
-     <width>94</width>
-     <height>23</height>
+     <x>10</x>
+     <y>10</y>
+     <width>751</width>
+     <height>361</height>
     </rect>
    </property>
-   <property name="text">
-    <string>CheckBox</string>
+  </widget>
+  <widget class="QListWidget" name="deviceListWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>400</y>
+     <width>841</width>
+     <height>290</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="flow">
+    <enum>QListView::LeftToRight</enum>
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KPageView</class>
+   <extends>QWidget</extends>
+   <header>kpageview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
