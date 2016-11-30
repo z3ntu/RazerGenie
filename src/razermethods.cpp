@@ -26,12 +26,14 @@
 namespace razermethods
 {
 /* General methods */
-QStringList getConnectedDevices() {
+QStringList getConnectedDevices()
+{
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getDevices");
     return QDBusMessageToStringList(m);
 }
 
-bool syncDevices(bool yes) {
+bool syncDevices(bool yes)
+{
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "syncEffects");
 
     // Set arguments
@@ -44,27 +46,32 @@ bool syncDevices(bool yes) {
     return queued;
 }
 
-QString getDriverVersion() {
+QString getDriverVersion()
+{
     QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
     return QDBusMessageToString(m);
 }
 
 /* Device class methods */
-Device::Device(QString s) {
+Device::Device(QString s)
+{
     serial = s;
 }
 
-QString Device::getDeviceName() {
+QString Device::getDeviceName()
+{
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceName");
     return QDBusMessageToString(m);
 }
 
-QString Device::getDeviceType() {
+QString Device::getDeviceType()
+{
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceType");
     return QDBusMessageToString(m);
 }
 
-Device::~Device() {
+Device::~Device()
+{
 
 }
 
@@ -96,7 +103,8 @@ enum devicetype {
     tartarus
 };
 
-int main() {
+int main()
+{
     std::cout << "Driver version: " << razermethods::getDriverVersion().toStdString() << std::endl;
     QStringList serialnrs = razermethods::getConnectedDevices();
     foreach (const QString &str, serialnrs) {

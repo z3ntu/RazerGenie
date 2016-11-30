@@ -29,7 +29,8 @@ QString QDBusMessageToString(const QDBusMessage &message);
 QStringList QDBusMessageToStringList(const QDBusMessage &message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
 
-class Device {
+class Device
+{
 private:
     QString serial;
     QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
