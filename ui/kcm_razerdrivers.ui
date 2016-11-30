@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Luca Weiss</author>
  <class>RazerDriversKcmUi</class>
  <widget class="QWidget" name="RazerDriversKcmUi">
   <property name="geometry">
@@ -19,67 +20,36 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QCheckBox" name="syncCheckBox">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>370</y>
-     <width>121</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Sync devices</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="versionLabel">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>370</y>
-     <width>211</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="KPageView" name="kpageview">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>751</width>
-     <height>361</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="deviceListWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>400</y>
-     <width>841</width>
-     <height>290</height>
-    </rect>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>16777215</height>
-    </size>
-   </property>
-   <property name="flow">
-    <enum>QListView::LeftToRight</enum>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QLabel" name="versionLabel">
+     <property name="text">
+      <string>Driver version: X.X.X</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="KPageWidget" name="kpagewidget"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="syncCheckBox">
+     <property name="text">
+      <string>Sync devices</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>KPageView</class>
    <extends>QWidget</extends>
    <header>kpageview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPageWidget</class>
+   <extends>KPageView</extends>
+   <header>kpagewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

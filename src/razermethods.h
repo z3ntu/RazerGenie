@@ -21,25 +21,25 @@
 
 namespace razermethods
 {
-    QStringList getConnectedDevices();
-    QString getDriverVersion();
-    bool syncDevices(bool yes);
-    /* Helper methods */
-    QString QDBusMessageToString(const QDBusMessage &message);
-    QStringList QDBusMessageToStringList(const QDBusMessage &message);
-    QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
-    
-    class Device {
-    private:
-        QString serial;
-        QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
-    public:
-        Device(QString serial);
-        ~Device();
-        QString getDeviceName();
-        QString getDeviceType();
-    };
-    
+QStringList getConnectedDevices();
+QString getDriverVersion();
+bool syncDevices(bool yes);
+/* Helper methods */
+QString QDBusMessageToString(const QDBusMessage &message);
+QStringList QDBusMessageToStringList(const QDBusMessage &message);
+QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
+
+class Device {
+private:
+    QString serial;
+    QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
+public:
+    Device(QString serial);
+    ~Device();
+    QString getDeviceName();
+    QString getDeviceType();
+};
+
 }
 
 #endif // RAZERMETHODS_H

@@ -1,5 +1,4 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2016  Luca Weiss <luca@z3ntu.xyz>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +16,27 @@
  *
  */
 
-#ifndef RAZERIMAGEDOWNLOADER_H
-#define RAZERIMAGEDOWNLOADER_H
+#ifndef DEVICEDELEGATE_H
+#define DEVICEDELEGATE_H
 
-#include <QFile>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkReply>
+#include <QItemDelegate>
 
-class RazerImageDownloader : public QObject
+class DeviceDelegate : public QItemDelegate
 {
     Q_OBJECT
+
 public:
-    RazerImageDownloader(QString serial, QUrl url, QNetworkAccessManager *manager, QObject *parent);
-    ~RazerImageDownloader();
-signals:
-    void downloadFinished(QString &serial, QString &filename);
-private:
-    QFile *_file;
-    QString _filepath;
-    QString serial;
-    int _timerid;
-    void timerEvent(QTimerEvent *event);
-private slots:
-    void finished(QNetworkReply* reply);
+    DeviceDelegate(QObject* parent = 0);
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+                      const QModelIndex &index) const;
+
+    void updateEditorGeometry(QWidget *editor,
+                              const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif // RAZERIMAGEDOWNLOADER_H
+#endif // DEVICEDELEGATE_H

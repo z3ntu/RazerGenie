@@ -30,7 +30,7 @@
 #include "kcm_razerdrivers.h"
 #include "razermethods.h"
 #include "razerimagedownloader.h"
-
+#include "devicedelegate.h"
 
 K_PLUGIN_FACTORY(RazerDriversKcmFactory, registerPlugin<kcm_razerdrivers>();)
 
@@ -57,52 +57,134 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
     fillList();
 
     //Connect signals
-    connect(ui.syncCheckBox, SIGNAL(clicked(bool)), this, SLOT(toggleSync(bool)));
+    connect(ui.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
+    //connect(ui.deviceListWidget, &QListWidget::currentItemChanged, this, &kcm_razerdrivers::currentItemChanged);
 }
 
 kcm_razerdrivers::~kcm_razerdrivers()
 {
-    //delete ui;
+//    delete ui;
 }
 
 void kcm_razerdrivers::fillList()
 {
     QStringList serialnrs = razermethods::getConnectedDevices();
 
-    
-    
-    QNetworkAccessManager manager(this);
-    
+    manager = new QNetworkAccessManager(this);
+
+    // Set delegate
+    //DeviceDelegate *delegate = new DeviceDelegate();
+    //ui.kpagewidget->setItemDelegate(delegate);
+
     foreach (const QString &serial, serialnrs) {
+
         std::cout << serial.toStdString() << std::endl;
         razermethods::Device *currentDevice = new razermethods::Device(serial);
-        
-        //RazerImageDownloader *dl = new RazerImageDownloader(QUrl("http://assets.razerzone.com/eeimages/products/17531/deathadder_chroma_gallery_2.png"), &manager, this);
-        //downloaderList.append(dl);
 
-        
+        RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://assets.razerzone.com/eeimages/products/17531/deathadder_chroma_gallery_2.png"), manager, this);
+        connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
+        downloaderList.append(dl);
+
+        /* a */
         QPixmap *image = new QPixmap();
-        image->load("/tmp/deathadder_chroma_gallery_2.png");
+        bool success = image->load("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+        std::cout << "Success: " << success << std::endl;
         //image = image->scaled(ui_item.graphicsView->size(), Qt::KeepAspectRatio);
+        /* /a */
         QGraphicsScene *scene = new QGraphicsScene(this);
+        /* a */
         scene->addPixmap(*image);
         scene->setSceneRect(image->rect());
+        /* /a */
 
+        /*
         QWidget *widget = new QWidget();
         ui_item.setupUi(widget);
-        
+
         ui_item.graphicsView->setScene(scene);
-        
+
         ui_item.deviceName->setText(currentDevice->getDeviceName());
-        
+
         QListWidgetItem *it = new QListWidgetItem(ui.deviceListWidget);
         it->setSizeHint(QSize(200, 220));
-        
-        ui.deviceListWidget->setItemWidget(it, widget);
-        ui.deviceListWidget->addItem(it);
+
+        //ui.deviceListWidget->setItemWidget(it, widget);
+        //ui.deviceListWidget->addItem(it);
+        */
+        QString type = currentDevice->getDeviceType();
+        QString name = currentDevice->getDeviceName();
+        if(QString::compare(type, "mouse") == 0) {
+            std::cout << "mouse" << std::endl;
+
+            QWidget *mouseWidget = new QWidget();
+            ui_mouse.setupUi(mouseWidget);
+
+            KPageWidgetItem *item = new KPageWidgetItem(mouseWidget, name);
+            QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+            item->setIcon(*icon);
+            ui.kpagewidget->addPage(item);
+
+            pageHash.insert(name, mouseWidget);
+
+            //TODO: Create my own QAbstractItemDelegate
+
+            //DeviceDelegate *delegate = new DeviceDelegate();
+            //ui.kpagewidget->setItemDelegate(delegate);
+        } else if(QString::compare(type, "keyboard") == 0) {
+            //TODO: Handle
+            std::cout << "keyboard" << std::endl;
+
+            //TODO: keyboard
+            QWidget *mouseWidget = new QWidget();
+            ui_mouse.setupUi(mouseWidget);
+
+            KPageWidgetItem *item = new KPageWidgetItem(mouseWidget, name);
+            QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+            item->setIcon(*icon);
+            ui.kpagewidget->addPage(item);
+
+            pageHash.insert(name, mouseWidget);
+        } else if(QString::compare(type, "tartarus") == 0) {
+            //TODO: Handle
+            std::cout << "tartarus" << std::endl;
+
+            //TODO: tartarus
+            QWidget *mouseWidget = new QWidget();
+            ui_mouse.setupUi(mouseWidget);
+
+            KPageWidgetItem *item = new KPageWidgetItem(mouseWidget, name);
+            QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+            item->setIcon(*icon);
+            ui.kpagewidget->addPage(item);
+
+            pageHash.insert(name, mouseWidget);
+        } else {
+            showError("Unknown device type: " + type + " for serial " + serial + "! Please contact the author.");
+        }
     }
 }
 
+void kcm_razerdrivers::imageDownloaded(QString &serial, QString &filename)
+{
+    //TODO: Set image
+    std::cout << "Download of image completed for " << serial.toStdString() << " at " << filename.toStdString() << std::endl;
+    //QPixmap *item = positions.value(serial);
+
+    //item->load(filename);
+
+
+    //QGraphicsScene *asd = new QGraphicsScene(this);
+    //QPixmap *image = new QPixmap();
+    //image->load(filename);
+    //asd->addPixmap(*image);
+    //asd->setSceneRect(image->rect());
+}
+/*
+void kcm_razerdrivers::currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    std::cout << "currentItemChanged" << std::endl;
+}
+*/
 void kcm_razerdrivers::toggleSync(bool yes)
 {
     if(!razermethods::syncDevices(yes))

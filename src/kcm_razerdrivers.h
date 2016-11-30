@@ -22,6 +22,7 @@
 #include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
 #include "ui_item.h"
+#include "ui_mouse_widget.h"
 #include "razerimagedownloader.h"
 
 class kcm_razerdrivers : public KCModule
@@ -32,13 +33,20 @@ public:
     ~kcm_razerdrivers();
 public slots:
     void toggleSync(bool);
+    void imageDownloaded(QString &serial, QString &filename);
+    //void currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 private:
     Ui::RazerDriversKcmUi ui;
     Ui::ItemUi ui_item;
+    Ui::MouseWidget ui_mouse;
     void getRazerDevices(void);
     void fillList();
     void showError(QString);
     QList<RazerImageDownloader*> downloaderList;
+    QNetworkAccessManager *manager;
+    //QHash<QString, QPixmap*> positions;
+    //QHash<QString, QGraphicsScene*> testhash;
+    QHash<QString, QWidget*> pageHash;
 };
 
 

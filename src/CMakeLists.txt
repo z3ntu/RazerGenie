@@ -1,9 +1,11 @@
 set(kcm_razerdrivers_SRCS kcm_razerdrivers.cpp
                           razermethods.cpp
-                          razerimagedownloader.cpp)
+                          razerimagedownloader.cpp
+                          devicedelegate.cpp)
 
 ki18n_wrap_ui(kcm_razerdrivers_SRCS ../ui/kcm_razerdrivers.ui
-                                    ../ui/item.ui)
+                                    ../ui/item.ui
+                                    ../ui/mouse_widget.ui)
 
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
