@@ -19,6 +19,9 @@
 #ifndef RAZERMETHODS_H
 #define RAZERMETHODS_H
 
+#include <QDomDocument>
+#include <QDBusMessage>
+
 namespace razermethods
 {
 QStringList getConnectedDevices();
@@ -27,18 +30,29 @@ bool syncDevices(bool yes);
 /* Helper methods */
 QString QDBusMessageToString(const QDBusMessage &message);
 QStringList QDBusMessageToStringList(const QDBusMessage &message);
+QDomDocument QDBusMessageToXML(const QDBusMessage &message);
+void QDBusMessageToVoid(const QDBusMessage &message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
 
 class Device
 {
 private:
     QString serial;
+    QStringList introspection;
+    QHash<QString, bool> capabilites;
+
     QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
+    void Introspect();
+    void setupCapabilities();
 public:
     Device(QString serial);
     ~Device();
+
     QString getDeviceName();
     QString getDeviceType();
+    bool hasCapability(const QString &interface, const QString &method = QString());
+    QHash<QString, bool> getCapabilities();
+    void setLogoStatic(int r, int g, int b);
 };
 
 }

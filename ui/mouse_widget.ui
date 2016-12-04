@@ -13,39 +13,80 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>60</y>
-     <width>83</width>
-     <height>33</height>
-    </rect>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <property name="text">
-     <string>1</string>
-    </property>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Scroll wheel</string>
+     </property>
+    </widget>
    </item>
    <item>
-    <property name="text">
-     <string>2</string>
-    </property>
+    <widget class="QComboBox" name="scrollCombo">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Static</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Breathing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blinking</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Spectrum Cycling</string>
+      </property>
+     </item>
+    </widget>
    </item>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>30</y>
-     <width>131</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>MOUSE WIDGET</string>
-   </property>
-  </widget>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Logo</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="logoCombo">
+     <item>
+      <property name="text">
+       <string>Static</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Breathing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blinking</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Spectrum Cycling</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="openColorDialog">
+     <property name="text">
+      <string>Open colordialog</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

@@ -6,7 +6,7 @@ set(KCM_RAZERDRIVERS_VERSION "0.0.1")
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-find_package(Qt5 REQUIRED COMPONENTS DBus Network)
+find_package(Qt5 REQUIRED COMPONENTS DBus Network Xml)
 find_package(KF5 REQUIRED COMPONENTS ConfigWidgets I18n)
 
 # Find includes in corresponding build directories

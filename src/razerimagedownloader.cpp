@@ -61,7 +61,7 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAcc
     manager->get(request);
 }
 
-void RazerImageDownloader::timerEvent(QTimerEvent *event)
+void RazerImageDownloader::timerEvent(QTimerEvent */*event*/)
 {
     killTimer(_timerid);
     emit downloadFinished(serial, _filepath);
