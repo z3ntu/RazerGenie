@@ -96,10 +96,15 @@ void kcm_razerdrivers::fillList()
             QWidget *mouseWidget = new QWidget();
             ui_mouse.setupUi(mouseWidget);
 
-            connect(ui_mouse.openColorDialog, &QPushButton::clicked, this, &kcm_razerdrivers::colorDialog);
+            connect(ui_mouse.logoColorButton, &QPushButton::clicked, this, &kcm_razerdrivers::logoColorButton);
+            connect(ui_mouse.scrollColorButton, &QPushButton::clicked, this, &kcm_razerdrivers::scrollColorButton);
             // See http://doc.qt.io/qt-5/qcombobox.html#currentIndexChanged-1 for syntax
             connect(ui_mouse.scrollCombo, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
             connect(ui_mouse.logoCombo, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
+
+            //for(int i=0; i<kcm_razerdrivers::Effects.size(); i++) {
+            //ui_mouse.logoCombo->addItem();
+            //}
 
             // TODO: Extend KPageWidgetItem to hold serial nr (to get in 'connect'ed methods)
             KPageWidgetItem *item = new KPageWidgetItem(mouseWidget, serial);
@@ -124,6 +129,8 @@ void kcm_razerdrivers::fillList()
             std::cout << "tartarus" << std::endl;
 
             //TODO: tartarus
+        } else if(QString::compare(type, "headset") == 0) {
+            std::cout << "headset" << std::endl;
         } else {
             showError("Unknown device type: " + type + " for serial " + serial + "! Please contact the author.");
         }
@@ -142,7 +149,15 @@ void kcm_razerdrivers::toggleSync(bool yes)
         showError("Error while syncing devices.");
 }
 
-void kcm_razerdrivers::colorDialog()
+void kcm_razerdrivers::logoColorButton()
+{
+    std::cout << "color dialog" << std::endl;
+
+    QColor color = QColorDialog::getColor(Qt::white);
+    std::cout << color.name().toStdString() << std::endl;
+}
+
+void kcm_razerdrivers::scrollColorButton()
 {
     std::cout << "color dialog" << std::endl;
 

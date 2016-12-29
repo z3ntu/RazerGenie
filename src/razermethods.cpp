@@ -118,38 +118,51 @@ void Device::setupCapabilities()
     capabilites.insert("serial", true);
     capabilites.insert("brightness", hasCapability("razer.device.lighting.brightness"));
 
+    capabilites.insert("macro_logic", hasCapability("razer.device.macro"));
+
     // Default device is a chroma so lighting capabilities
     capabilites.insert("lighting_breath_single", hasCapability("razer.device.lighting.chroma", "setBreathSingle"));
     capabilites.insert("lighting_breath_dual", hasCapability("razer.device.lighting.chroma", "setBreathDual"));
+    capabilites.insert("lighting_breath_triple", hasCapability("razer.device.lighting.chroma", "setBreathTriple"));
     capabilites.insert("lighting_breath_random", hasCapability("razer.device.lighting.chroma", "setBreathRandom"));
     capabilites.insert("lighting_wave", hasCapability("razer.device.lighting.chroma", "setWave"));
     capabilites.insert("lighting_reactive", hasCapability("razer.device.lighting.chroma", "setReactive"));
     capabilites.insert("lighting_none", hasCapability("razer.device.lighting.chroma", "setNone"));
     capabilites.insert("lighting_spectrum", hasCapability("razer.device.lighting.chroma", "setSpectrum"));
     capabilites.insert("lighting_static", hasCapability("razer.device.lighting.chroma", "setStatic"));
-    capabilites.insert("lighting_ripple", hasCapability("razer.device.lighting.custom", "setRipple"));  // Thinking of extending custom to do more hence the key check
+    capabilites.insert("lighting_ripple", hasCapability("razer.device.lighting.custom", "setRipple")); // Thinking of extending custom to do more hence the key check
     capabilites.insert("lighting_ripple_random", hasCapability("razer.device.lighting.custom", "setRippleRandomColour"));
 
     capabilites.insert("lighting_pulsate", hasCapability("razer.device.lighting.chroma", "setPulsate"));
 
-    // Get if the device has an LED Matrix, == true as its a DBus boolean otherwise, so for consistency sake we coerce it into a native bool
-    //"lighting_led_matrix", self._dbus_interfaces["device"].hasMatrix() == true,
+    // Get if the device has an LED Matrix, == True as its a DBus boolean otherwise, so for consistency sake we coerce it into a native bool
+    // TODO: 'lighting_led_matrix': self._dbus_interfaces['device'].hasMatrix() == True,
     capabilites.insert("lighting_led_single", hasCapability("razer.device.lighting.chroma", "setKey"));
 
     // Mouse lighting attrs
-    capabilites.insert("lighting_logo", hasCapability("razer.device.lighting.logo", "setLogoActive"));
+    capabilites.insert("lighting_logo", hasCapability("razer.device.lighting.logo"));
     capabilites.insert("lighting_logo_blinking", hasCapability("razer.device.lighting.logo", "setLogoBlinking"));
     capabilites.insert("lighting_logo_brightness", hasCapability("razer.device.lighting.logo", "setLogoBrightness"));
     capabilites.insert("lighting_logo_pulsate", hasCapability("razer.device.lighting.logo", "setLogoPulsate"));
     capabilites.insert("lighting_logo_spectrum", hasCapability("razer.device.lighting.logo", "setLogoSpectrum"));
     capabilites.insert("lighting_logo_static", hasCapability("razer.device.lighting.logo", "setLogoStatic"));
+    capabilites.insert("lighting_logo_none", hasCapability("razer.device.lighting.logo", "setLogoNone"));
+    capabilites.insert("lighting_logo_reactive", hasCapability("razer.device.lighting.logo", "setLogoReactive"));
+    capabilites.insert("lighting_logo_breath_single", hasCapability("razer.device.lighting.logo", "setLogoBreathSingle"));
+    capabilites.insert("lighting_logo_breath_dual", hasCapability("razer.device.lighting.logo", "setLogoBreathDual"));
+    capabilites.insert("lighting_logo_breath_random", hasCapability("razer.device.lighting.logo", "setLogoBreathRandom"));
 
-    capabilites.insert("lighting_scroll", hasCapability("razer.device.lighting.scroll", "setScrollActive"));
+    capabilites.insert("lighting_scroll", hasCapability("razer.device.lighting.scroll"));
     capabilites.insert("lighting_scroll_blinking", hasCapability("razer.device.lighting.scroll", "setScrollBlinking"));
     capabilites.insert("lighting_scroll_brightness", hasCapability("razer.device.lighting.scroll", "setScrollBrightness"));
     capabilites.insert("lighting_scroll_pulsate", hasCapability("razer.device.lighting.scroll", "setScrollPulsate"));
     capabilites.insert("lighting_scroll_spectrum", hasCapability("razer.device.lighting.scroll", "setScrollSpectrum"));
     capabilites.insert("lighting_scroll_static", hasCapability("razer.device.lighting.scroll", "setScrollStatic"));
+    capabilites.insert("lighting_scroll_none", hasCapability("razer.device.lighting.scroll", "setScrollNone"));
+    capabilites.insert("lighting_scroll_reactive", hasCapability("razer.device.lighting.scroll", "setScrollReactive"));
+    capabilites.insert("lighting_scroll_breath_single", hasCapability("razer.device.lighting.scroll", "setScrollBreathSingle"));
+    capabilites.insert("lighting_scroll_breath_dual", hasCapability("razer.device.lighting.scroll", "setScrollBreathDual"));
+    capabilites.insert("lighting_scroll_breath_random", hasCapability("razer.device.lighting.scroll", "setScrollBreathRandom"));
 }
 
 

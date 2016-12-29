@@ -29,14 +29,18 @@
 class kcm_razerdrivers : public KCModule
 {
     Q_OBJECT
+    Q_ENUMS(Effects)
 public:
+    enum Effects { Static, Breathing, Blinking, Spectrum_Cycling };
+    QStringList EffectsStrings = (QStringList() << "Static" << "Breathing" << "Blinking" << "Spectrum Cycling");
     kcm_razerdrivers(QWidget* parent, const QVariantList& args);
     ~kcm_razerdrivers();
 public slots:
     void toggleSync(bool);
     void imageDownloaded(QString &serial, QString &filename);
     //void currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void colorDialog();
+    void logoColorButton();
+    void scrollColorButton();
     void scrollCombo(const QString &text);
     void logoCombo(const QString &text);
 private:
@@ -50,7 +54,6 @@ private:
     QNetworkAccessManager *manager;
 
     QHash<QString, razermethods::Device*> devices;
-
 };
 
 
