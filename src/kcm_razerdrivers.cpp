@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QColorDialog>
 #include <QtDBus/QDBusConnection>
+#include <QComboBox>
 
 #include <KPluginFactory>
 #include <KAboutData>

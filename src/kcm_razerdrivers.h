@@ -21,8 +21,6 @@
 
 #include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
-#include "ui_item.h"
-#include "ui_mouse_widget.h"
 #include "razerimagedownloader.h"
 #include "razermethods.h"
 
@@ -44,8 +42,6 @@ public slots:
     void logoCombo(const QString &text);
 private:
     Ui::RazerDriversKcmUi ui;
-    Ui::ItemUi ui_item;
-    Ui::MouseWidget ui_mouse;
     void getRazerDevices(void);
     void fillList();
     void showError(QString error);
