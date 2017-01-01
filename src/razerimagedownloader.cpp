@@ -59,6 +59,7 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAcc
     request.setRawHeader("User-Agent", "Mozilla Firefox");
     //std::cout << "Starting download." << std::endl;
     if(!connected) {
+        std::cout << "CONNECT" << std::endl;
         connect(manager, &QNetworkAccessManager::finished, this, &RazerImageDownloader::finished);
         connected = true;
     }
@@ -80,16 +81,13 @@ RazerImageDownloader::~RazerImageDownloader()
 void RazerImageDownloader::finished(QNetworkReply* reply)
 {
     std::cout << "Finished downloading the picture." << std::endl;
-    // Save the image here
-    QByteArray b = reply->readAll();
-    _file->open(QIODevice::WriteOnly);
-    QDataStream out(_file);
-    QByteArray copy = QByteArray(b);
-    copy.truncate(4);
-    std::cout << copy.toHex().toStdString() << std::endl;
-    out << b;
+
+    _file->open(QFile::WriteOnly);
+    _file->write(reply->readAll());
+    _file->flush();
+    _file->close();
+
     reply->deleteLater();
-    // done
 
     emit downloadFinished(serial, _filepath);
 }
