@@ -31,6 +31,7 @@
 #include "kcm_razerdrivers.h"
 #include "razermethods.h"
 #include "razerimagedownloader.h"
+#include "razerpagewidgetitem.h"
 
 K_PLUGIN_FACTORY(RazerDriversKcmFactory, registerPlugin<kcm_razerdrivers>();)
 
@@ -77,8 +78,6 @@ void kcm_razerdrivers::fillList()
         RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://developer.razerzone.com/wp-content/uploads/" + currentDevice->getPngFilename()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
 
-        downloaderList.append(dl);
-
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
 
@@ -116,6 +115,7 @@ void kcm_razerdrivers::fillList()
                 verticalLayout->addWidget(text);
                 verticalLayout->addLayout(hbox);
                 QComboBox *comboBox = new QComboBox;
+                connect(comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
 
                 if(currentLocation == razermethods::Device::lighting) {
                     if(currentDevice->hasCapability("lighting_breath_single")) {
@@ -222,7 +222,7 @@ void kcm_razerdrivers::fillList()
             QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
             verticalLayout->addItem(spacer);
 
-            KPageWidgetItem *item = new KPageWidgetItem(widget, serial);
+            RazerPageWidgetItem *item = new RazerPageWidgetItem(widget, name, serial);
             // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
             QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
             item->setIcon(*icon);
@@ -290,10 +290,10 @@ void kcm_razerdrivers::scrollCombo(const QString &/*text*/)
 void kcm_razerdrivers::logoCombo(const QString &text)
 {
     std::cout << text.toStdString() << std::endl;
-    std::cout << ui.kpagewidget->currentPage()->name().toStdString() << std::endl;
-    razermethods::Device *device = devices.value(ui.kpagewidget->currentPage()->name());
+//     std::cout << ui.kpagewidget->currentPage()->name().toStdString() << std::endl;
+    //razermethods::Device *device = devices.value(((RazerPageWidgetItem*)ui.kpagewidget->currentPage())->getSerial());
     //TODO: Set real color
-    device->setLogoStatic(255, 0, 255);
+    //device->setLogoStatic(255, 0, 255);
 }
 
 void kcm_razerdrivers::standardCombo(const QString &text)

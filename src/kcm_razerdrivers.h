@@ -46,8 +46,6 @@ private:
     void fillList();
     void showError(QString error);
     void showInfo(QString info);
-    QList<RazerImageDownloader*> downloaderList;
-    QNetworkAccessManager *manager;
 
     QHash<QString, razermethods::Device*> devices;
 };

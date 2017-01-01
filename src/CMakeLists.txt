@@ -1,6 +1,7 @@
 set(kcm_razerdrivers_SRCS kcm_razerdrivers.cpp
                           razermethods.cpp
-                          razerimagedownloader.cpp)
+                          razerimagedownloader.cpp
+                          razerpagewidgetitem.cpp)
 
 ki18n_wrap_ui(kcm_razerdrivers_SRCS ../ui/kcm_razerdrivers.ui)
 

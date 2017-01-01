@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2017  Luca Weiss <WEI16416@spengergasse.at>
+ * Copyright (C) 2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,3 +17,17 @@
  */
 
 #include "razerpagewidgetitem.h"
+
+RazerPageWidgetItem::RazerPageWidgetItem (QWidget *widget, const QString &name, const QString &serial) : KPageWidgetItem (widget, name)
+{
+    this->serial = serial;
+}
+
+QString RazerPageWidgetItem::getSerial()
+{
+    return serial;
+}
+
+RazerPageWidgetItem::~RazerPageWidgetItem()
+{
+}
