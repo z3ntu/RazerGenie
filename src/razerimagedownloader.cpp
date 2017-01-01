@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2016  Luca Weiss <luca@z3ntu.xyz>
+ * Copyright (C) 2016-2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +30,22 @@
 #include "razerimagedownloader.h"
 
 
-RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAccessManager *manager, QObject *parent) : QObject(parent)
+RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QObject *parent) : QObject(parent)
 {
     this->serial = serial;
 
+    manager = new QNetworkAccessManager(this);
+
     QString path = getDownloadPath();
+    // Create directory
     QDir dir(path);
     dir.mkpath(path);
-    //std::cout << url.toString().toStdString() << std::endl;
+
     _filepath = path + QFileInfo(url.path()).fileName();
-    //std::cout << _filepath.toStdString() << std::endl;
     _file = new QFile(_filepath);
     if(_file->exists()) {
         // return image, can't emit here as the signal isn't connected yet, see http://stackoverflow.com/a/11641871/3527128
         _timerid = startTimer(0);
-        //std::cout << "file already exists" << std::endl;
         return;
     } else {
         // TODO: Solve better
@@ -57,12 +57,9 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAcc
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("User-Agent", "Mozilla Firefox");
-    //std::cout << "Starting download." << std::endl;
-    if(!connected) {
-        std::cout << "CONNECT" << std::endl;
-        connect(manager, &QNetworkAccessManager::finished, this, &RazerImageDownloader::finished);
-        connected = true;
-    }
+
+    connect(manager, &QNetworkAccessManager::finished, this, &RazerImageDownloader::finished);
+
     manager->get(request);
 }
 
@@ -74,8 +71,9 @@ void RazerImageDownloader::timerEvent(QTimerEvent */*event*/)
 
 RazerImageDownloader::~RazerImageDownloader()
 {
-    // TODO: Complete destructor
+    // TODO: Complete destructor (no idea how they work / what you have to do)
     delete _file;
+    delete manager;
 }
 
 void RazerImageDownloader::finished(QNetworkReply* reply)
@@ -94,6 +92,7 @@ void RazerImageDownloader::finished(QNetworkReply* reply)
 
 QString RazerImageDownloader::getDownloadPath()
 {
+    // Should be ~/.local/share/kcm_razerdrivers/devicepictures/
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/kcm_razerdrivers/devicepictures/";
 }
 

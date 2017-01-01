@@ -1,6 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2016  Luca Weiss <luca@z3ntu.xyz>
+ * Copyright (C) 2016-2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +23,11 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 
-static bool connected = false;
-
 class RazerImageDownloader : public QObject
 {
     Q_OBJECT
 public:
-    RazerImageDownloader(QString serial, QUrl url, QNetworkAccessManager *manager, QObject *parent);
+    RazerImageDownloader(QString serial, QUrl url, QObject *parent);
     ~RazerImageDownloader();
     static QString getDownloadPath();
 signals:
@@ -39,6 +36,7 @@ private:
     QFile *_file;
     QString _filepath;
     QString serial;
+    QNetworkAccessManager *manager;
     int _timerid;
     void timerEvent(QTimerEvent *event);
 private slots:

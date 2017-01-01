@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * Copyright (C) 2016-2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 #include "kcm_razerdrivers.h"
 #include "razermethods.h"
 #include "razerimagedownloader.h"
-#include "devicedelegate.h"
 
 K_PLUGIN_FACTORY(RazerDriversKcmFactory, registerPlugin<kcm_razerdrivers>();)
 
@@ -47,9 +46,9 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
         QString(),
         "https://github.com/z3ntu/kcm_razerdrivers",
         "https://github.com/z3ntu/kcm_razerdrivers/issues");
-    about->addAuthor("Luca Weiss", "Main Developer", "luca@z3ntu.xyz");
+    // Obfuscation just for spiders.
+    about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."));
     setAboutData(about);
-
     ui.setupUi(this);
 
     ui.versionLabel->setText("Driver version: " + razermethods::getDriverVersion());
@@ -69,14 +68,12 @@ void kcm_razerdrivers::fillList()
 {
     QStringList serialnrs = razermethods::getConnectedDevices();
 
-    manager = new QNetworkAccessManager(this);
-
     foreach (const QString &serial, serialnrs) {
 
         std::cout << serial.toStdString() << std::endl;
         razermethods::Device *currentDevice = new razermethods::Device(serial);
 
-        RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://developer.razerzone.com/wp-content/uploads/" + currentDevice->getPngFilename()), manager, this);
+        RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://developer.razerzone.com/wp-content/uploads/" + currentDevice->getPngFilename()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
 
         downloaderList.append(dl);
@@ -85,8 +82,10 @@ void kcm_razerdrivers::fillList()
         QString name = currentDevice->getDeviceName();
 
         devices.insert(serial, currentDevice);
-
-        if(QString::compare(type, "headset") == 0 || QString::compare(type, "mouse") == 0) {
+        if(QString::compare(type, "mug") == 0) {
+            showInfo("This lucky bastard has a mug... :)");
+        }
+        if(QString::compare(type, "headset") == 0 || QString::compare(type, "mouse") == 0 || QString::compare(type, "mug") == 0) {
             std::cout << type.toStdString() << std::endl;
             QWidget *widget = new QWidget();
             QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
@@ -223,8 +222,7 @@ void kcm_razerdrivers::fillList()
             verticalLayout->addItem(spacer);
 
             KPageWidgetItem *item = new KPageWidgetItem(widget, serial);
-            //QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
-
+            // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
             QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
             item->setIcon(*icon);
 
@@ -259,6 +257,14 @@ void kcm_razerdrivers::toggleSync(bool yes)
         showError("Error while syncing devices.");
 }
 
+void kcm_razerdrivers::standardColorButton()
+{
+    std::cout << "color dialog" << std::endl;
+
+    QColor color = QColorDialog::getColor(Qt::white);
+    std::cout << color.name().toStdString() << std::endl;
+}
+
 void kcm_razerdrivers::logoColorButton()
 {
     std::cout << "color dialog" << std::endl;
@@ -275,7 +281,7 @@ void kcm_razerdrivers::scrollColorButton()
     std::cout << color.name().toStdString() << std::endl;
 }
 
-void kcm_razerdrivers::scrollCombo(const QString &text)
+void kcm_razerdrivers::scrollCombo(const QString &/*text*/)
 {
 
 }
@@ -289,10 +295,22 @@ void kcm_razerdrivers::logoCombo(const QString &text)
     device->setLogoStatic(255, 0, 255);
 }
 
+void kcm_razerdrivers::standardCombo(const QString &text)
+{
+
+}
+
 void kcm_razerdrivers::showError(QString error)
 {
     QMessageBox messageBox;
     messageBox.critical(0, "Error!", error);
+    messageBox.setFixedSize(500, 200);
+}
+
+void kcm_razerdrivers::showInfo(QString info)
+{
+    QMessageBox messageBox;
+    messageBox.information(0, "Information!", info);
     messageBox.setFixedSize(500, 200);
 }
 

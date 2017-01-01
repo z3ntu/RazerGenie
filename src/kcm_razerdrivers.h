@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * Copyright (C) 2016-2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,18 +29,17 @@
 class kcm_razerdrivers : public KCModule
 {
     Q_OBJECT
-    Q_ENUMS(Effects)
 public:
-    //enum Effects { Static, Breathing, Blinking, Spectrum_Cycling };
-    //QStringList EffectsStrings = (QStringList() << "Static" << "Breathing" << "Blinking" << "Spectrum Cycling");
     kcm_razerdrivers(QWidget* parent, const QVariantList& args);
     ~kcm_razerdrivers();
 public slots:
     void toggleSync(bool);
     void imageDownloaded(QString &serial, QString &filename);
-    //void currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void standardColorButton();
     void logoColorButton();
     void scrollColorButton();
+    void standardCombo(const QString &text);
     void scrollCombo(const QString &text);
     void logoCombo(const QString &text);
 private:
@@ -49,7 +48,8 @@ private:
     Ui::MouseWidget ui_mouse;
     void getRazerDevices(void);
     void fillList();
-    void showError(QString);
+    void showError(QString error);
+    void showInfo(QString info);
     QList<RazerImageDownloader*> downloaderList;
     QNetworkAccessManager *manager;
 
