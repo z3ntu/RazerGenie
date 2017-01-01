@@ -35,12 +35,12 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAcc
 {
     this->serial = serial;
 
-    QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/kcm_razerdrivers/devicepictures/";
+    QString path = getDownloadPath();
     QDir dir(path);
     dir.mkpath(path);
-
+    //std::cout << url.toString().toStdString() << std::endl;
     _filepath = path + QFileInfo(url.path()).fileName();
-    std::cout << _filepath.toStdString() << std::endl;
+    //std::cout << _filepath.toStdString() << std::endl;
     _file = new QFile(_filepath);
     if(_file->exists()) {
         // return image, can't emit here as the signal isn't connected yet, see http://stackoverflow.com/a/11641871/3527128
@@ -50,14 +50,18 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QNetworkAcc
     } else {
         // TODO: Solve better
         // That the contructor creates the file, that the same file doesn't get downloaded simultanously.
-        _file->open(QIODevice::WriteOnly);
-        _file->close();
+        //_file->open(QIODevice::WriteOnly);
+        //_file->close();
     }
 
     QNetworkRequest request;
     request.setUrl(url);
+    request.setRawHeader("User-Agent", "Mozilla Firefox");
     //std::cout << "Starting download." << std::endl;
-    connect(manager, &QNetworkAccessManager::finished, this, &RazerImageDownloader::finished);
+    if(!connected) {
+        connect(manager, &QNetworkAccessManager::finished, this, &RazerImageDownloader::finished);
+        connected = true;
+    }
     manager->get(request);
 }
 
@@ -80,11 +84,19 @@ void RazerImageDownloader::finished(QNetworkReply* reply)
     QByteArray b = reply->readAll();
     _file->open(QIODevice::WriteOnly);
     QDataStream out(_file);
+    QByteArray copy = QByteArray(b);
+    copy.truncate(4);
+    std::cout << copy.toHex().toStdString() << std::endl;
     out << b;
     reply->deleteLater();
     // done
 
     emit downloadFinished(serial, _filepath);
+}
+
+QString RazerImageDownloader::getDownloadPath()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/kcm_razerdrivers/devicepictures/";
 }
 
 #include "razerimagedownloader.moc"

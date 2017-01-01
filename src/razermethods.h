@@ -34,6 +34,9 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message);
 void QDBusMessageToVoid(const QDBusMessage &message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
 
+// razer-drivers name to picture url on http://developer.razerzone.com/chroma/compatible-devices/
+const static QHash<QString, QString> urlLookup { {"Razer Kraken 7.1 (Rainie)", "krakenchroma"}, {"Razer DeathAdder Chroma", "dachroma"} };
+
 class Device
 {
 private:
@@ -44,15 +47,22 @@ private:
     QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
     void Introspect();
     void setupCapabilities();
+
+    bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
 public:
     Device(QString serial);
     ~Device();
 
     QString getDeviceName();
     QString getDeviceType();
-    bool hasCapability(const QString &interface, const QString &method = QString());
-    QHash<QString, bool> getCapabilities();
+    QString getPngFilename();
+    bool hasCapability(const QString &name);
+    QHash<QString, bool> getAllCapabilities();
     void setLogoStatic(int r, int g, int b);
+
+    enum lightingLocations {
+        lighting, lighting_logo, lighting_scroll
+    };
 };
 
 }

@@ -31,8 +31,8 @@ class kcm_razerdrivers : public KCModule
     Q_OBJECT
     Q_ENUMS(Effects)
 public:
-    enum Effects { Static, Breathing, Blinking, Spectrum_Cycling };
-    QStringList EffectsStrings = (QStringList() << "Static" << "Breathing" << "Blinking" << "Spectrum Cycling");
+    //enum Effects { Static, Breathing, Blinking, Spectrum_Cycling };
+    //QStringList EffectsStrings = (QStringList() << "Static" << "Breathing" << "Blinking" << "Spectrum Cycling");
     kcm_razerdrivers(QWidget* parent, const QVariantList& args);
     ~kcm_razerdrivers();
 public slots:

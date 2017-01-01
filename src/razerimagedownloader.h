@@ -24,12 +24,15 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 
+static bool connected = false;
+
 class RazerImageDownloader : public QObject
 {
     Q_OBJECT
 public:
     RazerImageDownloader(QString serial, QUrl url, QNetworkAccessManager *manager, QObject *parent);
     ~RazerImageDownloader();
+    static QString getDownloadPath();
 signals:
     void downloadFinished(QString &serial, QString &filename);
 private:

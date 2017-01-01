@@ -43,7 +43,7 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
         KCM_RAZERDRIVERS_VERSION,
         QString("A KDE system settings module for managing razer devices."),
         KAboutLicense::GPL_V3,
-        "Copyright (C) 2016 Luca Weiss",
+        "Copyright (C) 2016-2017 Luca Weiss",
         QString(),
         "https://github.com/z3ntu/kcm_razerdrivers",
         "https://github.com/z3ntu/kcm_razerdrivers/issues");
@@ -76,49 +76,161 @@ void kcm_razerdrivers::fillList()
         std::cout << serial.toStdString() << std::endl;
         razermethods::Device *currentDevice = new razermethods::Device(serial);
 
-        RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://assets.razerzone.com/eeimages/products/17531/deathadder_chroma_gallery_2.png"), manager, this);
+        RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://developer.razerzone.com/wp-content/uploads/" + currentDevice->getPngFilename()), manager, this);
         connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
-        downloaderList.append(dl);
 
-        /* a */
-        QPixmap *image = new QPixmap();
-        bool success = image->load("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
-        std::cout << "Success: " << success << std::endl;
+        downloaderList.append(dl);
 
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
 
         devices.insert(serial, currentDevice);
 
-        if(QString::compare(type, "mouse") == 0) {
-            std::cout << "mouse" << std::endl;
+        if(QString::compare(type, "headset") == 0 || QString::compare(type, "mouse") == 0) {
+            std::cout << type.toStdString() << std::endl;
+            QWidget *widget = new QWidget();
+            QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
-            QWidget *mouseWidget = new QWidget();
-            ui_mouse.setupUi(mouseWidget);
+            QList<razermethods::Device::lightingLocations> locationsTodo;
 
-            connect(ui_mouse.logoColorButton, &QPushButton::clicked, this, &kcm_razerdrivers::logoColorButton);
-            connect(ui_mouse.scrollColorButton, &QPushButton::clicked, this, &kcm_razerdrivers::scrollColorButton);
-            // See http://doc.qt.io/qt-5/qcombobox.html#currentIndexChanged-1 for syntax
-            connect(ui_mouse.scrollCombo, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
-            connect(ui_mouse.logoCombo, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
+            if(currentDevice->hasCapability("lighting"))
+                locationsTodo.append(razermethods::Device::lighting);
+            if(currentDevice->hasCapability("lighting_logo"))
+                locationsTodo.append(razermethods::Device::lighting_logo);
+            if(currentDevice->hasCapability("lighting_scroll"))
+                locationsTodo.append(razermethods::Device::lighting_scroll);
 
-            //for(int i=0; i<kcm_razerdrivers::Effects.size(); i++) {
-            //ui_mouse.logoCombo->addItem();
-            //}
+            while(locationsTodo.size() != 0) {
+                razermethods::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
+                QLabel *text;
+                if(currentLocation == razermethods::Device::lighting) {
+                    text = new QLabel("Lighting");
+                } else if(currentLocation == razermethods::Device::lighting_logo) {
+                    text = new QLabel("Lighting Logo");
+                } else if(currentLocation == razermethods::Device::lighting_scroll) {
+                    text = new QLabel("Lighting Scroll");
+                } else {
+                    // Houston, we have a problem.
+                }
+                QHBoxLayout *hbox = new QHBoxLayout();
+                verticalLayout->addWidget(text);
+                verticalLayout->addLayout(hbox);
+                QComboBox *comboBox = new QComboBox;
 
-            // TODO: Extend KPageWidgetItem to hold serial nr (to get in 'connect'ed methods)
-            KPageWidgetItem *item = new KPageWidgetItem(mouseWidget, serial);
-            QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+                if(currentLocation == razermethods::Device::lighting) {
+                    if(currentDevice->hasCapability("lighting_breath_single")) {
+                        comboBox->addItem("Breath Single");
+                    }
+                    if(currentDevice->hasCapability("lighting_breath_dual")) {
+                        comboBox->addItem("Breath Dual");
+                    }
+                    if(currentDevice->hasCapability("lighting_breath_triple")) {
+                        comboBox->addItem("Breath Triple");
+                    }
+                    if(currentDevice->hasCapability("lighting_breath_random")) {
+                        comboBox->addItem("Breath Random");
+                    }
+                    if(currentDevice->hasCapability("lighting_wave")) {
+                        comboBox->addItem("Wave");
+                    }
+                    if(currentDevice->hasCapability("lighting_reactive")) {
+                        comboBox->addItem("Reactive");
+                    }
+                    if(currentDevice->hasCapability("lighting_none")) {
+                        comboBox->addItem("None");
+                    }
+                    if(currentDevice->hasCapability("lighting_spectrum")) {
+                        comboBox->addItem("Spectrum");
+                    }
+                    if(currentDevice->hasCapability("lighting_static")) {
+                        comboBox->addItem("Static");
+                    }
+                    if(currentDevice->hasCapability("lighting_ripple")) {
+                        comboBox->addItem("Ripple");
+                    }
+                    if(currentDevice->hasCapability("lighting_ripple_random")) {
+                        comboBox->addItem("Ripple random");
+                    }
+                    if(currentDevice->hasCapability("lighting_pulsate")) {
+                        comboBox->addItem("Pulsate");
+                    }
+                } else if(currentLocation == razermethods::Device::lighting_logo) {
+                    if(currentDevice->hasCapability("lighting_logo_blinking")) {
+                        comboBox->addItem("Blinking");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_brightness")) {
+                        comboBox->addItem("Brightness");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_pulsate")) {
+                        comboBox->addItem("Pulsate");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_spectrum")) {
+                        comboBox->addItem("Spectrum");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_static")) {
+                        comboBox->addItem("Static");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_none")) {
+                        comboBox->addItem("None");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_reactive")) {
+                        comboBox->addItem("Reactive");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_breath_single")) {
+                        comboBox->addItem("Breath Single");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_breath_dual")) {
+                        comboBox->addItem("Breath Dual");
+                    }
+                    if(currentDevice->hasCapability("lighting_logo_breath_random")) {
+                        comboBox->addItem("Breath random");
+                    }
+                } else if(currentLocation == razermethods::Device::lighting_scroll) {
+                    if(currentDevice->hasCapability("lighting_scroll_blinking")) {
+                        comboBox->addItem("Blinking");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_brightness")) {
+                        comboBox->addItem("Brightness");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_pulsate")) {
+                        comboBox->addItem("Pulsate");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_spectrum")) {
+                        comboBox->addItem("Spectrum");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_static")) {
+                        comboBox->addItem("Static");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_none")) {
+                        comboBox->addItem("None");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_reactive")) {
+                        comboBox->addItem("Reactive");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_breath_single")) {
+                        comboBox->addItem("Breath Single");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_breath_dual")) {
+                        comboBox->addItem("Breath Dual");
+                    }
+                    if(currentDevice->hasCapability("lighting_scroll_breath_random")) {
+                        comboBox->addItem("Breath random");
+                    }
+                }
+                hbox->addWidget(comboBox);
+            }
+            QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            verticalLayout->addItem(spacer);
+
+            KPageWidgetItem *item = new KPageWidgetItem(widget, serial);
+            //QIcon *icon = new QIcon("/home/luca/Downloads/deathadder_chroma_gallery_2.png");
+
+            QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
             item->setIcon(*icon);
 
             item->setHeader(name);
 
             ui.kpagewidget->addPage(item);
-
-            //TODO: Create my own QAbstractItemDelegate
-
-            //DeviceDelegate *delegate = new DeviceDelegate();
-            //ui.kpagewidget->setItemDelegate(delegate);
         } else if(QString::compare(type, "keyboard") == 0) {
             //TODO: Handle
             std::cout << "keyboard" << std::endl;
@@ -129,8 +241,6 @@ void kcm_razerdrivers::fillList()
             std::cout << "tartarus" << std::endl;
 
             //TODO: tartarus
-        } else if(QString::compare(type, "headset") == 0) {
-            std::cout << "headset" << std::endl;
         } else {
             showError("Unknown device type: " + type + " for serial " + serial + "! Please contact the author.");
         }
