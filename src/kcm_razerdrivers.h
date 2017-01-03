@@ -40,6 +40,9 @@ public slots:
     void standardCombo(const QString &text);
     void scrollCombo(const QString &text);
     void logoCombo(const QString &text);
+    void brightnessChanged(int value);
+    void scrollBrightnessChanged(int value);
+    void logoBrightnessChanged(int value);
 private:
     Ui::RazerDriversKcmUi ui;
     void getRazerDevices(void);

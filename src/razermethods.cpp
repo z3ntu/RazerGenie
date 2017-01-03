@@ -74,6 +74,12 @@ QString Device::getDeviceType()
     return QDBusMessageToString(m);
 }
 
+QString Device::getFirmwareVersion()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getFirmware");
+    return QDBusMessageToString(m);
+}
+
 QString Device::getPngFilename()
 {
     return urlLookup.value(getDeviceName()) + ".png";

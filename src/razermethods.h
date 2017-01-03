@@ -55,6 +55,7 @@ public:
 
     QString getDeviceName();
     QString getDeviceType();
+    QString getFirmwareVersion();
     QString getPngFilename();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
