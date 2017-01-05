@@ -120,57 +120,20 @@ void kcm_razerdrivers::fillList()
                 /* Declare here that you can 'connect' in the 'if' */
                 QSlider *brightnessSlider = new QSlider(Qt::Horizontal, widget);
 
+                // TODO: Maybe split again into lighting, lighting_logo & lighting_scroll, not all every time; we know what we are working with.
+                for(int i=0; i<razermethods::allCapabilites.size(); i++) {
+                    if(currentDevice->hasCapability(razermethods::allCapabilites[i].getIdentifier())) {
+                        comboBox->addItem(razermethods::allCapabilites.at(i).getDisplayString(), QVariant::fromValue(razermethods::allCapabilites.at(i)));
+//                         QVariant::fromValue(razermethods::allCapabilites.at(i));
+//                         QVariant var;
+//                         var.setValue(razermethods::allCapabilites.at(i));
+                    }
+                }
+
                 if(currentLocation == razermethods::Device::lighting) {
                     // Connect signal
-                    connect(comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
-                    QHash<QString, razermethods::RazerCapability> asd;
-                    /*
-                     * # dunno if capabilities should be a QList or a QHash -> QHash for each possible?; would be beneficial for combobox string to capability object, but probably worse to maintain...
-                     * # can you put an object into the combobox? maybe extend it. good night :)
-                     * pseudo-code
-                     * foreach capability in capabilities (from razermethods.h) {
-                     *   if(currentDevice->hasCapability(capability.getIdentifier()) {
-                     *     comboBox->addItem(capability.getDisplayString());
-                     *   }
-                     * }
-                     */
+                    connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
 
-                    if(currentDevice->hasCapability("lighting_breath_single")) {
-                        comboBox->addItem("Breath Single");
-                    }
-                    if(currentDevice->hasCapability("lighting_breath_dual")) {
-                        comboBox->addItem("Breath Dual");
-                    }
-                    if(currentDevice->hasCapability("lighting_breath_triple")) {
-                        comboBox->addItem("Breath Triple");
-                    }
-                    if(currentDevice->hasCapability("lighting_breath_random")) {
-                        comboBox->addItem("Breath Random");
-                    }
-                    if(currentDevice->hasCapability("lighting_wave")) {
-                        comboBox->addItem("Wave");
-                    }
-                    if(currentDevice->hasCapability("lighting_reactive")) {
-                        comboBox->addItem("Reactive");
-                    }
-                    if(currentDevice->hasCapability("lighting_none")) {
-                        comboBox->addItem("None");
-                    }
-                    if(currentDevice->hasCapability("lighting_spectrum")) {
-                        comboBox->addItem("Spectrum");
-                    }
-                    if(currentDevice->hasCapability("lighting_static")) {
-                        comboBox->addItem("Static");
-                    }
-                    if(currentDevice->hasCapability("lighting_ripple")) {
-                        comboBox->addItem("Ripple");
-                    }
-                    if(currentDevice->hasCapability("lighting_ripple_random")) {
-                        comboBox->addItem("Ripple random");
-                    }
-                    if(currentDevice->hasCapability("lighting_pulsate")) {
-                        comboBox->addItem("Pulsate");
-                    }
                     brightnessLabel = new QLabel("Brightness");
                     connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
 
@@ -178,33 +141,6 @@ void kcm_razerdrivers::fillList()
                     // Connect signal
                     connect(comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
 
-                    if(currentDevice->hasCapability("lighting_logo_blinking")) {
-                        comboBox->addItem("Blinking");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_pulsate")) {
-                        comboBox->addItem("Pulsate");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_spectrum")) {
-                        comboBox->addItem("Spectrum");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_static")) {
-                        comboBox->addItem("Static");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_none")) {
-                        comboBox->addItem("None");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_reactive")) {
-                        comboBox->addItem("Reactive");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_breath_single")) {
-                        comboBox->addItem("Breath Single");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_breath_dual")) {
-                        comboBox->addItem("Breath Dual");
-                    }
-                    if(currentDevice->hasCapability("lighting_logo_breath_random")) {
-                        comboBox->addItem("Breath random");
-                    }
                     brightnessLabel = new QLabel("Brightness Logo");
                     connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
 
@@ -212,34 +148,6 @@ void kcm_razerdrivers::fillList()
                     // Connect signal
                     connect(comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
 
-                    if(currentDevice->hasCapability("lighting_scroll_blinking")) {
-                        comboBox->addItem("Blinking");
-                    }
-
-                    if(currentDevice->hasCapability("lighting_scroll_pulsate")) {
-                        comboBox->addItem("Pulsate");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_spectrum")) {
-                        comboBox->addItem("Spectrum");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_static")) {
-                        comboBox->addItem("Static");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_none")) {
-                        comboBox->addItem("None");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_reactive")) {
-                        comboBox->addItem("Reactive");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_breath_single")) {
-                        comboBox->addItem("Breath Single");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_breath_dual")) {
-                        comboBox->addItem("Breath Dual");
-                    }
-                    if(currentDevice->hasCapability("lighting_scroll_breath_random")) {
-                        comboBox->addItem("Breath random");
-                    }
                     brightnessLabel = new QLabel("Brightness Scroll");
                     connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::scrollBrightnessChanged);
                 }
@@ -354,9 +262,12 @@ void kcm_razerdrivers::logoCombo(const QString &text)
     //device->setLogoStatic(255, 0, 255);
 }
 
-void kcm_razerdrivers::standardCombo(const QString &text)
+void kcm_razerdrivers::standardCombo(int index)
 {
-
+    std::cout << index << std::endl;
+    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
+    razermethods::RazerCapability capability = sender->itemData(index).value<razermethods::RazerCapability>();
+    std::cout << capability.getIdentifier().toStdString() << std::endl;
 }
 
 

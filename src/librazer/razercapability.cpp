@@ -20,6 +20,12 @@
 
 namespace razermethods
 {
+RazerCapability::RazerCapability()
+{
+    this->identifier = "";
+    this->displayString = "";
+    this->numColors = 0;
+}
 RazerCapability::RazerCapability(QString identifier, QString displayString, int numColors)
 {
     this->identifier = identifier;
@@ -27,12 +33,30 @@ RazerCapability::RazerCapability(QString identifier, QString displayString, int 
     this->numColors = numColors;
 }
 
+RazerCapability::RazerCapability(const RazerCapability &other)
+{
+    this->identifier = other.identifier;
+    this->displayString = other.displayString;
+    this->numColors = other.numColors;
+}
+
 RazerCapability::~RazerCapability()
 {
 }
 
-int RazerCapability::getNumColors()
+int RazerCapability::getNumColors() const
 {
     return numColors;
 }
+
+QString RazerCapability::getIdentifier() const
+{
+    return identifier;
 }
+QString RazerCapability::getDisplayString() const
+{
+    return displayString;
+}
+}
+
+#include "razercapability.moc"

@@ -20,19 +20,27 @@
 #define RAZERCAPABILITY_H
 
 #include <QString>
+#include <QMetaType>
 
 namespace razermethods
 {
 class RazerCapability
 {
 public:
+    RazerCapability();
     RazerCapability(QString identifier, QString displayString, int numColors);
+    RazerCapability(const RazerCapability &other);
     ~RazerCapability();
-    int getNumColors();
+    int getNumColors() const;
+    QString getIdentifier() const;
+    QString getDisplayString() const;
 private:
     int numColors;
     QString identifier;
     QString displayString;
 };
 }
+
+Q_DECLARE_METATYPE(razermethods::RazerCapability)
+
 #endif // RAZERCAPABILITY_H

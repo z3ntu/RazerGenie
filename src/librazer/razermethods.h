@@ -39,7 +39,7 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
 // razer-drivers name to picture url on http://developer.razerzone.com/chroma/compatible-devices/
 const static QHash<QString, QString> urlLookup { {"Razer Kraken 7.1 (Rainie)", "krakenchroma"}, {"Razer DeathAdder Chroma", "dachroma"} };
 //const static QHash<QString, RazerCapability> capabilityLookup { {"lighting_breath_single", RazerCapability(1)} };
-const static QList<RazerCapability> capabilites {
+const static QList<RazerCapability> allCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
     RazerCapability("lighting_breath_dual", "Breath Dual", 2),
     RazerCapability("lighting_breath_triple", "Breath Triple", 3),
@@ -48,7 +48,31 @@ const static QList<RazerCapability> capabilites {
     RazerCapability("lighting_reactive", "Reactive", 0), //TODO Check
     RazerCapability("lighting_none", "None", 0),
     RazerCapability("lighting_spectrum", "Spectrum", 0),
-    RazerCapability("lighting_static", "Static", 1)
+    RazerCapability("lighting_static", "Static", 1),
+    RazerCapability("lighting_ripple", "Ripple", 1), //TODO Check
+    RazerCapability("lighting_ripple_random", "Ripple random", 0), //TODO Check
+    RazerCapability("lighting_pulsate", "Pulsate", 1),
+
+    RazerCapability("lighting_logo_blinking", "Blinking", 1),
+    RazerCapability("lighting_logo_pulsate", "Pulsate", 1),
+    RazerCapability("lighting_logo_spectrum", "Spectrum", 0),
+    RazerCapability("lighting_logo_static", "Static", 1),
+    RazerCapability("lighting_logo_none", "None", 0),
+    RazerCapability("lighting_logo_reactive", "Reactive", 1), //TODO Check
+    RazerCapability("lighting_logo_breath_single", "Breath Single", 1),
+    RazerCapability("lighting_logo_breath_dual", "Breath Dual", 2),
+    RazerCapability("lighting_logo_breath_random", "Breath random", 0),
+
+    RazerCapability("lighting_scroll_blinking", "Blinking", 1),
+    RazerCapability("lighting_scroll_pulsate", "Pulsate", 1),
+    RazerCapability("lighting_scroll_spectrum", "Spectrum", 0),
+    RazerCapability("lighting_scroll_static", "Static", 1),
+    RazerCapability("lighting_scroll_none", "None", 0),
+    RazerCapability("lighting_scroll_reactive", "Reactive", 1), //TODO Check
+    RazerCapability("lighting_scroll_breath_single", "Breath Single", 1),
+    RazerCapability("lighting_scroll_breath_dual", "Breath Dual", 2),
+    RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
+
 };
 
 class Device
