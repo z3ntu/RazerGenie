@@ -25,9 +25,9 @@ for line in $pyfile; do
             interface=$(echo $line | cut -d "'" -f 4)
             method=$(echo $line | cut -d "'" -f 6)
             if [ -z "$method" ]; then
-                echo 'capabilites.insert("'$variable'", hasCapability("'$interface'"));'
+                echo 'capabilites.insert("'$variable'", hasCapabilityInternal("'$interface'"));'
             else
-                echo 'capabilites.insert("'$variable'", hasCapability("'$interface'", "'$method'"));'
+                echo 'capabilites.insert("'$variable'", hasCapabilityInternal("'$interface'", "'$method'"));'
             fi
         elif [[ $line == *"#"* ]]; then
             echo $line | sed 's/#/\/\//' | sed -e 's/^[[:space:]]*//'

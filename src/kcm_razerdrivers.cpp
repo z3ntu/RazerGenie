@@ -27,7 +27,8 @@
 #include <config.h>
 
 #include "kcm_razerdrivers.h"
-#include "razermethods.h"
+#include "librazer/razermethods.h"
+#include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerpagewidgetitem.h"
 
@@ -44,14 +45,14 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
         KAboutLicense::GPL_V3,
         "Copyright (C) 2016-2017 Luca Weiss",
         QString(),
-        "https://github.com/z3ntu/kcm_razerdrivers",
-        "https://github.com/z3ntu/kcm_razerdrivers/issues");
-    // Obfuscation just for spiders.
-    about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."));
+        "https://github.com/z3ntu/kcm_razerdrivers");
+    // Obfuscation just for spiders :)
+    about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."), "https://z3ntu.xyz");
+    about->addCredit("Terry Cain", "razer-drivers project", QString(), "https://terrycain.github.io/razer-drivers");
     setAboutData(about);
     ui.setupUi(this);
 
-    ui.versionLabel->setText("Driver version: " + razermethods::getDriverVersion());
+    ui.versionLabel->setText("Daemon version: " + razermethods::getDaemonVersion());
 
     fillList();
 
@@ -75,6 +76,8 @@ void kcm_razerdrivers::fillList()
         if(!currentDevice->getPngFilename().isEmpty()) {
             RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl("http://developer.razerzone.com/wp-content/uploads/" + currentDevice->getPngFilename()), this);
             connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
+        } else {
+            showInfo(".png mapping for device '" + currentDevice->getDeviceName() + "' missing.");
         }
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
@@ -120,6 +123,17 @@ void kcm_razerdrivers::fillList()
                 if(currentLocation == razermethods::Device::lighting) {
                     // Connect signal
                     connect(comboBox, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
+                    QHash<QString, razermethods::RazerCapability> asd;
+                    /*
+                     * # dunno if capabilities should be a QList or a QHash -> QHash for each possible?; would be beneficial for combobox string to capability object, but probably worse to maintain...
+                     * # can you put an object into the combobox? maybe extend it. good night :)
+                     * pseudo-code
+                     * foreach capability in capabilities (from razermethods.h) {
+                     *   if(currentDevice->hasCapability(capability.getIdentifier()) {
+                     *     comboBox->addItem(capability.getDisplayString());
+                     *   }
+                     * }
+                     */
 
                     if(currentDevice->hasCapability("lighting_breath_single")) {
                         comboBox->addItem("Breath Single");

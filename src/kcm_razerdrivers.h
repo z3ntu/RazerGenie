@@ -22,7 +22,7 @@
 #include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
 #include "razerimagedownloader.h"
-#include "razermethods.h"
+#include "librazer/razermethods.h"
 
 class kcm_razerdrivers : public KCModule
 {
