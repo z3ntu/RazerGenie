@@ -27,7 +27,7 @@
 #include <config.h>
 
 #include "kcm_razerdrivers.h"
-#include "librazer/razermethods.h"
+#include "librazer/librazer.h"
 #include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerpagewidgetitem.h"
@@ -52,7 +52,7 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
     setAboutData(about);
     ui.setupUi(this);
 
-    ui.versionLabel->setText("Daemon version: " + razermethods::getDaemonVersion());
+    ui.versionLabel->setText("Daemon version: " + librazer::getDaemonVersion());
 
     fillList();
 
@@ -67,11 +67,11 @@ kcm_razerdrivers::~kcm_razerdrivers()
 
 void kcm_razerdrivers::fillList()
 {
-    QStringList serialnrs = razermethods::getConnectedDevices();
+    QStringList serialnrs = librazer::getConnectedDevices();
 
     foreach (const QString &serial, serialnrs) {
 
-        razermethods::Device *currentDevice = new razermethods::Device(serial);
+        librazer::Device *currentDevice = new librazer::Device(serial);
         if(!currentDevice->getPngFilename().isEmpty()) {
             RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl(currentDevice->getPngUrl()), this);
             connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
@@ -93,23 +93,23 @@ void kcm_razerdrivers::fillList()
             QWidget *widget = new QWidget();
             QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
-            QList<razermethods::Device::lightingLocations> locationsTodo;
+            QList<librazer::Device::lightingLocations> locationsTodo;
 
             if(currentDevice->hasCapability("lighting"))
-                locationsTodo.append(razermethods::Device::lighting);
+                locationsTodo.append(librazer::Device::lighting);
             if(currentDevice->hasCapability("lighting_logo"))
-                locationsTodo.append(razermethods::Device::lighting_logo);
+                locationsTodo.append(librazer::Device::lighting_logo);
             if(currentDevice->hasCapability("lighting_scroll"))
-                locationsTodo.append(razermethods::Device::lighting_scroll);
+                locationsTodo.append(librazer::Device::lighting_scroll);
 
             while(locationsTodo.size() != 0) {
-                razermethods::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
+                librazer::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
                 QLabel *text;
-                if(currentLocation == razermethods::Device::lighting) {
+                if(currentLocation == librazer::Device::lighting) {
                     text = new QLabel("Lighting");
-                } else if(currentLocation == razermethods::Device::lighting_logo) {
+                } else if(currentLocation == librazer::Device::lighting_logo) {
                     text = new QLabel("Lighting Logo");
-                } else if(currentLocation == razermethods::Device::lighting_scroll) {
+                } else if(currentLocation == librazer::Device::lighting_scroll) {
                     text = new QLabel("Lighting Scroll");
                 } else {
                     // Houston, we have a problem.
@@ -126,10 +126,10 @@ void kcm_razerdrivers::fillList()
                 //TODO Speed for reactive
                 //TODO Battery
 
-                if(currentLocation == razermethods::Device::lighting) {
-                    for(int i=0; i<razermethods::lightingComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(razermethods::lightingComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(razermethods::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(razermethods::lightingComboBoxCapabilites[i]));
+                if(currentLocation == librazer::Device::lighting) {
+                    for(int i=0; i<librazer::lightingComboBoxCapabilites.size(); i++) {
+                        if(currentDevice->hasCapability(librazer::lightingComboBoxCapabilites[i].getIdentifier())) {
+                            comboBox->addItem(librazer::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::lightingComboBoxCapabilites[i]));
                         }
                     }
 
@@ -142,10 +142,10 @@ void kcm_razerdrivers::fillList()
                         connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
                     }
 
-                } else if(currentLocation == razermethods::Device::lighting_logo) {
-                    for(int i=0; i<razermethods::logoComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(razermethods::logoComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(razermethods::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(razermethods::logoComboBoxCapabilites[i]));
+                } else if(currentLocation == librazer::Device::lighting_logo) {
+                    for(int i=0; i<librazer::logoComboBoxCapabilites.size(); i++) {
+                        if(currentDevice->hasCapability(librazer::logoComboBoxCapabilites[i].getIdentifier())) {
+                            comboBox->addItem(librazer::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::logoComboBoxCapabilites[i]));
                         }
                     }
 
@@ -158,10 +158,10 @@ void kcm_razerdrivers::fillList()
                         connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
                     }
 
-                } else if(currentLocation == razermethods::Device::lighting_scroll) {
-                    for(int i=0; i<razermethods::scrollComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(razermethods::scrollComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(razermethods::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(razermethods::scrollComboBoxCapabilites[i]));
+                } else if(currentLocation == librazer::Device::lighting_scroll) {
+                    for(int i=0; i<librazer::scrollComboBoxCapabilites.size(); i++) {
+                        if(currentDevice->hasCapability(librazer::scrollComboBoxCapabilites[i].getIdentifier())) {
+                            comboBox->addItem(librazer::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::scrollComboBoxCapabilites[i]));
                         }
                     }
 
@@ -190,7 +190,7 @@ void kcm_razerdrivers::fillList()
                     colorButton->setObjectName("colorbutton" + QString::number(i));
                     hbox->addWidget(colorButton);
 
-                    razermethods::RazerCapability capability = comboBox->currentData().value<razermethods::RazerCapability>();
+                    librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
                     if(capability.getNumColors() < i)
                         colorButton->hide();
                 }
@@ -251,9 +251,9 @@ void kcm_razerdrivers::imageDownloaded(QString &serial, QString &filename)
     std::cout << "Download of image completed for " << serial.toStdString() << " at " << filename.toStdString() << std::endl;
 }
 
-void kcm_razerdrivers::toggleSync(bool yes)
+void kcm_razerdrivers::toggleSync(bool sync)
 {
-    if(!razermethods::syncDevices(yes))
+    if(!librazer::syncEffects(sync))
         showError("Error while syncing devices.");
 }
 
@@ -290,7 +290,7 @@ void kcm_razerdrivers::logoCombo(int index)
 {
     //std::cout << text.toStdString() << std::endl;
 //     std::cout << ui.kpagewidget->currentPage()->name().toStdString() << std::endl;
-    //razermethods::Device *device = devices.value(((RazerPageWidgetItem*)ui.kpagewidget->currentPage())->getSerial());
+    //librazer::Device *device = devices.value(((RazerPageWidgetItem*)ui.kpagewidget->currentPage())->getSerial());
     //TODO: Set real color
     //device->setLogoStatic(255, 0, 255);
 }
@@ -300,9 +300,9 @@ void kcm_razerdrivers::standardCombo(int index)
     std::cout << "Standard Combo called" << std::endl;
     std::cout << index << std::endl;
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
-    razermethods::RazerCapability capability = sender->itemData(index).value<razermethods::RazerCapability>();
+    librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
-    razermethods::Device *dev = devices.value(item->getSerial());
+    librazer::Device *dev = devices.value(item->getSerial());
 
     if(capability.getNumColors() == 0) { // hide all
         for(int i=1; i<=3; i++)
@@ -322,7 +322,7 @@ void kcm_razerdrivers::brightnessChanged(int value)
     std::cout << value << std::endl;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
-    razermethods::Device *dev = devices.value(item->getSerial());
+    librazer::Device *dev = devices.value(item->getSerial());
     dev->setBrightness(value);
 }
 
@@ -331,7 +331,7 @@ void kcm_razerdrivers::scrollBrightnessChanged(int value)
     std::cout << value << std::endl;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
-    razermethods::Device *dev = devices.value(item->getSerial());
+    librazer::Device *dev = devices.value(item->getSerial());
     dev->setScrollBrightness(value);
 }
 
@@ -340,7 +340,7 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
     std::cout << value << std::endl;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
-    razermethods::Device *dev = devices.value(item->getSerial());
+    librazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
 }
 

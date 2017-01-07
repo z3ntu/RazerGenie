@@ -1,7 +1,7 @@
 set(kcm_razerdrivers_SRCS kcm_razerdrivers.cpp
                           razerimagedownloader.cpp
                           razerpagewidgetitem.cpp
-                          librazer/razermethods.cpp
+                          librazer/librazer.cpp
                           librazer/razercapability.cpp
                           )
 
@@ -12,9 +12,9 @@ configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 add_library(kcm_razerdrivers MODULE ${kcm_razerdrivers_SRCS})
 target_link_libraries(kcm_razerdrivers KF5::ConfigWidgets KF5::I18n Qt5::DBus Qt5::Network)
 
-add_executable(razermethods librazer/razermethods.cpp
+add_executable(librazer librazer/librazer.cpp
                             librazer/razercapability.cpp
                             )
-target_link_libraries(razermethods Qt5::DBus Qt5::Xml)
+target_link_libraries(librazer Qt5::DBus Qt5::Xml)
 
 install(TARGETS kcm_razerdrivers DESTINATION ${CMAKE_INSTALL_PLUGINDIR})

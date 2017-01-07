@@ -23,11 +23,12 @@
 #include <QDBusMessage>
 #include "razercapability.h"
 
-namespace razermethods
+namespace librazer
 {
 QStringList getConnectedDevices();
 QString getDaemonVersion();
-bool syncDevices(bool yes);
+bool syncEffects(bool yes);
+bool getSyncEffects();
 bool stopDaemon();
 /* Helper methods */
 bool QDBusMessageToBool(const QDBusMessage &message);

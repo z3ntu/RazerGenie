@@ -18,7 +18,7 @@
 
 #include "razercapability.h"
 
-namespace razermethods
+namespace librazer
 {
 RazerCapability::RazerCapability()
 {

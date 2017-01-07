@@ -25,9 +25,9 @@
 
 #include <iostream>
 
-#include "razermethods.h"
+#include "librazer.h"
 
-namespace razermethods
+namespace librazer
 {
 /**
  * Gets a list of connected devices in form of their serial number.
@@ -43,7 +43,7 @@ QStringList getConnectedDevices()
  * If devices should sync effects.
  * Example: Set it to 'on', set the lighting on one device to something, other devices connected will automatically get set to the same effect.
  */
-bool syncDevices(bool yes)
+bool syncEffects(bool yes)
 {
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "syncEffects");
 
@@ -56,6 +56,15 @@ bool syncDevices(bool yes)
     bool queued = QDBusConnection::sessionBus().send(m);
     std::cout << "Queued: " << queued << std::endl;
     return queued;
+}
+
+/**
+ * Returns the daemon version currently running.
+ */
+bool getSyncEffects()
+{
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getSyncEffects");
+    return QDBusMessageToBool(m);
 }
 
 /**
@@ -79,21 +88,27 @@ bool stopDaemon()
 /**
  * Sets if the Chroma lighting should turn off if the screensaver is turned on.
  */
-bool setTurnOnScreensaver(bool turnOffOnScreensaver)
+bool setTurnOffOnScreensaver(bool turnOffOnScreensaver)
 {
-    QDBusMessage m;
-    m = prepareGeneralQDBusMessage("razer.devices", "enableTurnOffOnScreensaver");
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "enableTurnOffOnScreensaver");
     QList<QVariant> args;
-    //yes ? args.append("True") : args.append("False"); // maybe bool works here
     args.append(turnOffOnScreensaver);
     m.setArguments(args);
 
     return QDBusMessageToVoid(m);
 }
 
-/* Device class methods */
 /**
- * Constrcuts a new device object with the given serial.
+ * Gets if the Chroma lighting should turn off if the screensaver is turned on.
+ */
+bool getTurnOffOnScreensaver()
+{
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getOffOnScreensaver");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Constructs a new device object with the given serial.
  */
 Device::Device(QString s)
 {
@@ -210,6 +225,7 @@ bool Device::setBreathDual(int r, int g, int b, int r2, int g2, int b2)
     return QDBusMessageToVoid(m);
 }
 //TODO Logo & Scroll
+//TODO DPI
 
 /**
  * Sets the normal lighting to random breath lighting.
@@ -582,13 +598,13 @@ bool QDBusMessageToVoid(const QDBusMessage &message)
 // Main method for testing / playing.
 int main()
 {
-    std::cout << "Daemon version: " << razermethods::getDaemonVersion().toStdString() << std::endl;
-    QStringList serialnrs = razermethods::getConnectedDevices();
-    razermethods::syncDevices(false);
+    std::cout << "Daemon version: " << librazer::getDaemonVersion().toStdString() << std::endl;
+    QStringList serialnrs = librazer::getConnectedDevices();
+    librazer::syncEffects(false);
     foreach (const QString &str, serialnrs) {
         std::cout << "-----------------" << std::endl;
 //         std::cout << "Serial: " << str.toStdString() << std::endl;
-        razermethods::Device device = razermethods::Device(str);
+        librazer::Device device = librazer::Device(str);
         //device.setLogoStatic(0, 255, 0);
         //device.getVid();
         //device.getPid();

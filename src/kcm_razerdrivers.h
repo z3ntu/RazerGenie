@@ -22,7 +22,7 @@
 #include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
 #include "razerimagedownloader.h"
-#include "librazer/razermethods.h"
+#include "librazer/librazer.h"
 
 class kcm_razerdrivers : public KCModule
 {
@@ -50,7 +50,7 @@ private:
     void showError(QString error);
     void showInfo(QString info);
 
-    QHash<QString, razermethods::Device*> devices;
+    QHash<QString, librazer::Device*> devices;
 };
 
 

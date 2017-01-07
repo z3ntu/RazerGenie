@@ -22,7 +22,7 @@
 #include <QString>
 #include <QMetaType>
 
-namespace razermethods
+namespace librazer
 {
 class RazerCapability
 {
@@ -41,6 +41,6 @@ private:
 };
 }
 
-Q_DECLARE_METATYPE(razermethods::RazerCapability)
+Q_DECLARE_METATYPE(librazer::RazerCapability)
 
 #endif // RAZERCAPABILITY_H
