@@ -38,8 +38,8 @@ public slots:
     void logoColorButton();
     void scrollColorButton();
     void standardCombo(int index);
-    void scrollCombo(const QString &text);
-    void logoCombo(const QString &text);
+    void scrollCombo(int index);
+    void logoCombo(int index);
     void brightnessChanged(int value);
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
