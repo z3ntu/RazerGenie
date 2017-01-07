@@ -146,11 +146,23 @@ QString Device::getPngFilename()
  */
 QString Device::getPngUrl()
 {
-//     if(!urlLookup_dev.value(getPid()).isEmpty())
-//         return "http://developer.razerzone.com/wp-content/uploads/" + urlLookup_dev.value(getPid()) + ".png";
-    /*else*/ if(!urlLookup.value(getPid()).isEmpty())
+    if(!urlLookup.value(getPid()).isEmpty())
         return "http://assets.razerzone.com/eeimages/products/" + urlLookup.value(getPid());
     return QString();
+}
+
+/**
+ * Sets the normal lighting to static lighting.
+ */
+bool Device::setStatic(int r, int g, int b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStatic");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
 }
 
 /**
@@ -168,17 +180,72 @@ bool Device::setLogoStatic(int r, int g, int b)
 }
 
 /**
+ * Sets the scrollwheel to static lighting.
+ */
+bool Device::setScrollStatic(int r, int g, int b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollStatic");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the normal lighting to dual breath lighting.
+ */
+bool Device::setBreathDual(int r, int g, int b, int r2, int g2, int b2)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathDual");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(r2);
+    args.append(g2);
+    args.append(b2);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+//TODO Logo & Scroll
+
+/**
+ * Sets the normal lighting to random breath lighting.
+ */
+bool Device::setBreathSingle(int r, int g, int b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the normal lighting to random breath lighting.
+ */
+bool Device::setBreathRandom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathRandom");
+    return QDBusMessageToVoid(m);
+}
+
+/**
  * Sets the brightness.
  */
 bool Device::setBrightness(double brightness)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.brightness", "setBrightness"); //TODO Check
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.brightness", "setBrightness");
     QList<QVariant> args;
     args.append(brightness);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
-
+//TODO getBrightness()
 /**
  * Sets the logo brightness.
  */
@@ -221,6 +288,49 @@ int Device::getPid()
     return QDBusMessageToIntArray(m)[1];
 }
 
+// BATTERY
+/**
+ * Returns if the device is charging.
+ */
+bool Device::isCharging()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "isCharging");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Returns the battery level between 0 and 100. Could maybe be -1 ???
+ */
+double Device::getBatteryLevel()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "getBattery");
+    return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the idle time of the device. ??? should be UInt16
+ */
+bool Device::setIdleTime(int idle_time)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setIdleTime");
+    QList<QVariant> args;
+    args.append(idle_time);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the low battery threshold. ??? should be Byte
+ */
+bool Device::setLowBatteryThreshold(int threshold)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setLowBatteryThreshold");
+    QList<QVariant> args;
+    args.append(threshold);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
 /**
  * Fill "introspection" variable with data from the dbus introspection xml
  */
@@ -257,6 +367,7 @@ void Device::setupCapabilities()
     capabilities.insert("firmware_version", true);
     capabilities.insert("serial", true);
     capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
+    capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
 
     capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
 
@@ -266,6 +377,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_breath_dual", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathDual"));
     capabilities.insert("lighting_breath_triple", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathTriple"));
     capabilities.insert("lighting_breath_random", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathRandom"));
+    capabilities.insert("lighting_charging", hasCapabilityInternal("razer.device.lighting.power"));
     capabilities.insert("lighting_wave", hasCapabilityInternal("razer.device.lighting.chroma", "setWave"));
     capabilities.insert("lighting_reactive", hasCapabilityInternal("razer.device.lighting.chroma", "setReactive"));
     capabilities.insert("lighting_none", hasCapabilityInternal("razer.device.lighting.chroma", "setNone"));
@@ -359,6 +471,34 @@ QDBusMessage Device::prepareDeviceQDBusMessage(const QString &interface, const Q
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method)
 {
     return QDBusMessage::createMethodCall("org.razer", "/org/razer", interface, method);
+}
+
+/**
+ * Sends a QDBusMessage and returns the boolen value.
+ */
+bool QDBusMessageToBool(const QDBusMessage &message)
+{
+    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        // Everything went fine.
+        return msg.arguments()[0].toBool();
+    }
+    // TODO: Handle error
+    return false;
+}
+
+/**
+ * Sends a QDBusMessage and returns the double value.
+ */
+double QDBusMessageToDouble(const QDBusMessage &message)
+{
+    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        // Everything went fine.
+        return msg.arguments()[0].toDouble();
+    }
+    // TODO: Handle error
+    return false;
 }
 
 /**

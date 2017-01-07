@@ -124,6 +124,7 @@ void kcm_razerdrivers::fillList()
                 //TODO Remove combobox if no capability is available (Abyssus)
                 //TODO Toggle for Abyssus
                 //TODO Speed for reactive
+                //TODO Battery
 
                 if(currentLocation == razermethods::Device::lighting) {
                     for(int i=0; i<razermethods::lightingComboBoxCapabilites.size(); i++) {

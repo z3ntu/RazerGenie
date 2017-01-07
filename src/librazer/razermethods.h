@@ -30,6 +30,8 @@ QString getDaemonVersion();
 bool syncDevices(bool yes);
 bool stopDaemon();
 /* Helper methods */
+bool QDBusMessageToBool(const QDBusMessage &message);
+double QDBusMessageToDouble(const QDBusMessage &message);
 QString QDBusMessageToString(const QDBusMessage &message);
 QStringList QDBusMessageToStringList(const QDBusMessage &message);
 QList<int> QDBusMessageToIntArray(const QDBusMessage &message);
@@ -126,12 +128,26 @@ public:
     QString getPngUrl();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
+    // Static
+    bool setStatic(int r, int g, int b);
     bool setLogoStatic(int r, int g, int b);
+    bool setScrollStatic(int r, int g, int b);
+    // Breath
+    bool setBreathDual(int r, int g, int b, int r2, int g2, int b2);
+    bool setBreathSingle(int r, int g, int b);
+    bool setBreathRandom();
+    // Brightness
     bool setBrightness(double brightness);
     bool setLogoBrightness(double brightness);
     bool setScrollBrightness(double brightness);
+    // VID / PID
     int getVid();
     int getPid();
+    // Battery
+    bool isCharging();
+    double getBatteryLevel();
+    bool setIdleTime(int idle_time);
+    bool setLowBatteryThreshold(int threshold);
 
     enum lightingLocations {
         lighting, lighting_logo, lighting_scroll
