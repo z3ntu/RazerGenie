@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(kcm_razerdrivers)
 
-set(KCM_RAZERDRIVERS_VERSION "0.0.1")
+set(KCM_RAZERDRIVERS_VERSION_MAJOR 0)
+set(KCM_RAZERDRIVERS_VERSION_MINOR 0)
+set(KCM_RAZERDRIVERS_VERSION_PATCH 1)
+set(KCM_RAZERDRIVERS_VERSION_STRING ${KCM_RAZERDRIVERS_VERSION_MAJOR}.${KCM_RAZERDRIVERS_VERSION_MINOR}.${KCM_RAZERDRIVERS_VERSION_PATCH})
 
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
@@ -15,7 +18,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 include(KDEInstallDirs)
-include(KDECompilerSettings)
+#include(KDECompilerSettings) # this fucking piece of shit breaks my shared library -.-
 include(KDECMakeSettings)
 include(FeatureSummary)
 include(CheckIncludeFiles)

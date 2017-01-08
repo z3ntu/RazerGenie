@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef RAZERMETHODS_H
-#define RAZERMETHODS_H
+#ifndef LIBRAZER_H
+#define LIBRAZER_H
 
 #include <QDomDocument>
 #include <QDBusMessage>
@@ -157,4 +157,4 @@ public:
 
 }
 
-#endif // RAZERMETHODS_H
+#endif // LIBRAZER_H

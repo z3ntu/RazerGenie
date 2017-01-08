@@ -58,5 +58,3 @@ QString RazerCapability::getDisplayString() const
     return displayString;
 }
 }
-
-#include "razercapability.moc"
