@@ -21,35 +21,46 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QLabel" name="versionLabel">
-     <property name="text">
-      <string>Driver version: X.X.X</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0" colspan="4">
     <widget class="KPageWidget" name="kpagewidget"/>
    </item>
-   <item row="1" column="1">
-    <widget class="QCheckBox" name="syncCheckBox">
-     <property name="text">
-      <string>Sync devices</string>
-     </property>
-    </widget>
+   <item row="1" column="0" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="versionLabel">
+       <property name="text">
+        <string>Driver version: X.X.X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="syncCheckBox">
+       <property name="text">
+        <string>Sync devices</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="screensaverCheckBox">
+       <property name="text">
+        <string>Turn off on screensaver</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KPageView</class>
-   <extends>QWidget</extends>
-   <header>kpageview.h</header>
-  </customwidget>
-  <customwidget>
    <class>KPageWidget</class>
    <extends>KPageView</extends>
    <header>kpagewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPageView</class>
+   <extends>QWidget</extends>
+   <header>kpageview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

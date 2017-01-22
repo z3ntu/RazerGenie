@@ -22,6 +22,9 @@
 #include <QDomDocument>
 //TODO Remove QDBusArgument include
 #include <QDBusArgument>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QVariantHash>
 
 #include <iostream>
 
@@ -29,6 +32,12 @@
 
 namespace librazer
 {
+
+bool isDaemonRunning()
+{
+//TODO Fix
+}
+
 /**
  * Gets a list of connected devices in form of their serial number.
  * Can be used to create a 'Device' object and get further information about the devices.
@@ -115,6 +124,14 @@ Device::Device(QString s)
     serial = s;
     Introspect();
     setupCapabilities();
+    //TODO Signal for deviceAdded and deviceRemoved (method with the last two parameters??)
+
+    //QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices" ,"device_added", this, &Device::deviceAdded);
+}
+
+void Device::deviceAdded()
+{
+    std::cout << "DEVICE ADDED" << std::endl;
 }
 
 /**
@@ -122,6 +139,14 @@ Device::Device(QString s)
  */
 QString Device::getDeviceName()
 {
+    /*QDBusMessage a = prepareDeviceQDBusMessage("razer.device.led.macromode", "getMacroEffect");
+    QDBusMessage msg = QDBusConnection::sessionBus().call(a);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        // Everything went fine.
+        qDebug() << msg.arguments()[0];
+    } else {
+        qDebug() << "asdasdasd";
+    }*/
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceName");
     return QDBusMessageToString(m);
 }
@@ -150,9 +175,7 @@ QString Device::getFirmwareVersion()
  */
 QString Device::getPngFilename()
 {
-    if(!urlLookup.value(getPid()).isEmpty())
-        return urlLookup.value(getPid()).split("/").takeLast();
-    return QString();
+    return getRazerUrls().value("top_img").toString().split("/").takeLast();
 }
 
 /**
@@ -161,9 +184,19 @@ QString Device::getPngFilename()
  */
 QString Device::getPngUrl()
 {
-    if(!urlLookup.value(getPid()).isEmpty())
-        return "http://assets.razerzone.com/eeimages/products/" + urlLookup.value(getPid());
-    return QString();
+    return getRazerUrls().value("top_img").toString();
+}
+
+/**
+ * Returns a QVariantHash (QHash\<QString, QVariant>).
+ * Most likely contains keys "top_img", "side_img", "store", "perspective_img".
+ * Values are QVariant\<QString> with a full url as value.
+ */
+QVariantHash Device::getRazerUrls()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getRazerUrls");
+    QString ret = QDBusMessageToString(m);
+    return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
 
 /**
@@ -247,6 +280,44 @@ bool Device::setBreathSingle(int r, int g, int b)
 bool Device::setBreathRandom()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathRandom");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setReactive(int r, int g, int b, int speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setReactive");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * 1 = right
+ * 2 = left
+ * TODO Int32
+ */
+bool Device::setWave(int direction)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setWave");
+    QList<QVariant> args;
+    args.append(direction);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setNone()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setNone");
     return QDBusMessageToVoid(m);
 }
 
@@ -463,9 +534,6 @@ QHash<QString, bool> Device::getAllCapabilities()
     return capabilities;
 }
 
-//TODO Signal for deviceAdded and deviceRemoved
-// QDBusConnection::sessionBus().connect("org.gnome.SessionManager", "/org/gnome/SessionManager/Presence", "org.gnome.SessionManager.Presence" ,"StatusChanged", this, SLOT(MySlot(uint)));
-
 /**
  * Destructor
  */
@@ -605,6 +673,9 @@ int main()
         std::cout << "-----------------" << std::endl;
 //         std::cout << "Serial: " << str.toStdString() << std::endl;
         librazer::Device device = librazer::Device(str);
+        qDebug() << device.getDeviceName();
+        qDebug() << device.getRazerUrls();
+
         //device.setLogoStatic(0, 255, 0);
         //device.getVid();
         //device.getPid();

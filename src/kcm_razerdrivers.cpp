@@ -58,6 +58,7 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
 
     //Connect signals
     connect(ui.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
+    connect(ui.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
 }
 
 kcm_razerdrivers::~kcm_razerdrivers()
@@ -87,8 +88,8 @@ void kcm_razerdrivers::fillList()
         devices.insert(serial, currentDevice);
         if(QString::compare(type, "mug") == 0) {
             showInfo("This lucky bastard has a mug... :)");
-        }
-        if(QString::compare(type, "headset") == 0 || QString::compare(type, "mouse") == 0 || QString::compare(type, "mug") == 0) {
+        }                                                  // TODO: Get rid of keyboard here ? or whole if probably
+        if(type=="headset" || type=="mouse" || type=="mug" || type=="keyboard") {
             std::cout << type.toStdString() << std::endl;
             QWidget *widget = new QWidget();
             QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
@@ -125,6 +126,7 @@ void kcm_razerdrivers::fillList()
                 //TODO Toggle for Abyssus
                 //TODO Speed for reactive
                 //TODO Battery
+                //TODO Keyboard stuff (dunno what exactly)
 
                 if(currentLocation == librazer::Device::lighting) {
                     for(int i=0; i<librazer::lightingComboBoxCapabilites.size(); i++) {
@@ -229,11 +231,6 @@ void kcm_razerdrivers::fillList()
             item->setHeader(name);
 
             ui.kpagewidget->addPage(item);
-        } else if(QString::compare(type, "keyboard") == 0) {
-            //TODO: Handle
-            std::cout << "keyboard" << std::endl;
-
-            //TODO: keyboard
         } else if(QString::compare(type, "tartarus") == 0) {
             //TODO: Handle
             std::cout << "tartarus" << std::endl;
@@ -255,6 +252,12 @@ void kcm_razerdrivers::toggleSync(bool sync)
 {
     if(!librazer::syncEffects(sync))
         showError("Error while syncing devices.");
+}
+
+void kcm_razerdrivers::toggleOffOnScreesaver(bool on)
+{
+    if(!librazer::setTurnOffOnScreensaver(on))
+        showError("Error while toggling 'turn off on screensaver'");
 }
 
 void kcm_razerdrivers::standardColorButton()
@@ -301,6 +304,9 @@ void kcm_razerdrivers::standardCombo(int index)
     std::cout << index << std::endl;
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
+    QString identifier = capability.getIdentifier();
+    std::cout << identifier.toStdString() << std::endl;
+    std::cout << capability.getDisplayString().toStdString() << std::endl;
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
 
@@ -314,6 +320,17 @@ void kcm_razerdrivers::standardCombo(int index)
             else
                 item->widget()->findChild<QPushButton*>("colorbutton" + QString::number(i))->show();
         }
+    }
+
+    if(identifier == "lighting_spectrum") {
+        dev->setSpectrum();
+    } else if(identifier == "lighting_wave") { //TODO Left/right button
+        bool a = dev->setWave(1);
+        std::cout << a << std::endl;
+    } else if(identifier == "lighting_none") {
+        dev->setNone();
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }
 }
 

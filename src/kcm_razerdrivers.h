@@ -32,6 +32,7 @@ public:
     ~kcm_razerdrivers();
 public slots:
     void toggleSync(bool);
+    void toggleOffOnScreesaver(bool on);
     void imageDownloaded(QString &serial, QString &filename);
 
     void standardColorButton();

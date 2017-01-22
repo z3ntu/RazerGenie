@@ -28,8 +28,10 @@ namespace librazer
 QStringList getConnectedDevices();
 QString getDaemonVersion();
 bool syncEffects(bool yes);
+bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
 bool getSyncEffects();
 bool stopDaemon();
+bool isDaemonRunning();
 /* Helper methods */
 bool QDBusMessageToBool(const QDBusMessage &message);
 double QDBusMessageToDouble(const QDBusMessage &message);
@@ -41,7 +43,7 @@ bool QDBusMessageToVoid(const QDBusMessage& message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
 
 // razer-drivers name to picture url, relative to http://assets.razerzone.com/eeimages/products/. Images are available on the product pages and/or store pages.
-const static QHash<int, QString> urlLookup {
+/*const static QHash<int, QString> urlLookup {
     {21, "22133/razer-naga-classic-gallery-4.png"}, // Razer Naga
     {47, "37/razer-imperator-gallery-5.png"}, // Razer Imperator 2012
     {57, "6713/razer-orochi-2013-gallery-1.png"}, // Razer Orochi 2013
@@ -65,7 +67,7 @@ const static QHash<int, QString> urlLookup {
     {2562, "24708/manowar-gallery-v1-3.png"}, // Razer ManO'War
     {3072, "21936/rzr_firefly_gallery-2.png"} // Razer Firefly
     //{3847, "mug"} no image :(
-};
+};*/
 
 const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
@@ -106,8 +108,9 @@ const static QList<RazerCapability> scrollComboBoxCapabilites {
     RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
 };
 
-class Device
+class Device //: public QObject
 {
+    //Q_OBJECT
 private:
     QString serial;
     QStringList introspection;
@@ -118,6 +121,9 @@ private:
     void setupCapabilities();
 
     bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
+private slots:
+    void deviceAdded();
+    void deviceRemoved(uint);
 public:
     Device(QString serial);
     ~Device();
@@ -127,6 +133,7 @@ public:
     QString getFirmwareVersion();
     QString getPngFilename();
     QString getPngUrl();
+    QVariantHash getRazerUrls();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
     // Static
@@ -137,6 +144,11 @@ public:
     bool setBreathDual(int r, int g, int b, int r2, int g2, int b2);
     bool setBreathSingle(int r, int g, int b);
     bool setBreathRandom();
+    // Others
+    bool setReactive(int r, int g, int b, int speed);
+    bool setSpectrum();
+    bool setWave(int direction);
+    bool setNone();
     // Brightness
     bool setBrightness(double brightness);
     bool setLogoBrightness(double brightness);
