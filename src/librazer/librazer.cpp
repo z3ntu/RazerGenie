@@ -283,6 +283,10 @@ bool Device::setBreathRandom()
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to reactive mode.
+ * Use one of librazer::REACTIVE_* for speed
+ */
 bool Device::setReactive(int r, int g, int b, int speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setReactive");
@@ -295,6 +299,9 @@ bool Device::setReactive(int r, int g, int b, int speed)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to spectrum mode.
+ */
 bool Device::setSpectrum()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setSpectrum");
@@ -302,8 +309,7 @@ bool Device::setSpectrum()
 }
 
 /**
- * 1 = right
- * 2 = left
+ * Use librazer::WAVE_RIGHT & librazer::WAVE_LEFT
  * TODO Int32
  */
 bool Device::setWave(int direction)
@@ -315,6 +321,9 @@ bool Device::setWave(int direction)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to "off"
+ */
 bool Device::setNone()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setNone");
@@ -322,7 +331,7 @@ bool Device::setNone()
 }
 
 /**
- * Sets the brightness.
+ * Sets the brightness (0-100).
  */
 bool Device::setBrightness(double brightness)
 {
@@ -332,9 +341,18 @@ bool Device::setBrightness(double brightness)
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
-//TODO getBrightness()
+
 /**
- * Sets the logo brightness.
+ * Gets the current brightness (0-100).
+ */
+double Device::getBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.brightness", "getBrightness");
+    return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the logo brightness (0-100).
  */
 bool Device::setLogoBrightness(double brightness)
 {
@@ -346,7 +364,16 @@ bool Device::setLogoBrightness(double brightness)
 }
 
 /**
- * Sets the scroll wheel brightness.
+ * Gets the current logo brightness (0-100).
+ */
+double Device::getLogoBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoBrightness");
+    return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the scroll wheel brightness (0-100).
  */
 bool Device::setScrollBrightness(double brightness)
 {
@@ -355,6 +382,15 @@ bool Device::setScrollBrightness(double brightness)
     args.append(brightness);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
+}
+
+/**
+ * Gets the current scroll brightness (0-100).
+ */
+double Device::getScrollBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollBrightness");
+    return QDBusMessageToDouble(m);
 }
 
 /**
@@ -454,6 +490,7 @@ void Device::setupCapabilities()
     capabilities.insert("firmware_version", true);
     capabilities.insert("serial", true);
     capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
+    capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
     capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
 
     capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
@@ -484,6 +521,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_logo_active", hasCapabilityInternal("razer.device.lighting.logo", "setLogoActive"));
     capabilities.insert("lighting_logo_blinking", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBlinking"));
     capabilities.insert("lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBrightness"));
+    capabilities.insert("get_lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "getLogoBrightness"));
     capabilities.insert("lighting_logo_pulsate", hasCapabilityInternal("razer.device.lighting.logo", "setLogoPulsate"));
     capabilities.insert("lighting_logo_spectrum", hasCapabilityInternal("razer.device.lighting.logo", "setLogoSpectrum"));
     capabilities.insert("lighting_logo_static", hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic"));
@@ -497,6 +535,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_scroll_active", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollActive"));
     capabilities.insert("lighting_scroll_blinking", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBlinking"));
     capabilities.insert("lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBrightness"));
+    capabilities.insert("get_lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "getScrollBrightness"));
     capabilities.insert("lighting_scroll_pulsate", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollPulsate"));
     capabilities.insert("lighting_scroll_spectrum", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollSpectrum"));
     capabilities.insert("lighting_scroll_static", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollStatic"));

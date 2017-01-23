@@ -58,7 +58,9 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
 
     //Connect signals
     connect(ui.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
+    ui.syncCheckBox->setChecked(librazer::getSyncEffects());
     connect(ui.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
+    ui.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
 }
 
 kcm_razerdrivers::~kcm_razerdrivers()
@@ -141,6 +143,9 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("brightness")) {
                         brightnessLabel = new QLabel("Brightness");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                        if(currentDevice->hasCapability("get_brightness")) {
+                            brightnessSlider->setValue(currentDevice->getBrightness());
+                        }
                         connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
                     }
 
@@ -157,6 +162,9 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("lighting_logo_brightness")) {
                         brightnessLabel = new QLabel("Brightness Logo");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                        if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
+                            brightnessSlider->setValue(currentDevice->getLogoBrightness());
+                        }
                         connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
                     }
 
@@ -173,6 +181,9 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("lighting_scroll_brightness")) {
                         brightnessLabel = new QLabel("Brightness Scroll");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                        if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
+                            brightnessSlider->setValue(currentDevice->getScrollBrightness());
+                        }
                         connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::scrollBrightnessChanged);
                     }
                 }
@@ -322,13 +333,30 @@ void kcm_razerdrivers::standardCombo(int index)
         }
     }
 
-    if(identifier == "lighting_spectrum") {
-        dev->setSpectrum();
-    } else if(identifier == "lighting_wave") { //TODO Left/right button
-        bool a = dev->setWave(1);
-        std::cout << a << std::endl;
+    if(identifier == "lighting_breath_single") {
+        dev->setBreathSingle(0, 255, 0); // TODO Color
+    } else if(identifier == "lighting_breath_dual") {
+        dev->setBreathDual(0, 255, 0, 255, 255, 0); // TODO Color
+    } else if(identifier == "lighting_breath_triple") {
+        //dev->setBreathTriple(0, 255, 0); // TODO Color TODO Implement method
+    } else if(identifier == "lighting_breath_random") {
+        dev->setBreathRandom();
+    } else if(identifier == "lighting_wave") {
+        dev->setWave(librazer::WAVE_RIGHT); // TODO: 1/2 or 0/1 for left/right TODO Left/right button
+    } else if(identifier == "lighting_reactive") {
+        dev->setReactive(0, 255, 0, 2); // TODO Color
     } else if(identifier == "lighting_none") {
         dev->setNone();
+    } else if(identifier == "lighting_spectrum") {
+        dev->setSpectrum();
+    } else if(identifier == "lighting_static") {
+        dev->setStatic(255, 0, 255); // TODO Color
+    } else if(identifier == "lighting_ripple") {
+        //dev->setRipple TODO Implement method
+    } else if(identifier == "lighting_ripple_random") {
+        //dev->setRippleRandom(); TODO Implement method
+    } else if(identifier == "lighting_pulsate") {
+        //dev->setPulsate(); TODO Implement method
     } else {
         std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }

@@ -25,11 +25,35 @@
 
 namespace librazer
 {
+// --- UPDATE FROM https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/constants.py ---
+// Macro LED effect ID's
+const int MACRO_LED_STATIC = 0x00;
+const int MACRO_LED_BLINK = 0x01;
+
+// Wave Directions
+const int WAVE_RIGHT = 0x01;
+const int WAVE_LEFT = 0x02;
+
+// Reactive
+const int REACTIVE_500MS = 0x01;
+const int REACTIVE_1000MS = 0x02;
+const int REACTIVE_1500MS = 0x03;
+const int REACTIVE_2000MS = 0x04;
+
+// Ripple
+const double RIPPLE_REFRESH_RATE = 0.05;
+
+// Poll rates
+const int POLL_1000HZ = 1000;
+const int POLL_500HZ = 500;
+const int POLL_128HZ = 128;
+
 QStringList getConnectedDevices();
 QString getDaemonVersion();
 bool syncEffects(bool yes);
-bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
 bool getSyncEffects();
+bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
+bool getTurnOffOnScreensaver();
 bool stopDaemon();
 bool isDaemonRunning();
 /* Helper methods */
@@ -151,8 +175,11 @@ public:
     bool setNone();
     // Brightness
     bool setBrightness(double brightness);
+    double getBrightness();
     bool setLogoBrightness(double brightness);
+    double getLogoBrightness();
     bool setScrollBrightness(double brightness);
+    double getScrollBrightness();
     // VID / PID
     int getVid();
     int getPid();
