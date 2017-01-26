@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <QtDBus/QDBusConnection>
+#include <QDBusServiceWatcher>
 #include <QtWidgets>
 
 #include <KPluginFactory>
@@ -50,17 +51,20 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
     about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."), "https://z3ntu.xyz");
     about->addCredit("Terry Cain", "razer-drivers project", QString(), "https://terrycain.github.io/razer-drivers");
     setAboutData(about);
-    ui.setupUi(this);
 
-    ui.versionLabel->setText("Daemon version: " + librazer::getDaemonVersion());
+    // Watch for dbus service changes (= daemon ends or gets started)
+    QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
+    connect(watcher, &QDBusServiceWatcher::serviceRegistered,
+            this, &kcm_razerdrivers::dbusServiceRegistered);
+    connect(watcher, &QDBusServiceWatcher::serviceUnregistered,
+            this, &kcm_razerdrivers::dbusServiceUnregistered);
 
-    fillList();
-
-    //Connect signals
-    connect(ui.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
-    ui.syncCheckBox->setChecked(librazer::getSyncEffects());
-    connect(ui.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
-    ui.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
+    // Check if daemon available
+    if(!librazer::isDaemonRunning()) {
+        setupErrorUi();
+    } else {
+        setupUi();
+    }
 }
 
 kcm_razerdrivers::~kcm_razerdrivers()
@@ -68,36 +72,82 @@ kcm_razerdrivers::~kcm_razerdrivers()
 //    delete ui;
 }
 
+void kcm_razerdrivers::setupErrorUi()
+{
+    qDebug() << "DAEMON IS NOT RUNNING. ABORTING!";
+    ui_error.setupUi(this);
+}
+
+void kcm_razerdrivers::setupUi()
+{
+    ui_main.setupUi(this);
+
+    ui_main.versionLabel->setText("Daemon version: " + librazer::getDaemonVersion());
+
+    fillList();
+
+    //Connect signals
+    connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
+    ui_main.syncCheckBox->setChecked(librazer::getSyncEffects());
+    connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
+    ui_main.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
+}
+
+void kcm_razerdrivers::dbusServiceRegistered(const QString &serviceName)
+{
+    std::cout << "Registered! " << serviceName.toStdString() << std::endl;
+    showInfo("Please restart the application to see the interface for now.");
+//     setupUi();
+}
+
+void kcm_razerdrivers::dbusServiceUnregistered(const QString &serviceName)
+{
+    std::cout << "Unregistered! " << serviceName.toStdString() << std::endl;
+    showError("The dbus service connection was lost. Please restart the daemon (\"razer-service\")");
+}
+
 void kcm_razerdrivers::fillList()
 {
+    // Get all connected devices
     QStringList serialnrs = librazer::getConnectedDevices();
 
+    // Iterate through all devices
     foreach (const QString &serial, serialnrs) {
-
+        // Create device instance with current serial
         librazer::Device *currentDevice = new librazer::Device(serial);
+
+        // Download image for device
         if(!currentDevice->getPngFilename().isEmpty()) {
             RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl(currentDevice->getPngUrl()), this);
             connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
         } else {
             showInfo(".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.");
         }
+
+        // Setup variables for easy access
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
 
         std::cout << serial.toStdString() << std::endl;
         std::cout << name.toStdString() << std::endl;
 
+        // TODO needed?
+        // Insert current device with serial lookup into a QHash
         devices.insert(serial, currentDevice);
-        if(QString::compare(type, "mug") == 0) {
-            showInfo("This lucky bastard has a mug... :)");
-        }                                                  // TODO: Get rid of keyboard here ? or whole if probably
+
+        // TODO: Get rid of keyboard here ? or whole if probably
         if(type=="headset" || type=="mouse" || type=="mug" || type=="keyboard") {
+
             std::cout << type.toStdString() << std::endl;
+
+            // Create widget to add into the page
             QWidget *widget = new QWidget();
             QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
+            // List of locations to iterate through
             QList<librazer::Device::lightingLocations> locationsTodo;
 
+            // Check what lighting locations the device has
             if(currentDevice->hasCapability("lighting"))
                 locationsTodo.append(librazer::Device::lighting);
             if(currentDevice->hasCapability("lighting_logo"))
@@ -105,9 +155,14 @@ void kcm_razerdrivers::fillList()
             if(currentDevice->hasCapability("lighting_scroll"))
                 locationsTodo.append(librazer::Device::lighting_scroll);
 
+            // Iterate through lighting locations
             while(locationsTodo.size() != 0) {
+                // Get location we are iterating through
                 librazer::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
+
                 QLabel *text;
+
+                // Set appropriate text
                 if(currentLocation == librazer::Device::lighting) {
                     text = new QLabel("Lighting");
                 } else if(currentLocation == librazer::Device::lighting_logo) {
@@ -117,6 +172,7 @@ void kcm_razerdrivers::fillList()
                 } else {
                     // Houston, we have a problem.
                 }
+
                 QHBoxLayout *hbox = new QHBoxLayout();
                 verticalLayout->addWidget(text);
                 verticalLayout->addLayout(hbox);
@@ -129,17 +185,20 @@ void kcm_razerdrivers::fillList()
                 //TODO Speed for reactive
                 //TODO Battery
                 //TODO Keyboard stuff (dunno what exactly)
+                //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
                 if(currentLocation == librazer::Device::lighting) {
+                    // Add items from capabilities
                     for(int i=0; i<librazer::lightingComboBoxCapabilites.size(); i++) {
                         if(currentDevice->hasCapability(librazer::lightingComboBoxCapabilites[i].getIdentifier())) {
                             comboBox->addItem(librazer::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::lightingComboBoxCapabilites[i]));
                         }
                     }
 
-                    // Connect signal
+                    // Connect signal from combobox
                     connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
 
+                    // Brightness slider
                     if(currentDevice->hasCapability("brightness")) {
                         brightnessLabel = new QLabel("Brightness");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
@@ -150,15 +209,17 @@ void kcm_razerdrivers::fillList()
                     }
 
                 } else if(currentLocation == librazer::Device::lighting_logo) {
+                    // Add items from capabilities
                     for(int i=0; i<librazer::logoComboBoxCapabilites.size(); i++) {
                         if(currentDevice->hasCapability(librazer::logoComboBoxCapabilites[i].getIdentifier())) {
                             comboBox->addItem(librazer::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::logoComboBoxCapabilites[i]));
                         }
                     }
 
-                    // Connect signal
+                    // Connect signal from combobox
                     connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
 
+                    // Brightness slider
                     if(currentDevice->hasCapability("lighting_logo_brightness")) {
                         brightnessLabel = new QLabel("Brightness Logo");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
@@ -169,15 +230,17 @@ void kcm_razerdrivers::fillList()
                     }
 
                 } else if(currentLocation == librazer::Device::lighting_scroll) {
+                    // Add items from capabilities
                     for(int i=0; i<librazer::scrollComboBoxCapabilites.size(); i++) {
                         if(currentDevice->hasCapability(librazer::scrollComboBoxCapabilites[i].getIdentifier())) {
                             comboBox->addItem(librazer::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::scrollComboBoxCapabilites[i]));
                         }
                     }
 
-                    // Connect signal
+                    // Connect signal from combobox
                     connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
 
+                    // Brightness slider
                     if(currentDevice->hasCapability("lighting_scroll_brightness")) {
                         brightnessLabel = new QLabel("Brightness Scroll");
                         brightnessSlider = new QSlider(Qt::Horizontal, widget);
@@ -188,26 +251,33 @@ void kcm_razerdrivers::fillList()
                     }
                 }
 
-                hbox->addWidget(comboBox);
+                // Only add combobox if a capability was actually added
+                if(comboBox->count() != 0) {
+                    hbox->addWidget(comboBox);
 
-                /* Color buttons */ //TODO Connect (plz be ez)
-                for(int i=1; i<=3; i++) {
-                    QPushButton *colorButton = new QPushButton(widget);
-                    QPalette pal = colorButton->palette();
-                    // TODO: Set color when set
-                    pal.setColor(QPalette::Button, QColor(Qt::green));
-                    colorButton->setAutoFillBackground(true);
-                    colorButton->setFlat(true);
-                    colorButton->setPalette(pal);
-                    colorButton->setMaximumWidth(70);
-                    colorButton->setObjectName("colorbutton" + QString::number(i));
-                    hbox->addWidget(colorButton);
+                    /* Color buttons */ //TODO Connect (plz be ez)
+                    for(int i=1; i<=3; i++) {
+                        QPushButton *colorButton = new QPushButton(widget);
+                        QPalette pal = colorButton->palette();
+                        // TODO: Set color when set
+                        pal.setColor(QPalette::Button, QColor(Qt::green));
+                        colorButton->setAutoFillBackground(true);
+                        colorButton->setFlat(true);
+                        colorButton->setPalette(pal);
+                        colorButton->setMaximumWidth(70);
+                        colorButton->setObjectName("colorbutton" + QString::number(i));
+                        hbox->addWidget(colorButton);
 
-                    librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
-                    if(capability.getNumColors() < i)
-                        colorButton->hide();
+                        librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
+                        if(capability.getNumColors() < i)
+                            colorButton->hide();
+                        connect(colorButton, &QPushButton::clicked, this, &kcm_razerdrivers::colorButtonClicked);
+                    }
+                } else { //TODO Should that button also be added always?
+                    if(currentDevice->hasCapability("lighting_logo_active")) {
+                        // TODO Add toggle
+                    }
                 }
-
                 /* Brightness sliders */
                 if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
                     verticalLayout->addWidget(brightnessLabel);
@@ -241,7 +311,7 @@ void kcm_razerdrivers::fillList()
             }
             item->setHeader(name);
 
-            ui.kpagewidget->addPage(item);
+            ui_main.kpagewidget->addPage(item);
         } else if(QString::compare(type, "tartarus") == 0) {
             //TODO: Handle
             std::cout << "tartarus" << std::endl;
@@ -271,14 +341,27 @@ void kcm_razerdrivers::toggleOffOnScreesaver(bool on)
         showError("Error while toggling 'turn off on screensaver'");
 }
 
-void kcm_razerdrivers::standardColorButton()
+void kcm_razerdrivers::colorButtonClicked()
 {
     std::cout << "color dialog" << std::endl;
 
-    QColor color = QColorDialog::getColor(Qt::white);
-    std::cout << color.name().toStdString() << std::endl;
-}
+    QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
+    std::cout << sender->objectName().toStdString() << std::endl;
 
+    QPalette pal(sender->palette());
+
+    QColor oldColor = pal.color(QPalette::Button);
+
+    QColor color = QColorDialog::getColor(oldColor);
+    if(color.isValid()) {
+        std::cout << color.name().toStdString() << std::endl;
+        pal.setColor(QPalette::Button, color);
+        sender->setPalette(pal);
+    } else {
+        std::cout << "User cancelled the dialog." << std::endl;
+    }
+}
+/*
 void kcm_razerdrivers::logoColorButton()
 {
     std::cout << "color dialog" << std::endl;
@@ -294,7 +377,7 @@ void kcm_razerdrivers::scrollColorButton()
     QColor color = QColorDialog::getColor(Qt::white);
     std::cout << color.name().toStdString() << std::endl;
 }
-
+*/
 void kcm_razerdrivers::scrollCombo(int index)
 {
 
@@ -318,7 +401,7 @@ void kcm_razerdrivers::standardCombo(int index)
     QString identifier = capability.getIdentifier();
     std::cout << identifier.toStdString() << std::endl;
     std::cout << capability.getDisplayString().toStdString() << std::endl;
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
 
     if(capability.getNumColors() == 0) { // hide all
@@ -366,7 +449,7 @@ void kcm_razerdrivers::brightnessChanged(int value)
 {
     std::cout << value << std::endl;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setBrightness(value);
 }
@@ -375,7 +458,7 @@ void kcm_razerdrivers::scrollBrightnessChanged(int value)
 {
     std::cout << value << std::endl;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setScrollBrightness(value);
 }
@@ -384,7 +467,7 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
 {
     std::cout << value << std::endl;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
 }

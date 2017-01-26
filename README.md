@@ -14,6 +14,6 @@ KConfig Module for [razer-drivers by @terrycain](https://github.com/terrycain/ra
 
 ## TODO
 * Convert to normal Qt app instead of a kcm
-* Set the colors
-* Implement keyboard gui
+* Actually set the colors
+* Implement keyboard gui (individual lighting etc)
 * **Much** more

@@ -173,6 +173,9 @@ public:
     bool setSpectrum();
     bool setWave(int direction);
     bool setNone();
+    // Logo active
+    bool setLogoActive(bool active);
+    bool getLogoActive();
     // Brightness
     bool setBrightness(double brightness);
     double getBrightness();

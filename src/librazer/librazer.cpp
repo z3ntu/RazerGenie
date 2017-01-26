@@ -35,7 +35,13 @@ namespace librazer
 
 bool isDaemonRunning()
 {
-//TODO Fix
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
+    QDBusMessage msg = QDBusConnection::sessionBus().call(m);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -391,6 +397,21 @@ double Device::getScrollBrightness()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollBrightness");
     return QDBusMessageToDouble(m);
+}
+
+bool Device::setLogoActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::getLogoActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoActive");
+    return QDBusMessageToBool(m);
 }
 
 /**

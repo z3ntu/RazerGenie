@@ -21,6 +21,7 @@
 
 #include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
+#include "ui_daemon_not_available.h"
 #include "razerimagedownloader.h"
 #include "librazer/librazer.h"
 
@@ -35,17 +36,24 @@ public slots:
     void toggleOffOnScreesaver(bool on);
     void imageDownloaded(QString &serial, QString &filename);
 
-    void standardColorButton();
-    void logoColorButton();
-    void scrollColorButton();
+    void colorButtonClicked();
+//     void logoColorButton();
+//     void scrollColorButton();
     void standardCombo(int index);
     void scrollCombo(int index);
     void logoCombo(int index);
     void brightnessChanged(int value);
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
+
+    void dbusServiceRegistered(const QString &serviceName);
+    void dbusServiceUnregistered(const QString &serviceName);
 private:
-    Ui::RazerDriversKcmUi ui;
+    Ui::RazerDriversKcmUi ui_main;
+    Ui::DaemonNotAvailable ui_error;
+    void setupUi();
+    void setupErrorUi();
+
     void getRazerDevices(void);
     void fillList();
     void showError(QString error);
