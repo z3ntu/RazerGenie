@@ -1,2 +1,2 @@
-install(FILES kcm_razerdrivers.desktop DESTINATION ${CMAKE_INSTALL_KSERVICES5DIR})
+install(FILES kcm_razerdrivers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 

@@ -9,11 +9,12 @@ KConfig Module for [razer-drivers by @terrycain](https://github.com/terrycain/ra
 * Can set the brightness of all devices
 * Can set some (you could say "most") effects
 * Display correct "thumbnails" for devices (coming)
+* Converted to normal Qt app instead of a KCM
 
-**Otherwise ~~completely~~ unusable**
+**Otherwise ~~completely~~ *mostly* unusable**
 
 ## TODO
-* Convert to normal Qt app instead of a kcm
+
 * Actually set the colors
 * Implement keyboard gui (individual lighting etc)
 * **Much** more

@@ -19,17 +19,16 @@
 #ifndef KCM_RAZERDRIVERS_H
 #define KCM_RAZERDRIVERS_H
 
-#include <kcmodule.h>
 #include "ui_kcm_razerdrivers.h"
 #include "ui_daemon_not_available.h"
 #include "razerimagedownloader.h"
 #include "librazer/librazer.h"
 
-class kcm_razerdrivers : public KCModule
+class kcm_razerdrivers : public QWidget
 {
     Q_OBJECT
 public:
-    kcm_razerdrivers(QWidget* parent, const QVariantList& args);
+    kcm_razerdrivers(QWidget* parent = 0);
     ~kcm_razerdrivers();
 public slots:
     void toggleSync(bool);

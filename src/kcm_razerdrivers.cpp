@@ -21,10 +21,6 @@
 #include <QDBusServiceWatcher>
 #include <QtWidgets>
 
-#include <KPluginFactory>
-#include <KAboutData>
-#include <KI18n/KLocalizedString>
-
 #include <config.h>
 
 #include "kcm_razerdrivers.h"
@@ -33,11 +29,10 @@
 #include "razerimagedownloader.h"
 #include "razerpagewidgetitem.h"
 
-K_PLUGIN_FACTORY(RazerDriversKcmFactory, registerPlugin<kcm_razerdrivers>();)
-
-kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : KCModule(parent, args)
+kcm_razerdrivers::kcm_razerdrivers(QWidget *parent) : QWidget(parent)
 {
     // About dialog
+    /*
     KAboutData *about = new KAboutData(
         "kcm_razerdrivers",
         "RazerDrivers",
@@ -51,7 +46,7 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget* parent, const QVariantList& args) : 
     about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."), "https://z3ntu.xyz");
     about->addCredit("Terry Cain", "razer-drivers project", QString(), "https://terrycain.github.io/razer-drivers");
     setAboutData(about);
-
+    */
     // Watch for dbus service changes (= daemon ends or gets started)
     QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
     connect(watcher, &QDBusServiceWatcher::serviceRegistered,
