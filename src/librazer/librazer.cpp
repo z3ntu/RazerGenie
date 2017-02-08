@@ -318,7 +318,7 @@ bool Device::setSpectrum()
  * Use librazer::WAVE_RIGHT & librazer::WAVE_LEFT
  * TODO Int32
  */
-bool Device::setWave(int direction)
+bool Device::setWave(const int direction)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setWave");
     QList<QVariant> args;
@@ -666,7 +666,14 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
 {
     QDBusMessage msg = QDBusConnection::sessionBus().call(message);
     if(msg.type() == QDBusMessage::ReplyMessage) {
-        return msg.arguments()[0].toStringList();
+        return msg.arguments()[0].toStringList();// VID / PID
+        int getVid();
+        int getPid();
+        // Battery
+        bool isCharging();
+        double getBatteryLevel();
+        bool setIdleTime(int idle_time);
+        bool setLowBatteryThreshold(int threshold);
     }
     // TODO: Handle errror
     return msg.arguments()[0].toStringList();

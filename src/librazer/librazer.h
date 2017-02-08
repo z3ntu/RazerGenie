@@ -151,7 +151,7 @@ private slots:
 public:
     Device(QString serial);
     ~Device();
-
+    // Misc methods
     QString getDeviceName();
     QString getDeviceType();
     QString getFirmwareVersion();
@@ -160,37 +160,46 @@ public:
     QVariantHash getRazerUrls();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
-    // Static
-    bool setStatic(int r, int g, int b);
-    bool setLogoStatic(int r, int g, int b);
-    bool setScrollStatic(int r, int g, int b);
-    // Breath
-    bool setBreathDual(int r, int g, int b, int r2, int g2, int b2);
-    bool setBreathSingle(int r, int g, int b);
-    bool setBreathRandom();
-    // Others
-    bool setReactive(int r, int g, int b, int speed);
-    bool setSpectrum();
-    bool setWave(int direction);
-    bool setNone();
-    // Logo active
-    bool setLogoActive(bool active);
-    bool getLogoActive();
-    // Brightness
-    bool setBrightness(double brightness);
-    double getBrightness();
-    bool setLogoBrightness(double brightness);
-    double getLogoBrightness();
-    bool setScrollBrightness(double brightness);
-    double getScrollBrightness();
+
     // VID / PID
     int getVid();
     int getPid();
+
     // Battery
     bool isCharging();
     double getBatteryLevel();
     bool setIdleTime(int idle_time);
     bool setLowBatteryThreshold(int threshold);
+
+    // --- LIGHTING EFFECTS ---
+    // - Default -
+    bool setStatic(int r, int g, int b);
+    bool setBreathSingle(int r, int g, int b);
+    bool setBreathDual(int r, int g, int b, int r2, int g2, int b2);
+    bool setBreathTriple(int r, int g, int b, int r2, int g2, int b2, int r3, int g3, int b3);
+    bool setBreathRandom();
+    bool setReactive(int r, int g, int b, int speed);
+    bool setSpectrum();
+    bool setWave(const int direction);
+    bool setNone();
+
+    bool setBrightness(double brightness);
+    double getBrightness();
+
+    // - Logo -
+    bool setLogoStatic(int r, int g, int b);
+    bool setLogoActive(bool active);
+    bool getLogoActive();
+
+    bool setLogoBrightness(double brightness);
+    double getLogoBrightness();
+
+    // - Scroll -
+    bool setScrollStatic(int r, int g, int b);
+
+    bool setScrollBrightness(double brightness);
+    double getScrollBrightness();
+
 
     enum lightingLocations {
         lighting, lighting_logo, lighting_scroll

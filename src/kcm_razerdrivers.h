@@ -53,7 +53,9 @@ private:
     void setupUi();
     void setupErrorUi();
 
+    QPair<librazer::Device*, QString> commonCombo(int index);
     void getRazerDevices(void);
+    QColor getColorForButton(int num);
     void fillList();
     void showError(QString error);
     void showInfo(QString info);

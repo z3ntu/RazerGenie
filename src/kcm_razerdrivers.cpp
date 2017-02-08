@@ -116,205 +116,198 @@ void kcm_razerdrivers::fillList()
             RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl(currentDevice->getPngUrl()), this);
             connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
         } else {
-            showInfo(".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.");
+            qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
         }
 
         // Setup variables for easy access
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
 
-        std::cout << serial.toStdString() << std::endl;
-        std::cout << name.toStdString() << std::endl;
+        qDebug() << serial;
+        qDebug() << name;
 
         // TODO needed?
         // Insert current device with serial lookup into a QHash
         devices.insert(serial, currentDevice);
 
-        // TODO: Get rid of keyboard here ? or whole if probably
-        if(type=="headset" || type=="mouse" || type=="mug" || type=="keyboard") {
+        // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
+        qDebug() << type;
 
-            std::cout << type.toStdString() << std::endl;
+        // Create widget to add into the page
+        QWidget *widget = new QWidget();
+        QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
-            // Create widget to add into the page
-            QWidget *widget = new QWidget();
-            QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
+        // List of locations to iterate through
+        QList<librazer::Device::lightingLocations> locationsTodo;
 
-            // List of locations to iterate through
-            QList<librazer::Device::lightingLocations> locationsTodo;
+        // Check what lighting locations the device has
+        if(currentDevice->hasCapability("lighting"))
+            locationsTodo.append(librazer::Device::lighting);
+        if(currentDevice->hasCapability("lighting_logo"))
+            locationsTodo.append(librazer::Device::lighting_logo);
+        if(currentDevice->hasCapability("lighting_scroll"))
+            locationsTodo.append(librazer::Device::lighting_scroll);
 
-            // Check what lighting locations the device has
-            if(currentDevice->hasCapability("lighting"))
-                locationsTodo.append(librazer::Device::lighting);
-            if(currentDevice->hasCapability("lighting_logo"))
-                locationsTodo.append(librazer::Device::lighting_logo);
-            if(currentDevice->hasCapability("lighting_scroll"))
-                locationsTodo.append(librazer::Device::lighting_scroll);
+        // Iterate through lighting locations
+        while(locationsTodo.size() != 0) {
+            // Get location we are iterating through
+            librazer::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
 
-            // Iterate through lighting locations
-            while(locationsTodo.size() != 0) {
-                // Get location we are iterating through
-                librazer::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
+            QLabel *text;
 
-                QLabel *text;
+            // Set appropriate text
+            if(currentLocation == librazer::Device::lighting) {
+                text = new QLabel("Lighting");
+            } else if(currentLocation == librazer::Device::lighting_logo) {
+                text = new QLabel("Lighting Logo");
+            } else if(currentLocation == librazer::Device::lighting_scroll) {
+                text = new QLabel("Lighting Scroll");
+            } else {
+                // Houston, we have a problem.
+            }
 
-                // Set appropriate text
-                if(currentLocation == librazer::Device::lighting) {
-                    text = new QLabel("Lighting");
-                } else if(currentLocation == librazer::Device::lighting_logo) {
-                    text = new QLabel("Lighting Logo");
-                } else if(currentLocation == librazer::Device::lighting_scroll) {
-                    text = new QLabel("Lighting Scroll");
-                } else {
-                    // Houston, we have a problem.
-                }
+            QHBoxLayout *hbox = new QHBoxLayout();
+            verticalLayout->addWidget(text);
+            verticalLayout->addLayout(hbox);
+            QComboBox *comboBox = new QComboBox;
+            QLabel *brightnessLabel = NULL;
+            QSlider *brightnessSlider = NULL;
 
-                QHBoxLayout *hbox = new QHBoxLayout();
-                verticalLayout->addWidget(text);
-                verticalLayout->addLayout(hbox);
-                QComboBox *comboBox = new QComboBox;
-                QLabel *brightnessLabel = NULL;
-                QSlider *brightnessSlider = NULL;
+            //TODO Remove combobox if no capability is available (Abyssus)
+            //TODO Toggle for Abyssus
+            //TODO Speed for reactive
+            //TODO Battery
+            //TODO Keyboard stuff (dunno what exactly)
+            //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
+            //TODO DPI
+            //TODO poll rate
+            //TODO Matrix stuff
 
-                //TODO Remove combobox if no capability is available (Abyssus)
-                //TODO Toggle for Abyssus
-                //TODO Speed for reactive
-                //TODO Battery
-                //TODO Keyboard stuff (dunno what exactly)
-                //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
-
-                if(currentLocation == librazer::Device::lighting) {
-                    // Add items from capabilities
-                    for(int i=0; i<librazer::lightingComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(librazer::lightingComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(librazer::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::lightingComboBoxCapabilites[i]));
-                        }
-                    }
-
-                    // Connect signal from combobox
-                    connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
-
-                    // Brightness slider
-                    if(currentDevice->hasCapability("brightness")) {
-                        brightnessLabel = new QLabel("Brightness");
-                        brightnessSlider = new QSlider(Qt::Horizontal, widget);
-                        if(currentDevice->hasCapability("get_brightness")) {
-                            brightnessSlider->setValue(currentDevice->getBrightness());
-                        }
-                        connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
-                    }
-
-                } else if(currentLocation == librazer::Device::lighting_logo) {
-                    // Add items from capabilities
-                    for(int i=0; i<librazer::logoComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(librazer::logoComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(librazer::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::logoComboBoxCapabilites[i]));
-                        }
-                    }
-
-                    // Connect signal from combobox
-                    connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
-
-                    // Brightness slider
-                    if(currentDevice->hasCapability("lighting_logo_brightness")) {
-                        brightnessLabel = new QLabel("Brightness Logo");
-                        brightnessSlider = new QSlider(Qt::Horizontal, widget);
-                        if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
-                            brightnessSlider->setValue(currentDevice->getLogoBrightness());
-                        }
-                        connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
-                    }
-
-                } else if(currentLocation == librazer::Device::lighting_scroll) {
-                    // Add items from capabilities
-                    for(int i=0; i<librazer::scrollComboBoxCapabilites.size(); i++) {
-                        if(currentDevice->hasCapability(librazer::scrollComboBoxCapabilites[i].getIdentifier())) {
-                            comboBox->addItem(librazer::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::scrollComboBoxCapabilites[i]));
-                        }
-                    }
-
-                    // Connect signal from combobox
-                    connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
-
-                    // Brightness slider
-                    if(currentDevice->hasCapability("lighting_scroll_brightness")) {
-                        brightnessLabel = new QLabel("Brightness Scroll");
-                        brightnessSlider = new QSlider(Qt::Horizontal, widget);
-                        if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
-                            brightnessSlider->setValue(currentDevice->getScrollBrightness());
-                        }
-                        connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::scrollBrightnessChanged);
+            if(currentLocation == librazer::Device::lighting) {
+                // Add items from capabilities
+                for(int i=0; i<librazer::lightingComboBoxCapabilites.size(); i++) {
+                    if(currentDevice->hasCapability(librazer::lightingComboBoxCapabilites[i].getIdentifier())) {
+                        comboBox->addItem(librazer::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::lightingComboBoxCapabilites[i]));
                     }
                 }
 
-                // Only add combobox if a capability was actually added
-                if(comboBox->count() != 0) {
-                    hbox->addWidget(comboBox);
+                // Connect signal from combobox
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
 
-                    /* Color buttons */ //TODO Connect (plz be ez)
-                    for(int i=1; i<=3; i++) {
-                        QPushButton *colorButton = new QPushButton(widget);
-                        QPalette pal = colorButton->palette();
-                        // TODO: Set color when set
-                        pal.setColor(QPalette::Button, QColor(Qt::green));
-                        colorButton->setAutoFillBackground(true);
-                        colorButton->setFlat(true);
-                        colorButton->setPalette(pal);
-                        colorButton->setMaximumWidth(70);
-                        colorButton->setObjectName("colorbutton" + QString::number(i));
-                        hbox->addWidget(colorButton);
-
-                        librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
-                        if(capability.getNumColors() < i)
-                            colorButton->hide();
-                        connect(colorButton, &QPushButton::clicked, this, &kcm_razerdrivers::colorButtonClicked);
+                // Brightness slider
+                if(currentDevice->hasCapability("brightness")) {
+                    brightnessLabel = new QLabel("Brightness");
+                    brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                    if(currentDevice->hasCapability("get_brightness")) {
+                        brightnessSlider->setValue(currentDevice->getBrightness());
                     }
-                } else { //TODO Should that button also be added always?
-                    if(currentDevice->hasCapability("lighting_logo_active")) {
-                        // TODO Add toggle
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
+                }
+
+            } else if(currentLocation == librazer::Device::lighting_logo) {
+                // Add items from capabilities
+                for(int i=0; i<librazer::logoComboBoxCapabilites.size(); i++) {
+                    if(currentDevice->hasCapability(librazer::logoComboBoxCapabilites[i].getIdentifier())) {
+                        comboBox->addItem(librazer::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::logoComboBoxCapabilites[i]));
                     }
                 }
-                /* Brightness sliders */
-                if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
-                    verticalLayout->addWidget(brightnessLabel);
-                    QHBoxLayout *hboxSlider = new QHBoxLayout();
-                    QLabel *brightnessSliderValue = new QLabel;
-                    hboxSlider->addWidget(brightnessSlider);
-                    hboxSlider->addWidget(brightnessSliderValue);
-                    verticalLayout->addLayout(hboxSlider);
+
+                // Connect signal from combobox
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
+
+                // Brightness slider
+                if(currentDevice->hasCapability("lighting_logo_brightness")) {
+                    brightnessLabel = new QLabel("Brightness Logo");
+                    brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                    if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
+                        brightnessSlider->setValue(currentDevice->getLogoBrightness());
+                    }
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
+                }
+
+            } else if(currentLocation == librazer::Device::lighting_scroll) {
+                // Add items from capabilities
+                for(int i=0; i<librazer::scrollComboBoxCapabilites.size(); i++) {
+                    if(currentDevice->hasCapability(librazer::scrollComboBoxCapabilites[i].getIdentifier())) {
+                        comboBox->addItem(librazer::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(librazer::scrollComboBoxCapabilites[i]));
+                    }
+                }
+
+                // Connect signal from combobox
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
+
+                // Brightness slider
+                if(currentDevice->hasCapability("lighting_scroll_brightness")) {
+                    brightnessLabel = new QLabel("Brightness Scroll");
+                    brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                    if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
+                        brightnessSlider->setValue(currentDevice->getScrollBrightness());
+                    }
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::scrollBrightnessChanged);
                 }
             }
 
-            /* Spacer to bottom */
-            QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-            verticalLayout->addItem(spacer);
+            // Only add combobox if a capability was actually added
+            if(comboBox->count() != 0) {
+                hbox->addWidget(comboBox);
 
-            /* Serial and firmware version labels */
-            QLabel *serialLabel = new QLabel("Serial number: " + serial);
-            verticalLayout->addWidget(serialLabel);
+                /* Color buttons */ //TODO Connect (plz be ez)
+                for(int i=1; i<=3; i++) {
+                    QPushButton *colorButton = new QPushButton(widget);
+                    QPalette pal = colorButton->palette();
+                    // TODO: Set color when set
+                    pal.setColor(QPalette::Button, QColor(Qt::green));
+                    colorButton->setAutoFillBackground(true);
+                    colorButton->setFlat(true);
+                    colorButton->setPalette(pal);
+                    colorButton->setMaximumWidth(70);
+                    colorButton->setObjectName("colorbutton" + QString::number(i));
+                    hbox->addWidget(colorButton);
 
-            QLabel *fwVerLabel = new QLabel("Firmware version: " + currentDevice->getFirmwareVersion()); //TODO
-            verticalLayout->addWidget(fwVerLabel);
-
-            /* Create actual PageWidgetItem */
-            RazerPageWidgetItem *item = new RazerPageWidgetItem(widget, name, serial);
-
-            // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
-            if(!currentDevice->getPngFilename().isEmpty()) {
-                //std::cout << currentDevice->getPngFilename().toStdString() << std::endl;
-                QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
-                item->setIcon(*icon);
+                    librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
+                    if(capability.getNumColors() < i)
+                        colorButton->hide();
+                    connect(colorButton, &QPushButton::clicked, this, &kcm_razerdrivers::colorButtonClicked);
+                }
+            } else { //TODO Should that button also be added always?
+                if(currentDevice->hasCapability("lighting_logo_active")) {
+                    // TODO Add toggle
+                }
             }
-            item->setHeader(name);
-
-            ui_main.kpagewidget->addPage(item);
-        } else if(QString::compare(type, "tartarus") == 0) {
-            //TODO: Handle
-            std::cout << "tartarus" << std::endl;
-
-            //TODO: tartarus
-        } else {
-            showError("Unknown device type: " + type + " for serial " + serial + "! Please contact the author.");
+            /* Brightness sliders */
+            if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
+                verticalLayout->addWidget(brightnessLabel);
+                QHBoxLayout *hboxSlider = new QHBoxLayout();
+                QLabel *brightnessSliderValue = new QLabel;
+                hboxSlider->addWidget(brightnessSlider);
+                hboxSlider->addWidget(brightnessSliderValue);
+                verticalLayout->addLayout(hboxSlider);
+            }
         }
+
+        /* Spacer to bottom */
+        QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalLayout->addItem(spacer);
+
+        /* Serial and firmware version labels */
+        QLabel *serialLabel = new QLabel("Serial number: " + serial);
+        verticalLayout->addWidget(serialLabel);
+
+        QLabel *fwVerLabel = new QLabel("Firmware version: " + currentDevice->getFirmwareVersion()); //TODO
+        verticalLayout->addWidget(fwVerLabel);
+
+        /* Create actual PageWidgetItem */
+        RazerPageWidgetItem *item = new RazerPageWidgetItem(widget, name, serial);
+
+        // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
+        if(!currentDevice->getPngFilename().isEmpty()) {
+            //std::cout << currentDevice->getPngFilename().toStdString() << std::endl;
+            QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
+            item->setIcon(*icon);
+        }
+        item->setHeader(name);
+
+        ui_main.kpagewidget->addPage(item);
     }
 }
 
@@ -373,29 +366,13 @@ void kcm_razerdrivers::scrollColorButton()
     std::cout << color.name().toStdString() << std::endl;
 }
 */
-void kcm_razerdrivers::scrollCombo(int index)
-{
 
-}
-
-void kcm_razerdrivers::logoCombo(int index)
+QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
 {
-    //std::cout << text.toStdString() << std::endl;
-//     std::cout << ui.kpagewidget->currentPage()->name().toStdString() << std::endl;
-    //librazer::Device *device = devices.value(((RazerPageWidgetItem*)ui.kpagewidget->currentPage())->getSerial());
-    //TODO: Set real color
-    //device->setLogoStatic(255, 0, 255);
-}
-
-void kcm_razerdrivers::standardCombo(int index)
-{
-    std::cout << "Standard Combo called" << std::endl;
-    std::cout << index << std::endl;
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
-    std::cout << identifier.toStdString() << std::endl;
-    std::cout << capability.getDisplayString().toStdString() << std::endl;
+
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
 
@@ -411,24 +388,41 @@ void kcm_razerdrivers::standardCombo(int index)
         }
     }
 
+    return qMakePair(dev, identifier);
+}
+
+void kcm_razerdrivers::standardCombo(int index)
+{
+    QPair<librazer::Device*, QString> tuple = commonCombo(index);
+    librazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
     if(identifier == "lighting_breath_single") {
-        dev->setBreathSingle(0, 255, 0); // TODO Color
+        QColor c = getColorForButton(1);
+        dev->setBreathSingle(c.red(), c.green(), c.blue());
     } else if(identifier == "lighting_breath_dual") {
-        dev->setBreathDual(0, 255, 0, 255, 255, 0); // TODO Color
+        QColor c1 = getColorForButton(1);
+        QColor c2 = getColorForButton(2);
+        dev->setBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
     } else if(identifier == "lighting_breath_triple") {
-        //dev->setBreathTriple(0, 255, 0); // TODO Color TODO Implement method
+        QColor c1 = getColorForButton(1);
+        QColor c2 = getColorForButton(2);
+        QColor c3 = getColorForButton(3);
+        dev->setBreathTriple(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue(), c3.red(), c3.green(), c3.blue());
     } else if(identifier == "lighting_breath_random") {
         dev->setBreathRandom();
     } else if(identifier == "lighting_wave") {
-        dev->setWave(librazer::WAVE_RIGHT); // TODO: 1/2 or 0/1 for left/right TODO Left/right button
+        dev->setWave(librazer::WAVE_RIGHT); // TODO Left/right button
     } else if(identifier == "lighting_reactive") {
-        dev->setReactive(0, 255, 0, 2); // TODO Color
+        QColor c = getColorForButton(1);
+        dev->setReactive(c.red(), c.green(), c.blue(), 2); // TODO Speed
     } else if(identifier == "lighting_none") {
         dev->setNone();
     } else if(identifier == "lighting_spectrum") {
         dev->setSpectrum();
     } else if(identifier == "lighting_static") {
-        dev->setStatic(255, 0, 255); // TODO Color
+        QColor c = getColorForButton(1);
+        dev->setStatic(c.red(), c.green(), c.blue());
     } else if(identifier == "lighting_ripple") {
         //dev->setRipple TODO Implement method
     } else if(identifier == "lighting_ripple_random") {
@@ -438,6 +432,53 @@ void kcm_razerdrivers::standardCombo(int index)
     } else {
         std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }
+}
+
+void kcm_razerdrivers::scrollCombo(int index)
+{
+    QPair<librazer::Device*, QString> tuple = commonCombo(index);
+    librazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
+    if(identifier == "lighting_logo_blinking") {
+        //dev->setLogoBlinking()
+    } else if(identifier == "lighting_logo_pulsate") {
+        //dev->setLogoPulsate
+    } else if(identifier == "lighting_logo_spectrum") {
+        //dev->setLogoSpectrum
+    } else if(identifier == "lighting_logo_static") {
+        QColor c = getColorForButton(1);
+        dev->setLogoStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_none") {
+        //dev->setLogoNone()
+    } else if(identifier == "lighting_logo_reactive") {
+        //dev->setLogoReactive
+    } else if(identifier == "lighting_logo_breath_single") {
+        //dev->setLogoBreathSingle
+    } else if(identifier == "lighting_logo_breath_dual") {
+        //dev->setLogoBreathDual
+    } else if(identifier == "lighting_logo_breath_random") {
+        //dev->setLogoBreathRandom
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+    }
+}
+
+void kcm_razerdrivers::logoCombo(int index)
+{
+    QPair<librazer::Device*, QString> tuple = commonCombo(index);
+    librazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
+    std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+}
+
+QColor kcm_razerdrivers::getColorForButton(int num)
+{
+    //TODO Probably doesn't work with multiple lighting zones, TEST!
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    QPalette pal = item->widget()->findChild<QPushButton*>("colorbutton" + QString::number(num))->palette();
+    return pal.color(QPalette::Button);
 }
 
 void kcm_razerdrivers::brightnessChanged(int value)
