@@ -23,9 +23,11 @@
 #include <QDBusMessage>
 #include "razercapability.h"
 
+// NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
+
 namespace librazer
 {
-// --- UPDATE FROM https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/constants.py ---
+// --- UPDATE FROM https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/constants.py or https://github.com/terrycain/razer-drivers/blob/master/pylib/razer/client/constants.py ---
 // Macro LED effect ID's
 const int MACRO_LED_STATIC = 0x00;
 const int MACRO_LED_BLINK = 0x01;
@@ -47,51 +49,6 @@ const double RIPPLE_REFRESH_RATE = 0.05;
 const int POLL_1000HZ = 1000;
 const int POLL_500HZ = 500;
 const int POLL_128HZ = 128;
-
-QStringList getConnectedDevices();
-QString getDaemonVersion();
-bool syncEffects(bool yes);
-bool getSyncEffects();
-bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
-bool getTurnOffOnScreensaver();
-bool stopDaemon();
-bool isDaemonRunning();
-/* Helper methods */
-bool QDBusMessageToBool(const QDBusMessage &message);
-double QDBusMessageToDouble(const QDBusMessage &message);
-QString QDBusMessageToString(const QDBusMessage &message);
-QStringList QDBusMessageToStringList(const QDBusMessage &message);
-QList<int> QDBusMessageToIntArray(const QDBusMessage &message);
-QDomDocument QDBusMessageToXML(const QDBusMessage &message);
-bool QDBusMessageToVoid(const QDBusMessage& message);
-QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
-
-// razer-drivers name to picture url, relative to http://assets.razerzone.com/eeimages/products/. Images are available on the product pages and/or store pages.
-/*const static QHash<int, QString> urlLookup {
-    {21, "22133/razer-naga-classic-gallery-4.png"}, // Razer Naga
-    {47, "37/razer-imperator-gallery-5.png"}, // Razer Imperator 2012
-    {57, "6713/razer-orochi-2013-gallery-1.png"}, // Razer Orochi 2013
-    {62, "20776/rzrnagaepicchroma_06a.png"}, // Razer Naga Epic Chroma (mouse)
-    {63, "20776/rzrnagaepicchroma_06a.png"}, // Razer Naga Epic Chroma (dock)
-    {66, "17026/abyssus2014_gallery_1.png"}, // Razer Abyssus 2014
-    {67, "17531/deathadder_chroma_gallery_2.png"}, // Razer DeathAdder Chroma
-    {68, "22343/razer-mamba-gallery-03.png"}, // Razer Mamba (wired)
-    {69, "22343/razer-mamba-gallery-03.png"}, // Razer Mamba (wireless)
-    {70, "22294/mambategallery-800x800-1.png"}, // Razer Mamba Tournament Edition
-    {72, "22770/razer-orochi-05-01.png"}, // Razer Orochi 2015
-    {73, "22770/razer-orochi-01-01.png"}, //FIXME Orochi wireless, usb pid unknown, just a guess
-    {76, "22772/rzr_diamondback_01.png"}, // Razer Diamondback Chroma
-    {80, "25031/nagahexv2-gallery-2.png"}, // Razer Naga Hex V2
-    {83, "23322/rzrnagachroma_gallery01.png"}, // Razer Naga Chroma
-    {92, "25919/daelite_gallery01.png"}, // Razer DeathAdder Elite
-    {519, "22627/razer-orbweaver-chroma-800x800-1.png"}, // Razer Orbweaver Chroma
-    {520, "22356/razer-tartarus-chroma-01-02.png"}, // Razer Tartarus Chroma
-    {1284, "17519/01.png"}, // Razer Kraken 7.1 Chroma
-    {1296, "26005/kraken71v2_gallery04-v2.png"}, // Razer Kraken 7.1 v2
-    {2562, "24708/manowar-gallery-v1-3.png"}, // Razer ManO'War
-    {3072, "21936/rzr_firefly_gallery-2.png"} // Razer Firefly
-    //{3847, "mug"} no image :(
-};*/
 
 const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
@@ -131,10 +88,33 @@ const static QList<RazerCapability> scrollComboBoxCapabilites {
     RazerCapability("lighting_scroll_breath_dual", "Breath Dual", 2),
     RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
 };
+// Daemon controls
+QStringList getConnectedDevices();
+QString getDaemonVersion();
+bool stopDaemon();
+bool isDaemonRunning();
 
-class Device //: public QObject
+// Sync
+bool syncEffects(bool yes);
+bool getSyncEffects();
+
+// Screensaver
+bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
+bool getTurnOffOnScreensaver();
+
+/* Helper methods */
+bool QDBusMessageToBool(const QDBusMessage &message);
+double QDBusMessageToDouble(const QDBusMessage &message);
+QString QDBusMessageToString(const QDBusMessage &message);
+uchar QDBusMessageToByte(const QDBusMessage &message);
+QStringList QDBusMessageToStringList(const QDBusMessage &message);
+QList<int> QDBusMessageToIntArray(const QDBusMessage &message);
+QDomDocument QDBusMessageToXML(const QDBusMessage &message);
+bool QDBusMessageToVoid(const QDBusMessage& message);
+QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
+
+class Device
 {
-    //Q_OBJECT
 private:
     QString serial;
     QStringList introspection;
@@ -147,55 +127,91 @@ private:
     bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
 private slots:
     void deviceAdded();
-    void deviceRemoved(uint);
+    void deviceRemoved();
 public:
     Device(QString serial);
     ~Device();
-    // Misc methods
+
+    bool hasCapability(const QString &name);
+    QHash<QString, bool> getAllCapabilities();
+    QString getPngFilename();
+    QString getPngUrl();
+
+    // --- MISC METHODS ---
     QString getDeviceName();
     QString getDeviceType();
     QString getFirmwareVersion();
-    QString getPngFilename();
-    QString getPngUrl();
     QVariantHash getRazerUrls();
-    bool hasCapability(const QString &name);
-    QHash<QString, bool> getAllCapabilities();
-
     // VID / PID
     int getVid();
     int getPid();
 
-    // Battery
+    // --- MACRO ---
+    bool hasDedicatedMacroKeys();
+    //TODO Rest
+
+    // --- MATRIX ---
+    bool hasMatrix();
+    QList<int> getMatrixDimensions();
+
+
+    // --- DPI ---
+    bool setDPI(int dpi_x, int dpi_y);
+    QList<int> getDPI();
+
+    // --- BATTERY ----
     bool isCharging();
     double getBatteryLevel();
-    bool setIdleTime(int idle_time);
-    bool setLowBatteryThreshold(int threshold);
+    bool setIdleTime(ushort idle_time);
+    bool setLowBatteryThreshold(uchar threshold);
 
     // --- LIGHTING EFFECTS ---
     // - Default -
-    bool setStatic(int r, int g, int b);
-    bool setBreathSingle(int r, int g, int b);
-    bool setBreathDual(int r, int g, int b, int r2, int g2, int b2);
-    bool setBreathTriple(int r, int g, int b, int r2, int g2, int b2, int r3, int g3, int b3);
+    bool setStatic(uchar r, uchar g, uchar b);
+    bool setBreathSingle(uchar r, uchar g, uchar b);
+    bool setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
+    bool setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar r3, uchar g3, uchar b3);
     bool setBreathRandom();
-    bool setReactive(int r, int g, int b, int speed);
+    bool setReactive(uchar r, uchar g, uchar b, uchar speed);
     bool setSpectrum();
     bool setWave(const int direction);
     bool setNone();
+    // bw2013
+    bool setPulsate();
+
+    // - Custom -
+    bool setRipple(uchar r, uchar g, uchar b, double refresh_rate);
+    bool setRippleRandomColor(double refresh_rate);
 
     bool setBrightness(double brightness);
     double getBrightness();
 
     // - Logo -
-    bool setLogoStatic(int r, int g, int b);
+    bool setLogoStatic(uchar r, uchar g, uchar b);
     bool setLogoActive(bool active);
     bool getLogoActive();
+    uchar getLogoEffect();
+    bool setLogoBlinking(uchar r, uchar g, uchar b);
+    bool setLogoPulsate(uchar r, uchar g, uchar b);
+    bool setLogoSpectrum();
+    // _new_
+    bool setLogoNone();
+    bool setLogoReactive(uchar r, uchar g, uchar b, uchar speed);
+    bool setLogoBreathSingle(uchar r, uchar g, uchar b);
+    bool setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
+    bool setLogoBreathRandom();
 
     bool setLogoBrightness(double brightness);
     double getLogoBrightness();
 
     // - Scroll -
-    bool setScrollStatic(int r, int g, int b);
+    bool setScrollStatic(uchar r, uchar g, uchar b);
+    bool setScrollActive(bool active);
+    bool getScrollActive();
+    int getScrollEffect();
+    bool setScrollBlinking(uchar r, uchar g, uchar b);
+    bool setScrollPulsate(uchar r, uchar g, uchar b);
+    bool setScrollSpectrum();
 
     bool setScrollBrightness(double brightness);
     double getScrollBrightness();

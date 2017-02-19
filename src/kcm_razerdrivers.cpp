@@ -415,7 +415,7 @@ void kcm_razerdrivers::standardCombo(int index)
         dev->setWave(librazer::WAVE_RIGHT); // TODO Left/right button
     } else if(identifier == "lighting_reactive") {
         QColor c = getColorForButton(1);
-        dev->setReactive(c.red(), c.green(), c.blue(), 2); // TODO Speed
+        dev->setReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
     } else if(identifier == "lighting_none") {
         dev->setNone();
     } else if(identifier == "lighting_spectrum") {
@@ -424,11 +424,12 @@ void kcm_razerdrivers::standardCombo(int index)
         QColor c = getColorForButton(1);
         dev->setStatic(c.red(), c.green(), c.blue());
     } else if(identifier == "lighting_ripple") {
-        //dev->setRipple TODO Implement method
+        QColor c = getColorForButton(1);
+        dev->setRipple(c.red(), c.green(), c.blue(), librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
     } else if(identifier == "lighting_ripple_random") {
-        //dev->setRippleRandom(); TODO Implement method
+        dev->setRippleRandomColor(librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
     } else if(identifier == "lighting_pulsate") {
-        //dev->setPulsate(); TODO Implement method
+        dev->setPulsate();
     } else {
         std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }
@@ -440,28 +441,34 @@ void kcm_razerdrivers::scrollCombo(int index)
     librazer::Device *dev = tuple.first;
     QString identifier = tuple.second;
 
-    if(identifier == "lighting_logo_blinking") {
-        //dev->setLogoBlinking()
-    } else if(identifier == "lighting_logo_pulsate") {
-        //dev->setLogoPulsate
-    } else if(identifier == "lighting_logo_spectrum") {
-        //dev->setLogoSpectrum
-    } else if(identifier == "lighting_logo_static") {
-        QColor c = getColorForButton(1);
-        dev->setLogoStatic(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_logo_none") {
-        //dev->setLogoNone()
-    } else if(identifier == "lighting_logo_reactive") {
-        //dev->setLogoReactive
-    } else if(identifier == "lighting_logo_breath_single") {
-        //dev->setLogoBreathSingle
-    } else if(identifier == "lighting_logo_breath_dual") {
-        //dev->setLogoBreathDual
-    } else if(identifier == "lighting_logo_breath_random") {
-        //dev->setLogoBreathRandom
-    } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
-    }
+//     if(identifier == "lighting_logo_blinking") {
+//         QColor c = getColorForButton(1);
+//         dev->setLogoBlinking(c.red(), c.green(), c.blue());
+//     } else if(identifier == "lighting_logo_pulsate") {
+//         QColor c = getColorForButton(1);
+//         dev->setLogoPulsate(c.red(), c.green(), c.blue());
+//     } else if(identifier == "lighting_logo_spectrum") {
+//         dev->setLogoSpectrum();
+//     } else if(identifier == "lighting_logo_static") {
+//         QColor c = getColorForButton(1);
+//         dev->setLogoStatic(c.red(), c.green(), c.blue());
+//     } else if(identifier == "lighting_logo_none") {
+//         dev->setLogoNone();
+//     } else if(identifier == "lighting_logo_reactive") {
+//         QColor c = getColorForButton(1);
+//         dev->setLogoReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+//     } else if(identifier == "lighting_logo_breath_single") {
+//         QColor c = getColorForButton(1);
+//         dev->setLogoBreathSingle(c.red(), c.green(), c.blue());
+//     } else if(identifier == "lighting_logo_breath_dual") {
+//         QColor c1 = getColorForButton(1);
+//         QColor c2 = getColorForButton(2);
+//         dev->setLogoBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+//     } else if(identifier == "lighting_logo_breath_random") {
+//         dev->setLogoBreathRandom();
+//     } else {
+    std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+//     }
 }
 
 void kcm_razerdrivers::logoCombo(int index)
@@ -470,7 +477,34 @@ void kcm_razerdrivers::logoCombo(int index)
     librazer::Device *dev = tuple.first;
     QString identifier = tuple.second;
 
-    std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+    if(identifier == "lighting_logo_blinking") {
+        QColor c = getColorForButton(1);
+        dev->setLogoBlinking(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_pulsate") {
+        QColor c = getColorForButton(1);
+        dev->setLogoPulsate(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_spectrum") {
+        dev->setLogoSpectrum();
+    } else if(identifier == "lighting_logo_static") {
+        QColor c = getColorForButton(1);
+        dev->setLogoStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_none") {
+        dev->setLogoNone();
+    } else if(identifier == "lighting_logo_reactive") {
+        QColor c = getColorForButton(1);
+        dev->setLogoReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_logo_breath_single") {
+        QColor c = getColorForButton(1);
+        dev->setLogoBreathSingle(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_breath_dual") {
+        QColor c1 = getColorForButton(1);
+        QColor c2 = getColorForButton(2);
+        dev->setLogoBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+    } else if(identifier == "lighting_logo_breath_random") {
+        dev->setLogoBreathRandom();
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+    }
 }
 
 QColor kcm_razerdrivers::getColorForButton(int num)

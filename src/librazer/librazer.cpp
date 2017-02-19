@@ -33,6 +33,98 @@
 namespace librazer
 {
 
+/**
+ * Fill "introspection" variable with data from the dbus introspection xml
+ */
+void Device::Introspect()
+{
+    QStringList intr;
+
+    QDBusMessage m = prepareDeviceQDBusMessage("org.freedesktop.DBus.Introspectable", "Introspect");
+    QDomDocument doc = QDBusMessageToXML(m);
+
+    QDomNodeList nodes = doc.documentElement().childNodes();
+    for(int i = 0; i<nodes.count(); i++) {
+        // Check if "interface" and also not org.freedesktop.DBus.Introspectable
+        QDomElement element = nodes.at(i).toElement();
+        QString interfacename = element.attributeNode("name").value();
+
+        QDomNodeList methodnodes = element.childNodes();
+        for(int ii = 0; ii<methodnodes.count(); ii++) {
+            QDomElement methodelement = methodnodes.at(ii).toElement();
+            intr.append(interfacename + ";" + methodelement.attributeNode("name").value());
+        }
+        intr.append(interfacename);
+    }
+    introspection = intr;
+}
+
+/**
+ * Fill "capabilities" list with the capabilities of the device. Names are from the pylib, parsed with the script ./capabilities_to_cpp.sh in the root of this repo.
+ */
+void Device::setupCapabilities()
+{
+    capabilities.insert("name", true);
+    capabilities.insert("type", true);
+    capabilities.insert("firmware_version", true);
+    capabilities.insert("serial", true);
+    capabilities.insert("dpi", hasCapabilityInternal("razer.device.dpi", "setDPI"));
+    capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
+    capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
+    capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
+
+    capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
+
+    // Default device is a chroma so lighting capabilities
+    capabilities.insert("lighting", hasCapabilityInternal("razer.device.lighting.chroma"));
+    capabilities.insert("lighting_breath_single", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathSingle"));
+    capabilities.insert("lighting_breath_dual", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathDual"));
+    capabilities.insert("lighting_breath_triple", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathTriple"));
+    capabilities.insert("lighting_breath_random", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathRandom"));
+    capabilities.insert("lighting_charging", hasCapabilityInternal("razer.device.lighting.power"));
+    capabilities.insert("lighting_wave", hasCapabilityInternal("razer.device.lighting.chroma", "setWave"));
+    capabilities.insert("lighting_reactive", hasCapabilityInternal("razer.device.lighting.chroma", "setReactive"));
+    capabilities.insert("lighting_none", hasCapabilityInternal("razer.device.lighting.chroma", "setNone"));
+    capabilities.insert("lighting_spectrum", hasCapabilityInternal("razer.device.lighting.chroma", "setSpectrum"));
+    capabilities.insert("lighting_static", hasCapabilityInternal("razer.device.lighting.chroma", "setStatic"));
+    capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple")); // Thinking of extending custom to do more hence the key check
+    capabilities.insert("lighting_ripple_random", hasCapabilityInternal("razer.device.lighting.custom", "setRippleRandomColour"));
+
+    capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.chroma", "setPulsate"));
+
+    capabilities.insert("lighting_led_matrix", hasMatrix());
+    capabilities.insert("lighting_led_single", hasCapabilityInternal("razer.device.lighting.chroma", "setKey"));
+
+    // Mouse lighting attrs
+    capabilities.insert("lighting_logo", hasCapabilityInternal("razer.device.lighting.logo"));
+    capabilities.insert("lighting_logo_active", hasCapabilityInternal("razer.device.lighting.logo", "setLogoActive"));
+    capabilities.insert("lighting_logo_blinking", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBlinking"));
+    capabilities.insert("lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBrightness"));
+    capabilities.insert("get_lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "getLogoBrightness"));
+    capabilities.insert("lighting_logo_pulsate", hasCapabilityInternal("razer.device.lighting.logo", "setLogoPulsate"));
+    capabilities.insert("lighting_logo_spectrum", hasCapabilityInternal("razer.device.lighting.logo", "setLogoSpectrum"));
+    capabilities.insert("lighting_logo_static", hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic"));
+    capabilities.insert("lighting_logo_none", hasCapabilityInternal("razer.device.lighting.logo", "setLogoNone"));
+    capabilities.insert("lighting_logo_reactive", hasCapabilityInternal("razer.device.lighting.logo", "setLogoReactive"));
+    capabilities.insert("lighting_logo_breath_single", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathSingle"));
+    capabilities.insert("lighting_logo_breath_dual", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathDual"));
+    capabilities.insert("lighting_logo_breath_random", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathRandom"));
+
+    capabilities.insert("lighting_scroll", hasCapabilityInternal("razer.device.lighting.scroll"));
+    capabilities.insert("lighting_scroll_active", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollActive"));
+    capabilities.insert("lighting_scroll_blinking", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBlinking"));
+    capabilities.insert("lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBrightness"));
+    capabilities.insert("get_lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "getScrollBrightness"));
+    capabilities.insert("lighting_scroll_pulsate", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollPulsate"));
+    capabilities.insert("lighting_scroll_spectrum", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollSpectrum"));
+    capabilities.insert("lighting_scroll_static", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollStatic"));
+    capabilities.insert("lighting_scroll_none", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollNone"));
+    capabilities.insert("lighting_scroll_reactive", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollReactive"));
+    capabilities.insert("lighting_scroll_breath_single", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathSingle"));
+    capabilities.insert("lighting_scroll_breath_dual", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathDual"));
+    capabilities.insert("lighting_scroll_breath_random", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathRandom"));
+}
+
 bool isDaemonRunning()
 {
     QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
@@ -122,6 +214,8 @@ bool getTurnOffOnScreensaver()
     return QDBusMessageToBool(m);
 }
 
+// ====== DEVICE CLASS ======
+
 /**
  * Constructs a new device object with the given serial.
  */
@@ -135,24 +229,79 @@ Device::Device(QString s)
     //QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices" ,"device_added", this, &Device::deviceAdded);
 }
 
+/**
+ * Destructor
+ */
+Device::~Device()
+{
+    //TODO Write
+}
+
+// -- SLOTS --
 void Device::deviceAdded()
 {
     std::cout << "DEVICE ADDED" << std::endl;
 }
+
+void Device::deviceRemoved()
+{
+    std::cout << "DEVICE REMOVED" << std::endl;
+}
+
+// ---- MISC METHODS ----
+/**
+ * Internal method to determine whether a device has a given capability based on interface and method names.
+ */
+bool Device::hasCapabilityInternal(const QString &interface, const QString &method)
+{
+    if(method.isNull()) {
+        return introspection.contains(interface);
+    }
+    return introspection.contains(interface + ";" + method);
+}
+
+/**
+ * Returns if a device has a given capability.
+ */
+bool Device::hasCapability(const QString &name)
+{
+    return capabilities.value(name);
+}
+
+/**
+ * Returns a QHash object with all capabilities.
+ */
+QHash<QString, bool> Device::getAllCapabilities()
+{
+    return capabilities;
+}
+
+/**
+ * Returns the .png filename for pictures.
+ * Could return an empty string (qstring.isEmpty()) if no picture was found.
+ */
+QString Device::getPngFilename()
+{
+    return getRazerUrls().value("top_img").toString().split("/").takeLast();
+}
+
+/**
+ * Returns the download url for pictures.
+ * Could return an empty string (qstring.isEmpty()) if no picture was found.
+ */
+QString Device::getPngUrl()
+{
+    return getRazerUrls().value("top_img").toString();
+}
+
+
+// ----- DBUS METHODS -----
 
 /**
  * Returns a human readable device name like "Razer DeathAdder Chroma" or "Razer Kraken 7.1 (Rainie)".
  */
 QString Device::getDeviceName()
 {
-    /*QDBusMessage a = prepareDeviceQDBusMessage("razer.device.led.macromode", "getMacroEffect");
-    QDBusMessage msg = QDBusConnection::sessionBus().call(a);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        qDebug() << msg.arguments()[0];
-    } else {
-        qDebug() << "asdasdasd";
-    }*/
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceName");
     return QDBusMessageToString(m);
 }
@@ -176,24 +325,6 @@ QString Device::getFirmwareVersion()
 }
 
 /**
- * Returns the .png filename for pictures.
- * Could return an empty string (qstring.isEmpty()) if no picture was found.
- */
-QString Device::getPngFilename()
-{
-    return getRazerUrls().value("top_img").toString().split("/").takeLast();
-}
-
-/**
- * Returns the download url for pictures.
- * Could return an empty string (qstring.isEmpty()) if no picture was found.
- */
-QString Device::getPngUrl()
-{
-    return getRazerUrls().value("top_img").toString();
-}
-
-/**
  * Returns a QVariantHash (QHash\<QString, QVariant>).
  * Most likely contains keys "top_img", "side_img", "store", "perspective_img".
  * Values are QVariant\<QString> with a full url as value.
@@ -206,9 +337,116 @@ QVariantHash Device::getRazerUrls()
 }
 
 /**
+ * Return usb vendor id as integer in decimal notation. Should always be 5426 (-> Hex 1532)
+ */
+int Device::getVid()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
+    return QDBusMessageToIntArray(m)[0];
+}
+
+/**
+ * Return usb product id as integer in decimal notation.
+ */
+int Device::getPid()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
+    return QDBusMessageToIntArray(m)[1];
+}
+
+/**
+ * Returns if the device has dedicated macro keys.
+ */
+bool Device::hasDedicatedMacroKeys()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "hasDedicatedMacroKeys");
+    return QDBusMessageToBool(m);
+}
+
+
+/**
+ * Returns if the device has a matrix. Dimensions can be gotten with getMatrixDimensions()
+ */
+bool Device::hasMatrix()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "hasMatrix");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Returns the matrix dimensions. If the device has no matrix, it will return -1 for both numbers.
+ */
+QList<int> Device::getMatrixDimensions()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getMatrixDimensions");
+    return QDBusMessageToIntArray(m);
+}
+
+bool Device::setDPI(int dpi_x, int dpi_y)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "setDPI");
+    QList<QVariant> args;
+    args.append(dpi_x);
+    args.append(dpi_y);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+QList<int> Device::getDPI()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "getDPI");
+    return QDBusMessageToIntArray(m);
+}
+
+// BATTERY
+/**
+ * Returns if the device is charging.
+ */
+bool Device::isCharging()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "isCharging");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Returns the battery level between 0 and 100. Could maybe be -1 ???
+ */
+double Device::getBatteryLevel()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "getBattery");
+    return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the idle time of the device.
+ */
+bool Device::setIdleTime(ushort idle_time)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setIdleTime");
+    QList<QVariant> args;
+    args.append(idle_time);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the low battery threshold.
+ */
+bool Device::setLowBatteryThreshold(uchar threshold)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setLowBatteryThreshold");
+    QList<QVariant> args;
+    args.append(threshold);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+// ------ LIGHTING EFFECTS ------
+
+/**
  * Sets the normal lighting to static lighting.
  */
-bool Device::setStatic(int r, int g, int b)
+bool Device::setStatic(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStatic");
     QList<QVariant> args;
@@ -220,25 +458,11 @@ bool Device::setStatic(int r, int g, int b)
 }
 
 /**
- * Sets the logo to static lighting.
+ * Sets the normal lighting to random breath lighting.
  */
-bool Device::setLogoStatic(int r, int g, int b)
+bool Device::setBreathSingle(uchar r, uchar g, uchar b)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoStatic");
-    QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    m.setArguments(args);
-    return QDBusMessageToVoid(m);
-}
-
-/**
- * Sets the scrollwheel to static lighting.
- */
-bool Device::setScrollStatic(int r, int g, int b)
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollStatic");
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathSingle");
     QList<QVariant> args;
     args.append(r);
     args.append(g);
@@ -250,7 +474,7 @@ bool Device::setScrollStatic(int r, int g, int b)
 /**
  * Sets the normal lighting to dual breath lighting.
  */
-bool Device::setBreathDual(int r, int g, int b, int r2, int g2, int b2)
+bool Device::setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathDual");
     QList<QVariant> args;
@@ -263,19 +487,20 @@ bool Device::setBreathDual(int r, int g, int b, int r2, int g2, int b2)
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
-//TODO Logo & Scroll
-//TODO DPI
 
-/**
- * Sets the normal lighting to random breath lighting.
- */
-bool Device::setBreathSingle(int r, int g, int b)
+bool Device::setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar r3, uchar g3, uchar b3)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathSingle");
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathTriple");
     QList<QVariant> args;
     args.append(r);
     args.append(g);
     args.append(b);
+    args.append(r2);
+    args.append(g2);
+    args.append(b2);
+    args.append(r3);
+    args.append(g3);
+    args.append(b3);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -293,7 +518,7 @@ bool Device::setBreathRandom()
  * Sets the lighting to reactive mode.
  * Use one of librazer::REACTIVE_* for speed
  */
-bool Device::setReactive(int r, int g, int b, int speed)
+bool Device::setReactive(uchar r, uchar g, uchar b, uchar speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setReactive");
     QList<QVariant> args;
@@ -336,6 +561,33 @@ bool Device::setNone()
     return QDBusMessageToVoid(m);
 }
 
+bool Device::setPulsate()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.bw2013", "setPulsate");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setRipple(uchar r, uchar g, uchar b, double refresh_rate)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRipple");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(refresh_rate);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setRippleRandomColor(double refresh_rate)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRippleRandomColour");
+    QList<QVariant> args;
+    args.append(refresh_rate);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
 /**
  * Sets the brightness (0-100).
  */
@@ -355,6 +607,118 @@ double Device::getBrightness()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.brightness", "getBrightness");
     return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the logo to static lighting.
+ */
+bool Device::setLogoStatic(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoStatic");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::getLogoActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoActive");
+    return QDBusMessageToBool(m);
+}
+
+uchar Device::getLogoEffect()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoEffect");
+    return QDBusMessageToByte(m);
+}
+
+bool Device::setLogoBlinking(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBlinking");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoPulsate(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoPulsate");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoNone()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoNone");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoReactive(uchar r, uchar g, uchar b, uchar speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoReactive");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(r2);
+    args.append(g2);
+    args.append(b2);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setLogoBreathRandom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathRandom");
+    return QDBusMessageToVoid(m);
 }
 
 /**
@@ -379,6 +743,27 @@ double Device::getLogoBrightness()
 }
 
 /**
+ * Sets the scrollwheel to static lighting.
+ */
+bool Device::setScrollStatic(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollStatic");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+// TODO setScrollActive
+// TODO getScrollActive
+// TODO getScrollEffect
+// TODO setScrollBlinking
+// TODO setScrollPulsate
+// TODO setScrollSpectrum
+
+/**
  * Sets the scroll wheel brightness (0-100).
  */
 bool Device::setScrollBrightness(double brightness)
@@ -399,207 +784,7 @@ double Device::getScrollBrightness()
     return QDBusMessageToDouble(m);
 }
 
-bool Device::setLogoActive(bool active)
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoActive");
-    QList<QVariant> args;
-    args.append(active);
-    m.setArguments(args);
-    return QDBusMessageToVoid(m);
-}
-
-bool Device::getLogoActive()
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoActive");
-    return QDBusMessageToBool(m);
-}
-
-/**
- * Return usb vendor id as integer in decimal notation. Should always be 5426 (-> Hex 1532)
- */
-int Device::getVid()
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
-    return QDBusMessageToIntArray(m)[0];
-}
-
-/**
- * Return usb product id as integer in decimal notation.
- */
-int Device::getPid()
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
-    return QDBusMessageToIntArray(m)[1];
-}
-
-// BATTERY
-/**
- * Returns if the device is charging.
- */
-bool Device::isCharging()
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "isCharging");
-    return QDBusMessageToBool(m);
-}
-
-/**
- * Returns the battery level between 0 and 100. Could maybe be -1 ???
- */
-double Device::getBatteryLevel()
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "getBattery");
-    return QDBusMessageToDouble(m);
-}
-
-/**
- * Sets the idle time of the device. ??? should be UInt16
- */
-bool Device::setIdleTime(int idle_time)
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setIdleTime");
-    QList<QVariant> args;
-    args.append(idle_time);
-    m.setArguments(args);
-    return QDBusMessageToVoid(m);
-}
-
-/**
- * Sets the low battery threshold. ??? should be Byte
- */
-bool Device::setLowBatteryThreshold(int threshold)
-{
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.power", "setLowBatteryThreshold");
-    QList<QVariant> args;
-    args.append(threshold);
-    m.setArguments(args);
-    return QDBusMessageToVoid(m);
-}
-
-/**
- * Fill "introspection" variable with data from the dbus introspection xml
- */
-void Device::Introspect()
-{
-    QStringList intr;
-
-    QDBusMessage m = prepareDeviceQDBusMessage("org.freedesktop.DBus.Introspectable", "Introspect");
-    QDomDocument doc = QDBusMessageToXML(m);
-
-    QDomNodeList nodes = doc.documentElement().childNodes();
-    for(int i = 0; i<nodes.count(); i++) {
-        // Check if "interface" and also not org.freedesktop.DBus.Introspectable
-        QDomElement element = nodes.at(i).toElement();
-        QString interfacename = element.attributeNode("name").value();
-
-        QDomNodeList methodnodes = element.childNodes();
-        for(int ii = 0; ii<methodnodes.count(); ii++) {
-            QDomElement methodelement = methodnodes.at(ii).toElement();
-            intr.append(interfacename + ";" + methodelement.attributeNode("name").value());
-        }
-        intr.append(interfacename);
-    }
-    introspection = intr;
-}
-
-/**
- * Fill "capabilities" list with the capabilities of the device. Names are from the pylib, parsed with the script ./capabilities_to_cpp.sh in the root of this repo.
- */
-void Device::setupCapabilities()
-{
-    capabilities.insert("name", true);
-    capabilities.insert("type", true);
-    capabilities.insert("firmware_version", true);
-    capabilities.insert("serial", true);
-    capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
-    capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
-    capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
-
-    capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
-
-    // Default device is a chroma so lighting capabilities
-    capabilities.insert("lighting", hasCapabilityInternal("razer.device.lighting.chroma"));
-    capabilities.insert("lighting_breath_single", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathSingle"));
-    capabilities.insert("lighting_breath_dual", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathDual"));
-    capabilities.insert("lighting_breath_triple", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathTriple"));
-    capabilities.insert("lighting_breath_random", hasCapabilityInternal("razer.device.lighting.chroma", "setBreathRandom"));
-    capabilities.insert("lighting_charging", hasCapabilityInternal("razer.device.lighting.power"));
-    capabilities.insert("lighting_wave", hasCapabilityInternal("razer.device.lighting.chroma", "setWave"));
-    capabilities.insert("lighting_reactive", hasCapabilityInternal("razer.device.lighting.chroma", "setReactive"));
-    capabilities.insert("lighting_none", hasCapabilityInternal("razer.device.lighting.chroma", "setNone"));
-    capabilities.insert("lighting_spectrum", hasCapabilityInternal("razer.device.lighting.chroma", "setSpectrum"));
-    capabilities.insert("lighting_static", hasCapabilityInternal("razer.device.lighting.chroma", "setStatic"));
-    capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple")); // Thinking of extending custom to do more hence the key check
-    capabilities.insert("lighting_ripple_random", hasCapabilityInternal("razer.device.lighting.custom", "setRippleRandomColour"));
-
-    capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.chroma", "setPulsate"));
-
-    // Get if the device has an LED Matrix, == True as its a DBus boolean otherwise, so for consistency sake we coerce it into a native bool
-    // FIXME: 'lighting_led_matrix': self._dbus_interfaces['device'].hasMatrix() == True,
-    capabilities.insert("lighting_led_single", hasCapabilityInternal("razer.device.lighting.chroma", "setKey"));
-
-    // Mouse lighting attrs
-    capabilities.insert("lighting_logo", hasCapabilityInternal("razer.device.lighting.logo"));
-    capabilities.insert("lighting_logo_active", hasCapabilityInternal("razer.device.lighting.logo", "setLogoActive"));
-    capabilities.insert("lighting_logo_blinking", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBlinking"));
-    capabilities.insert("lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBrightness"));
-    capabilities.insert("get_lighting_logo_brightness", hasCapabilityInternal("razer.device.lighting.logo", "getLogoBrightness"));
-    capabilities.insert("lighting_logo_pulsate", hasCapabilityInternal("razer.device.lighting.logo", "setLogoPulsate"));
-    capabilities.insert("lighting_logo_spectrum", hasCapabilityInternal("razer.device.lighting.logo", "setLogoSpectrum"));
-    capabilities.insert("lighting_logo_static", hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic"));
-    capabilities.insert("lighting_logo_none", hasCapabilityInternal("razer.device.lighting.logo", "setLogoNone"));
-    capabilities.insert("lighting_logo_reactive", hasCapabilityInternal("razer.device.lighting.logo", "setLogoReactive"));
-    capabilities.insert("lighting_logo_breath_single", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathSingle"));
-    capabilities.insert("lighting_logo_breath_dual", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathDual"));
-    capabilities.insert("lighting_logo_breath_random", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathRandom"));
-
-    capabilities.insert("lighting_scroll", hasCapabilityInternal("razer.device.lighting.scroll"));
-    capabilities.insert("lighting_scroll_active", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollActive"));
-    capabilities.insert("lighting_scroll_blinking", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBlinking"));
-    capabilities.insert("lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBrightness"));
-    capabilities.insert("get_lighting_scroll_brightness", hasCapabilityInternal("razer.device.lighting.scroll", "getScrollBrightness"));
-    capabilities.insert("lighting_scroll_pulsate", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollPulsate"));
-    capabilities.insert("lighting_scroll_spectrum", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollSpectrum"));
-    capabilities.insert("lighting_scroll_static", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollStatic"));
-    capabilities.insert("lighting_scroll_none", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollNone"));
-    capabilities.insert("lighting_scroll_reactive", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollReactive"));
-    capabilities.insert("lighting_scroll_breath_single", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathSingle"));
-    capabilities.insert("lighting_scroll_breath_dual", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathDual"));
-    capabilities.insert("lighting_scroll_breath_random", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathRandom"));
-}
-
-/**
- * Returns if a device has a given capability.
- */
-bool Device::hasCapability(const QString &name)
-{
-    return capabilities.value(name);
-}
-
-/**
- * Internal method to determine whether a device has a given capability based on interface and method names.
- */
-bool Device::hasCapabilityInternal(const QString &interface, const QString &method)
-{
-    if(method.isNull()) {
-        return introspection.contains(interface);
-    }
-    return introspection.contains(interface + ";" + method);
-}
-
-/**
- * Returns a QHash object with all capabilities.
- */
-QHash<QString, bool> Device::getAllCapabilities()
-{
-    return capabilities;
-}
-
-/**
- * Destructor
- */
-Device::~Device()
-{
-}
+// ----- MISC METHODS FOR LIBRAZER -----
 
 /**
  * Returns a QDBusMessage object for the given device ("org/razer/serial").
@@ -660,6 +845,20 @@ QString QDBusMessageToString(const QDBusMessage &message)
 }
 
 /**
+ * Sends a QDBusMessage and returns the string value.
+ */
+uchar QDBusMessageToByte(const QDBusMessage &message)
+{
+    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        // Everything went fine.
+        return msg.arguments()[0].value<uchar>();
+    }
+    // TODO: Handle error
+    return 0x00;
+}
+
+/**
  * Sends a QDBusMessage and returns the stringlist value.
  */
 QStringList QDBusMessageToStringList(const QDBusMessage &message)
@@ -667,13 +866,6 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
     QDBusMessage msg = QDBusConnection::sessionBus().call(message);
     if(msg.type() == QDBusMessage::ReplyMessage) {
         return msg.arguments()[0].toStringList();// VID / PID
-        int getVid();
-        int getPid();
-        // Battery
-        bool isCharging();
-        double getBatteryLevel();
-        bool setIdleTime(int idle_time);
-        bool setLowBatteryThreshold(int threshold);
     }
     // TODO: Handle errror
     return msg.arguments()[0].toStringList();
@@ -688,10 +880,10 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
     QList<int> *retList = new QList<int>();
     QDBusMessage msg = QDBusConnection::sessionBus().call(message);
     if(msg.type() == QDBusMessage::ReplyMessage) {
-        qDebug() << "reply :" << msg; // sth like QDBusMessage(type=MethodReturn, service=":1.1482", signature="ai", contents=([Argument: ai {5426, 67}]) )
-        qDebug() << "reply arguments : " << msg.arguments();
-        qDebug() << "reply[0] :" << msg.arguments().at(0);
-        //ugh
+//         qDebug() << "reply :" << msg; // sth like QDBusMessage(type=MethodReturn, service=":1.1482", signature="ai", contents=([Argument: ai {5426, 67}]) )
+//         qDebug() << "reply arguments : " << msg.arguments();
+//         qDebug() << "reply[0] :" << msg.arguments().at(0);
+        // ugh
         const QDBusArgument myArg = msg.arguments().at(0).value<QDBusArgument>();
         myArg.beginArray();
         while (!myArg.atEnd()) {
@@ -741,8 +933,14 @@ int main()
 //         std::cout << "Serial: " << str.toStdString() << std::endl;
         librazer::Device device = librazer::Device(str);
         qDebug() << device.getDeviceName();
-        qDebug() << device.getRazerUrls();
-
+//         qDebug() << device.getRazerUrls();
+        if(device.hasCapability("dpi")) {
+            qDebug() << "DEVICE:";
+            qDebug() << device.getDPI();
+            device.setDPI(500, 500);
+            qDebug() << device.getDPI();
+        }
+//         qDebug() << device.getLogoEffect();
         //device.setLogoStatic(0, 255, 0);
         //device.getVid();
         //device.getPid();
@@ -755,4 +953,5 @@ int main()
 //             std::cout << i.key().toStdString() << ": " << i.value() << std::endl;
     }
 }
+
 
