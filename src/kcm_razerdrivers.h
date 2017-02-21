@@ -45,6 +45,8 @@ public slots:
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
 
+    void dpiChanged(int value);
+
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
 private:

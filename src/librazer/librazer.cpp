@@ -756,12 +756,104 @@ bool Device::setScrollStatic(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
-// TODO setScrollActive
-// TODO getScrollActive
-// TODO getScrollEffect
-// TODO setScrollBlinking
-// TODO setScrollPulsate
-// TODO setScrollSpectrum
+bool Device::setScrollActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::getScrollActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollActive");
+    return QDBusMessageToBool(m);
+}
+
+uchar Device::getScrollEffect()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollEffect");
+    return QDBusMessageToByte(m);
+}
+
+bool Device::setScrollBlinking(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBlinking");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollPulsate(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollPulsate");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollNone()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollNone");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollReactive(uchar r, uchar g, uchar b, uchar speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollReactive");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollBreathSingle(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(r2);
+    args.append(g2);
+    args.append(b2);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setScrollBreathRandom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathRandom");
+    return QDBusMessageToVoid(m);
+}
+
 
 /**
  * Sets the scroll wheel brightness (0-100).

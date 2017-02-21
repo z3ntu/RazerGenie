@@ -194,7 +194,6 @@ public:
     bool setLogoBlinking(uchar r, uchar g, uchar b);
     bool setLogoPulsate(uchar r, uchar g, uchar b);
     bool setLogoSpectrum();
-    // _new_
     bool setLogoNone();
     bool setLogoReactive(uchar r, uchar g, uchar b, uchar speed);
     bool setLogoBreathSingle(uchar r, uchar g, uchar b);
@@ -208,10 +207,15 @@ public:
     bool setScrollStatic(uchar r, uchar g, uchar b);
     bool setScrollActive(bool active);
     bool getScrollActive();
-    int getScrollEffect();
+    uchar getScrollEffect();
     bool setScrollBlinking(uchar r, uchar g, uchar b);
     bool setScrollPulsate(uchar r, uchar g, uchar b);
     bool setScrollSpectrum();
+    bool setScrollNone();
+    bool setScrollReactive(uchar r, uchar g, uchar b, uchar speed);
+    bool setScrollBreathSingle(uchar r, uchar g, uchar b);
+    bool setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
+    bool setScrollBreathRandom();
 
     bool setScrollBrightness(double brightness);
     double getScrollBrightness();

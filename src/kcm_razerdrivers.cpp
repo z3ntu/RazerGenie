@@ -285,6 +285,19 @@ void kcm_razerdrivers::fillList()
             }
         }
 
+        // DPI slider
+        if(currentDevice->hasCapability("dpi")) {
+            QLabel *dpiLabel = new QLabel("DPI");
+            QSlider *dpiXSlider = new QSlider(Qt::Horizontal, widget);
+            dpiXSlider->setObjectName("dpiX");
+            QSlider *dpiYSlider = new QSlider(Qt::Horizontal, widget);
+            dpiYSlider->setObjectName("dpiY");
+            QList<int> currDPI = currentDevice->getDPI();
+            dpiXSlider->setValue(currDPI[0]);
+            dpiYSlider->setValue(currDPI[1]);
+            connect(dpiXSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
+        }
+
         /* Spacer to bottom */
         QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
         verticalLayout->addItem(spacer);
@@ -441,34 +454,36 @@ void kcm_razerdrivers::scrollCombo(int index)
     librazer::Device *dev = tuple.first;
     QString identifier = tuple.second;
 
-//     if(identifier == "lighting_logo_blinking") {
-//         QColor c = getColorForButton(1);
-//         dev->setLogoBlinking(c.red(), c.green(), c.blue());
-//     } else if(identifier == "lighting_logo_pulsate") {
-//         QColor c = getColorForButton(1);
-//         dev->setLogoPulsate(c.red(), c.green(), c.blue());
-//     } else if(identifier == "lighting_logo_spectrum") {
-//         dev->setLogoSpectrum();
-//     } else if(identifier == "lighting_logo_static") {
-//         QColor c = getColorForButton(1);
-//         dev->setLogoStatic(c.red(), c.green(), c.blue());
-//     } else if(identifier == "lighting_logo_none") {
-//         dev->setLogoNone();
-//     } else if(identifier == "lighting_logo_reactive") {
-//         QColor c = getColorForButton(1);
-//         dev->setLogoReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
-//     } else if(identifier == "lighting_logo_breath_single") {
-//         QColor c = getColorForButton(1);
-//         dev->setLogoBreathSingle(c.red(), c.green(), c.blue());
-//     } else if(identifier == "lighting_logo_breath_dual") {
-//         QColor c1 = getColorForButton(1);
-//         QColor c2 = getColorForButton(2);
-//         dev->setLogoBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
-//     } else if(identifier == "lighting_logo_breath_random") {
-//         dev->setLogoBreathRandom();
-//     } else {
-    std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
-//     }
+    qDebug() << tuple;
+
+    if(identifier == "lighting_scroll_blinking") {
+        QColor c = getColorForButton(1);
+        dev->setScrollBlinking(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_pulsate") {
+        QColor c = getColorForButton(1);
+        dev->setScrollPulsate(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_spectrum") {
+        dev->setScrollSpectrum();
+    } else if(identifier == "lighting_scroll_static") {
+        QColor c = getColorForButton(1);
+        dev->setScrollStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_none") {
+        dev->setScrollNone();
+    } else if(identifier == "lighting_scroll_reactive") {
+        QColor c = getColorForButton(1);
+        dev->setScrollReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_scroll_breath_single") {
+        QColor c = getColorForButton(1);
+        dev->setScrollBreathSingle(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_breath_dual") {
+        QColor c1 = getColorForButton(1);
+        QColor c2 = getColorForButton(2);
+        dev->setScrollBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+    } else if(identifier == "lighting_scroll_breath_random") {
+        dev->setScrollBreathRandom();
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+    }
 }
 
 void kcm_razerdrivers::logoCombo(int index)
@@ -540,6 +555,11 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
+}
+
+void kcm_razerdrivers::dpiChanged(int value)
+{
+    std::cout << value << std::endl;
 }
 
 void kcm_razerdrivers::showError(QString error)
