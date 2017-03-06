@@ -541,7 +541,6 @@ bool Device::setSpectrum()
 
 /**
  * Use librazer::WAVE_RIGHT & librazer::WAVE_LEFT
- * TODO Int32
  */
 bool Device::setWave(const int direction)
 {

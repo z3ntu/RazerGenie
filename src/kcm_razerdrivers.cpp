@@ -108,6 +108,7 @@ void kcm_razerdrivers::fillList()
 
     // Iterate through all devices
     foreach (const QString &serial, serialnrs) {
+
         // Create device instance with current serial
         librazer::Device *currentDevice = new librazer::Device(serial);
 
@@ -166,7 +167,7 @@ void kcm_razerdrivers::fillList()
                 // Houston, we have a problem.
             }
 
-            QHBoxLayout *hbox = new QHBoxLayout();
+            QHBoxLayout *hbox = new QHBoxLayout(widget);
             verticalLayout->addWidget(text);
             verticalLayout->addLayout(hbox);
             QComboBox *comboBox = new QComboBox;
@@ -277,7 +278,7 @@ void kcm_razerdrivers::fillList()
             /* Brightness sliders */
             if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
                 verticalLayout->addWidget(brightnessLabel);
-                QHBoxLayout *hboxSlider = new QHBoxLayout();
+                QHBoxLayout *hboxSlider = new QHBoxLayout(widget);
                 QLabel *brightnessSliderValue = new QLabel;
                 hboxSlider->addWidget(brightnessSlider);
                 hboxSlider->addWidget(brightnessSliderValue);
@@ -287,15 +288,38 @@ void kcm_razerdrivers::fillList()
 
         // DPI slider
         if(currentDevice->hasCapability("dpi")) {
+            QHBoxLayout *dpiHBox = new QHBoxLayout(widget);
             QLabel *dpiLabel = new QLabel("DPI");
             QSlider *dpiXSlider = new QSlider(Qt::Horizontal, widget);
             dpiXSlider->setObjectName("dpiX");
             QSlider *dpiYSlider = new QSlider(Qt::Horizontal, widget);
             dpiYSlider->setObjectName("dpiY");
+            QLabel *dpiSyncLabel = new QLabel("Lock X/Y", widget);
+            QCheckBox *dpiSyncCheckbox = new QCheckBox(widget);
+
             QList<int> currDPI = currentDevice->getDPI();
+            qDebug() << currDPI;
+
+            //TODO Do a dynamic max?
+            dpiXSlider->setMaximum(16000);
+            dpiYSlider->setMaximum(16000);
+
             dpiXSlider->setValue(currDPI[0]);
             dpiYSlider->setValue(currDPI[1]);
+
+            dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
+
+            dpiHBox->addWidget(dpiLabel);
+            dpiHBox->addWidget(dpiXSlider);
+            dpiHBox->addWidget(dpiYSlider);
+            dpiHBox->addWidget(dpiSyncLabel);
+            dpiHBox->addWidget(dpiSyncCheckbox);
+
             connect(dpiXSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
+            connect(dpiYSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
+            connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &kcm_razerdrivers::dpiSyncCheckbox);
+
+            verticalLayout->addLayout(dpiHBox);
         }
 
         /* Spacer to bottom */
@@ -321,6 +345,10 @@ void kcm_razerdrivers::fillList()
         item->setHeader(name);
 
         ui_main.kpagewidget->addPage(item);
+    }
+
+    if(serialnrs.size() == 0) {
+        showError("The daemon doesn't see any devices. Make sure they are connected!");
     }
 }
 
@@ -560,6 +588,37 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
 void kcm_razerdrivers::dpiChanged(int value)
 {
     std::cout << value << std::endl;
+    QSlider *sender = qobject_cast<QSlider*>(QObject::sender());
+    if(syncDpi) {
+        if(sender->objectName() == "dpiX") {
+            QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
+            slider->setValue(value);
+
+            RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+            librazer::Device *dev = devices.value(item->getSerial());
+            dev->setDPI(value, value); // set for both X & Y
+        } else {
+            QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
+            slider->setValue(value);
+        }
+    } else {
+        RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+        librazer::Device *dev = devices.value(item->getSerial());
+        dev->setDPI(value, value); // set for both X & Y
+        if(sender->objectName() == "dpiX") {
+            QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
+            dev->setDPI(value, slider->value()); // set for both X & Y
+        } else {
+            QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
+            dev->setDPI(slider->value(), value); // set for both X & Y
+        }
+    }
+    qDebug() << sender->objectName();
+}
+
+void kcm_razerdrivers::dpiSyncCheckbox(bool checked)
+{
+    syncDpi = checked;
 }
 
 void kcm_razerdrivers::showError(QString error)

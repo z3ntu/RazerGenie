@@ -46,6 +46,7 @@ public slots:
     void logoBrightnessChanged(int value);
 
     void dpiChanged(int value);
+    void dpiSyncCheckbox(bool checked);
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
@@ -61,6 +62,8 @@ private:
     void fillList();
     void showError(QString error);
     void showInfo(QString info);
+
+    bool syncDpi = true;
 
     QHash<QString, librazer::Device*> devices;
 };
