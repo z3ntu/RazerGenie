@@ -139,37 +139,48 @@ void kcm_razerdrivers::fillList()
         QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
         // List of locations to iterate through
-        QList<librazer::Device::lightingLocations> locationsTodo;
+        QList<librazer::Device::lightingLocations> lightingLocationsTodo;
 
         // Check what lighting locations the device has
         if(currentDevice->hasCapability("lighting"))
-            locationsTodo.append(librazer::Device::lighting);
+            lightingLocationsTodo.append(librazer::Device::lighting);
         if(currentDevice->hasCapability("lighting_logo"))
-            locationsTodo.append(librazer::Device::lighting_logo);
+            lightingLocationsTodo.append(librazer::Device::lighting_logo);
         if(currentDevice->hasCapability("lighting_scroll"))
-            locationsTodo.append(librazer::Device::lighting_scroll);
+            lightingLocationsTodo.append(librazer::Device::lighting_scroll);
+
+        // Declare header font
+        QFont headerFont("Arial", 15, QFont::Bold);
+
+        // Lighting header
+        if(lightingLocationsTodo.size() != 0) {
+            QLabel *lightingHeader = new QLabel("Lighting", widget);
+            lightingHeader->setFont(headerFont);
+            verticalLayout->addWidget(lightingHeader);
+        }
 
         // Iterate through lighting locations
-        while(locationsTodo.size() != 0) {
+        while(lightingLocationsTodo.size() != 0) {
             // Get location we are iterating through
-            librazer::Device::lightingLocations currentLocation = locationsTodo.takeFirst();
+            librazer::Device::lightingLocations currentLocation = lightingLocationsTodo.takeFirst();
 
-            QLabel *text;
+            QLabel *lightingLocationLabel;
 
             // Set appropriate text
             if(currentLocation == librazer::Device::lighting) {
-                text = new QLabel("Lighting");
+                lightingLocationLabel = new QLabel("Lighting");
             } else if(currentLocation == librazer::Device::lighting_logo) {
-                text = new QLabel("Lighting Logo");
+                lightingLocationLabel = new QLabel("Lighting Logo");
             } else if(currentLocation == librazer::Device::lighting_scroll) {
-                text = new QLabel("Lighting Scroll");
+                lightingLocationLabel = new QLabel("Lighting Scroll");
             } else {
                 // Houston, we have a problem.
             }
 
-            QHBoxLayout *hbox = new QHBoxLayout(widget);
-            verticalLayout->addWidget(text);
-            verticalLayout->addLayout(hbox);
+            QHBoxLayout *lightingHBox = new QHBoxLayout(widget);
+            verticalLayout->addWidget(lightingLocationLabel);
+            verticalLayout->addLayout(lightingHBox);
+
             QComboBox *comboBox = new QComboBox;
             QLabel *brightnessLabel = NULL;
             QSlider *brightnessSlider = NULL;
@@ -180,7 +191,6 @@ void kcm_razerdrivers::fillList()
             //TODO Battery
             //TODO Keyboard stuff (dunno what exactly)
             //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
-            //TODO DPI
             //TODO poll rate
             //TODO Matrix stuff
 
@@ -250,7 +260,7 @@ void kcm_razerdrivers::fillList()
 
             // Only add combobox if a capability was actually added
             if(comboBox->count() != 0) {
-                hbox->addWidget(comboBox);
+                lightingHBox->addWidget(comboBox);
 
                 /* Color buttons */ //TODO Connect (plz be ez)
                 for(int i=1; i<=3; i++) {
@@ -263,7 +273,7 @@ void kcm_razerdrivers::fillList()
                     colorButton->setPalette(pal);
                     colorButton->setMaximumWidth(70);
                     colorButton->setObjectName("colorbutton" + QString::number(i));
-                    hbox->addWidget(colorButton);
+                    lightingHBox->addWidget(colorButton);
 
                     librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
                     if(capability.getNumColors() < i)
@@ -288,38 +298,81 @@ void kcm_razerdrivers::fillList()
 
         // DPI slider
         if(currentDevice->hasCapability("dpi")) {
-            QHBoxLayout *dpiHBox = new QHBoxLayout(widget);
-            QLabel *dpiLabel = new QLabel("DPI");
+            // HBox'es
+            QHBoxLayout *dpiXHBox = new QHBoxLayout(widget);
+            QHBoxLayout *dpiYHBox = new QHBoxLayout(widget);
+            QHBoxLayout *dpiHeaderHBox = new QHBoxLayout(widget);
+
+            // Header
+            QLabel *dpiHeader = new QLabel("DPI", widget);
+            dpiHeader->setFont(headerFont);
+            dpiHeaderHBox->addWidget(dpiHeader);
+
+            verticalLayout->addLayout(dpiHeaderHBox);
+
+            // Labels
+            QLabel *dpiXLabel = new QLabel("DPI X");
+            QLabel *dpiYLabel = new QLabel("DPI Y");
+
+            // Read-only textboxes
+            QTextEdit *dpiXText = new QTextEdit(widget);
+            QTextEdit *dpiYText = new QTextEdit(widget);
+            dpiXText->setMaximumWidth(60);
+            dpiYText->setMaximumWidth(60);
+            dpiXText->setMaximumHeight(30);
+            dpiYText->setMaximumHeight(30);
+            dpiXText->setObjectName("dpiXText");
+            dpiYText->setObjectName("dpiYText");
+            dpiXText->setEnabled(false);
+            dpiYText->setEnabled(false);
+
+            // Sliders
             QSlider *dpiXSlider = new QSlider(Qt::Horizontal, widget);
-            dpiXSlider->setObjectName("dpiX");
             QSlider *dpiYSlider = new QSlider(Qt::Horizontal, widget);
+            dpiXSlider->setObjectName("dpiX");
             dpiYSlider->setObjectName("dpiY");
+
+            // Sync checkbox
             QLabel *dpiSyncLabel = new QLabel("Lock X/Y", widget);
             QCheckBox *dpiSyncCheckbox = new QCheckBox(widget);
 
+            // Get the current DPI and set the slider&text
             QList<int> currDPI = currentDevice->getDPI();
-            qDebug() << currDPI;
+            dpiXSlider->setValue(currDPI[0]/100);
+            dpiYSlider->setValue(currDPI[1]/100);
+            dpiXText->setText(QString::number(currDPI[0]));
+            dpiYText->setText(QString::number(currDPI[1]));
 
-            //TODO Do a dynamic max?
-            dpiXSlider->setMaximum(16000);
-            dpiYSlider->setMaximum(16000);
+            //TODO Do a dynamic max? Needs daemon support for max or test it out by setting to 50000 and then get the value. Would that work?
+            dpiXSlider->setMaximum(160);
+            dpiYSlider->setMaximum(160);
 
-            dpiXSlider->setValue(currDPI[0]);
-            dpiYSlider->setValue(currDPI[1]);
+            dpiXSlider->setTickInterval(10);
+            dpiYSlider->setTickInterval(10);
+            dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
+            dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
 
             dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
 
-            dpiHBox->addWidget(dpiLabel);
-            dpiHBox->addWidget(dpiXSlider);
-            dpiHBox->addWidget(dpiYSlider);
-            dpiHBox->addWidget(dpiSyncLabel);
-            dpiHBox->addWidget(dpiSyncCheckbox);
+            dpiXHBox->addWidget(dpiXLabel);
+            dpiXHBox->addWidget(dpiXText);
+            dpiXHBox->addWidget(dpiXSlider);
+
+            dpiYHBox->addWidget(dpiYLabel);
+            dpiYHBox->addWidget(dpiYText);
+            dpiYHBox->addWidget(dpiYSlider);
+
+            dpiHeaderHBox->addWidget(dpiSyncLabel);
+            dpiHeaderHBox->addWidget(dpiSyncCheckbox);
+            // TODO Better solution for checkbox
+            dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
             connect(dpiXSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
             connect(dpiYSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
             connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &kcm_razerdrivers::dpiSyncCheckbox);
 
-            verticalLayout->addLayout(dpiHBox);
+            verticalLayout->addLayout(dpiXHBox);
+            verticalLayout->addLayout(dpiYHBox);
         }
 
         /* Spacer to bottom */
@@ -585,39 +638,54 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
     dev->setLogoBrightness(value);
 }
 
-void kcm_razerdrivers::dpiChanged(int value)
+void kcm_razerdrivers::dpiChanged(int orig_value)
 {
-    std::cout << value << std::endl;
+    int value = orig_value*100;
+
     QSlider *sender = qobject_cast<QSlider*>(QObject::sender());
+
+    qDebug() << value;
+    qDebug() << sender->objectName();
+
+    // if DPI should be synced
     if(syncDpi) {
         if(sender->objectName() == "dpiX") {
+            // set the other slider
             QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
-            slider->setValue(value);
+            slider->setValue(orig_value);
 
+            // get device pointer
             RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
             librazer::Device *dev = devices.value(item->getSerial());
+            // set DPI
             dev->setDPI(value, value); // set for both X & Y
         } else {
+            // just set the slider (as the rest was done already or will be done)
             QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
-            slider->setValue(value);
+            slider->setValue(orig_value);
         }
-    } else {
+    } /* if DPI should NOT be synced */ else {
+        // get device pointer
         RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
         librazer::Device *dev = devices.value(item->getSerial());
-        dev->setDPI(value, value); // set for both X & Y
+
+        // set DPI (with value from other slider)
         if(sender->objectName() == "dpiX") {
             QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
-            dev->setDPI(value, slider->value()); // set for both X & Y
+            dev->setDPI(value, slider->value()*100);
         } else {
             QSlider *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
-            dev->setDPI(slider->value(), value); // set for both X & Y
+            dev->setDPI(slider->value()*100, value);
         }
     }
-    qDebug() << sender->objectName();
+    // Update textbox with new value
+    QTextEdit *dpitextbox = sender->parentWidget()->findChild<QTextEdit*>(sender->objectName() + "Text");
+    dpitextbox->setText(QString::number(value));
 }
 
 void kcm_razerdrivers::dpiSyncCheckbox(bool checked)
 {
+    // TODO Sync DPI here? Or just at next change (current behaviour)?
     syncDpi = checked;
 }
 

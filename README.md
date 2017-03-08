@@ -9,13 +9,13 @@ Standalone Qt application for configuring your Razer devices under GNU/Linux. **
 * Has a nice (the official) icon
 * Can set the brightness of all devices
 * Can set some (you could say "most") effects
-* Display correct "thumbnails" for devices (coming)
-* Converted to normal Qt app instead of a KCM
+* Display correct "thumbnails" for devices
+* Can set the DPI of mice
 
 **Otherwise ~~completely~~ *mostly* unusable**
 
 ## TODO
 
-* Actually set the colors
 * Implement keyboard gui (individual lighting etc)
+* Make images in the device list bigger (probably is pretty complicated with the KPageWidget I am using)
 * **Much** more
