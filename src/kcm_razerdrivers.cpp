@@ -293,7 +293,7 @@ void kcm_razerdrivers::fillList()
                         name = "Right";
                     QRadioButton *radio = new QRadioButton(name, widget);
                     radio->setObjectName(QString::number(currentLocation) + "_radiobutton" + QString::number(i));
-//                     radio->hide();
+                    radio->hide();
                     lightingHBox->addWidget(radio);
                 }
             }
