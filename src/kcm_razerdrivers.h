@@ -23,6 +23,7 @@
 #include "ui_daemon_not_available.h"
 #include "razerimagedownloader.h"
 #include "librazer/librazer.h"
+#include <QComboBox>
 
 class kcm_razerdrivers : public QWidget
 {
@@ -48,6 +49,8 @@ public slots:
     void dpiChanged(int value);
     void dpiSyncCheckbox(bool checked);
 
+    void activeCheckbox(bool checked);
+
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
 private:
@@ -58,7 +61,7 @@ private:
 
     QPair<librazer::Device*, QString> commonCombo(int index);
     void getRazerDevices(void);
-    QColor getColorForButton(int num);
+    QColor getColorForButton(int num, librazer::Device::lightingLocations location);
     void fillList();
     void showError(QString error);
     void showInfo(QString info);
