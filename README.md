@@ -16,6 +16,18 @@ make
 * Qt5 (+ the modules: DBus, Network & Xml)
 * kwidgetsaddons
 * razer-drivers
+* cmake
+* extra-cmake-modules
+
+### Ubuntu
+```
+sudo apt install cmake extra-cmake-modules qt5-default libkf5configwidgets-dev
+```
+
+### Arch Linux
+```
+sudo pacman -S --needed cmake extra-cmake-modules qt5-base kconfigwidgets
+```
 
 ## Current status
 * librazer shared library (will be split from this repo when it is halfway usable)
