@@ -127,8 +127,7 @@ void kcm_razerdrivers::fillList()
         qDebug() << serial;
         qDebug() << name;
 
-        // TODO needed?
-        // Insert current device with serial lookup into a QHash
+        // Insert current device pointer with serial lookup into a QHash
         devices.insert(serial, currentDevice);
 
         // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
@@ -175,6 +174,7 @@ void kcm_razerdrivers::fillList()
                 lightingLocationLabel = new QLabel("Lighting Scroll");
             } else {
                 // Houston, we have a problem.
+                showError("Unhanded lighting location in fillList()");
             }
 
             QHBoxLayout *lightingHBox = new QHBoxLayout(widget);
@@ -296,14 +296,15 @@ void kcm_razerdrivers::fillList()
                     radio->setObjectName(QString::number(currentLocation) + "_radiobutton" + QString::number(i));
                     if(i==1) // set the 'left' checkbox to activated
                         radio->setChecked(true);
+                    // hide by default
                     radio->hide();
                     lightingHBox->addWidget(radio);
                     if(currentLocation == librazer::Device::lightingLocation::lighting) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectStandardLoc);
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonStandard);
                     } else if(currentLocation == librazer::Device::lightingLocation::lighting_logo) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectLogoLoc);
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonLogo);
                     } else if(currentLocation == librazer::Device::lightingLocation::lighting_scroll) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectScrollLoc);
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonScroll);
                     } else {
                         qDebug() << "ERROR!! New lightingLocation which is not handled with the radio buttons.";
                     }
@@ -429,7 +430,6 @@ void kcm_razerdrivers::fillList()
 
         // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
         if(!currentDevice->getPngFilename().isEmpty()) {
-            //std::cout << currentDevice->getPngFilename().toStdString() << std::endl;
             QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
             item->setIcon(*icon);
         }
@@ -446,7 +446,7 @@ void kcm_razerdrivers::fillList()
 void kcm_razerdrivers::imageDownloaded(QString &serial, QString &filename)
 {
     //TODO: Set image at runtime
-    std::cout << "Download of image completed for " << serial.toStdString() << " at " << filename.toStdString() << std::endl;
+    qDebug() << "Download of image completed for " << serial << " at " << filename;
 }
 
 void kcm_razerdrivers::toggleSync(bool sync)
@@ -466,7 +466,7 @@ void kcm_razerdrivers::colorButtonClicked()
     std::cout << "color dialog" << std::endl;
 
     QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
-    std::cout << sender->objectName().toStdString() << std::endl;
+    qDebug() << sender->objectName();
 
     QPalette pal(sender->palette());
 
@@ -478,7 +478,7 @@ void kcm_razerdrivers::colorButtonClicked()
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
     } else {
-        std::cout << "User cancelled the dialog." << std::endl;
+        qDebug() << "User cancelled the dialog.";
     }
     // objectName is location(int)_colorbuttonNR(1-3)
     // TODO: We shouldn't assume the world to be perfect!
@@ -487,17 +487,14 @@ void kcm_razerdrivers::colorButtonClicked()
 
 QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
 {
-    return commonCombo(index, qobject_cast<QComboBox*>(QObject::sender()));
-}
-
-QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index, QComboBox *sender)
-{
+    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
 
+    // Show/hide the color buttons
     if(capability.getNumColors() == 0) { // hide all
         for(int i=1; i<=3; i++)
             item->widget()->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->hide();
@@ -510,6 +507,7 @@ QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index, QComb
         }
     }
 
+    // Show/hide the wave radiobuttons
     if(capability.isWave() == 0) {
         item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->hide();
         item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->hide();
@@ -529,44 +527,7 @@ void kcm_razerdrivers::standardCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting;
-
-    if(identifier == "lighting_breath_single") {
-        QColor c = getColorForButton(1, zone);
-        dev->setBreathSingle(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_breath_dual") {
-        QColor c1 = getColorForButton(1, zone);
-        QColor c2 = getColorForButton(2, zone);
-        dev->setBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
-    } else if(identifier == "lighting_breath_triple") {
-        QColor c1 = getColorForButton(1, zone);
-        QColor c2 = getColorForButton(2, zone);
-        QColor c3 = getColorForButton(3, zone);
-        dev->setBreathTriple(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue(), c3.red(), c3.green(), c3.blue());
-    } else if(identifier == "lighting_breath_random") {
-        dev->setBreathRandom();
-    } else if(identifier == "lighting_wave") {
-        dev->setWave(getWaveDirection());
-    } else if(identifier == "lighting_reactive") {
-        QColor c = getColorForButton(1, zone);
-        dev->setReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
-    } else if(identifier == "lighting_none") {
-        dev->setNone();
-    } else if(identifier == "lighting_spectrum") {
-        dev->setSpectrum();
-    } else if(identifier == "lighting_static") {
-        QColor c = getColorForButton(1, zone);
-        dev->setStatic(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_ripple") {
-        QColor c = getColorForButton(1, zone);
-        dev->setRipple(c.red(), c.green(), c.blue(), librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
-    } else if(identifier == "lighting_ripple_random") {
-        dev->setRippleRandomColor(librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
-    } else if(identifier == "lighting_pulsate") {
-        dev->setPulsate();
-    } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
-    }
+    applyEffectStandardLoc(identifier, dev);
 }
 
 void kcm_razerdrivers::scrollCombo(int index)
@@ -577,36 +538,7 @@ void kcm_razerdrivers::scrollCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_scroll;
-
-    if(identifier == "lighting_scroll_blinking") {
-        QColor c = getColorForButton(1, zone);
-        dev->setScrollBlinking(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_scroll_pulsate") {
-        QColor c = getColorForButton(1, zone);
-        dev->setScrollPulsate(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_scroll_spectrum") {
-        dev->setScrollSpectrum();
-    } else if(identifier == "lighting_scroll_static") {
-        QColor c = getColorForButton(1, zone);
-        dev->setScrollStatic(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_scroll_none") {
-        dev->setScrollNone();
-    } else if(identifier == "lighting_scroll_reactive") {
-        QColor c = getColorForButton(1, zone);
-        dev->setScrollReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
-    } else if(identifier == "lighting_scroll_breath_single") {
-        QColor c = getColorForButton(1, zone);
-        dev->setScrollBreathSingle(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_scroll_breath_dual") {
-        QColor c1 = getColorForButton(1, zone);
-        QColor c2 = getColorForButton(2, zone);
-        dev->setScrollBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
-    } else if(identifier == "lighting_scroll_breath_random") {
-        dev->setScrollBreathRandom();
-    } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
-    }
+    applyEffectScrollLoc(identifier, dev);
 }
 
 void kcm_razerdrivers::logoCombo(int index)
@@ -617,36 +549,7 @@ void kcm_razerdrivers::logoCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_logo;
-
-    if(identifier == "lighting_logo_blinking") {
-        QColor c = getColorForButton(1, zone);
-        dev->setLogoBlinking(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_logo_pulsate") {
-        QColor c = getColorForButton(1, zone);
-        dev->setLogoPulsate(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_logo_spectrum") {
-        dev->setLogoSpectrum();
-    } else if(identifier == "lighting_logo_static") {
-        QColor c = getColorForButton(1, zone);
-        dev->setLogoStatic(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_logo_none") {
-        dev->setLogoNone();
-    } else if(identifier == "lighting_logo_reactive") {
-        QColor c = getColorForButton(1, zone);
-        dev->setLogoReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
-    } else if(identifier == "lighting_logo_breath_single") {
-        QColor c = getColorForButton(1, zone);
-        dev->setLogoBreathSingle(c.red(), c.green(), c.blue());
-    } else if(identifier == "lighting_logo_breath_dual") {
-        QColor c1 = getColorForButton(1, zone);
-        QColor c2 = getColorForButton(2, zone);
-        dev->setLogoBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
-    } else if(identifier == "lighting_logo_breath_random") {
-        dev->setLogoBreathRandom();
-    } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
-    }
+    applyEffectLogoLoc(identifier, dev);
 }
 
 QColor kcm_razerdrivers::getColorForButton(int num, librazer::Device::lightingLocation location)
@@ -656,12 +559,11 @@ QColor kcm_razerdrivers::getColorForButton(int num, librazer::Device::lightingLo
     return pal.color(QPalette::Button);
 }
 
-const int kcm_razerdrivers::getWaveDirection()
+const int kcm_razerdrivers::getWaveDirection(librazer::Device::lightingLocation location)
 {
-    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
 
-    return item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
+    return item->widget()->findChild<QRadioButton*>(QString::number(location) + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
 }
 
 void kcm_razerdrivers::brightnessChanged(int value)
@@ -736,25 +638,113 @@ void kcm_razerdrivers::dpiChanged(int orig_value)
     dpitextbox->setText(QString::number(value));
 }
 
-void kcm_razerdrivers::applyEffectStandardLoc(bool checked)
+void kcm_razerdrivers::applyEffectStandardLoc(QString identifier, librazer::Device *device)
 {
-    if(checked) {
-        applyEffect(librazer::Device::lightingLocation::lighting);
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting;
 
+    if(identifier == "lighting_breath_single") {
+        QColor c = getColorForButton(1, zone);
+        device->setBreathSingle(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_breath_dual") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        device->setBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+    } else if(identifier == "lighting_breath_triple") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        QColor c3 = getColorForButton(3, zone);
+        device->setBreathTriple(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue(), c3.red(), c3.green(), c3.blue());
+    } else if(identifier == "lighting_breath_random") {
+        device->setBreathRandom();
+    } else if(identifier == "lighting_wave") {
+        device->setWave(getWaveDirection(zone));
+    } else if(identifier == "lighting_reactive") {
+        QColor c = getColorForButton(1, zone);
+        device->setReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_none") {
+        device->setNone();
+    } else if(identifier == "lighting_spectrum") {
+        device->setSpectrum();
+    } else if(identifier == "lighting_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_ripple") {
+        QColor c = getColorForButton(1, zone);
+        device->setRipple(c.red(), c.green(), c.blue(), librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
+    } else if(identifier == "lighting_ripple_random") {
+        device->setRippleRandomColor(librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
+    } else if(identifier == "lighting_pulsate") {
+        device->setPulsate();
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }
 }
 
-void kcm_razerdrivers::applyEffectLogoLoc(bool checked)
+void kcm_razerdrivers::applyEffectLogoLoc(QString identifier, librazer::Device *device)
 {
-    if(checked) {
-        applyEffect(librazer::Device::lightingLocation::lighting_logo);
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_logo;
+
+    if(identifier == "lighting_logo_blinking") {
+        QColor c = getColorForButton(1, zone);
+        device->setLogoBlinking(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_pulsate") {
+        QColor c = getColorForButton(1, zone);
+        device->setLogoPulsate(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_spectrum") {
+        device->setLogoSpectrum();
+    } else if(identifier == "lighting_logo_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setLogoStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_none") {
+        device->setLogoNone();
+    } else if(identifier == "lighting_logo_reactive") {
+        QColor c = getColorForButton(1, zone);
+        device->setLogoReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_logo_breath_single") {
+        QColor c = getColorForButton(1, zone);
+        device->setLogoBreathSingle(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_logo_breath_dual") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        device->setLogoBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+    } else if(identifier == "lighting_logo_breath_random") {
+        device->setLogoBreathRandom();
+    } else {
+        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
     }
 }
 
-void kcm_razerdrivers::applyEffectScrollLoc(bool checked)
+void kcm_razerdrivers::applyEffectScrollLoc(QString identifier, librazer::Device *device)
 {
-    if(checked) {
-        applyEffect(librazer::Device::lightingLocation::lighting_scroll);
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_scroll;
+
+    if(identifier == "lighting_scroll_blinking") {
+        QColor c = getColorForButton(1, zone);
+        device->setScrollBlinking(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_pulsate") {
+        QColor c = getColorForButton(1, zone);
+        device->setScrollPulsate(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_spectrum") {
+        device->setScrollSpectrum();
+    } else if(identifier == "lighting_scroll_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setScrollStatic(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_none") {
+        device->setScrollNone();
+    } else if(identifier == "lighting_scroll_reactive") {
+        QColor c = getColorForButton(1, zone);
+        device->setScrollReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_scroll_breath_single") {
+        QColor c = getColorForButton(1, zone);
+        device->setScrollBreathSingle(c.red(), c.green(), c.blue());
+    } else if(identifier == "lighting_scroll_breath_dual") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        device->setScrollBreathDual(c1.red(), c1.green(), c1.blue(), c2.red(), c2.green(), c2.blue());
+    } else if(identifier == "lighting_scroll_breath_random") {
+        device->setScrollBreathRandom();
+    } else {
+        qDebug() << identifier << " is not implemented yet!";
     }
 }
 
@@ -763,14 +753,45 @@ void kcm_razerdrivers::applyEffect(librazer::Device::lightingLocation loc)
 {
     qDebug() << "applyEffect()";
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
-    QComboBox *box = item->widget()->findChild<QComboBox*>(QString::number(loc));
-    qDebug() << "APPLY EFFECT NOW!";
-//     commonCombo(
+    QComboBox *combobox = item->widget()->findChild<QComboBox*>(QString::number(loc));
+
+    librazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<librazer::RazerCapability>();
+    QString identifier = capability.getIdentifier();
+
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    if(loc == librazer::Device::lightingLocation::lighting) {
+        applyEffectStandardLoc(identifier, dev);
+    } else if(loc == librazer::Device::lightingLocation::lighting_logo) {
+        applyEffectLogoLoc(identifier, dev);
+    } else if(loc == librazer::Device::lightingLocation::lighting_scroll) {
+        applyEffectScrollLoc(identifier, dev);
+    } else {
+        showError("Unhandled lighting location in applyEffect()");
+    }
+}
+
+void kcm_razerdrivers::waveRadioButtonStandard(bool enabled)
+{
+    if(enabled)
+        applyEffect(librazer::Device::lightingLocation::lighting);
+}
+
+void kcm_razerdrivers::waveRadioButtonLogo(bool enabled)
+{
+    if(enabled)
+        applyEffect(librazer::Device::lightingLocation::lighting_logo);
+}
+
+void kcm_razerdrivers::waveRadioButtonScroll(bool enabled)
+{
+    if(enabled)
+        applyEffect(librazer::Device::lightingLocation::lighting_scroll);
 }
 
 void kcm_razerdrivers::dpiSyncCheckbox(bool checked)
 {
-    // TODO Sync DPI here? Or just at next change (current behaviour)?
+    // TODO Sync DPI right here? Or just at next change (current behaviour)?
     syncDpi = checked;
 }
 

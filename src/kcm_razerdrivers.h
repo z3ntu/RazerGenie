@@ -32,29 +32,35 @@ public:
     kcm_razerdrivers(QWidget* parent = 0);
     ~kcm_razerdrivers();
 public slots:
-    void toggleSync(bool);
-    void toggleOffOnScreesaver(bool on);
     void imageDownloaded(QString &serial, QString &filename);
 
+    // General checkboxes
+    void toggleSync(bool);
+    void toggleOffOnScreesaver(bool on);
+
+    // Color buttons
     void colorButtonClicked();
 
+    // Effect comboboxes
     void standardCombo(int index);
     void scrollCombo(int index);
     void logoCombo(int index);
 
+    // Brightness sliders
     void brightnessChanged(int value);
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
 
+    void waveRadioButtonStandard(bool enabled);
+    void waveRadioButtonLogo(bool enabled);
+    void waveRadioButtonScroll(bool enabled);
+
+    // DPI checkbox & slider
     void dpiChanged(int value);
     void dpiSyncCheckbox(bool checked);
 
+    // 'Set active' checkbox
     void activeCheckbox(bool checked);
-
-    void applyEffect(librazer::Device::lightingLocation loc);
-    void applyEffectStandardLoc(bool checked);
-    void applyEffectLogoLoc(bool checked);
-    void applyEffectScrollLoc(bool checked);
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
@@ -64,14 +70,20 @@ private:
     void setupUi();
     void setupErrorUi();
 
-    QPair<librazer::Device*, QString> commonCombo(int index);
-    QPair<librazer::Device*, QString> commonCombo(int index, QComboBox *sender);
-    void getRazerDevices(void);
-    QColor getColorForButton(int num, librazer::Device::lightingLocation location);
-    const int getWaveDirection();
     void fillList();
     void showError(QString error);
     void showInfo(QString info);
+
+    QPair<librazer::Device*, QString> commonCombo(int index);
+
+    void getRazerDevices(void);
+    QColor getColorForButton(int num, librazer::Device::lightingLocation location);
+    const int getWaveDirection(librazer::Device::lightingLocation location);
+
+    void applyEffect(librazer::Device::lightingLocation location);
+    void applyEffectStandardLoc(QString identifier, librazer::Device *device);
+    void applyEffectLogoLoc(QString identifier, librazer::Device *device);
+    void applyEffectScrollLoc(QString identifier, librazer::Device *device);
 
     bool syncDpi = true;
 
