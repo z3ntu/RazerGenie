@@ -25,12 +25,19 @@ RazerCapability::RazerCapability()
     this->identifier = "";
     this->displayString = "";
     this->numColors = 0;
+    this->wave = false;
 }
 RazerCapability::RazerCapability(QString identifier, QString displayString, int numColors)
 {
     this->identifier = identifier;
     this->displayString = displayString;
     this->numColors = numColors;
+    this->wave = false;
+}
+
+RazerCapability::RazerCapability(QString identifier, QString displayString, bool isWave) : RazerCapability(identifier, displayString, 0)
+{
+    this->wave = isWave;
 }
 
 RazerCapability::RazerCapability(const RazerCapability &other)
@@ -38,6 +45,7 @@ RazerCapability::RazerCapability(const RazerCapability &other)
     this->identifier = other.identifier;
     this->displayString = other.displayString;
     this->numColors = other.numColors;
+    this->wave = other.wave;
 }
 
 RazerCapability::~RazerCapability()
@@ -57,4 +65,9 @@ QString RazerCapability::getDisplayString() const
 {
     return displayString;
 }
+bool RazerCapability::isWave() const
+{
+    return wave;
+}
+
 }

@@ -29,15 +29,18 @@ class RazerCapability
 public:
     RazerCapability();
     RazerCapability(QString identifier, QString displayString, int numColors);
+    RazerCapability(QString identifier, QString displayString, bool wave);
     RazerCapability(const RazerCapability &other);
     ~RazerCapability();
     int getNumColors() const;
     QString getIdentifier() const;
     QString getDisplayString() const;
+    bool isWave() const;
 private:
     int numColors;
     QString identifier;
     QString displayString;
+    bool wave;
 };
 }
 

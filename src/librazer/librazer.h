@@ -55,7 +55,7 @@ const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_dual", "Breath Dual", 2),
     RazerCapability("lighting_breath_triple", "Breath Triple", 3),
     RazerCapability("lighting_breath_random", "Breath Random", 0),
-    RazerCapability("lighting_wave", "Wave", 0), // Needs "direction"
+    RazerCapability("lighting_wave", "Wave", true),
     RazerCapability("lighting_reactive", "Reactive", 1),
     RazerCapability("lighting_none", "None", 0),
     RazerCapability("lighting_spectrum", "Spectrum", 0),
@@ -221,7 +221,7 @@ public:
     double getScrollBrightness();
 
 
-    enum lightingLocations {
+    enum lightingLocation {
         lighting, lighting_logo, lighting_scroll
     };
 };

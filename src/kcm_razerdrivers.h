@@ -37,11 +37,11 @@ public slots:
     void imageDownloaded(QString &serial, QString &filename);
 
     void colorButtonClicked();
-//     void logoColorButton();
-//     void scrollColorButton();
+
     void standardCombo(int index);
     void scrollCombo(int index);
     void logoCombo(int index);
+
     void brightnessChanged(int value);
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
@@ -50,6 +50,11 @@ public slots:
     void dpiSyncCheckbox(bool checked);
 
     void activeCheckbox(bool checked);
+
+    void applyEffect(librazer::Device::lightingLocation loc);
+    void applyEffectStandardLoc(bool checked);
+    void applyEffectLogoLoc(bool checked);
+    void applyEffectScrollLoc(bool checked);
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
@@ -60,8 +65,10 @@ private:
     void setupErrorUi();
 
     QPair<librazer::Device*, QString> commonCombo(int index);
+    QPair<librazer::Device*, QString> commonCombo(int index, QComboBox *sender);
     void getRazerDevices(void);
-    QColor getColorForButton(int num, librazer::Device::lightingLocations location);
+    QColor getColorForButton(int num, librazer::Device::lightingLocation location);
+    const int getWaveDirection();
     void fillList();
     void showError(QString error);
     void showInfo(QString info);

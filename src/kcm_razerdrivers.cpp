@@ -139,7 +139,7 @@ void kcm_razerdrivers::fillList()
         QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
         // List of locations to iterate through
-        QList<librazer::Device::lightingLocations> lightingLocationsTodo;
+        QList<librazer::Device::lightingLocation> lightingLocationsTodo;
 
         // Check what lighting locations the device has
         if(currentDevice->hasCapability("lighting"))
@@ -162,7 +162,7 @@ void kcm_razerdrivers::fillList()
         // Iterate through lighting locations
         while(lightingLocationsTodo.size() != 0) {
             // Get location we are iterating through
-            librazer::Device::lightingLocations currentLocation = lightingLocationsTodo.takeFirst();
+            librazer::Device::lightingLocation currentLocation = lightingLocationsTodo.takeFirst();
 
             QLabel *lightingLocationLabel;
 
@@ -186,6 +186,7 @@ void kcm_razerdrivers::fillList()
             QSlider *brightnessSlider = NULL;
 
             comboBox->setObjectName(QString::number(currentLocation));
+            qDebug() << "CURRENT LOCATION: " << QString::number(currentLocation);
             //TODO More elegant solution instead of the sizePolicy?
             comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
@@ -293,8 +294,19 @@ void kcm_razerdrivers::fillList()
                         name = "Right";
                     QRadioButton *radio = new QRadioButton(name, widget);
                     radio->setObjectName(QString::number(currentLocation) + "_radiobutton" + QString::number(i));
+                    if(i==1) // set the 'left' checkbox to activated
+                        radio->setChecked(true);
                     radio->hide();
                     lightingHBox->addWidget(radio);
+                    if(currentLocation == librazer::Device::lightingLocation::lighting) {
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectStandardLoc);
+                    } else if(currentLocation == librazer::Device::lightingLocation::lighting_logo) {
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectLogoLoc);
+                    } else if(currentLocation == librazer::Device::lightingLocation::lighting_scroll) {
+                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::applyEffectScrollLoc);
+                    } else {
+                        qDebug() << "ERROR!! New lightingLocation which is not handled with the radio buttons.";
+                    }
                 }
             }
 
@@ -388,10 +400,10 @@ void kcm_razerdrivers::fillList()
             dpiYHBox->addWidget(dpiYText);
             dpiYHBox->addWidget(dpiYSlider);
 
-            dpiHeaderHBox->addWidget(dpiSyncLabel);
-            dpiHeaderHBox->addWidget(dpiSyncCheckbox);
-            // TODO Better solution/location for 'Sync' checkbox
             dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+            dpiHeaderHBox->addWidget(dpiSyncLabel);
+            // TODO Better solution/location for 'Sync' checkbox
+            dpiHeaderHBox->addWidget(dpiSyncCheckbox);
 
             connect(dpiXSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
             connect(dpiYSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
@@ -468,11 +480,18 @@ void kcm_razerdrivers::colorButtonClicked()
     } else {
         std::cout << "User cancelled the dialog." << std::endl;
     }
+    // objectName is location(int)_colorbuttonNR(1-3)
+    // TODO: We shouldn't assume the world to be perfect!
+    applyEffect(static_cast<librazer::Device::lightingLocation>(sender->objectName().split("_")[0].toInt()));
 }
 
 QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
 {
-    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
+    return commonCombo(index, qobject_cast<QComboBox*>(QObject::sender()));
+}
+
+QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index, QComboBox *sender)
+{
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
 
@@ -491,6 +510,14 @@ QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
         }
     }
 
+    if(capability.isWave() == 0) {
+        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->hide();
+        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->hide();
+    } else {
+        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->show();
+        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->show();
+    }
+
     return qMakePair(dev, identifier);
 }
 
@@ -502,7 +529,7 @@ void kcm_razerdrivers::standardCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocations zone = librazer::Device::lightingLocations::lighting;
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting;
 
     if(identifier == "lighting_breath_single") {
         QColor c = getColorForButton(1, zone);
@@ -519,7 +546,7 @@ void kcm_razerdrivers::standardCombo(int index)
     } else if(identifier == "lighting_breath_random") {
         dev->setBreathRandom();
     } else if(identifier == "lighting_wave") {
-        dev->setWave(librazer::WAVE_RIGHT); // TODO Left/right button
+        dev->setWave(getWaveDirection());
     } else if(identifier == "lighting_reactive") {
         QColor c = getColorForButton(1, zone);
         dev->setReactive(c.red(), c.green(), c.blue(), librazer::REACTIVE_500MS); // TODO Configure speed?
@@ -550,7 +577,7 @@ void kcm_razerdrivers::scrollCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocations zone = librazer::Device::lightingLocations::lighting_scroll;
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_scroll;
 
     if(identifier == "lighting_scroll_blinking") {
         QColor c = getColorForButton(1, zone);
@@ -590,7 +617,7 @@ void kcm_razerdrivers::logoCombo(int index)
 
     qDebug() << tuple;
 
-    librazer::Device::lightingLocations zone = librazer::Device::lightingLocations::lighting_logo;
+    librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_logo;
 
     if(identifier == "lighting_logo_blinking") {
         QColor c = getColorForButton(1, zone);
@@ -622,12 +649,19 @@ void kcm_razerdrivers::logoCombo(int index)
     }
 }
 
-QColor kcm_razerdrivers::getColorForButton(int num, librazer::Device::lightingLocations location)
+QColor kcm_razerdrivers::getColorForButton(int num, librazer::Device::lightingLocation location)
 {
-    //TODO Probably doesn't work with multiple lighting zones, TEST!
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     QPalette pal = item->widget()->findChild<QPushButton*>(QString::number(location) + "_colorbutton" + QString::number(num))->palette();
     return pal.color(QPalette::Button);
+}
+
+const int kcm_razerdrivers::getWaveDirection()
+{
+    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+
+    return item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
 }
 
 void kcm_razerdrivers::brightnessChanged(int value)
@@ -659,7 +693,7 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
 
 void kcm_razerdrivers::dpiChanged(int orig_value)
 {
-    int value = orig_value*100;
+    int value = orig_value * 100;
 
     QSlider *sender = qobject_cast<QSlider*>(QObject::sender());
 
@@ -700,6 +734,38 @@ void kcm_razerdrivers::dpiChanged(int orig_value)
     // Update textbox with new value
     QTextEdit *dpitextbox = sender->parentWidget()->findChild<QTextEdit*>(sender->objectName() + "Text");
     dpitextbox->setText(QString::number(value));
+}
+
+void kcm_razerdrivers::applyEffectStandardLoc(bool checked)
+{
+    if(checked) {
+        applyEffect(librazer::Device::lightingLocation::lighting);
+
+    }
+}
+
+void kcm_razerdrivers::applyEffectLogoLoc(bool checked)
+{
+    if(checked) {
+        applyEffect(librazer::Device::lightingLocation::lighting_logo);
+    }
+}
+
+void kcm_razerdrivers::applyEffectScrollLoc(bool checked)
+{
+    if(checked) {
+        applyEffect(librazer::Device::lightingLocation::lighting_scroll);
+    }
+}
+
+
+void kcm_razerdrivers::applyEffect(librazer::Device::lightingLocation loc)
+{
+    qDebug() << "applyEffect()";
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    QComboBox *box = item->widget()->findChild<QComboBox*>(QString::number(loc));
+    qDebug() << "APPLY EFFECT NOW!";
+//     commonCombo(
 }
 
 void kcm_razerdrivers::dpiSyncCheckbox(bool checked)
