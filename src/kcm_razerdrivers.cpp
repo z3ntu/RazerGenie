@@ -90,14 +90,14 @@ void kcm_razerdrivers::setupUi()
 
 void kcm_razerdrivers::dbusServiceRegistered(const QString &serviceName)
 {
-    std::cout << "Registered! " << serviceName.toStdString() << std::endl;
+    qDebug() << "Registered! " << serviceName;
     showInfo("Please restart the application to see the interface for now.");
 //     setupUi();
 }
 
 void kcm_razerdrivers::dbusServiceUnregistered(const QString &serviceName)
 {
-    std::cout << "Unregistered! " << serviceName.toStdString() << std::endl;
+    qDebug() << "Unregistered! " << serviceName;
     showError("The dbus service connection was lost. Please restart the daemon (\"razer-service\")");
 }
 
@@ -463,7 +463,7 @@ void kcm_razerdrivers::toggleOffOnScreesaver(bool on)
 
 void kcm_razerdrivers::colorButtonClicked()
 {
-    std::cout << "color dialog" << std::endl;
+    qDebug() << "color dialog";
 
     QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
     qDebug() << sender->objectName();
@@ -474,7 +474,7 @@ void kcm_razerdrivers::colorButtonClicked()
 
     QColor color = QColorDialog::getColor(oldColor);
     if(color.isValid()) {
-        std::cout << color.name().toStdString() << std::endl;
+        qDebug() << color.name();
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
     } else {
@@ -568,7 +568,7 @@ const int kcm_razerdrivers::getWaveDirection(librazer::Device::lightingLocation 
 
 void kcm_razerdrivers::brightnessChanged(int value)
 {
-    std::cout << value << std::endl;
+    qDebug() << value;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
@@ -577,7 +577,7 @@ void kcm_razerdrivers::brightnessChanged(int value)
 
 void kcm_razerdrivers::scrollBrightnessChanged(int value)
 {
-    std::cout << value << std::endl;
+    qDebug() << value;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
@@ -586,7 +586,7 @@ void kcm_razerdrivers::scrollBrightnessChanged(int value)
 
 void kcm_razerdrivers::logoBrightnessChanged(int value)
 {
-    std::cout << value << std::endl;
+    qDebug() << value;
 
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
@@ -676,7 +676,7 @@ void kcm_razerdrivers::applyEffectStandardLoc(QString identifier, librazer::Devi
     } else if(identifier == "lighting_pulsate") {
         device->setPulsate();
     } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+        qDebug() << identifier << " is not implemented yet!";
     }
 }
 
@@ -710,7 +710,7 @@ void kcm_razerdrivers::applyEffectLogoLoc(QString identifier, librazer::Device *
     } else if(identifier == "lighting_logo_breath_random") {
         device->setLogoBreathRandom();
     } else {
-        std::cout << identifier.toStdString() << " is not implemented yet!" << std::endl;
+        qDebug() << identifier << " is not implemented yet!";
     }
 }
 

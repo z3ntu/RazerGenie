@@ -78,7 +78,7 @@ RazerImageDownloader::~RazerImageDownloader()
 
 void RazerImageDownloader::finished(QNetworkReply* reply)
 {
-    std::cout << "Finished downloading the picture." << std::endl;
+    qDebug() << "Finished downloading the picture.";
 
     _file->open(QFile::WriteOnly);
     _file->write(reply->readAll());

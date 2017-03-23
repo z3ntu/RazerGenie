@@ -161,7 +161,7 @@ bool syncEffects(bool yes)
     m.setArguments(args);
 
     bool queued = QDBusConnection::sessionBus().send(m);
-    std::cout << "Queued: " << queued << std::endl;
+    qDebug() << "Queued: " << queued;
     return queued;
 }
 
@@ -240,12 +240,12 @@ Device::~Device()
 // -- SLOTS --
 void Device::deviceAdded()
 {
-    std::cout << "DEVICE ADDED" << std::endl;
+    qDebug() << "DEVICE ADDED";
 }
 
 void Device::deviceRemoved()
 {
-    std::cout << "DEVICE REMOVED" << std::endl;
+    qDebug() << "DEVICE REMOVED";
 }
 
 // ---- MISC METHODS ----
@@ -979,7 +979,6 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
         myArg.beginArray();
         while (!myArg.atEnd()) {
             int myElement = qdbus_cast<int>(myArg);
-//             std::cout << myElement << std::endl;
             retList->append(myElement);
         }
         myArg.endArray();
@@ -1016,12 +1015,12 @@ bool QDBusMessageToVoid(const QDBusMessage &message)
 // Main method for testing / playing.
 int main()
 {
-    std::cout << "Daemon version: " << librazer::getDaemonVersion().toStdString() << std::endl;
+    qDebug() << "Daemon version: " << librazer::getDaemonVersion();
     QStringList serialnrs = librazer::getConnectedDevices();
     librazer::syncEffects(false);
     foreach (const QString &str, serialnrs) {
-        std::cout << "-----------------" << std::endl;
-//         std::cout << "Serial: " << str.toStdString() << std::endl;
+        qDebug() << "-----------------";
+//         qDebug() << "Serial: " << str;
         librazer::Device device = librazer::Device(str);
         qDebug() << device.getDeviceName();
 //         qDebug() << device.getRazerUrls();
@@ -1032,16 +1031,16 @@ int main()
             qDebug() << device.getDPI();
         }
 //         qDebug() << device.getLogoEffect();
-        //device.setLogoStatic(0, 255, 0);
-        //device.getVid();
-        //device.getPid();
-//         std::cout << "Name:   " << device.getDeviceName().toStdString() << std::endl;
-//         std::cout << "Type:   " << device.getDeviceType().toStdString() << std::endl;
-//         //bool logostatic = device.hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic");
-//         //std::cout << "Can logo static: " << logostatic << std::endl;
+//         device.setLogoStatic(0, 255, 0);
+//         device.getVid();
+//         device.getPid();
+//         qDebug() << "Name:   " << device.getDeviceName();
+//         qDebug() << "Type:   " << device.getDeviceType();
+//         bool logostatic = device.hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic");
+//         qDebug() << "Can logo static: " << logostatic;
 //         QHash<QString, bool> hash = device.getAllCapabilities();
 //         for (QHash<QString, bool>::iterator i = hash.begin(); i != hash.end(); ++i)
-//             std::cout << i.key().toStdString() << ": " << i.value() << std::endl;
+//             qDebug() << i.key() << ": " << i.value();
     }
 }
 
