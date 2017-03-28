@@ -19,7 +19,7 @@ set_target_properties(razer PROPERTIES VERSION ${LIBRAZER_VERSION_STRING}
 # Demo executable
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_executable(librazerdemo librazer.cpp)
-    target_link_libraries(librazerdemo razer Qt5::DBus Qt5::Xml)
+    target_link_libraries(librazerdemo razer Qt5::DBus Qt5::Xml Qt5::Widgets)
 endif()
 
 install(TARGETS razer DESTINATION ${CMAKE_INSTALL_LIBDIR})

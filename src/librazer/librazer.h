@@ -179,6 +179,10 @@ public:
     // bw2013
     bool setPulsate();
 
+    // - Custom(?) -
+    bool setCustom();
+    bool setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors);
+
     // - Custom -
     bool setRipple(uchar r, uchar g, uchar b, double refresh_rate);
     bool setRippleRandomColor(double refresh_rate);

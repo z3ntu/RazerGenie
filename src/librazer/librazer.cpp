@@ -25,6 +25,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QVariantHash>
+#include <QtGui/qcolor.h>
 
 #include <iostream>
 
@@ -566,6 +567,42 @@ bool Device::setPulsate()
     return QDBusMessageToVoid(m);
 }
 
+bool Device::setCustom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setCustom");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors)
+{
+    /*
+    if(colors.count() != (endcol+1)-startcol) {
+        qWarning() << "Invalid 'colors' length. startcol:" << startcol << " - endcol:" << endcol << " needs " << (endcol+1)-startcol << " entries in colors!";
+        return false;
+    }
+    int len = (endcol+1)-startcol + ((endcol+1)-startcol*3);
+    */
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setKeyRow");
+
+    QByteArray parameters;
+    parameters[0] = row;
+    parameters[1] = startcol;
+    parameters[2] = endcol;
+    int counter = 3;
+    foreach(QColor c, colors) {
+        // set the rgb to the parameters[i]
+        parameters[counter++] = c.red();
+        parameters[counter++] = c.green();
+        parameters[counter++] = c.blue();
+    }
+    qDebug() << parameters;
+
+    QList<QVariant> args;
+    args.append(parameters);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
 bool Device::setRipple(uchar r, uchar g, uchar b, double refresh_rate)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRipple");
@@ -1024,11 +1061,33 @@ int main()
         librazer::Device device = librazer::Device(str);
         qDebug() << device.getDeviceName();
 //         qDebug() << device.getRazerUrls();
-        if(device.hasCapability("dpi")) {
-            qDebug() << "DEVICE:";
-            qDebug() << device.getDPI();
-            device.setDPI(500, 500);
-            qDebug() << device.getDPI();
+//         if(device.hasCapability("dpi")) {
+//             qDebug() << "DEVICE:";
+//             qDebug() << device.getDPI();
+//             device.setDPI(500, 500);
+//             qDebug() << device.getDPI();
+//         }
+//         QList<QColor> list = QList<QColor>() << QColor(255, 0, 0) << QColor(0, 255, 255) << QColor(255, 255, 0);
+//         qDebug() << "setKeyRow():" << device.setKeyRow(4, 0, 2, list);
+        qDebug() << "setCustom():" << device.setCustom();
+        if(device.hasMatrix()) {
+            QList<int> dimen = device.getMatrixDimensions();
+            qDebug() << dimen;
+            qDebug() << dimen[0] << "-" << dimen[1];
+            QList<QColor> colors = QList<QColor>();
+            for(int i=0; i<dimen[1]; i++)
+                colors << QColor("yellow");
+            qDebug() << "size:" << colors.size();
+            for(int i=0; i<dimen[0]; i++) {
+//                 for(int j=0; j<dimen[1]-1; j++) {
+                qDebug() << i;
+//                     qDebug() << j;
+                device.setKeyRow(i, 0, dimen[1]-1, colors);
+                device.setCustom();
+                qDebug() << "Press Enter to continue.";
+                std::cin.ignore();
+//                 }
+            }
         }
 //         qDebug() << device.getLogoEffect();
 //         device.setLogoStatic(0, 255, 0);
