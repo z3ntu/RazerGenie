@@ -113,6 +113,10 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message);
 bool QDBusMessageToVoid(const QDBusMessage& message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
 
+// - Signal Connect Mehtods -
+bool connectDeviceAdded(QObject *receiver, const char *slot);
+bool connectDeviceRemoved(QObject *receiver, const char *slot);
+
 class Device
 {
 private:
@@ -125,9 +129,6 @@ private:
     void setupCapabilities();
 
     bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
-private slots:
-    void deviceAdded();
-    void deviceRemoved();
 public:
     Device(QString serial);
     ~Device();
@@ -223,7 +224,6 @@ public:
 
     bool setScrollBrightness(double brightness);
     double getScrollBrightness();
-
 
     enum lightingLocation {
         lighting, lighting_logo, lighting_scroll

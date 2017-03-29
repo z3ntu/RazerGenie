@@ -225,9 +225,6 @@ Device::Device(QString s)
     serial = s;
     Introspect();
     setupCapabilities();
-    //TODO Signal for deviceAdded and deviceRemoved (method with the last two parameters??)
-
-    //QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices" ,"device_added", this, &Device::deviceAdded);
 }
 
 /**
@@ -238,15 +235,16 @@ Device::~Device()
     //TODO Write
 }
 
-// -- SLOTS --
-void Device::deviceAdded()
+// TODO New Qt5 connect style syntax
+bool connectDeviceAdded(QObject *receiver, const char *slot)
 {
-    qDebug() << "DEVICE ADDED";
+    return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_added", receiver, slot);
 }
 
-void Device::deviceRemoved()
+// TODO New Qt5 connect style syntax
+bool connectDeviceRemoved(QObject *receiver, const char *slot)
 {
-    qDebug() << "DEVICE REMOVED";
+    return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_removed", receiver, slot);
 }
 
 // ---- MISC METHODS ----

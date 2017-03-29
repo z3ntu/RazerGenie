@@ -86,6 +86,9 @@ void kcm_razerdrivers::setupUi()
     ui_main.syncCheckBox->setChecked(librazer::getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
     ui_main.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
+
+    librazer::connectDeviceAdded(this, SLOT(deviceAdded()));
+    librazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
 }
 
 void kcm_razerdrivers::dbusServiceRegistered(const QString &serviceName)
@@ -803,6 +806,16 @@ void kcm_razerdrivers::activeCheckbox(bool checked)
 
     dev->setLogoActive(checked);
     qDebug() << checked;
+}
+
+void kcm_razerdrivers::deviceAdded()
+{
+    qDebug() << "DEVICE WAS ADDED!";
+}
+
+void kcm_razerdrivers::deviceRemoved()
+{
+    qDebug() << "DEVICE WAS REMOVED!";
 }
 
 void kcm_razerdrivers::showError(QString error)

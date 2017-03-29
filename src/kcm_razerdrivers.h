@@ -64,6 +64,10 @@ public slots:
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
+
+    // device signals
+    void deviceAdded();
+    void deviceRemoved();
 private:
     Ui::RazerDriversKcmUi ui_main;
     Ui::DaemonNotAvailable ui_error;
