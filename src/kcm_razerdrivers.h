@@ -62,6 +62,8 @@ public slots:
     // 'Set active' checkbox
     void activeCheckbox(bool checked);
 
+    void openCustomEditor();
+
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);
 

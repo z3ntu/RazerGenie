@@ -397,6 +397,12 @@ QList<int> Device::getDPI()
     return QDBusMessageToIntArray(m);
 }
 
+int Device::maxDPI()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "maxDPI");
+    return QDBusMessageToInt(m);
+}
+
 // BATTERY
 /**
  * Returns if the device is charging.
@@ -929,7 +935,7 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
 }
 
 /**
- * Sends a QDBusMessage and returns the boolen value.
+ * Sends a QDBusMessage and returns the boolean value.
  */
 bool QDBusMessageToBool(const QDBusMessage &message)
 {
@@ -937,6 +943,20 @@ bool QDBusMessageToBool(const QDBusMessage &message)
     if(msg.type() == QDBusMessage::ReplyMessage) {
         // Everything went fine.
         return msg.arguments()[0].toBool();
+    }
+    // TODO: Handle error
+    return false;
+}
+
+/**
+ * Sends a QDBusMessage and returns the integer value.
+ */
+int QDBusMessageToInt(const QDBusMessage &message)
+{
+    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        // Everything went fine.
+        return msg.arguments()[0].toInt();
     }
     // TODO: Handle error
     return false;
@@ -1064,6 +1084,7 @@ int main()
 //             qDebug() << device.getDPI();
 //             device.setDPI(500, 500);
 //             qDebug() << device.getDPI();
+//             qDebug() << device.maxDPI();
 //         }
 //         QList<QColor> list = QList<QColor>() << QColor(255, 0, 0) << QColor(0, 255, 255) << QColor(255, 255, 0);
 //         qDebug() << "setKeyRow():" << device.setKeyRow(4, 0, 2, list);

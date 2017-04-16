@@ -28,6 +28,7 @@
 #include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerpagewidgetitem.h"
+#include "customeditor.h"
 
 kcm_razerdrivers::kcm_razerdrivers(QWidget *parent) : QWidget(parent)
 {
@@ -380,14 +381,16 @@ void kcm_razerdrivers::fillList()
 
             // Get the current DPI and set the slider&text
             QList<int> currDPI = currentDevice->getDPI();
+            qDebug() << "currDPI:" << currDPI;
             dpiXSlider->setValue(currDPI[0]/100);
             dpiYSlider->setValue(currDPI[1]/100);
             dpiXText->setText(QString::number(currDPI[0]));
             dpiYText->setText(QString::number(currDPI[1]));
 
-            //TODO Do a dynamic max? Needs daemon support for max or test it out by setting to 50000 and then get the value. Would that work?
-            dpiXSlider->setMaximum(160);
-            dpiYSlider->setMaximum(160);
+            int maxDPI = currentDevice->maxDPI();
+            qDebug() << "maxDPI:" << maxDPI;
+            dpiXSlider->setMaximum(maxDPI/100);
+            dpiYSlider->setMaximum(maxDPI/100);
 
             dpiXSlider->setTickInterval(10);
             dpiYSlider->setTickInterval(10);
@@ -415,6 +418,14 @@ void kcm_razerdrivers::fillList()
 
             verticalLayout->addLayout(dpiXHBox);
             verticalLayout->addLayout(dpiYHBox);
+        }
+
+        /* Custom lighting */
+        if(currentDevice->hasCapability("lighting_led_matrix")) {
+            QPushButton *button = new QPushButton(widget);
+            button->setText("Open custom editor");
+            verticalLayout->addWidget(button);
+            connect(button, &QPushButton::clicked, this, &kcm_razerdrivers::openCustomEditor);
         }
 
         /* Spacer to bottom */
@@ -806,6 +817,12 @@ void kcm_razerdrivers::activeCheckbox(bool checked)
 
     dev->setLogoActive(checked);
     qDebug() << checked;
+}
+
+void kcm_razerdrivers::openCustomEditor()
+{
+    CustomEditor *cust = new CustomEditor;
+    cust->show();
 }
 
 void kcm_razerdrivers::deviceAdded()

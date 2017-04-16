@@ -104,6 +104,7 @@ bool getTurnOffOnScreensaver();
 
 /* Helper methods */
 bool QDBusMessageToBool(const QDBusMessage &message);
+int QDBusMessageToInt(const QDBusMessage &message);
 double QDBusMessageToDouble(const QDBusMessage &message);
 QString QDBusMessageToString(const QDBusMessage &message);
 uchar QDBusMessageToByte(const QDBusMessage &message);
@@ -159,6 +160,7 @@ public:
     // --- DPI ---
     bool setDPI(int dpi_x, int dpi_y);
     QList<int> getDPI();
+    int maxDPI();
 
     // --- BATTERY ----
     bool isCharging();

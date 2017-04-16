@@ -4,6 +4,7 @@ set(kcm_razerdrivers_SRCS main.cpp
                           kcm_razerdrivers.cpp
                           razerimagedownloader.cpp
                           razerpagewidgetitem.cpp
+                          customeditor.cpp
                           )
 
 QT5_WRAP_UI(kcm_razerdrivers_SRCS ../ui/kcm_razerdrivers.ui
