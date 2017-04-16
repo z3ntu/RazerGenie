@@ -18,12 +18,12 @@
 
 #include <QApplication>
 
-#include "kcm_razerdrivers.h"
+#include "razergenie.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    kcm_razerdrivers w;
+    RazerGenie w;
     w.show();
 
     return app.exec();

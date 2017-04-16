@@ -28,6 +28,7 @@
 #include <QtGui/qcolor.h>
 
 #include <iostream>
+#include <unistd.h> // TODO Remove again
 
 #include "librazer.h"
 
@@ -73,6 +74,7 @@ void Device::setupCapabilities()
     capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
     capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
     capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
+    capabilities.insert("poll_rate", hasCapabilityInternal("razer.device.misc", "setPollRate"));
 
     capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
 
@@ -362,7 +364,6 @@ bool Device::hasDedicatedMacroKeys()
     return QDBusMessageToBool(m);
 }
 
-
 /**
  * Returns if the device has a matrix. Dimensions can be gotten with getMatrixDimensions()
  */
@@ -381,6 +382,34 @@ QList<int> Device::getMatrixDimensions()
     return QDBusMessageToIntArray(m);
 }
 
+/**
+ * Returns the poll rate.
+ */
+int Device::getPollRate()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getPollRate");
+    return QDBusMessageToInt(m);
+}
+
+/**
+ * Sets the poll rate. Use one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ.
+ */
+bool Device::setPollRate(ushort pollrate)
+{
+    if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
+        qDebug() << "setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
+        return false;
+    }
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
+    QList<QVariant> args;
+    args.append(pollrate);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the DPI.
+ */
 bool Device::setDPI(int dpi_x, int dpi_y)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "setDPI");
@@ -391,12 +420,18 @@ bool Device::setDPI(int dpi_x, int dpi_y)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Returns the DPI.
+ */
 QList<int> Device::getDPI()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "getDPI");
     return QDBusMessageToIntArray(m);
 }
 
+/**
+ * Returns the maximum DPI possible for the device.
+ */
 int Device::maxDPI()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "maxDPI");
@@ -1077,7 +1112,7 @@ int main()
         qDebug() << "-----------------";
 //         qDebug() << "Serial: " << str;
         librazer::Device device = librazer::Device(str);
-        qDebug() << device.getDeviceName();
+        qDebug() << "Devicename:" << device.getDeviceName();
 //         qDebug() << device.getRazerUrls();
 //         if(device.hasCapability("dpi")) {
 //             qDebug() << "DEVICE:";
@@ -1088,6 +1123,18 @@ int main()
 //         }
 //         QList<QColor> list = QList<QColor>() << QColor(255, 0, 0) << QColor(0, 255, 255) << QColor(255, 255, 0);
 //         qDebug() << "setKeyRow():" << device.setKeyRow(4, 0, 2, list);
+
+        if(device.hasCapability("poll_rate")) {
+            for(int a=0; a<100; a++) {
+                usleep(100000);
+//                 qDebug() << "Pollrate:" << device.getPollRate();
+                qDebug() << "DPI:" << device.getDPI();
+            }
+//             qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_125HZ);
+//             qDebug() << "Pollrate:" << device.getPollRate();
+//             qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_1000HZ);
+//             qDebug() << "Pollrate:" << device.getPollRate();
+        }
         qDebug() << "setCustom():" << device.setCustom();
         if(device.hasMatrix()) {
             QList<int> dimen = device.getMatrixDimensions();

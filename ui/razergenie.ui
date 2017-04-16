@@ -18,10 +18,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Applicationame (RazerGenie?)</string>
+   <string>RazerGenie</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="linux_driver_logo"/>
+   <iconset theme="razergenie">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="4">

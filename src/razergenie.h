@@ -16,21 +16,21 @@
  *
  */
 
-#ifndef KCM_RAZERDRIVERS_H
-#define KCM_RAZERDRIVERS_H
+#ifndef RAZERGENIE_H
+#define RAZERGENIE_H
 
-#include "ui_kcm_razerdrivers.h"
+#include "ui_razergenie.h"
 #include "ui_daemon_not_available.h"
 #include "razerimagedownloader.h"
 #include "librazer/librazer.h"
 #include <QComboBox>
 
-class kcm_razerdrivers : public QWidget
+class RazerGenie : public QWidget
 {
     Q_OBJECT
 public:
-    kcm_razerdrivers(QWidget* parent = 0);
-    ~kcm_razerdrivers();
+    RazerGenie(QWidget* parent = 0);
+    ~RazerGenie();
 public slots:
     void imageDownloaded(QString &serial, QString &filename);
 

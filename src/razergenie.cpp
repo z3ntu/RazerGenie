@@ -23,37 +23,21 @@
 
 #include <config.h>
 
-#include "kcm_razerdrivers.h"
+#include "razergenie.h"
 #include "librazer/librazer.h"
 #include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerpagewidgetitem.h"
 #include "customeditor.h"
 
-kcm_razerdrivers::kcm_razerdrivers(QWidget *parent) : QWidget(parent)
+RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
-    // About dialog
-    /*
-    KAboutData *about = new KAboutData(
-        "kcm_razerdrivers",
-        "RazerDrivers",
-        KCM_RAZERDRIVERS_VERSION,
-        QString("A KDE system settings module for managing razer devices."),
-        KAboutLicense::GPL_V3,
-        "Copyright (C) 2016-2017 Luca Weiss",
-        QString(),
-        "https://github.com/z3ntu/kcm_razerdrivers");
-    // Obfuscation just for spiders :)
-    about->addAuthor("Luca Weiss", "Main Developer", QString("luca%1z3ntu%2xyz").arg("@", "."), "https://z3ntu.xyz");
-    about->addCredit("Terry Cain", "razer-drivers project", QString(), "https://terrycain.github.io/razer-drivers");
-    setAboutData(about);
-    */
     // Watch for dbus service changes (= daemon ends or gets started)
     QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
     connect(watcher, &QDBusServiceWatcher::serviceRegistered,
-            this, &kcm_razerdrivers::dbusServiceRegistered);
+            this, &RazerGenie::dbusServiceRegistered);
     connect(watcher, &QDBusServiceWatcher::serviceUnregistered,
-            this, &kcm_razerdrivers::dbusServiceUnregistered);
+            this, &RazerGenie::dbusServiceUnregistered);
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
@@ -63,18 +47,18 @@ kcm_razerdrivers::kcm_razerdrivers(QWidget *parent) : QWidget(parent)
     }
 }
 
-kcm_razerdrivers::~kcm_razerdrivers()
+RazerGenie::~RazerGenie()
 {
 //    delete ui;
 }
 
-void kcm_razerdrivers::setupErrorUi()
+void RazerGenie::setupErrorUi()
 {
     qDebug() << "DAEMON IS NOT RUNNING. ABORTING!";
     ui_error.setupUi(this);
 }
 
-void kcm_razerdrivers::setupUi()
+void RazerGenie::setupUi()
 {
     ui_main.setupUi(this);
 
@@ -83,29 +67,29 @@ void kcm_razerdrivers::setupUi()
     fillList();
 
     //Connect signals
-    connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleSync);
+    connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
     ui_main.syncCheckBox->setChecked(librazer::getSyncEffects());
-    connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &kcm_razerdrivers::toggleOffOnScreesaver);
+    connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
     ui_main.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
 
     librazer::connectDeviceAdded(this, SLOT(deviceAdded()));
     librazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
 }
 
-void kcm_razerdrivers::dbusServiceRegistered(const QString &serviceName)
+void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 {
     qDebug() << "Registered! " << serviceName;
     showInfo("Please restart the application to see the interface for now.");
 //     setupUi();
 }
 
-void kcm_razerdrivers::dbusServiceUnregistered(const QString &serviceName)
+void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
     qDebug() << "Unregistered! " << serviceName;
     showError("The dbus service connection was lost. Please restart the daemon (\"razer-service\")");
 }
 
-void kcm_razerdrivers::fillList()
+void RazerGenie::fillList()
 {
     // Get all connected devices
     QStringList serialnrs = librazer::getConnectedDevices();
@@ -119,7 +103,7 @@ void kcm_razerdrivers::fillList()
         // Download image for device
         if(!currentDevice->getPngFilename().isEmpty()) {
             RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl(currentDevice->getPngUrl()), this);
-            connect(dl, &RazerImageDownloader::downloadFinished, this, &kcm_razerdrivers::imageDownloaded);
+            connect(dl, &RazerImageDownloader::downloadFinished, this, &RazerGenie::imageDownloaded);
         } else {
             qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
         }
@@ -211,7 +195,7 @@ void kcm_razerdrivers::fillList()
                 }
 
                 // Connect signal from combobox
-                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::standardCombo);
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::standardCombo);
 
                 // Brightness slider
                 if(currentDevice->hasCapability("brightness")) {
@@ -220,7 +204,7 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("get_brightness")) {
                         brightnessSlider->setValue(currentDevice->getBrightness());
                     }
-                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::brightnessChanged);
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::brightnessChanged);
                 }
 
             } else if(currentLocation == librazer::Device::lighting_logo) {
@@ -232,7 +216,7 @@ void kcm_razerdrivers::fillList()
                 }
 
                 // Connect signal from combobox
-                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::logoCombo);
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::logoCombo);
 
                 // Brightness slider
                 if(currentDevice->hasCapability("lighting_logo_brightness")) {
@@ -241,7 +225,7 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
                         brightnessSlider->setValue(currentDevice->getLogoBrightness());
                     }
-                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::logoBrightnessChanged);
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::logoBrightnessChanged);
                 }
 
             } else if(currentLocation == librazer::Device::lighting_scroll) {
@@ -253,7 +237,7 @@ void kcm_razerdrivers::fillList()
                 }
 
                 // Connect signal from combobox
-                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &kcm_razerdrivers::scrollCombo);
+                connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::scrollCombo);
 
                 // Brightness slider
                 if(currentDevice->hasCapability("lighting_scroll_brightness")) {
@@ -262,7 +246,7 @@ void kcm_razerdrivers::fillList()
                     if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
                         brightnessSlider->setValue(currentDevice->getScrollBrightness());
                     }
-                    connect(brightnessSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::scrollBrightnessChanged);
+                    connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::scrollBrightnessChanged);
                 }
             }
 
@@ -286,7 +270,7 @@ void kcm_razerdrivers::fillList()
                     librazer::RazerCapability capability = comboBox->currentData().value<librazer::RazerCapability>();
                     if(capability.getNumColors() < i)
                         colorButton->hide();
-                    connect(colorButton, &QPushButton::clicked, this, &kcm_razerdrivers::colorButtonClicked);
+                    connect(colorButton, &QPushButton::clicked, this, &RazerGenie::colorButtonClicked);
                 }
 
                 /* Wave left/right radio buttons */
@@ -304,11 +288,11 @@ void kcm_razerdrivers::fillList()
                     radio->hide();
                     lightingHBox->addWidget(radio);
                     if(currentLocation == librazer::Device::lightingLocation::lighting) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonStandard);
+                        connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonStandard);
                     } else if(currentLocation == librazer::Device::lightingLocation::lighting_logo) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonLogo);
+                        connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonLogo);
                     } else if(currentLocation == librazer::Device::lightingLocation::lighting_scroll) {
-                        connect(radio, &QRadioButton::toggled, this, &kcm_razerdrivers::waveRadioButtonScroll);
+                        connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonScroll);
                     } else {
                         qDebug() << "ERROR!! New lightingLocation which is not handled with the radio buttons.";
                     }
@@ -323,7 +307,7 @@ void kcm_razerdrivers::fillList()
                     QCheckBox *activeCheckbox = new QCheckBox("Set Logo Active", widget);
                     activeCheckbox->setChecked(currentDevice->getLogoActive());
                     verticalLayout->addWidget(activeCheckbox);
-                    connect(activeCheckbox, &QCheckBox::clicked, this, &kcm_razerdrivers::activeCheckbox);
+                    connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::activeCheckbox);
                 }
             }
             //TODO setScrollActive checkbox, probably revamp 'if' above (is there a .chroma setActive?)
@@ -412,9 +396,9 @@ void kcm_razerdrivers::fillList()
             // TODO Better solution/location for 'Sync' checkbox
             dpiHeaderHBox->addWidget(dpiSyncCheckbox);
 
-            connect(dpiXSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
-            connect(dpiYSlider, &QSlider::valueChanged, this, &kcm_razerdrivers::dpiChanged);
-            connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &kcm_razerdrivers::dpiSyncCheckbox);
+            connect(dpiXSlider, &QSlider::valueChanged, this, &RazerGenie::dpiChanged);
+            connect(dpiYSlider, &QSlider::valueChanged, this, &RazerGenie::dpiChanged);
+            connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &RazerGenie::dpiSyncCheckbox);
 
             verticalLayout->addLayout(dpiXHBox);
             verticalLayout->addLayout(dpiYHBox);
@@ -425,7 +409,7 @@ void kcm_razerdrivers::fillList()
             QPushButton *button = new QPushButton(widget);
             button->setText("Open custom editor");
             verticalLayout->addWidget(button);
-            connect(button, &QPushButton::clicked, this, &kcm_razerdrivers::openCustomEditor);
+            connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
         }
 
         /* Spacer to bottom */
@@ -457,25 +441,25 @@ void kcm_razerdrivers::fillList()
     }
 }
 
-void kcm_razerdrivers::imageDownloaded(QString &serial, QString &filename)
+void RazerGenie::imageDownloaded(QString &serial, QString &filename)
 {
     //TODO: Set image at runtime
     qDebug() << "Download of image completed for " << serial << " at " << filename;
 }
 
-void kcm_razerdrivers::toggleSync(bool sync)
+void RazerGenie::toggleSync(bool sync)
 {
     if(!librazer::syncEffects(sync))
         showError("Error while syncing devices.");
 }
 
-void kcm_razerdrivers::toggleOffOnScreesaver(bool on)
+void RazerGenie::toggleOffOnScreesaver(bool on)
 {
     if(!librazer::setTurnOffOnScreensaver(on))
         showError("Error while toggling 'turn off on screensaver'");
 }
 
-void kcm_razerdrivers::colorButtonClicked()
+void RazerGenie::colorButtonClicked()
 {
     qDebug() << "color dialog";
 
@@ -499,7 +483,7 @@ void kcm_razerdrivers::colorButtonClicked()
     applyEffect(static_cast<librazer::Device::lightingLocation>(sender->objectName().split("_")[0].toInt()));
 }
 
-QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
+QPair<librazer::Device*, QString> RazerGenie::commonCombo(int index)
 {
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
@@ -533,7 +517,7 @@ QPair<librazer::Device*, QString> kcm_razerdrivers::commonCombo(int index)
     return qMakePair(dev, identifier);
 }
 
-void kcm_razerdrivers::standardCombo(int index)
+void RazerGenie::standardCombo(int index)
 {
     QPair<librazer::Device*, QString> tuple = commonCombo(index);
     librazer::Device *dev = tuple.first;
@@ -544,7 +528,7 @@ void kcm_razerdrivers::standardCombo(int index)
     applyEffectStandardLoc(identifier, dev);
 }
 
-void kcm_razerdrivers::scrollCombo(int index)
+void RazerGenie::scrollCombo(int index)
 {
     QPair<librazer::Device*, QString> tuple = commonCombo(index);
     librazer::Device *dev = tuple.first;
@@ -555,7 +539,7 @@ void kcm_razerdrivers::scrollCombo(int index)
     applyEffectScrollLoc(identifier, dev);
 }
 
-void kcm_razerdrivers::logoCombo(int index)
+void RazerGenie::logoCombo(int index)
 {
     QPair<librazer::Device*, QString> tuple = commonCombo(index);
     librazer::Device *dev = tuple.first;
@@ -566,21 +550,21 @@ void kcm_razerdrivers::logoCombo(int index)
     applyEffectLogoLoc(identifier, dev);
 }
 
-QColor kcm_razerdrivers::getColorForButton(int num, librazer::Device::lightingLocation location)
+QColor RazerGenie::getColorForButton(int num, librazer::Device::lightingLocation location)
 {
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     QPalette pal = item->widget()->findChild<QPushButton*>(QString::number(location) + "_colorbutton" + QString::number(num))->palette();
     return pal.color(QPalette::Button);
 }
 
-const int kcm_razerdrivers::getWaveDirection(librazer::Device::lightingLocation location)
+const int RazerGenie::getWaveDirection(librazer::Device::lightingLocation location)
 {
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
 
     return item->widget()->findChild<QRadioButton*>(QString::number(location) + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
 }
 
-void kcm_razerdrivers::brightnessChanged(int value)
+void RazerGenie::brightnessChanged(int value)
 {
     qDebug() << value;
 
@@ -589,7 +573,7 @@ void kcm_razerdrivers::brightnessChanged(int value)
     dev->setBrightness(value);
 }
 
-void kcm_razerdrivers::scrollBrightnessChanged(int value)
+void RazerGenie::scrollBrightnessChanged(int value)
 {
     qDebug() << value;
 
@@ -598,7 +582,7 @@ void kcm_razerdrivers::scrollBrightnessChanged(int value)
     dev->setScrollBrightness(value);
 }
 
-void kcm_razerdrivers::logoBrightnessChanged(int value)
+void RazerGenie::logoBrightnessChanged(int value)
 {
     qDebug() << value;
 
@@ -607,7 +591,7 @@ void kcm_razerdrivers::logoBrightnessChanged(int value)
     dev->setLogoBrightness(value);
 }
 
-void kcm_razerdrivers::dpiChanged(int orig_value)
+void RazerGenie::dpiChanged(int orig_value)
 {
     int value = orig_value * 100;
 
@@ -652,7 +636,7 @@ void kcm_razerdrivers::dpiChanged(int orig_value)
     dpitextbox->setText(QString::number(value));
 }
 
-void kcm_razerdrivers::applyEffectStandardLoc(QString identifier, librazer::Device *device)
+void RazerGenie::applyEffectStandardLoc(QString identifier, librazer::Device *device)
 {
     librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting;
 
@@ -694,7 +678,7 @@ void kcm_razerdrivers::applyEffectStandardLoc(QString identifier, librazer::Devi
     }
 }
 
-void kcm_razerdrivers::applyEffectLogoLoc(QString identifier, librazer::Device *device)
+void RazerGenie::applyEffectLogoLoc(QString identifier, librazer::Device *device)
 {
     librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_logo;
 
@@ -728,7 +712,7 @@ void kcm_razerdrivers::applyEffectLogoLoc(QString identifier, librazer::Device *
     }
 }
 
-void kcm_razerdrivers::applyEffectScrollLoc(QString identifier, librazer::Device *device)
+void RazerGenie::applyEffectScrollLoc(QString identifier, librazer::Device *device)
 {
     librazer::Device::lightingLocation zone = librazer::Device::lightingLocation::lighting_scroll;
 
@@ -763,7 +747,7 @@ void kcm_razerdrivers::applyEffectScrollLoc(QString identifier, librazer::Device
 }
 
 
-void kcm_razerdrivers::applyEffect(librazer::Device::lightingLocation loc)
+void RazerGenie::applyEffect(librazer::Device::lightingLocation loc)
 {
     qDebug() << "applyEffect()";
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
@@ -785,31 +769,31 @@ void kcm_razerdrivers::applyEffect(librazer::Device::lightingLocation loc)
     }
 }
 
-void kcm_razerdrivers::waveRadioButtonStandard(bool enabled)
+void RazerGenie::waveRadioButtonStandard(bool enabled)
 {
     if(enabled)
         applyEffect(librazer::Device::lightingLocation::lighting);
 }
 
-void kcm_razerdrivers::waveRadioButtonLogo(bool enabled)
+void RazerGenie::waveRadioButtonLogo(bool enabled)
 {
     if(enabled)
         applyEffect(librazer::Device::lightingLocation::lighting_logo);
 }
 
-void kcm_razerdrivers::waveRadioButtonScroll(bool enabled)
+void RazerGenie::waveRadioButtonScroll(bool enabled)
 {
     if(enabled)
         applyEffect(librazer::Device::lightingLocation::lighting_scroll);
 }
 
-void kcm_razerdrivers::dpiSyncCheckbox(bool checked)
+void RazerGenie::dpiSyncCheckbox(bool checked)
 {
     // TODO Sync DPI right here? Or just at next change (current behaviour)?
     syncDpi = checked;
 }
 
-void kcm_razerdrivers::activeCheckbox(bool checked)
+void RazerGenie::activeCheckbox(bool checked)
 {
     // get device pointer
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
@@ -819,34 +803,34 @@ void kcm_razerdrivers::activeCheckbox(bool checked)
     qDebug() << checked;
 }
 
-void kcm_razerdrivers::openCustomEditor()
+void RazerGenie::openCustomEditor()
 {
     CustomEditor *cust = new CustomEditor;
     cust->show();
 }
 
-void kcm_razerdrivers::deviceAdded()
+void RazerGenie::deviceAdded()
 {
     qDebug() << "DEVICE WAS ADDED!";
 }
 
-void kcm_razerdrivers::deviceRemoved()
+void RazerGenie::deviceRemoved()
 {
     qDebug() << "DEVICE WAS REMOVED!";
 }
 
-void kcm_razerdrivers::showError(QString error)
+void RazerGenie::showError(QString error)
 {
     QMessageBox messageBox;
     messageBox.critical(0, "Error!", error);
     messageBox.setFixedSize(500, 200);
 }
 
-void kcm_razerdrivers::showInfo(QString info)
+void RazerGenie::showInfo(QString info)
 {
     QMessageBox messageBox;
     messageBox.information(0, "Information!", info);
     messageBox.setFixedSize(500, 200);
 }
 
-#include "kcm_razerdrivers.moc"
+#include "razergenie.moc"

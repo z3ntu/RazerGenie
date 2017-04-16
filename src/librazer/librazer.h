@@ -46,9 +46,9 @@ const int REACTIVE_2000MS = 0x04;
 const double RIPPLE_REFRESH_RATE = 0.05;
 
 // Poll rates
-const int POLL_1000HZ = 1000;
-const int POLL_500HZ = 500;
-const int POLL_128HZ = 128;
+const ushort POLL_1000HZ = 1000;
+const ushort POLL_500HZ = 500;
+const ushort POLL_125HZ = 125;
 
 const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
@@ -140,8 +140,11 @@ public:
     QString getPngUrl();
 
     // --- MISC METHODS ---
+    QString getDeviceMode(); //FIXME
+    bool setDeviceMode(uchar mode_id, uchar param); //FIXME
     QString getDeviceName();
     QString getDeviceType();
+    QString getDriverVersion(); //FIXME
     QString getFirmwareVersion();
     QVariantHash getRazerUrls();
     // VID / PID
@@ -156,6 +159,9 @@ public:
     bool hasMatrix();
     QList<int> getMatrixDimensions();
 
+    // --- POLL RATE ---
+    int getPollRate();
+    bool setPollRate(ushort pollrate);
 
     // --- DPI ---
     bool setDPI(int dpi_x, int dpi_y);

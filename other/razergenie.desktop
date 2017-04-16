@@ -1,10 +1,10 @@
 [Desktop Entry]
-Exec=kcm_razerdrivers
-Icon=linux_driver_logo
+Exec=razergenie
+Icon=razergenie
 Type=Application
 X-KDE-System-Settings-Parent-Category=hardware
 
-Name=Razer drivers
+Name=RazerGenie
 Comment=Manage your Razer devices
 
 X-KDE-Keywords=Devices,Razer

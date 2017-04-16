@@ -1,14 +1,13 @@
-# \<insert name here>
+# RazerGenie
 
-~~KConfig Module for [razer-drivers by @terrycain](https://github.com/terrycain/razer-drivers). This project is supposed to be used for configuring Razer devices in the KDE system settings.~~
-Standalone Qt application for configuring your Razer devices under GNU/Linux. **A new name is in search!**
+Standalone Qt application for configuring your Razer devices under GNU/Linux.
 
 ## How to compile
 ```
 mkdir build && cd build
 cmake ..
 make
-./src/kcm_razerdrivers
+./src/razergenie
 # You could install it with 'make install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).
 ```
 
