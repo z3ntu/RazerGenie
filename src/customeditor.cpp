@@ -21,7 +21,7 @@
 
 CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
 {
-
+    setWindowTitle("RazerGenie - Custom Editor");
 }
 
 CustomEditor::~CustomEditor()

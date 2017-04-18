@@ -188,6 +188,8 @@ public:
     // bw2013
     bool setPulsate();
 
+    bool setBacklightActive(bool active); //FIXME "razer.device.lighting.backlight.setBacklightActive(bool)"
+
     // - Custom(?) -
     bool setCustom();
     bool setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors);
