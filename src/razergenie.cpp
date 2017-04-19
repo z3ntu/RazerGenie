@@ -182,9 +182,7 @@ void RazerGenie::fillList()
             //TODO Battery
             //TODO Keyboard stuff (dunno what exactly)
             //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
-            //TODO poll rate
             //TODO Matrix stuff
-            //TODO Apply effect color after the color is set
 
             if(currentLocation == librazer::Device::lighting) {
                 // Add items from capabilities
@@ -323,7 +321,7 @@ void RazerGenie::fillList()
             }
         }
 
-        // DPI slider
+        /* DPI sliders */
         if(currentDevice->hasCapability("dpi")) {
             // HBoxes
             QHBoxLayout *dpiXHBox = new QHBoxLayout(widget);
@@ -404,10 +402,28 @@ void RazerGenie::fillList()
             verticalLayout->addLayout(dpiYHBox);
         }
 
+        /* Poll rate */
+        if(currentDevice->hasCapability("poll_rate")) {
+            qDebug() << "ADD POLLING RATE COMBOBOXES!";
+
+            QLabel *pollRateHeader = new QLabel("Polling rate", widget);
+            pollRateHeader->setFont(headerFont);
+            verticalLayout->addWidget(pollRateHeader);
+
+            QComboBox *pollComboBox = new QComboBox;
+            pollComboBox->addItem("125 Hz", librazer::POLL_125HZ);
+            pollComboBox->addItem("500 Hz", librazer::POLL_500HZ);
+            pollComboBox->addItem("1000 Hz", librazer::POLL_1000HZ);
+            pollComboBox->setCurrentText(QString::number(currentDevice->getPollRate()) + " Hz");
+            verticalLayout->addWidget(pollComboBox);
+
+            connect(pollComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
+        }
+
         /* Custom lighting */
         if(currentDevice->hasCapability("lighting_led_matrix")) {
             QPushButton *button = new QPushButton(widget);
-            button->setText("Open custom editor");
+            button->setText("Open custom editor (unfinished right now)"); // TODO Finish custom editor
             verticalLayout->addWidget(button);
             connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
         }
@@ -791,6 +807,16 @@ void RazerGenie::dpiSyncCheckbox(bool checked)
 {
     // TODO Sync DPI right here? Or just at next change (current behaviour)?
     syncDpi = checked;
+}
+
+void RazerGenie::pollCombo(int index)
+{
+    // get device pointer
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
+    dev->setPollRate(sender->currentData().toInt());
 }
 
 void RazerGenie::activeCheckbox(bool checked)

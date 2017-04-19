@@ -18,13 +18,13 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>RazerGenie - Daemon not available</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>The daemon is currently not available. You can see if it's running with &quot;ps -aux | grep razer&quot; and restart it with &quot;pkill -e razer; razer-service&quot;</string>
+      <string>The daemon is currently not available. You can see if it's running with &quot;ps -aux | grep razer&quot; and restart it with &quot;pkill -e -9 razer; razer-service&quot;</string>
      </property>
     </widget>
    </item>

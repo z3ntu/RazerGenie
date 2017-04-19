@@ -59,6 +59,9 @@ public slots:
     void dpiChanged(int value);
     void dpiSyncCheckbox(bool checked);
 
+    // Poll combobox
+    void pollCombo(int index);
+
     // 'Set active' checkbox
     void activeCheckbox(bool checked);
 
