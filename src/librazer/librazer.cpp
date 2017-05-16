@@ -62,7 +62,7 @@ void Device::Introspect()
 }
 
 /**
- * Fill "capabilities" list with the capabilities of the device. Names are from the pylib, parsed with the script ./capabilities_to_cpp.sh in the root of this repo.
+ * Fill "capabilities" list with the capabilities of the device. Names are from the pylib, parsed with the script ./scripts/capabilities_to_cpp.sh in the root of this repo.
  */
 void Device::setupCapabilities()
 {
@@ -75,6 +75,8 @@ void Device::setupCapabilities()
     capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
     capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
     capabilities.insert("poll_rate", hasCapabilityInternal("razer.device.misc", "setPollRate"));
+    capabilities.insert("mug", hasCapabilityInternal("razer.device.misc.mug", "isMugPresent"));
+    capabilities.insert("backlight", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightActive"));
 
     capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
 
@@ -397,7 +399,7 @@ int Device::getPollRate()
 bool Device::setPollRate(ushort pollrate)
 {
     if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
-        qDebug() << "setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
+        qDebug() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
         return false;
     }
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
@@ -479,6 +481,15 @@ bool Device::setLowBatteryThreshold(uchar threshold)
     args.append(threshold);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
+}
+
+/**
+ * Returns if the mug is on the mug holder.
+ */
+bool Device::isMugPresent()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc.mug", "isMugPresent");
+    return QDBusMessageToBool(m);
 }
 
 // ------ LIGHTING EFFECTS ------
@@ -603,6 +614,21 @@ bool Device::setNone()
 bool Device::setPulsate()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.bw2013", "setPulsate");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::getBacklightActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "getBacklightActive");
+    return QDBusMessageToBool(m);
+}
+
+bool Device::setBacklightActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
 
@@ -970,6 +996,16 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
 }
 
 /**
+ * Prints out relevant error information about a failed DBus call.
+ */
+void printError(QDBusMessage& message, const char *functionname)
+{
+    qDebug() << "librazer: There was an error in" << functionname << "!";
+    qDebug() << "librazer:" << message.errorName();
+    qDebug() << "librazer:" << message.errorMessage();
+}
+
+/**
  * Sends a QDBusMessage and returns the boolean value.
  */
 bool QDBusMessageToBool(const QDBusMessage &message)
@@ -980,6 +1016,7 @@ bool QDBusMessageToBool(const QDBusMessage &message)
         return msg.arguments()[0].toBool();
     }
     // TODO: Handle error
+    printError(msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -994,6 +1031,7 @@ int QDBusMessageToInt(const QDBusMessage &message)
         return msg.arguments()[0].toInt();
     }
     // TODO: Handle error
+    printError(msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -1008,6 +1046,7 @@ double QDBusMessageToDouble(const QDBusMessage &message)
         return msg.arguments()[0].toDouble();
     }
     // TODO: Handle error
+    printError(msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -1022,6 +1061,7 @@ QString QDBusMessageToString(const QDBusMessage &message)
         return msg.arguments()[0].toString();
     }
     // TODO: Handle error
+    printError(msg, Q_FUNC_INFO);
     return "error";
 }
 
@@ -1036,6 +1076,7 @@ uchar QDBusMessageToByte(const QDBusMessage &message)
         return msg.arguments()[0].value<uchar>();
     }
     // TODO: Handle error
+    printError(msg, Q_FUNC_INFO);
     return 0x00;
 }
 
@@ -1049,6 +1090,7 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
         return msg.arguments()[0].toStringList();// VID / PID
     }
     // TODO: Handle errror
+    printError(msg, Q_FUNC_INFO);
     return msg.arguments()[0].toStringList();
 }
 
@@ -1074,7 +1116,7 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
         myArg.endArray();
     }
     // TODO: Handle errror
-    //return msg.arguments()[0].toList();
+    printError(msg, Q_FUNC_INFO);
     return *retList;
 }
 
@@ -1087,8 +1129,10 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message)
     QDomDocument doc;
     if(msg.type() == QDBusMessage::ReplyMessage) {
         doc.setContent(msg.arguments()[0].toString());
+        return doc;
     }
     // TODO: Handle errror
+    printError(msg, Q_FUNC_INFO);
     return doc;
 }
 
@@ -1098,71 +1142,79 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message)
 bool QDBusMessageToVoid(const QDBusMessage &message)
 {
     return QDBusConnection::sessionBus().send(message);
-    // TODO: Handle errror
+    // TODO: Handle errror ?
 }
 }
 
 // Main method for testing / playing.
 int main()
 {
+    qDebug() << "Daemon running: " << librazer::isDaemonRunning();
     qDebug() << "Daemon version: " << librazer::getDaemonVersion();
     QStringList serialnrs = librazer::getConnectedDevices();
     librazer::syncEffects(false);
     foreach (const QString &str, serialnrs) {
         qDebug() << "-----------------";
-//         qDebug() << "Serial: " << str;
         librazer::Device device = librazer::Device(str);
         qDebug() << "Devicename:" << device.getDeviceName();
-//         qDebug() << device.getRazerUrls();
-//         if(device.hasCapability("dpi")) {
-//             qDebug() << "DEVICE:";
-//             qDebug() << device.getDPI();
-//             device.setDPI(500, 500);
-//             qDebug() << device.getDPI();
-//             qDebug() << device.maxDPI();
-//         }
-//         QList<QColor> list = QList<QColor>() << QColor(255, 0, 0) << QColor(0, 255, 255) << QColor(255, 255, 0);
-//         qDebug() << "setKeyRow():" << device.setKeyRow(4, 0, 2, list);
+        qDebug() << "Serial: " << str;
+
+        if(device.hasCapability("dpi")) {
+            qDebug() << "DPI";
+            qDebug() << device.getDPI();
+            device.setDPI(500, 500);
+            qDebug() << device.getDPI();
+            qDebug() << "maxdpi: " << device.maxDPI();
+        }
+
+        if(device.hasCapability("mug")) {
+            qDebug() << "isMugPresent";
+            qDebug() << device.isMugPresent();
+        }
 
         if(device.hasCapability("poll_rate")) {
-            for(int a=0; a<100; a++) {
-                usleep(100000);
-//                 qDebug() << "Pollrate:" << device.getPollRate();
-                qDebug() << "DPI:" << device.getDPI();
-            }
-//             qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_125HZ);
-//             qDebug() << "Pollrate:" << device.getPollRate();
-//             qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_1000HZ);
-//             qDebug() << "Pollrate:" << device.getPollRate();
+            qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_125HZ);
+            qDebug() << "Pollrate:" << device.getPollRate();
+            qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_1000HZ);
+            qDebug() << "Pollrate:" << device.getPollRate();
         }
-        qDebug() << "setCustom():" << device.setCustom();
-        if(device.hasMatrix()) {
-            QList<int> dimen = device.getMatrixDimensions();
-            qDebug() << dimen;
-            qDebug() << dimen[0] << "-" << dimen[1];
-            QList<QColor> colors = QList<QColor>();
-            for(int i=0; i<dimen[1]; i++)
-                colors << QColor("yellow");
-            qDebug() << "size:" << colors.size();
-            for(int i=0; i<dimen[0]; i++) {
-//                 for(int j=0; j<dimen[1]-1; j++) {
-                qDebug() << i;
-//                     qDebug() << j;
-                device.setKeyRow(i, 0, dimen[1]-1, colors);
-                device.setCustom();
-                qDebug() << "Press Enter to continue.";
-                std::cin.ignore();
-//                 }
-            }
+
+        if(device.hasCapability("get_brightness")) {
+            qDebug() << "getBrightness";
+            qDebug() << device.getBrightness();
         }
-//         qDebug() << device.getLogoEffect();
-//         device.setLogoStatic(0, 255, 0);
-//         device.getVid();
-//         device.getPid();
-//         qDebug() << "Name:   " << device.getDeviceName();
-//         qDebug() << "Type:   " << device.getDeviceType();
-//         bool logostatic = device.hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic");
-//         qDebug() << "Can logo static: " << logostatic;
+        if(device.hasCapability("get_lighting_logo_brightness")) {
+            qDebug() << "getLogoBrightness";
+            qDebug() << device.getLogoBrightness();
+        }
+        if(device.hasCapability("get_lighting_scroll_brightness")) {
+            qDebug() << "getScrollBrightness";
+            qDebug() << device.getScrollBrightness();
+        }
+        if(device.hasCapability("backlight")) {
+            qDebug() << "Backlight:";
+            qDebug() << device.getBacklightActive();
+            qDebug() << device.setBacklightActive(false);
+            qDebug() << device.getBacklightActive();
+        }
+
+//         if(device.hasMatrix()) {
+//             QList<int> dimen = device.getMatrixDimensions();
+//             qDebug() << dimen;
+//             qDebug() << dimen[0] << "-" << dimen[1];
+//             QList<QColor> colors = QList<QColor>();
+//             for(int i=0; i<dimen[1]; i++)
+//                 colors << QColor("yellow");
+//             qDebug() << "size:" << colors.size();
+//             for(int i=0; i<dimen[0]; i++) {
+//                 qDebug() << i;
+//                 device.setKeyRow(i, 0, dimen[1]-1, colors);
+//                 device.setCustom();
+//                 qDebug() << "Press Enter to continue.";
+//                 std::cin.ignore();
+//             }
+//         }
+
 //         QHash<QString, bool> hash = device.getAllCapabilities();
 //         for (QHash<QString, bool>::iterator i = hash.begin(); i != hash.end(); ++i)
 //             qDebug() << i.key() << ": " << i.value();

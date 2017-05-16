@@ -113,6 +113,7 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message);
 QDomDocument QDBusMessageToXML(const QDBusMessage &message);
 bool QDBusMessageToVoid(const QDBusMessage& message);
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
+void printError(QDBusMessage& message, const char *functionname);
 
 // - Signal Connect Mehtods -
 bool connectDeviceAdded(QObject *receiver, const char *slot);
@@ -174,6 +175,9 @@ public:
     bool setIdleTime(ushort idle_time);
     bool setLowBatteryThreshold(uchar threshold);
 
+    // --- MUG ---
+    bool isMugPresent();
+
     // --- LIGHTING EFFECTS ---
     // - Default -
     bool setStatic(uchar r, uchar g, uchar b);
@@ -188,7 +192,8 @@ public:
     // bw2013
     bool setPulsate();
 
-    bool setBacklightActive(bool active); //FIXME "razer.device.lighting.backlight.setBacklightActive(bool)"
+    bool getBacklightActive();
+    bool setBacklightActive(bool active);
 
     // - Custom(?) -
     bool setCustom();
