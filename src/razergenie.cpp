@@ -305,10 +305,20 @@ void RazerGenie::fillList()
                     QCheckBox *activeCheckbox = new QCheckBox("Set Logo Active", widget);
                     activeCheckbox->setChecked(currentDevice->getLogoActive());
                     verticalLayout->addWidget(activeCheckbox);
-                    connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::activeCheckbox);
+                    connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::logoActiveCheckbox);
                 }
             }
-            //TODO setScrollActive checkbox, probably revamp 'if' above (is there a .chroma setActive?)
+
+            // 'Set Scroll Active' checkbox
+            if(currentLocation == librazer::Device::lighting_scroll) {
+                // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
+                if(currentDevice->hasCapability("lighting_scroll_active") && !currentDevice->hasCapability("lighting_scroll_none")) {
+                    QCheckBox *activeCheckbox = new QCheckBox("Set Scroll Active", widget);
+                    activeCheckbox->setChecked(currentDevice->getScrollActive());
+                    verticalLayout->addWidget(activeCheckbox);
+                    connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::scrollActiveCheckbox);
+                }
+            }
 
             /* Brightness sliders */
             if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
@@ -420,6 +430,7 @@ void RazerGenie::fillList()
             connect(pollComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
         }
 
+#ifdef ENABLE_EXPERIMENTAL
         /* Custom lighting */
         if(currentDevice->hasCapability("lighting_led_matrix")) {
             QPushButton *button = new QPushButton(widget);
@@ -427,6 +438,7 @@ void RazerGenie::fillList()
             verticalLayout->addWidget(button);
             connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
         }
+#endif
 
         /* Spacer to bottom */
         QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -809,7 +821,7 @@ void RazerGenie::dpiSyncCheckbox(bool checked)
     syncDpi = checked;
 }
 
-void RazerGenie::pollCombo(int index)
+void RazerGenie::pollCombo(int /* index */)
 {
     // get device pointer
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
@@ -819,13 +831,23 @@ void RazerGenie::pollCombo(int index)
     dev->setPollRate(sender->currentData().toInt());
 }
 
-void RazerGenie::activeCheckbox(bool checked)
+void RazerGenie::logoActiveCheckbox(bool checked)
 {
     // get device pointer
     RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
     librazer::Device *dev = devices.value(item->getSerial());
 
     dev->setLogoActive(checked);
+    qDebug() << checked;
+}
+
+void RazerGenie::scrollActiveCheckbox(bool checked)
+{
+    // get device pointer
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    dev->setScrollActive(checked);
     qDebug() << checked;
 }
 

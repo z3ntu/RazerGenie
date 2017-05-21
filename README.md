@@ -13,7 +13,10 @@ If you are using a distribution not listed here please let me know and I'll try 
 ## How to compile
 ```
 mkdir build && cd build
+# Either:
 cmake ..
+# Or - to enable experimental (=unfinished) features
+cmake -DENABLE_EXPERIMENTAL=ON ..
 make
 ./src/razergenie
 # You could install it with 'make install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).

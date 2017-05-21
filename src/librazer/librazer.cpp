@@ -28,7 +28,6 @@
 #include <QtGui/qcolor.h>
 
 #include <iostream>
-#include <unistd.h> // TODO Remove again
 
 #include "librazer.h"
 
@@ -1089,7 +1088,7 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
     if(msg.type() == QDBusMessage::ReplyMessage) {
         return msg.arguments()[0].toStringList();// VID / PID
     }
-    // TODO: Handle errror
+    // TODO: Handle error
     printError(msg, Q_FUNC_INFO);
     return msg.arguments()[0].toStringList();
 }
@@ -1115,7 +1114,7 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
         }
         myArg.endArray();
     }
-    // TODO: Handle errror
+    // TODO: Handle error
     printError(msg, Q_FUNC_INFO);
     return *retList;
 }
@@ -1131,7 +1130,7 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message)
         doc.setContent(msg.arguments()[0].toString());
         return doc;
     }
-    // TODO: Handle errror
+    // TODO: Handle error
     printError(msg, Q_FUNC_INFO);
     return doc;
 }
@@ -1142,7 +1141,7 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message)
 bool QDBusMessageToVoid(const QDBusMessage &message)
 {
     return QDBusConnection::sessionBus().send(message);
-    // TODO: Handle errror ?
+    // TODO: Handle error ?
 }
 }
 

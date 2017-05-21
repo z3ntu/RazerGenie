@@ -60,10 +60,11 @@ public slots:
     void dpiSyncCheckbox(bool checked);
 
     // Poll combobox
-    void pollCombo(int index);
+    void pollCombo(int /* index */);
 
     // 'Set active' checkbox
-    void activeCheckbox(bool checked);
+    void logoActiveCheckbox(bool checked);
+    void scrollActiveCheckbox(bool checked);
 
     void openCustomEditor();
 

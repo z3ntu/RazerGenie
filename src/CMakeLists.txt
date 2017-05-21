@@ -1,5 +1,12 @@
 add_subdirectory(librazer)
 
+if(ENABLE_EXPERIMENTAL)
+    add_definitions(-DENABLE_EXPERIMENTAL)
+    message("razergenie: Experimental features enabled.")
+else()
+    message("razergenie: Experimental features disabled.")
+endif()
+
 set(razergenie_SRCS main.cpp
                     razergenie.cpp
                     razerimagedownloader.cpp
