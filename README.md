@@ -5,9 +5,10 @@ Standalone Qt application for configuring your Razer devices under GNU/Linux.
 ![Screenshot of application](https://z3ntu.github.io/RazerGenie/screenshots/mainwindow.png)
 
 ## Installation
-Arch Linux: you can install the package from the AUR: [razergenie](https://aur.archlinux.org/packages/razergenie/) or [razergenie-git](https://aur.archlinux.org/packages/razergenie-git/).
+Packages are available for these distributions:
+* **Arch Linux:** you can install the package from the AUR: [razergenie](https://aur.archlinux.org/packages/razergenie/) or [razergenie-git](https://aur.archlinux.org/packages/razergenie-git/).
+* **Debian/Ubuntu/Fedora:** [Download from OBS (openSUSE Build Service)](https://software.opensuse.org//download.html?project=hardware%3Arazer&package=razergenie)
 
-Other supported distributions (currently Debian Stretch, Fedora 25, Ubuntu 16.04-17.04): [Download from OBS (openSUSE Build Service)](https://software.opensuse.org//download.html?project=hardware%3Arazer&package=razergenie).
 If you are using a distribution not listed here please let me know and I'll try to make a package for that distribution!
 
 ## How to compile
@@ -29,24 +30,15 @@ make
 * cmake
 * extra-cmake-modules
 
-### Ubuntu
+#### Ubuntu
 ```
 sudo apt install cmake extra-cmake-modules qt5-default libkf5configwidgets-dev
 ```
 
-### Arch Linux
+#### Arch Linux
 ```
 sudo pacman -S --needed cmake extra-cmake-modules qt5-base kconfigwidgets
 ```
-
-## Current status
-* librazer shared library (will be split from this repo when it is halfway usable)
-* Displays your devices
-* Has a nice (the official) icon
-* Can set the brightness of all devices
-* Can set some (you could say "most") effects
-* Display correct "thumbnails" for devices
-* Can set the DPI of mice
 
 ## TODO
 * Implement keyboard gui (individual lighting etc)
