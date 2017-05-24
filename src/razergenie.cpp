@@ -91,6 +91,14 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 
 void RazerGenie::fillList()
 {
+    //TODO FIX THIS!!!
+    // Remove all widgets from the stackedWidget
+    for(int i = ui_main.stackedWidget->count(); i >= 0; i--) {
+        QWidget* widget = ui_main.stackedWidget->widget(i);
+        ui_main.stackedWidget->removeWidget(widget);
+        widget->deleteLater();
+    }
+
     // Get all connected devices
     QStringList serialnrs = librazer::getConnectedDevices();
 
@@ -121,8 +129,9 @@ void RazerGenie::fillList()
         // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
         qDebug() << type;
 
-        // Create widget to add into the page
-        QWidget *widget = new QWidget();
+        /* Create actual PageWidgetItem */
+        RazerPageWidgetItem *widget = new RazerPageWidgetItem(name, serial);
+
         QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
         // List of locations to iterate through
@@ -451,17 +460,15 @@ void RazerGenie::fillList()
         QLabel *fwVerLabel = new QLabel("Firmware version: " + currentDevice->getFirmwareVersion());
         verticalLayout->addWidget(fwVerLabel);
 
-        /* Create actual PageWidgetItem */
-        RazerPageWidgetItem *item = new RazerPageWidgetItem(widget, name, serial);
-
         // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
         if(!currentDevice->getPngFilename().isEmpty()) {
             QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
-            item->setIcon(*icon);
+//             item->setIcon(*icon);
         }
-        item->setHeader(name);
+//         item->setHeader(name);
 
-        ui_main.kpagewidget->addPage(item);
+        ui_main.stackedWidget->addWidget(widget);
+        qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
     }
 
     if(serialnrs.size() == 0) {
@@ -517,29 +524,29 @@ QPair<librazer::Device*, QString> RazerGenie::commonCombo(int index)
     librazer::RazerCapability capability = sender->itemData(index).value<librazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
 
     // Show/hide the color buttons
     if(capability.getNumColors() == 0) { // hide all
         for(int i=1; i<=3; i++)
-            item->widget()->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->hide();
+            item->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->hide();
     } else {
         for(int i=1; i<=3; i++) {
             if(capability.getNumColors() < i)
-                item->widget()->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->hide();
+                item->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->hide();
             else
-                item->widget()->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->show();
+                item->findChild<QPushButton*>(sender->objectName() + "_colorbutton" + QString::number(i))->show();
         }
     }
 
     // Show/hide the wave radiobuttons
     if(capability.isWave() == 0) {
-        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->hide();
-        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->hide();
+        item->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->hide();
+        item->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->hide();
     } else {
-        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->show();
-        item->widget()->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->show();
+        item->findChild<QRadioButton*>(sender->objectName() + "_radiobutton1")->show();
+        item->findChild<QRadioButton*>(sender->objectName() + "_radiobutton2")->show();
     }
 
     return qMakePair(dev, identifier);
@@ -580,23 +587,23 @@ void RazerGenie::logoCombo(int index)
 
 QColor RazerGenie::getColorForButton(int num, librazer::Device::lightingLocation location)
 {
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
-    QPalette pal = item->widget()->findChild<QPushButton*>(QString::number(location) + "_colorbutton" + QString::number(num))->palette();
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
+    QPalette pal = item->findChild<QPushButton*>(QString::number(location) + "_colorbutton" + QString::number(num))->palette();
     return pal.color(QPalette::Button);
 }
 
 const int RazerGenie::getWaveDirection(librazer::Device::lightingLocation location)
 {
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
 
-    return item->widget()->findChild<QRadioButton*>(QString::number(location) + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
+    return item->findChild<QRadioButton*>(QString::number(location) + "_radiobutton1")->isChecked() ? librazer::WAVE_LEFT : librazer::WAVE_RIGHT;
 }
 
 void RazerGenie::brightnessChanged(int value)
 {
     qDebug() << value;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setBrightness(value);
 }
@@ -605,7 +612,7 @@ void RazerGenie::scrollBrightnessChanged(int value)
 {
     qDebug() << value;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setScrollBrightness(value);
 }
@@ -614,7 +621,7 @@ void RazerGenie::logoBrightnessChanged(int value)
 {
     qDebug() << value;
 
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
 }
@@ -636,7 +643,7 @@ void RazerGenie::dpiChanged(int orig_value)
             slider->setValue(orig_value);
 
             // get device pointer
-            RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+            RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
             librazer::Device *dev = devices.value(item->getSerial());
             // set DPI
             dev->setDPI(value, value); // set for both X & Y
@@ -647,7 +654,7 @@ void RazerGenie::dpiChanged(int orig_value)
         }
     } /* if DPI should NOT be synced */ else {
         // get device pointer
-        RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+        RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
         librazer::Device *dev = devices.value(item->getSerial());
 
         // set DPI (with value from other slider)
@@ -778,8 +785,8 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, librazer::Device *devi
 void RazerGenie::applyEffect(librazer::Device::lightingLocation loc)
 {
     qDebug() << "applyEffect()";
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
-    QComboBox *combobox = item->widget()->findChild<QComboBox*>(QString::number(loc));
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
+    QComboBox *combobox = item->findChild<QComboBox*>(QString::number(loc));
 
     librazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<librazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
@@ -824,7 +831,7 @@ void RazerGenie::dpiSyncCheckbox(bool checked)
 void RazerGenie::pollCombo(int /* index */)
 {
     // get device pointer
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
 
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
@@ -834,7 +841,7 @@ void RazerGenie::pollCombo(int /* index */)
 void RazerGenie::logoActiveCheckbox(bool checked)
 {
     // get device pointer
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
 
     dev->setLogoActive(checked);
@@ -844,7 +851,7 @@ void RazerGenie::logoActiveCheckbox(bool checked)
 void RazerGenie::scrollActiveCheckbox(bool checked)
 {
     // get device pointer
-    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.kpagewidget->currentPage());
+    RazerPageWidgetItem *item = dynamic_cast<RazerPageWidgetItem*>(ui_main.stackedWidget->currentWidget());
     librazer::Device *dev = devices.value(item->getSerial());
 
     dev->setScrollActive(checked);

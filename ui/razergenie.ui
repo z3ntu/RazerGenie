@@ -25,10 +25,7 @@
     <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="4">
-    <widget class="KPageWidget" name="kpagewidget"/>
-   </item>
-   <item row="1" column="0" colspan="4">
+   <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="versionLabel">
@@ -53,20 +50,22 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="0">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="page">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KPageView</class>
-   <extends>QWidget</extends>
-   <header>kpageview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KPageWidget</class>
-   <extends>KPageView</extends>
-   <header>kpagewidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

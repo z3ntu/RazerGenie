@@ -18,8 +18,9 @@
 
 #include "razerpagewidgetitem.h"
 
-RazerPageWidgetItem::RazerPageWidgetItem (QWidget *widget, const QString &name, const QString &serial) : KPageWidgetItem (widget, name)
+RazerPageWidgetItem::RazerPageWidgetItem (const QString &name, const QString &serial) : QWidget ()
 {
+    this->name = name;
     this->serial = serial;
 }
 
