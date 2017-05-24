@@ -28,6 +28,7 @@
 #include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerdevicewidget.h"
+#include "devicelistitem.h"
 #include "customeditor.h"
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
@@ -123,13 +124,16 @@ void RazerGenie::fillList()
         qDebug() << serial;
         qDebug() << name;
 
+        DeviceListItem *deviceListItem = new DeviceListItem(currentDevice);
+        ui_main.listWidget->addItem(deviceListItem);
+
         // Insert current device pointer with serial lookup into a QHash
         devices.insert(serial, currentDevice);
 
         // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
         qDebug() << type;
 
-        /* Create actual PageWidgetItem */
+        /* Create actual DeviceWidget */
         RazerDeviceWidget *widget = new RazerDeviceWidget(name, serial);
 
         QVBoxLayout *verticalLayout = new QVBoxLayout(widget);

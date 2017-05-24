@@ -11,6 +11,7 @@ set(razergenie_SRCS main.cpp
                     razergenie.cpp
                     razerimagedownloader.cpp
                     razerdevicewidget.cpp
+                    devicelistitem.cpp
                     customeditor.cpp
                     )
 
