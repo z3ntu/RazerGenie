@@ -10,7 +10,7 @@ endif()
 set(razergenie_SRCS main.cpp
                     razergenie.cpp
                     razerimagedownloader.cpp
-                    razerpagewidgetitem.cpp
+                    razerdevicewidget.cpp
                     customeditor.cpp
                     )
 
