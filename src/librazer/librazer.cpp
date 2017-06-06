@@ -1096,7 +1096,6 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
 /**
  * Sends a QDBusMessage and returns the int array value.
  */
-//QList<int>
 QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
 {
     QList<int> *retList = new QList<int>();

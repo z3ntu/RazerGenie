@@ -220,6 +220,9 @@ void RazerGenie::fillList()
                     brightnessSlider = new QSlider(Qt::Horizontal, widget);
                     if(currentDevice->hasCapability("get_brightness")) {
                         brightnessSlider->setValue(currentDevice->getBrightness());
+                    } else {
+                        // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                        brightnessSlider->setValue(100);
                     }
                     connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::brightnessChanged);
                 }
@@ -241,6 +244,9 @@ void RazerGenie::fillList()
                     brightnessSlider = new QSlider(Qt::Horizontal, widget);
                     if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
                         brightnessSlider->setValue(currentDevice->getLogoBrightness());
+                    } else {
+                        // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                        brightnessSlider->setValue(100);
                     }
                     connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::logoBrightnessChanged);
                 }
@@ -262,6 +268,9 @@ void RazerGenie::fillList()
                     brightnessSlider = new QSlider(Qt::Horizontal, widget);
                     if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
                         brightnessSlider->setValue(currentDevice->getScrollBrightness());
+                    } else {
+                        // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                        brightnessSlider->setValue(100);
                     }
                     connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::scrollBrightnessChanged);
                 }
