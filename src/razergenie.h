@@ -75,7 +75,7 @@ public slots:
     void deviceAdded();
     void deviceRemoved();
 private:
-    Ui::RazerDriversKcmUi ui_main;
+    Ui::RazerGenieUi ui_main;
     Ui::DaemonNotAvailable ui_error;
     void setupUi();
     void setupErrorUi();
