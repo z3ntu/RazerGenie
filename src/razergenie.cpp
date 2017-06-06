@@ -185,7 +185,7 @@ void RazerGenie::fillList()
                 showError("Unhanded lighting location in fillList()");
             }
 
-            QHBoxLayout *lightingHBox = new QHBoxLayout(widget);
+            QHBoxLayout *lightingHBox = new QHBoxLayout();
             verticalLayout->addWidget(lightingLocationLabel);
             verticalLayout->addLayout(lightingHBox);
 
@@ -351,7 +351,7 @@ void RazerGenie::fillList()
             /* Brightness sliders */
             if(brightnessLabel != NULL && brightnessSlider != NULL) { // only if brightness capability exists
                 verticalLayout->addWidget(brightnessLabel);
-                QHBoxLayout *hboxSlider = new QHBoxLayout(widget);
+                QHBoxLayout *hboxSlider = new QHBoxLayout();
                 QLabel *brightnessSliderValue = new QLabel;
                 hboxSlider->addWidget(brightnessSlider);
                 hboxSlider->addWidget(brightnessSliderValue);
@@ -362,9 +362,9 @@ void RazerGenie::fillList()
         /* DPI sliders */
         if(currentDevice->hasCapability("dpi")) {
             // HBoxes
-            QHBoxLayout *dpiXHBox = new QHBoxLayout(widget);
-            QHBoxLayout *dpiYHBox = new QHBoxLayout(widget);
-            QHBoxLayout *dpiHeaderHBox = new QHBoxLayout(widget);
+            QHBoxLayout *dpiXHBox = new QHBoxLayout();
+            QHBoxLayout *dpiYHBox = new QHBoxLayout();
+            QHBoxLayout *dpiHeaderHBox = new QHBoxLayout();
 
             // Header
             QLabel *dpiHeader = new QLabel("DPI", widget);
