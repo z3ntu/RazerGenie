@@ -1112,6 +1112,7 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
             retList->append(myElement);
         }
         myArg.endArray();
+        return *retList;
     }
     // TODO: Handle error
     printError(msg, Q_FUNC_INFO);
