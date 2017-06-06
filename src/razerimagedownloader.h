@@ -27,18 +27,16 @@ class RazerImageDownloader : public QObject
 {
     Q_OBJECT
 public:
-    RazerImageDownloader(QString serial, QUrl url, QObject *parent);
+    RazerImageDownloader(QUrl url, QObject *parent);
     ~RazerImageDownloader();
     static QString getDownloadPath();
 signals:
-    void downloadFinished(QString &serial, QString &filename);
+    void downloadFinished(QString &filename);
 private:
     QFile *_file;
     QString _filepath;
-    QString serial;
     QNetworkAccessManager *manager;
     int _timerid;
-    void timerEvent(QTimerEvent *event);
 private slots:
     void finished(QNetworkReply* reply);
 };

@@ -21,13 +21,18 @@
 
 #include <librazer.h>
 #include <QWidget>
+#include <QLabel>
 
 class DeviceListWidget : public QWidget
 {
 public:
     DeviceListWidget(QWidget *parent, librazer::Device *device);
+public slots:
+    void imageDownloaded(QString &filename);
 private:
+    QPixmap createPixmapFromFile(QString &filename);
     librazer::Device *device;
+    QLabel *imageLabel;
 };
 
 #endif // DEVICELISTWIDGET_H

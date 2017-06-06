@@ -30,10 +30,8 @@
 #include "razerimagedownloader.h"
 
 
-RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QObject *parent) : QObject(parent)
+RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent) : QObject(parent)
 {
-    this->serial = serial;
-
     manager = new QNetworkAccessManager(this);
 
     QString path = getDownloadPath();
@@ -63,12 +61,6 @@ RazerImageDownloader::RazerImageDownloader(QString serial, QUrl url, QObject *pa
     manager->get(request);
 }
 
-void RazerImageDownloader::timerEvent(QTimerEvent */*event*/)
-{
-    killTimer(_timerid);
-    emit downloadFinished(serial, _filepath);
-}
-
 RazerImageDownloader::~RazerImageDownloader()
 {
     // TODO: Complete destructor (no idea how they work / what you have to do)
@@ -87,7 +79,7 @@ void RazerImageDownloader::finished(QNetworkReply* reply)
 
     reply->deleteLater();
 
-    emit downloadFinished(serial, _filepath);
+    emit downloadFinished(_filepath);
 }
 
 QString RazerImageDownloader::getDownloadPath()

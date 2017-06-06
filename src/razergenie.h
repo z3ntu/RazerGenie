@@ -32,8 +32,6 @@ public:
     RazerGenie(QWidget* parent = 0);
     ~RazerGenie();
 public slots:
-    void imageDownloaded(QString &serial, QString &filename);
-
     // General checkboxes
     void toggleSync(bool);
     void toggleOffOnScreesaver(bool on);

@@ -103,14 +103,6 @@ void RazerGenie::fillList()
         // Create device instance with current serial
         librazer::Device *currentDevice = new librazer::Device(serial);
 
-        // Download image for device
-        if(!currentDevice->getPngFilename().isEmpty()) {
-            RazerImageDownloader *dl = new RazerImageDownloader(serial, QUrl(currentDevice->getPngUrl()), this);
-            connect(dl, &RazerImageDownloader::downloadFinished, this, &RazerGenie::imageDownloaded);
-        } else {
-            qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
-        }
-
         // Setup variables for easy access
         QString type = currentDevice->getDeviceType();
         QString name = currentDevice->getDeviceName();
@@ -118,18 +110,26 @@ void RazerGenie::fillList()
         qDebug() << serial;
         qDebug() << name;
 
-        qDebug() << "Width" << ui_main.listWidget->width();
-        qDebug() << "Height" << ui_main.listWidget->height();
+//         qDebug() << "Width" << ui_main.listWidget->width();
+//         qDebug() << "Height" << ui_main.listWidget->height();
 
         // Add new device to the list
         QListWidgetItem *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(listItem->sizeHint().width(), 120));
         ui_main.listWidget->addItem(listItem);
-        QWidget *listItemWidget = new DeviceListWidget(ui_main.listWidget, currentDevice);
+        DeviceListWidget *listItemWidget = new DeviceListWidget(ui_main.listWidget, currentDevice);
         ui_main.listWidget->setItemWidget(listItem, listItemWidget);
 
         // Insert current device pointer with serial lookup into a QHash
         devices.insert(serial, currentDevice);
+
+        // Download image for device
+        if(!currentDevice->getPngFilename().isEmpty()) {
+            RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
+            connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
+        } else {
+            qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
+        }
 
         // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
         qDebug() << type;
@@ -442,8 +442,6 @@ void RazerGenie::fillList()
 
         /* Poll rate */
         if(currentDevice->hasCapability("poll_rate")) {
-            qDebug() << "ADD POLLING RATE COMBOBOXES!";
-
             QLabel *pollRateHeader = new QLabel("Polling rate", widget);
             pollRateHeader->setFont(headerFont);
             verticalLayout->addWidget(pollRateHeader);
@@ -480,18 +478,12 @@ void RazerGenie::fillList()
         verticalLayout->addWidget(fwVerLabel);
 
         ui_main.stackedWidget->addWidget(widget);
-        qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
+//         qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
     }
 
     if(serialnrs.size() == 0) {
         showError("The daemon doesn't see any devices. Make sure they are connected!");
     }
-}
-
-void RazerGenie::imageDownloaded(QString &serial, QString &filename)
-{
-    //TODO: Set image at runtime
-    qDebug() << "Download of image completed for " << serial << " at " << filename;
 }
 
 void RazerGenie::toggleSync(bool sync)

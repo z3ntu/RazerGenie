@@ -30,22 +30,33 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, librazer::Device *device) : 
     layout->setMargin(2);
 
     // Add icon
-    // TODO: Only works the second time the application is opened due to the images being downloaded the first time.
     if(!device->getPngFilename().isEmpty()) {
-        QPixmap icon(RazerImageDownloader::getDownloadPath() + device->getPngFilename());
-        QPixmap scaled = icon.scaled(150, 75, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        QLabel *imageLabel = new QLabel(this);
-        imageLabel->setAlignment(Qt::AlignCenter);
+        QString path = RazerImageDownloader::getDownloadPath() + device->getPngFilename();
+        QPixmap scaled = createPixmapFromFile(path);
+        imageLabel = new QLabel(this);
         imageLabel->setPixmap(scaled);
-        layout->addWidget(imageLabel);
     } else {
-        QLabel *a = new QLabel("test", this);
-        layout->addWidget(a);
+        imageLabel = new QLabel("Downloading image...", this);
     }
+    imageLabel->setAlignment(Qt::AlignCenter);
+    layout->addWidget(imageLabel);
 
     QLabel *deviceName = new QLabel(device->getDeviceName(), this);
     deviceName->setWordWrap(true);
     deviceName->setAlignment(Qt::AlignCenter);
 
     layout->addWidget(deviceName);
+}
+
+QPixmap DeviceListWidget::createPixmapFromFile(QString &filename)
+{
+    QPixmap icon(filename);
+    return icon.scaled(150, 75, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+}
+
+void DeviceListWidget::imageDownloaded(QString &filename)
+{
+    qDebug() << "DeviceListWidget: Received signal!" << filename;
+    QPixmap scaled = createPixmapFromFile(filename);
+    imageLabel->setPixmap(scaled);
 }
