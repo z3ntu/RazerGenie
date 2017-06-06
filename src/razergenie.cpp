@@ -28,7 +28,7 @@
 #include "librazer/razercapability.h"
 #include "razerimagedownloader.h"
 #include "razerdevicewidget.h"
-#include "devicelistitem.h"
+#include "devicelistwidget.h"
 #include "customeditor.h"
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
@@ -72,6 +72,8 @@ void RazerGenie::setupUi()
     ui_main.syncCheckBox->setChecked(librazer::getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
     ui_main.screensaverCheckBox->setChecked(librazer::getTurnOffOnScreensaver());
+
+    connect(ui_main.listWidget, &QListWidget::currentRowChanged, ui_main.stackedWidget, &QStackedWidget::setCurrentIndex);
 
     librazer::connectDeviceAdded(this, SLOT(deviceAdded()));
     librazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
@@ -124,8 +126,15 @@ void RazerGenie::fillList()
         qDebug() << serial;
         qDebug() << name;
 
-        DeviceListItem *deviceListItem = new DeviceListItem(currentDevice);
-        ui_main.listWidget->addItem(deviceListItem);
+        qDebug() << "Width" << ui_main.listWidget->width();
+        qDebug() << "Height" << ui_main.listWidget->height();
+
+        // Add new device to the list
+        QListWidgetItem *listItem = new QListWidgetItem();
+        listItem->setSizeHint(QSize(listItem->sizeHint().width(), 120));
+        ui_main.listWidget->addItem(listItem);
+        QWidget *listItemWidget = new DeviceListWidget(ui_main.listWidget, currentDevice);
+        ui_main.listWidget->setItemWidget(listItem, listItemWidget);
 
         // Insert current device pointer with serial lookup into a QHash
         devices.insert(serial, currentDevice);
@@ -151,6 +160,12 @@ void RazerGenie::fillList()
 
         // Declare header font
         QFont headerFont("Arial", 15, QFont::Bold);
+        QFont titleFont("Arial", 18, QFont::Bold);
+
+        // Add header with the device name
+        QLabel *header = new QLabel(name, widget);
+        header->setFont(titleFont);
+        verticalLayout->addWidget(header);
 
         // Lighting header
         if(lightingLocationsTodo.size() != 0) {
@@ -310,7 +325,7 @@ void RazerGenie::fillList()
                 }
             }
 
-            // 'Set Logo Active' checkbox
+            /* 'Set Logo Active' checkbox */
             //TODO New location for the checkbox?
             if(currentLocation == librazer::Device::lighting_logo) {
                 // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
@@ -322,7 +337,7 @@ void RazerGenie::fillList()
                 }
             }
 
-            // 'Set Scroll Active' checkbox
+            /* 'Set Scroll Active' checkbox */
             if(currentLocation == librazer::Device::lighting_scroll) {
                 // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
                 if(currentDevice->hasCapability("lighting_scroll_active") && !currentDevice->hasCapability("lighting_scroll_none")) {
@@ -463,13 +478,6 @@ void RazerGenie::fillList()
 
         QLabel *fwVerLabel = new QLabel("Firmware version: " + currentDevice->getFirmwareVersion());
         verticalLayout->addWidget(fwVerLabel);
-
-        // Set icon (only works the second time the application is opened due to the images being downloaded the first time. TODO: Find solution
-        if(!currentDevice->getPngFilename().isEmpty()) {
-            QIcon *icon = new QIcon(RazerImageDownloader::getDownloadPath() + currentDevice->getPngFilename());
-//             item->setIcon(*icon);
-        }
-//         item->setHeader(name);
 
         ui_main.stackedWidget->addWidget(widget);
         qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();

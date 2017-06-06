@@ -16,9 +16,18 @@
  *
  */
 
-#include "devicelistitem.h"
+#ifndef DEVICELISTWIDGET_H
+#define DEVICELISTWIDGET_H
 
-DeviceListItem::DeviceListItem(librazer::Device *device) : QListWidgetItem(Q_NULLPTR, 1001)
+#include <librazer.h>
+#include <QWidget>
+
+class DeviceListWidget : public QWidget
 {
-    this->device = device;
-}
+public:
+    DeviceListWidget(QWidget *parent, librazer::Device *device);
+private:
+    librazer::Device *device;
+};
+
+#endif // DEVICELISTWIDGET_H
