@@ -41,16 +41,8 @@ RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent) : QObject(
 
     _filepath = path + QFileInfo(url.path()).fileName();
     _file = new QFile(_filepath);
-    if(_file->exists()) {
-        // return image, can't emit here as the signal isn't connected yet, see http://stackoverflow.com/a/11641871/3527128
-        _timerid = startTimer(0);
-        return;
-    } else {
-        // TODO: Solve better
-        // That the contructor creates the file, that the same file doesn't get downloaded simultanously.
-        //_file->open(QIODevice::WriteOnly);
-        //_file->close();
-    }
+
+    // TODO: What happens when two devices of the same model are connected?
 
     QNetworkRequest request;
     request.setUrl(url);

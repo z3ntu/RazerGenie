@@ -36,7 +36,6 @@ private:
     QFile *_file;
     QString _filepath;
     QNetworkAccessManager *manager;
-    int _timerid;
 private slots:
     void finished(QNetworkReply* reply);
 };
