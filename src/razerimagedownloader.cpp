@@ -41,6 +41,9 @@ RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent) : QObject(
 
     _filepath = path + QFileInfo(url.path()).fileName();
     _file = new QFile(_filepath);
+    if(_file->exists()) {
+        return;
+    }
 
     // TODO: What happens when two devices of the same model are connected?
 
