@@ -16,20 +16,21 @@
  *
  */
 
-#ifndef RAZERPAGEWIDGETITEM_H
-#define RAZERPAGEWIDGETITEM_H
+#ifndef RAZERDEVICEWIDGET_H
+#define RAZERDEVICEWIDGET_H
 
-#include <kpagewidgetmodel.h>
+#include <QWidget>
 
-class RazerPageWidgetItem : public KPageWidgetItem
+class RazerDeviceWidget : public QWidget
 {
 public:
-    RazerPageWidgetItem(QWidget* widget, const QString& name, const QString& serial);
-    ~RazerPageWidgetItem();
+    RazerDeviceWidget(const QString& name, const QString& serial);
+    ~RazerDeviceWidget();
 
     QString getSerial();
 private:
+    QString name;
     QString serial;
 };
 
-#endif // RAZERPAGEWIDGETITEM_H
+#endif // RAZERDEVICEWIDGET_H

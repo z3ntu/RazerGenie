@@ -17,8 +17,7 @@ set(RAZERGENIE_VERSION_STRING ${RAZERGENIE_VERSION_MAJOR}.${RAZERGENIE_VERSION_M
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
-find_package(Qt5 REQUIRED COMPONENTS DBus Network Xml)
-find_package(KF5 REQUIRED COMPONENTS ConfigWidgets)
+find_package(Qt5 REQUIRED COMPONENTS DBus Network Xml Widgets)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Luca Weiss</author>
- <class>RazerDriversKcmUi</class>
- <widget class="QWidget" name="RazerDriversKcmUi">
+ <class>RazerGenieUi</class>
+ <widget class="QWidget" name="RazerGenieUi">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -25,48 +25,64 @@
     <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="4">
-    <widget class="KPageWidget" name="kpagewidget"/>
-   </item>
-   <item row="1" column="0" colspan="4">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="versionLabel">
-       <property name="text">
-        <string>Driver version: X.X.X</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_1">
+       <item>
+        <widget class="QListWidget" name="listWidget">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QCheckBox" name="syncCheckBox">
-       <property name="text">
-        <string>Sync devices</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="screensaverCheckBox">
-       <property name="text">
-        <string>Turn off on screensaver</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="versionLabel">
+         <property name="text">
+          <string>Driver version: X.X.X</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="syncCheckBox">
+         <property name="text">
+          <string>Sync devices</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="screensaverCheckBox">
+         <property name="text">
+          <string>Turn off on screensaver</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KPageView</class>
-   <extends>QWidget</extends>
-   <header>kpageview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KPageWidget</class>
-   <extends>KPageView</extends>
-   <header>kpagewidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
