@@ -50,16 +50,6 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="stupid_page_1">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QWidget" name="stupid_page_2">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
         </widget>
        </item>
       </layout>

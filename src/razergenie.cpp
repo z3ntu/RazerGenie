@@ -94,14 +94,6 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 
 void RazerGenie::fillList()
 {
-    //TODO FIX THIS!!!
-    // Remove all widgets from the stackedWidget
-    for(int i = ui_main.stackedWidget->count(); i >= 0; i--) {
-        QWidget* widget = ui_main.stackedWidget->widget(i);
-        ui_main.stackedWidget->removeWidget(widget);
-        widget->deleteLater();
-    }
-
     // Get all connected devices
     QStringList serialnrs = librazer::getConnectedDevices();
 
@@ -206,7 +198,6 @@ void RazerGenie::fillList()
             //TODO More elegant solution instead of the sizePolicy?
             comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-            //TODO Speed for reactive
             //TODO Battery
             //TODO Keyboard stuff (dunno what exactly)
             //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
@@ -284,8 +275,8 @@ void RazerGenie::fillList()
                 for(int i=1; i<=3; i++) {
                     QPushButton *colorButton = new QPushButton(widget);
                     QPalette pal = colorButton->palette();
-                    // TODO: Set color when set
                     pal.setColor(QPalette::Button, QColor(Qt::green));
+
                     colorButton->setAutoFillBackground(true);
                     colorButton->setFlat(true);
                     colorButton->setPalette(pal);
