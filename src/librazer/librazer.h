@@ -122,7 +122,7 @@ bool connectDeviceRemoved(QObject *receiver, const char *slot);
 class Device
 {
 private:
-    QString serial;
+    QString mSerial;
     QStringList introspection;
     QHash<QString, bool> capabilities;
 
@@ -135,6 +135,7 @@ public:
     Device(QString serial);
     ~Device();
 
+    QString serial();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
     QString getPngFilename();

@@ -27,11 +27,12 @@ class DeviceListWidget : public QWidget
 {
 public:
     DeviceListWidget(QWidget *parent, librazer::Device *device);
+    librazer::Device *device();
 public slots:
     void imageDownloaded(QString &filename);
 private:
     QPixmap createPixmapFromFile(QString &filename);
-    librazer::Device *device;
+    librazer::Device *mDevice;
     QLabel *imageLabel;
 };
 

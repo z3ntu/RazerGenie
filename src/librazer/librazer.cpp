@@ -225,7 +225,7 @@ bool getTurnOffOnScreensaver()
  */
 Device::Device(QString s)
 {
-    serial = s;
+    mSerial = s;
     Introspect();
     setupCapabilities();
 }
@@ -251,6 +251,14 @@ bool connectDeviceRemoved(QObject *receiver, const char *slot)
 }
 
 // ---- MISC METHODS ----
+/**
+ * Returns the serial
+ */
+QString Device::serial()
+{
+    return mSerial;
+}
+
 /**
  * Internal method to determine whether a device has a given capability based on interface and method names.
  */
@@ -983,7 +991,7 @@ double Device::getScrollBrightness()
  */
 QDBusMessage Device::prepareDeviceQDBusMessage(const QString &interface, const QString &method)
 {
-    return QDBusMessage::createMethodCall("org.razer", "/org/razer/device/" + serial, interface, method);
+    return QDBusMessage::createMethodCall("org.razer", "/org/razer/device/" + mSerial, interface, method);
 }
 
 /**

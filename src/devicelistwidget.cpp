@@ -24,7 +24,7 @@
 
 DeviceListWidget::DeviceListWidget(QWidget *parent, librazer::Device *device) : QWidget(parent)
 {
-    this->device = device;
+    this->mDevice = device;
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(2);
@@ -59,4 +59,9 @@ void DeviceListWidget::imageDownloaded(QString &filename)
     qDebug() << "DeviceListWidget: Received signal!" << filename;
     QPixmap scaled = createPixmapFromFile(filename);
     imageLabel->setPixmap(scaled);
+}
+
+librazer::Device *DeviceListWidget::device()
+{
+    return mDevice;
 }

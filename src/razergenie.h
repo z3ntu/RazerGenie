@@ -79,10 +79,14 @@ private:
     void setupErrorUi();
 
     void fillList();
+    void addDeviceToGui(const QString &serial);
+    bool removeDeviceFromGui(const QString &serial);
     void showError(QString error);
     void showInfo(QString info);
 
     QPair<librazer::Device*, QString> commonCombo(int index);
+
+    void refreshDeviceList();
 
     void getRazerDevices(void);
     QColor getColorForButton(int num, librazer::Device::lightingLocation location);
