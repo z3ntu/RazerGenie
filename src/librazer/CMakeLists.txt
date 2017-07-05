@@ -11,7 +11,7 @@ add_library(razer SHARED
             librazer.cpp
             razercapability.cpp
             )
-target_link_libraries(razer Qt5::DBus Qt5::Xml)
+target_link_libraries(razer Qt5::Gui Qt5::DBus Qt5::Xml)
 
 set_target_properties(razer PROPERTIES VERSION ${LIBRAZER_VERSION_STRING}
                                        SOVERSION ${LIBRAZER_VERSION_MAJOR})
