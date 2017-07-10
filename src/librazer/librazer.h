@@ -50,6 +50,10 @@ const ushort POLL_1000HZ = 1000;
 const ushort POLL_500HZ = 500;
 const ushort POLL_125HZ = 125;
 
+enum daemonStatus {
+    enabled, disabled, not_installed, no_systemd, unknown
+};
+
 const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
     RazerCapability("lighting_breath_dual", "Breath Dual", 2),
@@ -101,6 +105,12 @@ bool getSyncEffects();
 // Screensaver
 bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
 bool getTurnOffOnScreensaver();
+
+// Misc
+daemonStatus getDaemonStatus();
+QString getDaemonStatusOutput();
+bool enableDaemon();
+// bool disableDaemon();
 
 /* Helper methods */
 bool QDBusMessageToBool(const QDBusMessage &message);

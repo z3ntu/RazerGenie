@@ -24,6 +24,7 @@
 #include <QDBusArgument>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QProcess>
 #include <QVariantHash>
 #include <QtGui/qcolor.h>
 
@@ -216,6 +217,47 @@ bool getTurnOffOnScreensaver()
 {
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getOffOnScreensaver");
     return QDBusMessageToBool(m);
+}
+
+/**
+ * Returns if the systemd user unit for the daemon is enabled.
+ */
+daemonStatus getDaemonStatus()
+{
+    // Scenarios to handle:
+    // - Command systemctl doesn't exist (e.g. Gentoo) - exit code 255
+    // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
+    QProcess process;
+    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "razer-daemon.service");
+    process.waitForFinished();
+    QString output(process.readAllStandardOutput());
+    QString error(process.readAllStandardError());
+    if(output == "enabled\n") return daemonStatus::enabled;
+    else if(output == "disabled\n") return daemonStatus::disabled;
+    else if(error == "Failed to get unit file state for razer-daemon.service: No such file or directory\n") return daemonStatus::not_installed;
+    else if(process.exitCode() == 255) return daemonStatus::no_systemd;
+    else {
+        qDebug() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
+        return daemonStatus::unknown;
+    }
+}
+
+QString getDaemonStatusOutput()
+{
+    QProcess process;
+    process.start("systemctl", QStringList() << "--user" << "status" << "razer-daemon.service");
+    process.waitForFinished();
+    QString output(process.readAllStandardOutput());
+    // TODO Handle systemctl not found
+    return output;
+}
+
+bool enableDaemon()
+{
+    QProcess process;
+    process.start("systemctl", QStringList() << "--user" << "enable" << "razer-daemon.service");
+    process.waitForFinished();
+    return process.exitCode() == 0;
 }
 
 // ====== DEVICE CLASS ======

@@ -33,20 +33,35 @@
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
-    // Watch for dbus service changes (= daemon ends or gets started)
-    QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
-
-    connect(watcher, &QDBusServiceWatcher::serviceRegistered,
-            this, &RazerGenie::dbusServiceRegistered);
-    connect(watcher, &QDBusServiceWatcher::serviceUnregistered,
-            this, &RazerGenie::dbusServiceUnregistered);
+    librazer::daemonStatus daemonStatus = librazer::getDaemonStatus();
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
+        //no_systemd
+        //not_installed
+        //plugdev
         setupErrorUi();
+        ui_error.textEdit->setText(librazer::getDaemonStatusOutput());
     } else {
+        //enabled
+        //disabled
         setupUi();
+
+        // Watch for dbus service changes (= daemon ends or gets started)
+        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
+
+        connect(watcher, &QDBusServiceWatcher::serviceRegistered,
+                this, &RazerGenie::dbusServiceRegistered);
+        connect(watcher, &QDBusServiceWatcher::serviceUnregistered,
+                this, &RazerGenie::dbusServiceUnregistered);
     }
+
+    // What to do:
+    // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login."
+    // If enabled: Do nothing
+    // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://terrycain.github.io/razer-drivers"
+    // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
+    qDebug() << librazer::getDaemonStatus();
 }
 
 RazerGenie::~RazerGenie()
@@ -66,7 +81,7 @@ void RazerGenie::setupUi()
 
     ui_main.versionLabel->setText("Daemon version: " + librazer::getDaemonVersion());
 
-    fillList();
+    fillDeviceList();
 
     //Connect signals
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
@@ -90,10 +105,10 @@ void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
     qDebug() << "Unregistered! " << serviceName;
-    showError("The dbus service connection was lost. Please restart the daemon (\"razer-service\")");
+    showError("The dbus service connection was lost. Please restart the daemon (\"systemctl --user restart razer-daemon.service\")");
 }
 
-void RazerGenie::fillList()
+void RazerGenie::fillDeviceList()
 {
     // Get all connected devices
     QStringList serialnrs = librazer::getConnectedDevices();
@@ -105,6 +120,54 @@ void RazerGenie::fillList()
 
     if(serialnrs.size() == 0) {
         showError("The daemon doesn't see any devices. Make sure they are connected!");
+    }
+}
+
+void RazerGenie::refreshDeviceList()
+{
+    // LOGIC:
+    // - list of current
+    // - hash of old
+    // go through old
+    // if still in new, remove from new list
+    // if not in new, remove from both
+    // go through new (remaining items) list and add
+    QStringList serialnrs = librazer::getConnectedDevices();
+    QMutableHashIterator<QString, librazer::Device*> i(devices);
+    while (i.hasNext()) {
+        i.next();
+        if(serialnrs.contains(i.key())) {
+            qDebug() << "Keep:";
+            qDebug() << i.key();
+            serialnrs.removeOne(i.key());
+        } else {
+            qDebug() << "Remove:";
+            qDebug() << i.key();
+            serialnrs.removeOne(i.key());
+            devices.remove(i.key());
+            removeDeviceFromGui(i.key());
+        }
+    }
+    QStringListIterator j(serialnrs);
+    while(j.hasNext()) {
+        QString serial = j.next();
+        qDebug() << "Add:";
+        qDebug() << serial;
+        addDeviceToGui(serial);
+    }
+}
+
+void RazerGenie::clearDeviceList()
+{
+    // Clear devices QHash
+    devices.clear();
+    // Clear device list
+    ui_main.listWidget->clear();
+    // Clear stackedwidget
+    for(int i = ui_main.stackedWidget->count(); i >= 0; i--) {
+        QWidget* widget = ui_main.stackedWidget->widget(i);
+        ui_main.stackedWidget->removeWidget(widget);
+        widget->deleteLater();
     }
 }
 
@@ -229,6 +292,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 brightnessLabel = new QLabel("Brightness");
                 brightnessSlider = new QSlider(Qt::Horizontal, widget);
                 if(currentDevice->hasCapability("get_brightness")) {
+                    qDebug() << "Brightness:" << currentDevice->getBrightness();
                     brightnessSlider->setValue(currentDevice->getBrightness());
                 } else {
                     // Set the slider to 100 by default as it's more likely it's 100 than 0...
@@ -493,6 +557,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
 bool RazerGenie::removeDeviceFromGui(const QString &serial)
 {
+    //TODO: Remove from "devices" QHash
     qDebug() << "Remove device" << serial;
     int index = -1;
     for(int i=0; i<ui_main.listWidget->count(); i++) {
@@ -905,40 +970,6 @@ void RazerGenie::deviceRemoved()
 {
     qDebug() << "DEVICE WAS REMOVED!";
     refreshDeviceList();
-}
-
-void RazerGenie::refreshDeviceList()
-{
-    // LOGIC:
-    // - list of current
-    // - hash of old
-    // go through old
-    // if still in new, remove from new list
-    // if not in new, remove from both
-    // go through new (remaining items) list and add
-    QStringList serialnrs = librazer::getConnectedDevices();
-    QMutableHashIterator<QString, librazer::Device*> i(devices);
-    while (i.hasNext()) {
-        i.next();
-        if(serialnrs.contains(i.key())) {
-            qDebug() << "Keep:";
-            qDebug() << i.key();
-            serialnrs.removeOne(i.key());
-        } else {
-            qDebug() << "Remove:";
-            qDebug() << i.key();
-            serialnrs.removeOne(i.key());
-            devices.remove(i.key());
-            removeDeviceFromGui(i.key());
-        }
-    }
-    QStringListIterator j(serialnrs);
-    while(j.hasNext()) {
-        QString serial = j.next();
-        qDebug() << "Add:";
-        qDebug() << serial;
-        addDeviceToGui(serial);
-    }
 }
 
 void RazerGenie::showError(QString error)

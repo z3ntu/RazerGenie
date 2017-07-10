@@ -21,10 +21,20 @@
    <string>RazerGenie - Daemon not available</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="0" column="1">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>The daemon is currently not available. You can see if it's running with &quot;ps -aux | grep razer&quot; and restart it with &quot;pkill -e -9 razer; razer-service&quot;</string>
+      <string>The daemon is currently not available. The output is below.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QTextEdit" name="textEdit">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
