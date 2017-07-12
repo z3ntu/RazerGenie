@@ -78,12 +78,15 @@ private:
     void setupUi();
     void setupErrorUi();
 
+    QWidget *noDevicePlaceholder = NULL;
+
     void fillDeviceList();
     void refreshDeviceList();
     void clearDeviceList();
 
     void addDeviceToGui(const QString &serial);
     bool removeDeviceFromGui(const QString &serial);
+    QWidget *getNoDevicePlaceholder();
     void showError(QString error);
     void showInfo(QString info);
 

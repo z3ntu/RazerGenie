@@ -61,7 +61,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
     // If enabled: Do nothing
     // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://terrycain.github.io/razer-drivers"
     // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
-    qDebug() << librazer::getDaemonStatus();
+    qDebug() << "daemonStatus:" << daemonStatus;
 }
 
 RazerGenie::~RazerGenie()
@@ -98,14 +98,15 @@ void RazerGenie::setupUi()
 void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 {
     qDebug() << "Registered! " << serviceName;
-    showInfo("Please restart the application to see the interface for now.");
-//     setupUi();
+    fillDeviceList();
+    showInfo("The D-Bus connection was re-established.");
 }
 
 void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
     qDebug() << "Unregistered! " << serviceName;
-    showError("The dbus service connection was lost. Please restart the daemon (\"systemctl --user restart razer-daemon.service\")");
+    clearDeviceList();
+    showError("The D-Bus connection was lost.");
 }
 
 void RazerGenie::fillDeviceList()
@@ -169,6 +170,9 @@ void RazerGenie::clearDeviceList()
         ui_main.stackedWidget->removeWidget(widget);
         widget->deleteLater();
     }
+    // Add placeholder widget
+    //TODO: Uncomment and remove at appropriate locations
+    // ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
 }
 
 void RazerGenie::addDeviceToGui(const QString &serial)
@@ -576,6 +580,16 @@ bool RazerGenie::removeDeviceFromGui(const QString &serial)
     }
     ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(index));
     delete ui_main.listWidget->takeItem(index);
+}
+
+QWidget *RazerGenie::getNoDevicePlaceholder()
+{
+    if(noDevicePlaceholder != NULL) {
+        return noDevicePlaceholder;
+    }
+    //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
+    noDevicePlaceholder = new QWidget();
+    return noDevicePlaceholder;
 }
 
 void RazerGenie::toggleSync(bool sync)
