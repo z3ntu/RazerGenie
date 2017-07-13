@@ -33,19 +33,41 @@
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
+    // What to do:
+    // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
+    // If enabled: Do nothing => DONE
+    // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://terrycain.github.io/razer-drivers"
+    // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
     librazer::daemonStatus daemonStatus = librazer::getDaemonStatus();
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
-        //no_systemd
-        //not_installed
-        //plugdev
         setupErrorUi();
-        ui_error.textEdit->setText(librazer::getDaemonStatusOutput());
+
+        if(daemonStatus == librazer::daemonStatus::not_installed) {
+            showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://terrycain.github.io/razer-drivers");
+        } else if(daemonStatus == librazer::daemonStatus::unknown) {
+            ui_error.label->setText("The daemon is currently not available. The output is below.");
+            ui_error.textEdit->setText(librazer::getDaemonStatusOutput());
+        } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
+            showError("The daemon is not available and you're not using systemd. You have to use xdg-autostart or a similar method for starting the daemon.");
+        }
     } else {
-        //enabled
-        //disabled
         setupUi();
+
+        if(daemonStatus == librazer::daemonStatus::disabled) {
+            QMessageBox msgBox;
+            msgBox.setText("The razer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
+            QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
+            msgBox.addButton(QMessageBox::Abort);
+            // Show message box
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == enableButton) {
+                qDebug() << "enable daemon";
+                librazer::enableDaemon();
+            } // ignore the cancel button
+        }
 
         // Watch for dbus service changes (= daemon ends or gets started)
         QDBusServiceWatcher *watcher = new QDBusServiceWatcher("org.razer", QDBusConnection::sessionBus());
@@ -55,13 +77,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         connect(watcher, &QDBusServiceWatcher::serviceUnregistered,
                 this, &RazerGenie::dbusServiceUnregistered);
     }
-
-    // What to do:
-    // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login."
-    // If enabled: Do nothing
-    // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://terrycain.github.io/razer-drivers"
-    // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
-    qDebug() << "daemonStatus:" << daemonStatus;
 }
 
 RazerGenie::~RazerGenie()
