@@ -15,8 +15,7 @@ set(razergenie_SRCS main.cpp
                     customeditor.cpp
                     )
 
-QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui
-                            ../ui/daemon_not_available.ui)
+QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui)
 
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 

@@ -42,16 +42,26 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
-        setupErrorUi();
+        QGridLayout *gridLayout = new QGridLayout(this);
+        QLabel *label;
+        QTextEdit *textEdit;
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
+            //TODO: Show in error ui
             showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://terrycain.github.io/razer-drivers");
         } else if(daemonStatus == librazer::daemonStatus::unknown) {
-            ui_error.label->setText("The daemon is currently not available. The output is below.");
-            ui_error.textEdit->setText(librazer::getDaemonStatusOutput());
+            label = new QLabel();
+            textEdit = new QTextEdit();
+            textEdit->setReadOnly(true);
+            label->setText("The daemon is currently not available. The output is below.");
+            textEdit->setText(librazer::getDaemonStatusOutput());
+            gridLayout->addWidget(label, 0, 1, 1, 1);
+            gridLayout->addWidget(textEdit, 1, 1, 1, 1);
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
             showError("The daemon is not available and you're not using systemd. You have to use xdg-autostart or a similar method for starting the daemon.");
         }
+        this->resize(1024, 600);
+        this->setMinimumSize(QSize(800, 500));
     } else {
         setupUi();
 
