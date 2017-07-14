@@ -227,6 +227,7 @@ daemonStatus getDaemonStatus()
     // Scenarios to handle:
     // - Command systemctl doesn't exist (e.g. Gentoo) - exit code 255
     // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
+    // Daemon can be not installed but enabled -.-
     QProcess process;
     process.start("systemctl", QStringList() << "--user" << "is-enabled" << "razer-daemon.service");
     process.waitForFinished();
@@ -248,8 +249,10 @@ QString getDaemonStatusOutput()
     process.start("systemctl", QStringList() << "--user" << "status" << "razer-daemon.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
+    QString error(process.readAllStandardError());
     // TODO Handle systemctl not found
-    return output;
+    // TODO Check if output and error and only display what's filled (to get rid of stray newline)
+    return output + "\n" + error;
 }
 
 bool enableDaemon()

@@ -72,6 +72,8 @@ public slots:
     // device signals
     void deviceAdded();
     void deviceRemoved();
+
+    void openIssueUrl();
 private:
     Ui::RazerGenieUi ui_main;
     Ui::DaemonNotAvailable ui_error;

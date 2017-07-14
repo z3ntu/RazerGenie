@@ -31,6 +31,8 @@
 #include "devicelistwidget.h"
 #include "customeditor.h"
 
+#define newIssueUrl "https://github.com/terrycain/razer-drivers/issues/new"
+
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
     // What to do:
@@ -42,30 +44,46 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
+        qDebug() << "Daemon not running";
         QGridLayout *gridLayout = new QGridLayout(this);
         QLabel *label;
         QTextEdit *textEdit;
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
             //TODO: Show in error ui
+            qDebug() << "Daemon not installed";
             showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://terrycain.github.io/razer-drivers");
-        } else if(daemonStatus == librazer::daemonStatus::unknown) {
+        } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
+            qDebug() << "No systemd";
+            showError("The daemon is not available and you're not using systemd. You have to use xdg-autostart or a similar method for starting the daemon.");
+            label = new QLabel();
+            label->setText("The Razer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.");
+            gridLayout->addWidget(label, 0, 1);
+        } else { // Daemon status here can be enabled, unknown (and potentially disabled)
+            qDebug() << "Unknown daemon status";
             label = new QLabel();
             textEdit = new QTextEdit();
+            QPushButton *issueButton = new QPushButton("Report issue");
+
+            label->setText("The daemon is currently not available. The status output is below.");
             textEdit->setReadOnly(true);
-            label->setText("The daemon is currently not available. The output is below.");
             textEdit->setText(librazer::getDaemonStatusOutput());
-            gridLayout->addWidget(label, 0, 1, 1, 1);
-            gridLayout->addWidget(textEdit, 1, 1, 1, 1);
-        } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
-            showError("The daemon is not available and you're not using systemd. You have to use xdg-autostart or a similar method for starting the daemon.");
+
+            gridLayout->addWidget(label, 0, 1);
+            gridLayout->addWidget(textEdit, 1, 1);
+            gridLayout->addWidget(issueButton, 2, 1);
+
+            connect(issueButton, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
         }
         this->resize(1024, 600);
         this->setMinimumSize(QSize(800, 500));
+        this->setWindowTitle("RazerGenie");
     } else {
+        qDebug() << "Daemon running";
         setupUi();
 
         if(daemonStatus == librazer::daemonStatus::disabled) {
+            qDebug() << "Daemon disabled";
             QMessageBox msgBox;
             msgBox.setText("The razer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
             QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
@@ -77,6 +95,8 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
                 qDebug() << "enable daemon";
                 librazer::enableDaemon();
             } // ignore the cancel button
+        } else {
+            qDebug() << "Daemon enabled";
         }
 
         // Watch for dbus service changes (= daemon ends or gets started)
@@ -1009,6 +1029,11 @@ void RazerGenie::deviceRemoved()
 {
     qDebug() << "DEVICE WAS REMOVED!";
     refreshDeviceList();
+}
+
+void RazerGenie::openIssueUrl()
+{
+    QDesktopServices::openUrl(QUrl(newIssueUrl));
 }
 
 void RazerGenie::showError(QString error)
