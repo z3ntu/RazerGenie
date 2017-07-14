@@ -32,6 +32,7 @@
 #include "customeditor.h"
 
 #define newIssueUrl "https://github.com/terrycain/razer-drivers/issues/new"
+#define websiteUrl "https://terrycain.github.io/razer-drivers"
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
@@ -44,10 +45,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
     // Check if daemon available
     if(!librazer::isDaemonRunning()) {
-        qDebug() << "Daemon not running";
-        QGridLayout *gridLayout = new QGridLayout(this);
-        QLabel *label;
-        QTextEdit *textEdit;
+        // Build a UI depending on what the status is.
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
             //TODO: Show in error ui
@@ -55,23 +53,32 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://terrycain.github.io/razer-drivers");
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
             qDebug() << "No systemd";
-            showError("The daemon is not available and you're not using systemd. You have to use xdg-autostart or a similar method for starting the daemon.");
-            label = new QLabel();
-            label->setText("The Razer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.");
-            gridLayout->addWidget(label, 0, 1);
+            QVBoxLayout *boxLayout = new QVBoxLayout(this);
+            QLabel *titleLabel = new QLabel("The daemon is not available.");
+            QLabel *textLabel = new QLabel("The Razer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"razer-daemon\" in a terminal and re-opening RazerGenie.");
+
+            boxLayout->setAlignment(Qt::AlignTop);
+
+            QFont titleFont("Arial", 18, QFont::Bold);
+            titleLabel->setFont(titleFont);
+
+            boxLayout->addWidget(titleLabel);
+            boxLayout->addWidget(textLabel);
         } else { // Daemon status here can be enabled, unknown (and potentially disabled)
             qDebug() << "Unknown daemon status";
-            label = new QLabel();
-            textEdit = new QTextEdit();
+            QGridLayout *gridLayout = new QGridLayout(this);
+            QLabel *label = new QLabel("The daemon is currently not available. The status output is below.");
+            QTextEdit *textEdit = new QTextEdit();
+            QLabel *issueLabel = new QLabel("If you think, there's a bug, you can report an issue on GitHub:");
             QPushButton *issueButton = new QPushButton("Report issue");
 
-            label->setText("The daemon is currently not available. The status output is below.");
             textEdit->setReadOnly(true);
             textEdit->setText(librazer::getDaemonStatusOutput());
 
-            gridLayout->addWidget(label, 0, 1);
-            gridLayout->addWidget(textEdit, 1, 1);
-            gridLayout->addWidget(issueButton, 2, 1);
+            gridLayout->addWidget(label, 0, 1, 1, 2);
+            gridLayout->addWidget(textEdit, 1, 1, 1, 2);
+            gridLayout->addWidget(issueLabel, 2, 1);
+            gridLayout->addWidget(issueButton, 2, 2);
 
             connect(issueButton, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
         }
@@ -79,7 +86,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         this->setMinimumSize(QSize(800, 500));
         this->setWindowTitle("RazerGenie");
     } else {
-        qDebug() << "Daemon running";
+        // Set up the normal UI
         setupUi();
 
         if(daemonStatus == librazer::daemonStatus::disabled) {
@@ -95,8 +102,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
                 qDebug() << "enable daemon";
                 librazer::enableDaemon();
             } // ignore the cancel button
-        } else {
-            qDebug() << "Daemon enabled";
         }
 
         // Watch for dbus service changes (= daemon ends or gets started)

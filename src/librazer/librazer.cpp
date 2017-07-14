@@ -229,7 +229,7 @@ daemonStatus getDaemonStatus()
     // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
     // Daemon can be not installed but enabled -.-
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "razer-daemon.service");
+    process.start("ssystemctl", QStringList() << "--user" << "is-enabled" << "razer-daemon.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
     QString error(process.readAllStandardError());
