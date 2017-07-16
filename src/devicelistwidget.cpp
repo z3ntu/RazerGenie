@@ -65,3 +65,8 @@ librazer::Device *DeviceListWidget::device()
 {
     return mDevice;
 }
+
+void DeviceListWidget::setNoImage()
+{
+    imageLabel->setText("No image");
+}

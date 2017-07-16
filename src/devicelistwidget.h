@@ -28,6 +28,7 @@ class DeviceListWidget : public QWidget
 public:
     DeviceListWidget(QWidget *parent, librazer::Device *device);
     librazer::Device *device();
+    void setNoImage();
 public slots:
     void imageDownloaded(QString &filename);
 private:

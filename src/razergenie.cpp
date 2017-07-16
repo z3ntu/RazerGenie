@@ -55,7 +55,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             qDebug() << "No systemd";
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel("The daemon is not available.");
-            QLabel *textLabel = new QLabel("The Razer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"razer-daemon\" in a terminal and re-opening RazerGenie.");
+            QLabel *textLabel = new QLabel("The openrazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"razer-daemon\" in a terminal and re-opening RazerGenie.");
 
             boxLayout->setAlignment(Qt::AlignTop);
 
@@ -92,7 +92,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         if(daemonStatus == librazer::daemonStatus::disabled) {
             qDebug() << "Daemon disabled";
             QMessageBox msgBox;
-            msgBox.setText("The razer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
+            msgBox.setText("The openrazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
             QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
             msgBox.addButton(QMessageBox::Abort);
             // Show message box
@@ -117,12 +117,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 RazerGenie::~RazerGenie()
 {
 //    delete ui;
-}
-
-void RazerGenie::setupErrorUi()
-{
-    qDebug() << "DAEMON IS NOT RUNNING. ABORTING!";
-    ui_error.setupUi(this);
 }
 
 void RazerGenie::setupUi()
@@ -156,6 +150,7 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
     qDebug() << "Unregistered! " << serviceName;
     clearDeviceList();
+    //TODO: Show another placeholder screen with information that the daemon has been stopped?
     showError("The D-Bus connection was lost.");
 }
 
@@ -170,7 +165,8 @@ void RazerGenie::fillDeviceList()
     }
 
     if(serialnrs.size() == 0) {
-        showError("The daemon doesn't see any devices. Make sure they are connected!");
+        // Add placeholder widget
+        ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
     }
 }
 
@@ -221,8 +217,8 @@ void RazerGenie::clearDeviceList()
         widget->deleteLater();
     }
     // Add placeholder widget
-    //TODO: Uncomment and remove at appropriate locations
-    // ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
+    // TODO: Add placeholder widget with crash information and link to bug report?
+    ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
 }
 
 void RazerGenie::addDeviceToGui(const QString &serial)
@@ -237,8 +233,15 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     qDebug() << serial;
     qDebug() << name;
 
-//         qDebug() << "Width" << ui_main.listWidget->width();
-//         qDebug() << "Height" << ui_main.listWidget->height();
+    if(devices.isEmpty()) {
+        //TODO: Remove placeholder widget if inserted.
+        qDebug() << "REMOVE PLACEHOLDER WIDGET";
+        qDebug() << "no device was in list";
+        ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(0));
+    }
+
+//     qDebug() << "Width" << ui_main.listWidget->width();
+//     qDebug() << "Height" << ui_main.listWidget->height();
 
     // Add new device to the list
     QListWidgetItem *listItem = new QListWidgetItem();
@@ -256,6 +259,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
     } else {
         qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
+        listItemWidget->setNoImage();
     }
 
     // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
@@ -530,10 +534,14 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         // Get the current DPI and set the slider&text
         QList<int> currDPI = currentDevice->getDPI();
         qDebug() << "currDPI:" << currDPI;
-        dpiXSlider->setValue(currDPI[0]/100);
-        dpiYSlider->setValue(currDPI[1]/100);
-        dpiXText->setText(QString::number(currDPI[0]));
-        dpiYText->setText(QString::number(currDPI[1]));
+        if(currDPI.count() == 2) {
+            dpiXSlider->setValue(currDPI[0]/100);
+            dpiYSlider->setValue(currDPI[1]/100);
+            dpiXText->setText(QString::number(currDPI[0]));
+            dpiYText->setText(QString::number(currDPI[1]));
+        } else {
+            qDebug() << "RazerGenie: Skipping dpi because return value of getDPI() is wrong. Probably the broken fake driver.";
+        }
 
         int maxDPI = currentDevice->maxDPI();
         qDebug() << "maxDPI:" << maxDPI;
@@ -611,7 +619,6 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
 bool RazerGenie::removeDeviceFromGui(const QString &serial)
 {
-    //TODO: Remove from "devices" QHash
     qDebug() << "Remove device" << serial;
     int index = -1;
     for(int i=0; i<ui_main.listWidget->count(); i++) {
@@ -630,6 +637,12 @@ bool RazerGenie::removeDeviceFromGui(const QString &serial)
     }
     ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(index));
     delete ui_main.listWidget->takeItem(index);
+
+    // Add placeholder widget if the stackedWidget is empty after removing.
+    if(devices.isEmpty()) {
+        ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
+    }
+    return true;
 }
 
 QWidget *RazerGenie::getNoDevicePlaceholder()
@@ -638,7 +651,18 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         return noDevicePlaceholder;
     }
     //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
+    // Get list of Razer devices connected to the PC: lsusb | grep '1532:' | cut -d' ' -f6
     noDevicePlaceholder = new QWidget();
+    QVBoxLayout *boxLayout = new QVBoxLayout(noDevicePlaceholder);
+    boxLayout->setAlignment(Qt::AlignTop);
+
+    QFont headerFont("Arial", 15, QFont::Bold);
+    QLabel *headerLabel = new QLabel("No device was detected");
+    headerLabel->setFont(headerFont);
+    QLabel *textLabel = new QLabel("The openrazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
+
+    boxLayout->addWidget(headerLabel);
+    boxLayout->addWidget(textLabel);
     return noDevicePlaceholder;
 }
 
@@ -752,7 +776,7 @@ QColor RazerGenie::getColorForButton(int num, librazer::Device::lightingLocation
     return pal.color(QPalette::Button);
 }
 
-const int RazerGenie::getWaveDirection(librazer::Device::lightingLocation location)
+int RazerGenie::getWaveDirection(librazer::Device::lightingLocation location)
 {
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
 

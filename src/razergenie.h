@@ -20,7 +20,6 @@
 #define RAZERGENIE_H
 
 #include "ui_razergenie.h"
-#include "ui_daemon_not_available.h"
 #include "razerimagedownloader.h"
 #include "librazer/librazer.h"
 #include <QComboBox>
@@ -76,9 +75,7 @@ public slots:
     void openIssueUrl();
 private:
     Ui::RazerGenieUi ui_main;
-    Ui::DaemonNotAvailable ui_error;
     void setupUi();
-    void setupErrorUi();
 
     QWidget *noDevicePlaceholder = NULL;
 
@@ -96,7 +93,7 @@ private:
 
     void getRazerDevices(void);
     QColor getColorForButton(int num, librazer::Device::lightingLocation location);
-    const int getWaveDirection(librazer::Device::lightingLocation location);
+    int getWaveDirection(librazer::Device::lightingLocation location);
 
     void applyEffect(librazer::Device::lightingLocation location);
     void applyEffectStandardLoc(QString identifier, librazer::Device *device);
