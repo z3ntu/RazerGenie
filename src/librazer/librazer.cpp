@@ -91,6 +91,9 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_none", hasCapabilityInternal("razer.device.lighting.chroma", "setNone"));
     capabilities.insert("lighting_spectrum", hasCapabilityInternal("razer.device.lighting.chroma", "setSpectrum"));
     capabilities.insert("lighting_static", hasCapabilityInternal("razer.device.lighting.chroma", "setStatic"));
+    capabilities.insert("lighting_starlight_single", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightSingle"));
+    capabilities.insert("lighting_starlight_dual", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightDual"));
+    capabilities.insert("lighting_starlight_random", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightRandom"));
     capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple")); // Thinking of extending custom to do more hence the key check
     capabilities.insert("lighting_ripple_random", hasCapabilityInternal("razer.device.lighting.custom", "setRippleRandomColour"));
 
@@ -688,6 +691,42 @@ bool Device::setWave(const int direction)
 bool Device::setNone()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setNone");
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setStarlightSingle(uchar r, uchar g, uchar b, uchar speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightSingle");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setStarlightDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightDual");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    args.append(r2);
+    args.append(g2);
+    args.append(b2);
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+bool Device::setStarlightRandom(uchar speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightRandom");
+    QList<QVariant> args;
+    args.append(speed);
+    m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
 

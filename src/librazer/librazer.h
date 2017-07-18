@@ -207,6 +207,10 @@ public:
     bool setSpectrum();
     bool setWave(const int direction);
     bool setNone();
+    // Starlight
+    bool setStarlightSingle(uchar r, uchar g, uchar b, uchar speed);
+    bool setStarlightDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar speed);
+    bool setStarlightRandom(uchar speed);
     // bw2013
     bool setPulsate();
 
