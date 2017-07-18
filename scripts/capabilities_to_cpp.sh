@@ -35,9 +35,13 @@ while read -r line; do
             echo 'capabilities.insert("'$variable'", true);'
         elif [[ $line == "" ]]; then
             echo
-        else
-            # About the xargs: lol http://stackoverflow.com/a/12973694/3527128
-            echo "// FIXME: "$line | xargs
+        else # unknown and special cases
+            if [[ $line == *"lighting_led_matrix"* ]]; then # a different format is used here
+                echo 'capabilities.insert("lighting_led_matrix", hasMatrix());'
+            else
+                # About the xargs: lol http://stackoverflow.com/a/12973694/3527128
+                echo "// FIXME: "$line | xargs
+            fi
         fi
     fi
 done <<< "$pyfile"
