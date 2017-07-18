@@ -4,8 +4,7 @@
 
 pyfile=$(curl -s https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/devices/__init__.py)
 incapabilities=false
-IFS=$'\n'
-for line in $pyfile; do
+while read -r line; do
     if [ $incapabilities = false ]; then
         # Check if in startline
         if [[ $line == *"self._capabilities = {"* ]]; then
@@ -25,19 +24,21 @@ for line in $pyfile; do
             interface=$(echo $line | cut -d "'" -f 4)
             method=$(echo $line | cut -d "'" -f 6)
             if [ -z "$method" ]; then
-                echo 'capabilites.insert("'$variable'", hasCapabilityInternal("'$interface'"));'
+                echo 'capabilities.insert("'$variable'", hasCapabilityInternal("'$interface'"));'
             else
-                echo 'capabilites.insert("'$variable'", hasCapabilityInternal("'$interface'", "'$method'"));'
+                echo 'capabilities.insert("'$variable'", hasCapabilityInternal("'$interface'", "'$method'"));'
             fi
         elif [[ $line == *"#"* ]]; then
             echo $line | sed 's/#/\/\//' | sed -e 's/^[[:space:]]*//'
         elif [[ $line == *": True"* ]]; then
             variable=$(echo $line | cut -d "'" -f 2)
-            echo 'capabilites.insert("'$variable'", true);'
+            echo 'capabilities.insert("'$variable'", true);'
+        elif [[ $line == "" ]]; then
+            echo
         else
             # About the xargs: lol http://stackoverflow.com/a/12973694/3527128
             echo "// FIXME: "$line | xargs
         fi
     fi
-done
+done <<< "$pyfile"
 
