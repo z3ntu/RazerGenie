@@ -42,6 +42,11 @@ const int REACTIVE_1000MS = 0x02;
 const int REACTIVE_1500MS = 0x03;
 const int REACTIVE_2000MS = 0x04;
 
+// Starlight
+const int STARLIGHT_FAST = 0x01;
+const int STARLIGHT_NORMAL = 0x02;
+const int STARLIGHT_SLOW = 0x03;
+
 // Ripple
 const double RIPPLE_REFRESH_RATE = 0.05;
 
@@ -97,6 +102,8 @@ QStringList getConnectedDevices();
 QString getDaemonVersion();
 bool stopDaemon();
 bool isDaemonRunning();
+
+QVariantHash getSupportedDevices();
 
 // Sync
 bool syncEffects(bool yes);

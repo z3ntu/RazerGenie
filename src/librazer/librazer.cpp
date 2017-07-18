@@ -20,7 +20,6 @@
 #include <QDBusConnection>
 #include <QDebug>
 #include <QDomDocument>
-//TODO Remove QDBusArgument include
 #include <QDBusArgument>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -130,6 +129,9 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_scroll_breath_random", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathRandom"));
 }
 
+/**
+ * Returns if the daemon is running (and responding to the version call)
+ */
 bool isDaemonRunning()
 {
     QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
@@ -139,6 +141,16 @@ bool isDaemonRunning()
     } else {
         return false;
     }
+}
+
+/**
+ * Returns a list of supported devices in the format of QHash<QString(DeviceName), QList<double(VID), double(PID)>>
+ */
+QVariantHash getSupportedDevices()
+{
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "supportedDevices");
+    QString ret = QDBusMessageToString(m);
+    return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
 
 /**
@@ -243,6 +255,9 @@ daemonStatus getDaemonStatus()
     }
 }
 
+/**
+ * Returns the multiline output of "systemctl --user status razer-daemon.service"
+ */
 QString getDaemonStatusOutput()
 {
     QProcess process;
@@ -255,6 +270,9 @@ QString getDaemonStatusOutput()
     return output + "\n" + error;
 }
 
+/**
+ * Enables the daemon to auto-start when the user logs in. Runs "systemctl --user enable razer-daemon.service"
+ */
 bool enableDaemon()
 {
     QProcess process;
@@ -283,13 +301,19 @@ Device::~Device()
     //TODO Write
 }
 
-// TODO New Qt5 connect style syntax
+/**
+ * Connects the device_added signal of the daemon to the specified method.
+ * TODO New Qt5 connect style syntax
+ */
 bool connectDeviceAdded(QObject *receiver, const char *slot)
 {
     return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_added", receiver, slot);
 }
 
-// TODO New Qt5 connect style syntax
+/**
+ * Connects the device_removed signal of the daemon to the specified method.
+ * TODO New Qt5 connect style syntax
+ */
 bool connectDeviceRemoved(QObject *receiver, const char *slot)
 {
     return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_removed", receiver, slot);
@@ -547,7 +571,7 @@ bool Device::isMugPresent()
 // ------ LIGHTING EFFECTS ------
 
 /**
- * Sets the normal lighting to static lighting.
+ * Sets the lighting to static lighting.
  */
 bool Device::setStatic(uchar r, uchar g, uchar b)
 {
@@ -561,7 +585,7 @@ bool Device::setStatic(uchar r, uchar g, uchar b)
 }
 
 /**
- * Sets the normal lighting to random breath lighting.
+ * Sets the lighting to random breath lighting.
  */
 bool Device::setBreathSingle(uchar r, uchar g, uchar b)
 {
@@ -575,7 +599,7 @@ bool Device::setBreathSingle(uchar r, uchar g, uchar b)
 }
 
 /**
- * Sets the normal lighting to dual breath lighting.
+ * Sets the lighting to dual breath lighting.
  */
 bool Device::setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
 {
@@ -591,6 +615,9 @@ bool Device::setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar 
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to triple breath lighting.
+ */
 bool Device::setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar r3, uchar g3, uchar b3)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathTriple");
@@ -609,7 +636,7 @@ bool Device::setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, ucha
 }
 
 /**
- * Sets the normal lighting to random breath lighting.
+ * Sets the lighting to random breath lighting.
  */
 bool Device::setBreathRandom()
 {
@@ -619,7 +646,7 @@ bool Device::setBreathRandom()
 
 /**
  * Sets the lighting to reactive mode.
- * Use one of librazer::REACTIVE_* for speed
+ * Use one of librazer::REACTIVE_* for speed.
  */
 bool Device::setReactive(uchar r, uchar g, uchar b, uchar speed)
 {
@@ -643,7 +670,8 @@ bool Device::setSpectrum()
 }
 
 /**
- * Use librazer::WAVE_RIGHT & librazer::WAVE_LEFT
+ * Sets the lighting to wave.
+ * Use librazer::WAVE_RIGHT or librazer::WAVE_LEFT.
  */
 bool Device::setWave(const int direction)
 {
@@ -655,7 +683,7 @@ bool Device::setWave(const int direction)
 }
 
 /**
- * Sets the lighting to "off"
+ * Sets the lighting to "off".
  */
 bool Device::setNone()
 {
@@ -663,18 +691,27 @@ bool Device::setNone()
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to pulsate.
+ */
 bool Device::setPulsate()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.bw2013", "setPulsate");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Returns if the backlight is active.
+ */
 bool Device::getBacklightActive()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "getBacklightActive");
     return QDBusMessageToBool(m);
 }
 
+/**
+ * Sets the backlight to active.
+ */
 bool Device::setBacklightActive(bool active)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightActive");
@@ -684,12 +721,18 @@ bool Device::setBacklightActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to custom mode.
+ */
 bool Device::setCustom()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setCustom");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting of a key row to the specified colors.
+ */
 bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors)
 {
     /*
@@ -720,6 +763,9 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> co
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to ripple.
+ */
 bool Device::setRipple(uchar r, uchar g, uchar b, double refresh_rate)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRipple");
@@ -732,6 +778,9 @@ bool Device::setRipple(uchar r, uchar g, uchar b, double refresh_rate)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the lighting to random ripple.
+ */
 bool Device::setRippleRandomColor(double refresh_rate)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRippleRandomColour");
@@ -776,6 +825,9 @@ bool Device::setLogoStatic(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo active.
+ */
 bool Device::setLogoActive(bool active)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoActive");
@@ -785,18 +837,27 @@ bool Device::setLogoActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Returns if the logo is active.
+ */
 bool Device::getLogoActive()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoActive");
     return QDBusMessageToBool(m);
 }
 
+/**
+ * Returns the current logo effect.
+ */
 uchar Device::getLogoEffect()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "getLogoEffect");
     return QDBusMessageToByte(m);
 }
 
+/**
+ * Sets the logo to blinking.
+ */
 bool Device::setLogoBlinking(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBlinking");
@@ -808,6 +869,9 @@ bool Device::setLogoBlinking(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to pulsate.
+ */
 bool Device::setLogoPulsate(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoPulsate");
@@ -819,18 +883,27 @@ bool Device::setLogoPulsate(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to spectrum.
+ */
 bool Device::setLogoSpectrum()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoSpectrum");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to none.
+ */
 bool Device::setLogoNone()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoNone");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to reactive.
+ */
 bool Device::setLogoReactive(uchar r, uchar g, uchar b, uchar speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoReactive");
@@ -843,6 +916,9 @@ bool Device::setLogoReactive(uchar r, uchar g, uchar b, uchar speed)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to single breath.
+ */
 bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
@@ -854,6 +930,9 @@ bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to dual breath.
+ */
 bool Device::setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
@@ -868,6 +947,9 @@ bool Device::setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uc
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the logo to random breath.
+ */
 bool Device::setLogoBreathRandom()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathRandom");
@@ -909,6 +991,9 @@ bool Device::setScrollStatic(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll active.
+ */
 bool Device::setScrollActive(bool active)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollActive");
@@ -918,18 +1003,27 @@ bool Device::setScrollActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Returns if the scroll if active.
+ */
 bool Device::getScrollActive()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollActive");
     return QDBusMessageToBool(m);
 }
 
+/**
+ * Returns the current scroll effect.
+ */
 uchar Device::getScrollEffect()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollEffect");
     return QDBusMessageToByte(m);
 }
 
+/**
+ * Sets scroll to blinking.
+ */
 bool Device::setScrollBlinking(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBlinking");
@@ -941,6 +1035,9 @@ bool Device::setScrollBlinking(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to pulsate.
+ */
 bool Device::setScrollPulsate(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollPulsate");
@@ -952,18 +1049,27 @@ bool Device::setScrollPulsate(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to spectrum.
+ */
 bool Device::setScrollSpectrum()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollSpectrum");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to none.
+ */
 bool Device::setScrollNone()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollNone");
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to reactive.
+ */
 bool Device::setScrollReactive(uchar r, uchar g, uchar b, uchar speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollReactive");
@@ -976,6 +1082,9 @@ bool Device::setScrollReactive(uchar r, uchar g, uchar b, uchar speed)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to single breath.
+ */
 bool Device::setScrollBreathSingle(uchar r, uchar g, uchar b)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
@@ -987,6 +1096,9 @@ bool Device::setScrollBreathSingle(uchar r, uchar g, uchar b)
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to dual breath.
+ */
 bool Device::setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
@@ -1001,12 +1113,14 @@ bool Device::setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, 
     return QDBusMessageToVoid(m);
 }
 
+/**
+ * Sets the scroll to random breath.
+ */
 bool Device::setScrollBreathRandom()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathRandom");
     return QDBusMessageToVoid(m);
 }
-
 
 /**
  * Sets the scroll wheel brightness (0-100).
@@ -1201,8 +1315,9 @@ bool QDBusMessageToVoid(const QDBusMessage &message)
 // Main method for testing / playing.
 int main()
 {
-    qDebug() << "Daemon running: " << librazer::isDaemonRunning();
-    qDebug() << "Daemon version: " << librazer::getDaemonVersion();
+    qDebug() << "Daemon running:" << librazer::isDaemonRunning();
+    qDebug() << "Daemon version:" << librazer::getDaemonVersion();
+    qDebug() << "Supported devices:" << librazer::getSupportedDevices();
     QStringList serialnrs = librazer::getConnectedDevices();
     librazer::syncEffects(false);
     foreach (const QString &str, serialnrs) {
