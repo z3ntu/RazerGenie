@@ -651,6 +651,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         return noDevicePlaceholder;
     }
     //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
+    qDebug() << "Supported devices:" << librazer::getSupportedDevices();
     // Get list of Razer devices connected to the PC: lsusb | grep '1532:' | cut -d' ' -f6
     noDevicePlaceholder = new QWidget();
     QVBoxLayout *boxLayout = new QVBoxLayout(noDevicePlaceholder);
