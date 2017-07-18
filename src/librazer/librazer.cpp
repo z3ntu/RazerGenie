@@ -91,13 +91,15 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_none", hasCapabilityInternal("razer.device.lighting.chroma", "setNone"));
     capabilities.insert("lighting_spectrum", hasCapabilityInternal("razer.device.lighting.chroma", "setSpectrum"));
     capabilities.insert("lighting_static", hasCapabilityInternal("razer.device.lighting.chroma", "setStatic"));
+
     capabilities.insert("lighting_starlight_single", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightSingle"));
     capabilities.insert("lighting_starlight_dual", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightDual"));
     capabilities.insert("lighting_starlight_random", hasCapabilityInternal("razer.device.lighting.chroma", "setStarlightRandom"));
-    capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple")); // Thinking of extending custom to do more hence the key check
+
+    capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple"));
     capabilities.insert("lighting_ripple_random", hasCapabilityInternal("razer.device.lighting.custom", "setRippleRandomColour"));
 
-    capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.chroma", "setPulsate"));
+    capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.bw2013", "setPulsate"));
 
     capabilities.insert("lighting_led_matrix", hasMatrix());
     capabilities.insert("lighting_led_single", hasCapabilityInternal("razer.device.lighting.chroma", "setKey"));
@@ -130,6 +132,9 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_scroll_breath_single", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathSingle"));
     capabilities.insert("lighting_scroll_breath_dual", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathDual"));
     capabilities.insert("lighting_scroll_breath_random", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathRandom"));
+
+    capabilities.insert("lighting_backlight", hasCapabilityInternal("razer.device.lighting.backlight"));
+    capabilities.insert("lighting_backlight_active", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightActive"));
 }
 
 /**
