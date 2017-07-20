@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Please use autoformat and change the newlines according to https://github.com/terrycain/razer-drivers/blob/master/pylib/razer/client/devices/__init__.py#L43 
+# Please use autoformat and change the newlines according to https://github.com/terrycain/razer-drivers/blob/master/pylib/razer/client/devices/__init__.py#L44
 
 pyfile=$(curl -s https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/devices/__init__.py)
 incapabilities=false

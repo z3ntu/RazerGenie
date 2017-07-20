@@ -79,6 +79,8 @@ private:
 
     QWidget *noDevicePlaceholder = NULL;
 
+    QList<QPair<int, int>> getConnectedDevices_lsusb();
+
     void fillDeviceList();
     void refreshDeviceList();
     void clearDeviceList();

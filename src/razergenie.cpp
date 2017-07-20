@@ -154,6 +154,36 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
     showError("The D-Bus connection was lost.");
 }
 
+/**
+ * Returns a list of connected devices, which are detected by Linux / lsusb. VID and PID are in decimal form.
+ */
+QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
+{
+    // Get list of Razer devices connected to the PC: lsusb | grep '1532:' | cut -d' ' -f6
+    QProcess process;
+    process.start("bash", QStringList() << "-c" << "lsusb | grep '1532:' | cut -d' ' -f6");
+    process.waitForFinished();
+    QStringList outputList = QString(process.readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
+
+    QList<QPair<int, int>> returnList;
+
+    // Transform the list ["1234:abcd", "5678:def0"] into a QList with QPairs.
+    QStringListIterator i(outputList);
+    while(i.hasNext()) {
+        QStringList split = i.next().split(":");
+        bool ok;
+        //TODO: Check if count is 2? Otherwise SIGSEGV probably
+        int vid = split[0].toInt(&ok, 16);
+        int pid = split[1].toInt(&ok, 16);
+        if(!ok) {
+            qDebug() << "RazerGenie: Error while parsing the lsusb output.";
+            return QList<QPair<int, int>>();
+        }
+        returnList.append(qMakePair(vid, pid));
+    }
+    return returnList;
+}
+
 void RazerGenie::fillDeviceList()
 {
     // Get all connected devices
@@ -651,8 +681,34 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         return noDevicePlaceholder;
     }
     //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
-    qDebug() << "Supported devices:" << librazer::getSupportedDevices();
-    // Get list of Razer devices connected to the PC: lsusb | grep '1532:' | cut -d' ' -f6
+
+    QList<QPair<int, int>> connectedDevices = getConnectedDevices_lsusb();
+
+    // Don't even iterate if there are no devices detected by lsusb.
+    if(connectedDevices.count() != 0) {
+        QHashIterator<QString, QVariant> i(librazer::getSupportedDevices());
+        // Iterate through the supported devices
+        while (i.hasNext()) {
+            i.next();
+            QList<QVariant> list = i.value().toList();
+            if(list.count() != 2) {
+                qDebug() << "RazerGenie: Error while iterating through supportedDevices";
+                qDebug() << list;
+                continue;
+            }
+            int vid = list[0].toInt();
+            int pid = list[1].toInt();
+
+            QListIterator<QPair<int, int>> j(connectedDevices);
+            while (j.hasNext()) {
+                QPair<int, int> x = j.next();
+                if(x.first == vid && x.second == pid) {
+                    qDebug() << "Found a device match!";
+                }
+            }
+        }
+    }
+
     noDevicePlaceholder = new QWidget();
     QVBoxLayout *boxLayout = new QVBoxLayout(noDevicePlaceholder);
     boxLayout->setAlignment(Qt::AlignTop);
