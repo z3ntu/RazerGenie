@@ -32,6 +32,8 @@
 #include "customeditor.h"
 
 #define newIssueUrl "https://github.com/terrycain/razer-drivers/issues/new"
+#define supportedDevicesUrl "https://github.com/terrycain/razer-drivers/blob/master/README.md#device-support"
+#define troubleshootingUrl "https://github.com/terrycain/razer-drivers/wiki/Troubleshooting"
 #define websiteUrl "https://terrycain.github.io/razer-drivers"
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
@@ -264,9 +266,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     qDebug() << name;
 
     if(devices.isEmpty()) {
-        //TODO: Remove placeholder widget if inserted.
-        qDebug() << "REMOVE PLACEHOLDER WIDGET";
-        qDebug() << "no device was in list";
+        // Remove placeholder widget if inserted.
         ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(0));
     }
 
@@ -683,6 +683,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
 
     QList<QPair<int, int>> connectedDevices = getConnectedDevices_lsusb();
+    QList<QPair<int, int>> matches;
 
     // Don't even iterate if there are no devices detected by lsusb.
     if(connectedDevices.count() != 0) {
@@ -704,6 +705,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
                 QPair<int, int> x = j.next();
                 if(x.first == vid && x.second == pid) {
                     qDebug() << "Found a device match!";
+                    matches.append(x);
                 }
             }
         }
@@ -714,12 +716,34 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     boxLayout->setAlignment(Qt::AlignTop);
 
     QFont headerFont("Arial", 15, QFont::Bold);
-    QLabel *headerLabel = new QLabel("No device was detected");
+    QLabel *headerLabel;
+    QLabel *textLabel;
+    QPushButton *button1;
+    QPushButton *button2;
+    if(matches.size() == 0) {
+        headerLabel = new QLabel("No device was detected");
+        textLabel = new QLabel("The openrazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
+        button1 = new QPushButton("Open supported devices");
+        connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevices);
+        button2 = new QPushButton("Report issue");
+        connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
+    } else {
+        headerLabel = new QLabel("The daemon didn't detect a device that is connected");
+        textLabel = new QLabel("Linux detected connected devices but the daemon didn't. This could be either due to a permission problem or a kernel module problem.");
+        qDebug() << matches;
+        button1 = new QPushButton("Open troubleshooting page");
+        connect(button1, &QPushButton::pressed, this, &RazerGenie::openTroubleshooting);
+        button2 = new QPushButton("Report issue");
+        connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
+    }
     headerLabel->setFont(headerFont);
-    QLabel *textLabel = new QLabel("The openrazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
 
     boxLayout->addWidget(headerLabel);
     boxLayout->addWidget(textLabel);
+    QHBoxLayout *hbox = new QHBoxLayout();
+    hbox->addWidget(button1);
+    hbox->addWidget(button2);
+    boxLayout->addLayout(hbox);
     return noDevicePlaceholder;
 }
 
@@ -1120,6 +1144,16 @@ void RazerGenie::deviceRemoved()
 void RazerGenie::openIssueUrl()
 {
     QDesktopServices::openUrl(QUrl(newIssueUrl));
+}
+
+void RazerGenie::openSupportedDevices()
+{
+    QDesktopServices::openUrl(QUrl(supportedDevicesUrl));
+}
+
+void RazerGenie::openTroubleshooting()
+{
+    QDesktopServices::openUrl(QUrl(troubleshootingUrl));
 }
 
 void RazerGenie::showError(QString error)
