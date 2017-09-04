@@ -27,7 +27,7 @@
 
 namespace librazer
 {
-// --- UPDATE FROM https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/constants.py or https://github.com/terrycain/razer-drivers/blob/master/pylib/razer/client/constants.py ---
+// --- UPDATE FROM https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/constants.py ---
 // Macro LED effect ID's
 const int MACRO_LED_STATIC = 0x00;
 const int MACRO_LED_BLINK = 0x01;

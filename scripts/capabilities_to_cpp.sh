@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Please use autoformat and change the newlines according to https://github.com/terrycain/razer-drivers/blob/master/pylib/razer/client/devices/__init__.py#L44
+# Please use autoformat and change the newlines according to https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/devices/__init__.py#L44
 
-pyfile=$(curl -s https://raw.githubusercontent.com/terrycain/razer-drivers/master/pylib/razer/client/devices/__init__.py)
+pyfile=$(curl -s https://raw.githubusercontent.com/openrazer/openrazer/master/pylib/openrazer/client/devices/__init__.py)
 incapabilities=false
 while read -r line; do
     if [ $incapabilities = false ]; then

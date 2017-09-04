@@ -73,8 +73,9 @@ public slots:
     void deviceRemoved();
 
     void openIssueUrl();
-    void openSupportedDevices();
-    void openTroubleshooting();
+    void openSupportedDevicesUrl();
+    void openTroubleshootingUrl();
+    void openWebsiteUrl();
 private:
     Ui::RazerGenieUi ui_main;
     void setupUi();

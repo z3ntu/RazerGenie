@@ -31,17 +31,17 @@
 #include "devicelistwidget.h"
 #include "customeditor.h"
 
-#define newIssueUrl "https://github.com/terrycain/razer-drivers/issues/new"
-#define supportedDevicesUrl "https://github.com/terrycain/razer-drivers/blob/master/README.md#device-support"
-#define troubleshootingUrl "https://github.com/terrycain/razer-drivers/wiki/Troubleshooting"
-#define websiteUrl "https://terrycain.github.io/razer-drivers"
+#define newIssueUrl "https://github.com/openrazer/openrazer/issues/new"
+#define supportedDevicesUrl "https://github.com/openrazer/openrazer/blob/master/README.md#device-support"
+#define troubleshootingUrl "https://github.com/openrazer/openrazer/wiki/Troubleshooting"
+#define websiteUrl "https://openrazer.github.io/"
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
     // What to do:
     // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
     // If enabled: Do nothing => DONE
-    // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://terrycain.github.io/razer-drivers"
+    // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://openrazer.github.io/"
     // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
     librazer::daemonStatus daemonStatus = librazer::getDaemonStatus();
 
@@ -52,7 +52,21 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         if(daemonStatus == librazer::daemonStatus::not_installed) {
             //TODO: Show in error ui
             qDebug() << "Daemon not installed";
-            showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://terrycain.github.io/razer-drivers");
+            //showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://openrazer.github.io/");
+            QVBoxLayout *boxLayout = new QVBoxLayout(this);
+            QLabel *titleLabel = new QLabel("The daemon is not installed");
+            QLabel *textLabel = new QLabel("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!");
+            QPushButton *button = new QPushButton("Open website");
+            connect(button, &QPushButton::pressed, this, &RazerGenie::openWebsiteUrl);
+
+            boxLayout->setAlignment(Qt::AlignTop);
+
+            QFont titleFont("Arial", 18, QFont::Bold);
+            titleLabel->setFont(titleFont);
+
+            boxLayout->addWidget(titleLabel);
+            boxLayout->addWidget(textLabel);
+            boxLayout->addWidget(button);
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
             qDebug() << "No systemd";
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
@@ -680,7 +694,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     if(noDevicePlaceholder != NULL) {
         return noDevicePlaceholder;
     }
-    //TODO: Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
+    // Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
 
     QList<QPair<int, int>> connectedDevices = getConnectedDevices_lsusb();
     QList<QPair<int, int>> matches;
@@ -724,7 +738,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         headerLabel = new QLabel("No device was detected");
         textLabel = new QLabel("The openrazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
         button1 = new QPushButton("Open supported devices");
-        connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevices);
+        connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevicesUrl);
         button2 = new QPushButton("Report issue");
         connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
     } else {
@@ -732,7 +746,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         textLabel = new QLabel("Linux detected connected devices but the daemon didn't. This could be either due to a permission problem or a kernel module problem.");
         qDebug() << matches;
         button1 = new QPushButton("Open troubleshooting page");
-        connect(button1, &QPushButton::pressed, this, &RazerGenie::openTroubleshooting);
+        connect(button1, &QPushButton::pressed, this, &RazerGenie::openTroubleshootingUrl);
         button2 = new QPushButton("Report issue");
         connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
     }
@@ -1146,14 +1160,19 @@ void RazerGenie::openIssueUrl()
     QDesktopServices::openUrl(QUrl(newIssueUrl));
 }
 
-void RazerGenie::openSupportedDevices()
+void RazerGenie::openSupportedDevicesUrl()
 {
     QDesktopServices::openUrl(QUrl(supportedDevicesUrl));
 }
 
-void RazerGenie::openTroubleshooting()
+void RazerGenie::openTroubleshootingUrl()
 {
     QDesktopServices::openUrl(QUrl(troubleshootingUrl));
+}
+
+void RazerGenie::openWebsiteUrl()
+{
+    QDesktopServices::openUrl(QUrl(websiteUrl));
 }
 
 void RazerGenie::showError(QString error)
