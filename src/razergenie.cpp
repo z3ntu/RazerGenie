@@ -71,7 +71,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             qDebug() << "No systemd";
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel("The daemon is not available.");
-            QLabel *textLabel = new QLabel("The openrazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal and re-opening RazerGenie.");
+            QLabel *textLabel = new QLabel("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal and re-opening RazerGenie.");
 
             boxLayout->setAlignment(Qt::AlignTop);
 
@@ -108,9 +108,9 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         if(daemonStatus == librazer::daemonStatus::disabled) {
             qDebug() << "Daemon disabled";
             QMessageBox msgBox;
-            msgBox.setText("The openrazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
+            msgBox.setText("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
             QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
-            msgBox.addButton(QMessageBox::Abort);
+            msgBox.addButton(QMessageBox::Ignore);
             // Show message box
             msgBox.exec();
 
@@ -736,7 +736,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     QPushButton *button2;
     if(matches.size() == 0) {
         headerLabel = new QLabel("No device was detected");
-        textLabel = new QLabel("The openrazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
+        textLabel = new QLabel("The OpenRazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
         button1 = new QPushButton("Open supported devices");
         connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevicesUrl);
         button2 = new QPushButton("Report issue");
