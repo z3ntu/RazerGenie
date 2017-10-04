@@ -7,7 +7,8 @@ Standalone Qt application for configuring your Razer devices under GNU/Linux.
 ## Installation
 Packages are available for these distributions:
 * **Arch Linux:** you can install the package from the AUR: [razergenie](https://aur.archlinux.org/packages/razergenie/) or [razergenie-git](https://aur.archlinux.org/packages/razergenie-git/).
-* **Debian/Ubuntu/Fedora:** [Download from OBS (openSUSE Build Service)](https://software.opensuse.org//download.html?project=hardware%3Arazer&package=razergenie)
+* **Debian/Fedora/openSUSE/Ubuntu:** [Download from OBS (openSUSE Build Service)](https://software.opensuse.org//download.html?project=hardware%3Arazer&package=razergenie)
+* **Solus:** Install `razergenie` via the Software Center
 
 If you are using a distribution not listed here please let me know and I'll try to make a package for that distribution!
 
