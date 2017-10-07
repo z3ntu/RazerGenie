@@ -1,4 +1,5 @@
-project('razergenie', 'cpp')
+project('razergenie', 'cpp',
+        default_options : ['cpp_std=c++11'])
 
 razergenie_version = '0.4'
 librazer_version = '0.0.1'
