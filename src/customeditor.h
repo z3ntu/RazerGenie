@@ -20,6 +20,7 @@
 #define CUSTOMEDITOR_H
 
 #include <QWidget>
+#include <QJsonObject>
 
 class CustomEditor : public QWidget
 {
@@ -27,6 +28,10 @@ class CustomEditor : public QWidget
 public:
     CustomEditor(QWidget* parent = 0);
     ~CustomEditor();
+private:
+    void parseJSON();
+    QWidget* generateKeyboard();
+    QJsonObject keys;
 };
 
 #endif // CUSTOMEDITOR_H
