@@ -29,7 +29,7 @@ public:
     CustomEditor(QWidget* parent = 0);
     ~CustomEditor();
 private:
-    void parseJSON();
+    bool parseJSON();
     QWidget* generateKeyboard();
     QJsonObject keys;
 };

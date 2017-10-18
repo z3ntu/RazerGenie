@@ -26,7 +26,11 @@ CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
 {
     setWindowTitle("RazerGenie - Custom Editor");
 
-    parseJSON();
+    if(!parseJSON()) {
+        qDebug() << "closing window!!!"; // doesn't work
+        setAttribute(Qt::WA_DeleteOnClose);
+        qDebug() << this->close();
+    }
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
     //TODO: Get physical layout from daemon and use
@@ -40,6 +44,9 @@ CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
         QHBoxLayout *hbox = new QHBoxLayout();
         hbox->setAlignment(Qt::AlignLeft);
 
+//         hbox->setSpacing(2);
+//         qDebug() << hbox->contentsMargins();
+
         // Iterate over keys in row
         QJsonArray::const_iterator jt;
         for(jt = row.constBegin(); jt != row.constEnd(); ++jt) {
@@ -47,12 +54,16 @@ CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
 
             if(!obj["label"].isNull()) {
                 QPushButton *btn = new QPushButton(obj["label"].toString());
-                int width = obj.contains("width") ? obj.value("width").toInt() : 120;
-                int height = obj.contains("height") ? obj.value("height").toInt() : 126;
+                int width = obj.contains("width") ? obj.value("width").toInt() : 60;
+                int height = /*obj.contains("height") ? obj.value("height").toInt() : */63;
                 btn->setFixedSize(width, height);
+                /*if(obj["cut"] == "enter") {
+                    QPixmap pixmap("../../data/de_DE_mask.png");
+                    btn->setMask(pixmap.mask());
+                }*/
                 hbox->addWidget(btn);
             } else {
-                QSpacerItem *spacer = new QSpacerItem(120, 126, QSizePolicy::Fixed, QSizePolicy::Fixed);
+                QSpacerItem *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
                 hbox->addItem(spacer);
             }
         }
@@ -65,16 +76,35 @@ CustomEditor::~CustomEditor()
 
 }
 
-void CustomEditor::parseJSON()
+bool CustomEditor::parseJSON()
 {
-    //TODO: Write code for release builds (/usr/share/razergenie/data/keyboard_layouts.json maybe?)
-    QFile file("../../data/keyboard_layouts.json");
-    if(!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "error", file.errorString());
+    QFile *file; // Pointer to file object to use
+    QFile file_devel("../../data/keyboard_layouts.json"); // File during developemnt
+    QFile file_prod("../share/razergenie/keyboard_layouts.json"); // File for production
 
-    QTextStream in(&file);
+    // Try to open the dev file (higher priority)
+    if(file_devel.open(QIODevice::ReadOnly)) {
+        qDebug() << "RazerGenie: Using the development keyboard_layouts.json file.";
+        file = &file_devel;
+    } else {
+        qDebug() << "RazerGenie: Development keyboard_layouts.json failed to open. Trying the production location. Error: " << file_devel.errorString();
+
+        // Try to open the production file
+        if(file_prod.open(QIODevice::ReadOnly)) {
+            file = &file_prod;
+        } else {
+            QMessageBox::information(0, "Error loading keyboard_layouts.json!", "The file keyboard_layouts.json, used for the custom editor failed to load: " + file_prod.errorString() + "\nThe editor won't open now.");
+            return false;
+        }
+    }
+
+    // Read the file
+    QTextStream in(file);
     QString data = in.readAll();
-    file.close();
+    file->close();
 
+    // Convert it to a QJsonObject
     keys = QJsonDocument::fromJson(data.toUtf8()).object();
+
+    return true;
 }

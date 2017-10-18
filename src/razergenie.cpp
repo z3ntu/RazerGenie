@@ -38,6 +38,9 @@
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
+    // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
+
     // What to do:
     // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
     // If enabled: Do nothing => DONE
