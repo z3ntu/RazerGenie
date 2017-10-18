@@ -22,9 +22,11 @@
 #include <QHBoxLayout>
 #include <QEvent>
 
-CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
+CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle("RazerGenie - Custom Editor");
+
+//     this->dev = device;
 
     if(!parseJSON()) {
         qDebug() << "closing window!!!"; // doesn't work
@@ -32,6 +34,18 @@ CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
         qDebug() << this->close();
     }
 
+    if(device->getDeviceType() == "keyboard") {
+        generateKeyboard();
+    }
+}
+
+CustomEditor::~CustomEditor()
+{
+
+}
+
+void CustomEditor::generateKeyboard()
+{
     QVBoxLayout *vbox = new QVBoxLayout(this);
     //TODO: Get physical layout from daemon and use
     QJsonObject keyboardLayout = keys["de_DE"].toObject();
@@ -69,11 +83,6 @@ CustomEditor::CustomEditor(QWidget *parent) : QWidget(parent)
         }
         vbox->addLayout(hbox);
     }
-}
-
-CustomEditor::~CustomEditor()
-{
-
 }
 
 bool CustomEditor::parseJSON()

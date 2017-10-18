@@ -1142,7 +1142,11 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
 
 void RazerGenie::openCustomEditor()
 {
-    CustomEditor *cust = new CustomEditor;
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    CustomEditor *cust = new CustomEditor(dev);
     cust->show();
 }
 

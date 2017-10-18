@@ -21,16 +21,18 @@
 
 #include <QWidget>
 #include <QJsonObject>
+#include <librazer.h>
 
 class CustomEditor : public QWidget
 {
     Q_OBJECT
 public:
-    CustomEditor(QWidget* parent = 0);
+    CustomEditor(librazer::Device* device, QWidget* parent = 0);
     ~CustomEditor();
 private:
     bool parseJSON();
-    QWidget* generateKeyboard();
+//     librazer::Device* dev;
+    void generateKeyboard();
     QJsonObject keys;
 };
 
