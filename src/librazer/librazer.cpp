@@ -777,7 +777,7 @@ bool Device::setCustom()
 /**
  * Sets the lighting of a key row to the specified colors.
  */
-bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors)
+bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
 {
     /*
     if(colors.count() != (endcol+1)-startcol) {

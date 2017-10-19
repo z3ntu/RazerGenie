@@ -643,7 +643,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     /* Custom lighting */
     if(currentDevice->hasCapability("lighting_led_matrix")) {
         QPushButton *button = new QPushButton(widget);
-        button->setText("Open custom editor (unfinished right now)"); // TODO Finish custom editor
+        button->setText("Open custom editor");
         verticalLayout->addWidget(button);
         connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
     }
@@ -1195,5 +1195,3 @@ void RazerGenie::showInfo(QString info)
     messageBox.information(0, "Information!", info);
     messageBox.setFixedSize(500, 200);
 }
-
-#include "razergenie.moc"

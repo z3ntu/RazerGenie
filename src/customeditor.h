@@ -29,11 +29,21 @@ class CustomEditor : public QWidget
 public:
     CustomEditor(librazer::Device* device, QWidget* parent = 0);
     ~CustomEditor();
+public slots:
+    void colorButtonClicked();
 private:
-    bool parseJSON();
-//     librazer::Device* dev;
-    void generateKeyboard();
-    QJsonObject keys;
+    void closeWindow();
+    QLayout* generateMainControls();
+    QLayout* generateKeyboard();
+    QLayout* generateMousemat();
+    QLayout* generateMouse();
+    bool parseKeyboardJSON();
+
+    QJsonObject keyboardKeys;
+    librazer::Device *device;
+
+    QVector<QVector<QColor>> colors;
+    QColor selectedColor;
 };
 
 #endif // CUSTOMEDITOR_H

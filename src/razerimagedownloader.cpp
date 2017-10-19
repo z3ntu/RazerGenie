@@ -82,5 +82,3 @@ QString RazerImageDownloader::getDownloadPath()
     // Should be ~/.local/share/razergenie/devicepictures/
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/razergenie/devicepictures/";
 }
-
-#include "razerimagedownloader.moc"

@@ -25,17 +25,47 @@
 CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle("RazerGenie - Custom Editor");
+    this->device = device;
 
-//     this->dev = device;
+    QVBoxLayout *vbox = new QVBoxLayout(this);
 
-    if(!parseJSON()) {
-        qDebug() << "closing window!!!"; // doesn't work
-        setAttribute(Qt::WA_DeleteOnClose);
-        qDebug() << this->close();
+    QList<int> dimen = device->getMatrixDimensions();
+    qDebug() << dimen;
+
+    // Initialize internal colors list
+    for(int i=0; i<dimen[0]; i++) {
+        colors << QVector<QColor>(dimen[1]);
+
+        for(int j=0; j<dimen[1]; j++) {
+            colors[i][j] = QColor(Qt::green);
+        }
     }
 
-    if(device->getDeviceType() == "keyboard") {
-        generateKeyboard();
+    vbox->addLayout(generateMainControls());
+
+    QString type = device->getDeviceType();
+    if(type == "keyboard") {
+        if(!parseKeyboardJSON()) {
+            closeWindow();
+        }
+
+        if(dimen[0] == 6 && dimen[1] == 22) {
+            vbox->addLayout(generateKeyboard());
+        } else {
+            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimen[0]) + " " + QString::number(dimen[1]));
+            closeWindow();
+        }
+    } else if(type == "firefly") {
+        if(dimen[0] == 1 && dimen[1] == 15) {
+            vbox->addLayout(generateMousemat());
+        } else {
+            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimen[0]) + " " + QString::number(dimen[1]));
+            closeWindow();
+        }
+    } /*else if(type == "mouse") {
+        vbox-addLayout(generateMouse());
+    } */else {
+        QMessageBox::information(0, "Device type not implemented!", "Please open an issue in the RazerGenie repository. Device type: " + type);
     }
 }
 
@@ -44,11 +74,42 @@ CustomEditor::~CustomEditor()
 
 }
 
-void CustomEditor::generateKeyboard()
+void CustomEditor::closeWindow()
 {
-    QVBoxLayout *vbox = new QVBoxLayout(this);
+    setAttribute(Qt::WA_DeleteOnClose);
+    this->close();
+}
+
+QLayout* CustomEditor::generateMainControls()
+{
+    QHBoxLayout *hbox = new QHBoxLayout();
+
+    QPushButton *btnColor = new QPushButton();
+    QPalette pal = btnColor->palette();
+    pal.setColor(QPalette::Button, QColor(Qt::green));
+
+    btnColor->setAutoFillBackground(true);
+    btnColor->setFlat(true);
+    btnColor->setPalette(pal);
+    btnColor->setMaximumWidth(70);
+
+    QPushButton *btnSet = new QPushButton("Set");
+    QPushButton *btnClear = new QPushButton("Clear");
+
+    hbox->addWidget(btnColor);
+    hbox->addWidget(btnSet);
+    hbox->addWidget(btnClear);
+
+    connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
+
+    return hbox;
+}
+
+QLayout* CustomEditor::generateKeyboard()
+{
+    QVBoxLayout *vbox = new QVBoxLayout();
     //TODO: Get physical layout from daemon and use
-    QJsonObject keyboardLayout = keys["de_DE"].toObject();
+    QJsonObject keyboardLayout = keyboardKeys["de_DE"].toObject();
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
@@ -57,9 +118,6 @@ void CustomEditor::generateKeyboard()
 
         QHBoxLayout *hbox = new QHBoxLayout();
         hbox->setAlignment(Qt::AlignLeft);
-
-//         hbox->setSpacing(2);
-//         qDebug() << hbox->contentsMargins();
 
         // Iterate over keys in row
         QJsonArray::const_iterator jt;
@@ -83,9 +141,26 @@ void CustomEditor::generateKeyboard()
         }
         vbox->addLayout(hbox);
     }
+    return vbox;
 }
 
-bool CustomEditor::parseJSON()
+QLayout* CustomEditor::generateMousemat()
+{
+    QHBoxLayout *hbox = new QHBoxLayout();
+    for(int i=0; i<15; i++) {
+        QPushButton *btn = new QPushButton(QString::number(i));
+        hbox->addWidget(btn);
+    }
+    return hbox;
+}
+
+QLayout* CustomEditor::generateMouse()
+{
+    QHBoxLayout *hbox = new QHBoxLayout();
+    return hbox;
+}
+
+bool CustomEditor::parseKeyboardJSON()
 {
     QFile *file; // Pointer to file object to use
     QFile file_devel("../../data/keyboard_layouts.json"); // File during developemnt
@@ -113,7 +188,30 @@ bool CustomEditor::parseJSON()
     file->close();
 
     // Convert it to a QJsonObject
-    keys = QJsonDocument::fromJson(data.toUtf8()).object();
+    keyboardKeys = QJsonDocument::fromJson(data.toUtf8()).object();
 
     return true;
+}
+
+void CustomEditor::colorButtonClicked()
+{
+    QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
+
+    QPalette pal(sender->palette());
+
+    QColor oldColor = pal.color(QPalette::Button);
+
+    QColor color = QColorDialog::getColor(oldColor);
+    if(color.isValid()) {
+        qDebug() << color.name();
+        pal.setColor(QPalette::Button, color);
+        sender->setPalette(pal);
+
+        device->setKeyRow(0, 0, 21, colors[0]);
+        device->setCustom();
+    } else {
+        qDebug() << "User cancelled the dialog.";
+    }
+
+    selectedColor = color;
 }

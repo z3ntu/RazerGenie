@@ -219,7 +219,7 @@ public:
 
     // - Custom(?) -
     bool setCustom();
-    bool setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors);
+    bool setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors);
 
     // - Custom -
     bool setRipple(uchar r, uchar g, uchar b, double refresh_rate);
