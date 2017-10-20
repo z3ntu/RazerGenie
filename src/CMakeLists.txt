@@ -13,6 +13,7 @@ set(razergenie_SRCS main.cpp
                     razerdevicewidget.cpp
                     devicelistwidget.cpp
                     customeditor.cpp
+                    matrixpushbutton.cpp
                     )
 
 QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui)

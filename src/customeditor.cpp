@@ -37,18 +37,27 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
         colors << QVector<QColor>(dimen[1]);
 
         for(int j=0; j<dimen[1]; j++) {
-            colors[i][j] = QColor(Qt::green);
+            colors[i][j] = QColor(Qt::black);
         }
     }
 
+    // Initialize selectedColor variable
+    selectedColor = QColor(Qt::green);
+
+    // Initialize drawStatus variable
+    drawStatus = DrawStatus::set;
+
+    // Add the main controls to the layout
     vbox->addLayout(generateMainControls());
 
+    // Generate other buttons depending on the device type
     QString type = device->getDeviceType();
     if(type == "keyboard") {
         if(!parseKeyboardJSON()) {
             closeWindow();
         }
 
+        // e.g. BlackWidow Chroma
         if(dimen[0] == 6 && dimen[1] == 22) {
             vbox->addLayout(generateKeyboard());
         } else {
@@ -56,6 +65,7 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
             closeWindow();
         }
     } else if(type == "firefly") {
+        // e.g. Firefly
         if(dimen[0] == 1 && dimen[1] == 15) {
             vbox->addLayout(generateMousemat());
         } else {
@@ -67,6 +77,9 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
     } */else {
         QMessageBox::information(0, "Device type not implemented!", "Please open an issue in the RazerGenie repository. Device type: " + type);
     }
+
+    // Set every LED to "off"/black
+    clearAll();
 }
 
 CustomEditor::~CustomEditor()
@@ -95,12 +108,17 @@ QLayout* CustomEditor::generateMainControls()
 
     QPushButton *btnSet = new QPushButton("Set");
     QPushButton *btnClear = new QPushButton("Clear");
+    QPushButton *btnClearAll = new QPushButton("Clear All");
 
     hbox->addWidget(btnColor);
     hbox->addWidget(btnSet);
     hbox->addWidget(btnClear);
+    hbox->addWidget(btnClearAll);
 
     connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
+    connect(btnSet, &QPushButton::clicked, this, &CustomEditor::setDrawStatusSet);
+    connect(btnClear, &QPushButton::clicked, this, &CustomEditor::setDrawStatusClear);
+    connect(btnClearAll, &QPushButton::clicked, this, &CustomEditor::clearAll);
 
     return hbox;
 }
@@ -125,15 +143,25 @@ QLayout* CustomEditor::generateKeyboard()
             QJsonObject obj = (*jt).toObject();
 
             if(!obj["label"].isNull()) {
-                QPushButton *btn = new QPushButton(obj["label"].toString());
+                MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
                 int width = obj.contains("width") ? obj.value("width").toInt() : 60;
                 int height = /*obj.contains("height") ? obj.value("height").toInt() : */63;
                 btn->setFixedSize(width, height);
+                if(obj.contains("matrix")) {
+                    QJsonArray arr = obj["matrix"].toArray();
+                    btn->setMatrixPos(arr[0].toInt(), arr[1].toInt());
+                }
+                if(obj.contains("disabled")) {
+                    btn->setEnabled(false);
+                }
                 /*if(obj["cut"] == "enter") {
                     QPixmap pixmap("../../data/de_DE_mask.png");
                     btn->setMask(pixmap.mask());
                 }*/
+                connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
+
                 hbox->addWidget(btn);
+                matrixPushButtons.append(btn);
             } else {
                 QSpacerItem *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
                 hbox->addItem(spacer);
@@ -193,6 +221,32 @@ bool CustomEditor::parseKeyboardJSON()
     return true;
 }
 
+bool CustomEditor::updateKeyrow(int row)
+{
+    qDebug() << colors[row];
+    return device->setKeyRow(row, 0, device->getMatrixDimensions()[1]-1, colors[row]) && device->setCustom();
+}
+
+void CustomEditor::clearAll()
+{
+    QVector<QColor> blankColors;
+    // Initialize the array with the width of the matrix with black = off
+    for(int i=0; i<device->getMatrixDimensions()[1]; i++) {
+        blankColors << QColor(Qt::black);
+    }
+
+    // Send one request per row
+    for(int i=0; i<device->getMatrixDimensions()[0]; i++) {
+        device->setKeyRow(i, 0, device->getMatrixDimensions()[1]-1, blankColors);
+    }
+
+    device->setCustom();
+
+    for(MatrixPushButton btn, matrixPushButtons) {
+
+    }
+}
+
 void CustomEditor::colorButtonClicked()
 {
     QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
@@ -203,15 +257,44 @@ void CustomEditor::colorButtonClicked()
 
     QColor color = QColorDialog::getColor(oldColor);
     if(color.isValid()) {
-        qDebug() << color.name();
+
+        // Colorize the button
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
 
-        device->setKeyRow(0, 0, 21, colors[0]);
-        device->setCustom();
+        // Set the color for other methods to use
+        selectedColor = color;
     } else {
         qDebug() << "User cancelled the dialog.";
     }
 
-    selectedColor = color;
+}
+
+void CustomEditor::onMatrixPushButtonClicked()
+{
+    MatrixPushButton *sender = dynamic_cast<MatrixPushButton*>(QObject::sender());
+    QPair<int, int> pos = sender->matrixPos();
+    if(drawStatus == DrawStatus::set) {
+        // Set color in model
+        colors[pos.first][pos.second] = selectedColor;
+        // Set color in view
+        sender->setButtonColor(selectedColor);
+    } else if(drawStatus == DrawStatus::clear) {
+        qDebug() << "Clearing color.";
+        colors[pos.first][pos.second] = QColor(Qt::black);
+    } else {
+        qDebug() << "RazerGenie: Unhandled DrawStatus: " << drawStatus;
+    }
+    // Set color on device
+    updateKeyrow(pos.first);
+}
+
+void CustomEditor::setDrawStatusSet()
+{
+    drawStatus = DrawStatus::set;
+}
+
+void CustomEditor::setDrawStatusClear()
+{
+    drawStatus = DrawStatus::clear;
 }
