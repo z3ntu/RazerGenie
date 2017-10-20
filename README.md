@@ -24,22 +24,6 @@ make
 # You could install it with 'make install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).
 ```
 
-## Dependencies
-* Qt5 (+ the modules: DBus, Network & Xml)
-* razer-drivers
-* cmake
-* extra-cmake-modules
-
-#### Ubuntu
-```
-sudo apt install cmake extra-cmake-modules qt5-default
-```
-
-#### Arch Linux
-```
-sudo pacman -S --needed cmake extra-cmake-modules qt5-base
-```
-
 ## TODO
 * Implement keyboard gui (individual lighting etc)
 * Several more things marked as //TODO in the source code
