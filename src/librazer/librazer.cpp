@@ -766,7 +766,7 @@ bool Device::setBacklightActive(bool active)
 }
 
 /**
- * Sets the lighting to custom mode.
+ * Sets the lighting to custom mode (applies effects set from setKeyRow()).
  */
 bool Device::setCustom()
 {
@@ -776,16 +776,16 @@ bool Device::setCustom()
 
 /**
  * Sets the lighting of a key row to the specified colors.
+ * Note, that you have to call setCustom() after setting otherwise the effect won't be displayed (even if you have already called setCustom() before).
+ * Currently the driver only accepts whole rows that are sent.
  */
 bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
 {
-    /*
     if(colors.count() != (endcol+1)-startcol) {
         qWarning() << "Invalid 'colors' length. startcol:" << startcol << " - endcol:" << endcol << " needs " << (endcol+1)-startcol << " entries in colors!";
         return false;
     }
-    int len = (endcol+1)-startcol + ((endcol+1)-startcol*3);
-    */
+
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setKeyRow");
 
     QByteArray parameters;
