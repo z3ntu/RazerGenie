@@ -18,6 +18,7 @@
 
 #include "matrixpushbutton.h"
 #include <QDebug>
+#include <QStyle>
 
 MatrixPushButton::MatrixPushButton(QString label) : QPushButton(label)
 {
@@ -46,4 +47,9 @@ void MatrixPushButton::setButtonColor(QColor color)
     // Set the font color to the previously calculated value
     p.setColor(QPalette::ButtonText, fontcolor);
     this->setPalette(p);
+}
+
+void MatrixPushButton::resetButtonColor()
+{
+    this->setPalette(this->style()->standardPalette());
 }

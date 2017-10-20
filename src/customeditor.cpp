@@ -223,7 +223,6 @@ bool CustomEditor::parseKeyboardJSON()
 
 bool CustomEditor::updateKeyrow(int row)
 {
-    qDebug() << colors[row];
     return device->setKeyRow(row, 0, device->getMatrixDimensions()[1]-1, colors[row]) && device->setCustom();
 }
 
@@ -242,8 +241,16 @@ void CustomEditor::clearAll()
 
     device->setCustom();
 
-    for(MatrixPushButton btn, matrixPushButtons) {
+    // Reset view
+    for(int i=0; i<matrixPushButtons.size(); i++) {
+        matrixPushButtons.at(i)->resetButtonColor();
+    }
 
+    // Reset model
+    for(int i=0; i<colors.size(); i++) {
+        for(int j=0; j<colors[i].size(); j++) {
+            colors[i][j] = QColor(Qt::black);
+        }
     }
 }
 
@@ -281,7 +288,10 @@ void CustomEditor::onMatrixPushButtonClicked()
         sender->setButtonColor(selectedColor);
     } else if(drawStatus == DrawStatus::clear) {
         qDebug() << "Clearing color.";
+        // Set color in model
         colors[pos.first][pos.second] = QColor(Qt::black);
+        // Set color in view
+        sender->resetButtonColor();
     } else {
         qDebug() << "RazerGenie: Unhandled DrawStatus: " << drawStatus;
     }
