@@ -156,7 +156,7 @@ bool isDaemonRunning()
  */
 QVariantHash getSupportedDevices()
 {
-    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "supportedDevices");
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "supportedDevices");
     QString ret = QDBusMessageToString(m);
     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
