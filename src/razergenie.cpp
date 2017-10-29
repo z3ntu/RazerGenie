@@ -53,9 +53,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         // Build a UI depending on what the status is.
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
-            //TODO: Show in error ui
-            qDebug() << "Daemon not installed";
-            //showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://openrazer.github.io/");
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel("The daemon is not installed");
             QLabel *textLabel = new QLabel("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!");
@@ -71,7 +68,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(textLabel);
             boxLayout->addWidget(button);
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
-            qDebug() << "No systemd";
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel("The daemon is not available.");
             QLabel *textLabel = new QLabel("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal and re-opening RazerGenie.");
@@ -84,7 +80,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(titleLabel);
             boxLayout->addWidget(textLabel);
         } else { // Daemon status here can be enabled, unknown (and potentially disabled)
-            qDebug() << "Unknown daemon status";
             QGridLayout *gridLayout = new QGridLayout(this);
             QLabel *label = new QLabel("The daemon is currently not available. The status output is below.");
             QTextEdit *textEdit = new QTextEdit();
@@ -109,7 +104,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         setupUi();
 
         if(daemonStatus == librazer::daemonStatus::disabled) {
-            qDebug() << "Daemon disabled";
             QMessageBox msgBox;
             msgBox.setText("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
             QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
@@ -118,7 +112,6 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             msgBox.exec();
 
             if (msgBox.clickedButton() == enableButton) {
-                qDebug() << "enable daemon";
                 librazer::enableDaemon();
             } // ignore the cancel button
         }
@@ -170,7 +163,7 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
     qInfo() << "Unregistered! " << serviceName;
     clearDeviceList();
     //TODO: Show another placeholder screen with information that the daemon has been stopped?
-    showError("The D-Bus connection was lost.");
+    showError("The D-Bus connection was lost, which probably means that the daemon has crashed.");
 }
 
 /**
@@ -361,6 +354,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         } else {
             // Houston, we have a problem.
             showError("Unhanded lighting location in fillList()");
+            continue;
         }
 
         QHBoxLayout *lightingHBox = new QHBoxLayout();
@@ -377,9 +371,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
         //TODO Battery
-        //TODO Keyboard stuff (dunno what exactly)
         //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
-        //TODO Matrix stuff
 
         if(currentLocation == librazer::Device::lighting) {
             // Add items from capabilities
@@ -639,7 +631,6 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         connect(pollComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
     }
 
-#ifdef ENABLE_EXPERIMENTAL
     /* Custom lighting */
     if(currentDevice->hasCapability("lighting_led_matrix")) {
         QPushButton *button = new QPushButton(widget);
@@ -647,7 +638,6 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         verticalLayout->addWidget(button);
         connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
     }
-#endif
 
     /* Spacer to bottom */
     QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
