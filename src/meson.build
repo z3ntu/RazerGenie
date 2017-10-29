@@ -19,5 +19,5 @@ razergenie = executable('razergenie',
                         [razergenie_sources, processed],
                         dependencies : qt5_dep,
                         include_directories : incdir,
-                        link_with : librazer,
+                        link_with : libopenrazer,
                         install : true)
