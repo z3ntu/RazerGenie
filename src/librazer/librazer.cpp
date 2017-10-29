@@ -258,7 +258,7 @@ daemonStatus getDaemonStatus()
     else if(error == "Failed to get unit file state for openrazer-daemon.service: No such file or directory\n") return daemonStatus::not_installed;
     else if(process.exitCode() == 255) return daemonStatus::no_systemd;
     else {
-        qDebug() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
+        qWarning() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
         return daemonStatus::unknown;
     }
 }
@@ -483,7 +483,7 @@ int Device::getPollRate()
 bool Device::setPollRate(ushort pollrate)
 {
     if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
-        qDebug() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
+        qWarning() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
         return false;
     }
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
@@ -799,7 +799,6 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> 
         parameters[counter++] = c.green();
         parameters[counter++] = c.blue();
     }
-    qDebug() << parameters;
 
     QList<QVariant> args;
     args.append(parameters);
@@ -1210,9 +1209,9 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
  */
 void printError(QDBusMessage& message, const char *functionname)
 {
-    qDebug() << "librazer: There was an error in" << functionname << "!";
-    qDebug() << "librazer:" << message.errorName();
-    qDebug() << "librazer:" << message.errorMessage();
+    qWarning() << "librazer: There was an error in" << functionname << "!";
+    qWarning() << "librazer:" << message.errorName();
+    qWarning() << "librazer:" << message.errorMessage();
 }
 
 /**

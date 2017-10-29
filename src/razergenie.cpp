@@ -160,14 +160,14 @@ void RazerGenie::setupUi()
 
 void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 {
-    qDebug() << "Registered! " << serviceName;
+    qInfo() << "Registered! " << serviceName;
     fillDeviceList();
     showInfo("The D-Bus connection was re-established.");
 }
 
 void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
-    qDebug() << "Unregistered! " << serviceName;
+    qInfo() << "Unregistered! " << serviceName;
     clearDeviceList();
     //TODO: Show another placeholder screen with information that the daemon has been stopped?
     showError("The D-Bus connection was lost.");
@@ -195,7 +195,7 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
         int vid = split[0].toInt(&ok, 16);
         int pid = split[1].toInt(&ok, 16);
         if(!ok) {
-            qDebug() << "RazerGenie: Error while parsing the lsusb output.";
+            qWarning() << "RazerGenie: Error while parsing the lsusb output.";
             return QList<QPair<int, int>>();
         }
         returnList.append(qMakePair(vid, pid));
@@ -305,7 +305,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
     } else {
-        qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
+        qWarning() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
         listItemWidget->setNoImage();
     }
 
@@ -499,7 +499,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 } else if(currentLocation == librazer::Device::lightingLocation::lighting_scroll) {
                     connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonScroll);
                 } else {
-                    qDebug() << "ERROR!! New lightingLocation which is not handled with the radio buttons.";
+                    qWarning() << "ERROR! New lightingLocation which is not handled with the radio buttons.";
                 }
             }
         }
@@ -587,7 +587,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             dpiXText->setText(QString::number(currDPI[0]));
             dpiYText->setText(QString::number(currDPI[1]));
         } else {
-            qDebug() << "RazerGenie: Skipping dpi because return value of getDPI() is wrong. Probably the broken fake driver.";
+            qWarning() << "RazerGenie: Skipping dpi because return value of getDPI() is wrong. Probably the broken fake driver.";
         }
 
         int maxDPI = currentDevice->maxDPI();
@@ -710,8 +710,8 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
             i.next();
             QList<QVariant> list = i.value().toList();
             if(list.count() != 2) {
-                qDebug() << "RazerGenie: Error while iterating through supportedDevices";
-                qDebug() << list;
+                qWarning() << "RazerGenie: Error while iterating through supportedDevices";
+                qWarning() << list;
                 continue;
             }
             int vid = list[0].toInt();
@@ -793,7 +793,7 @@ void RazerGenie::colorButtonClicked()
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
     } else {
-        qDebug() << "User cancelled the dialog.";
+        qInfo() << "User cancelled the dialog.";
     }
     // objectName is location(int)_colorbuttonNR(1-3)
     // TODO: We shouldn't assume the world to be perfect!
@@ -991,7 +991,7 @@ void RazerGenie::applyEffectStandardLoc(QString identifier, librazer::Device *de
     } else if(identifier == "lighting_pulsate") {
         device->setPulsate();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1025,7 +1025,7 @@ void RazerGenie::applyEffectLogoLoc(QString identifier, librazer::Device *device
     } else if(identifier == "lighting_logo_breath_random") {
         device->setLogoBreathRandom();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1059,7 +1059,7 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, librazer::Device *devi
     } else if(identifier == "lighting_scroll_breath_random") {
         device->setScrollBreathRandom();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1152,13 +1152,13 @@ void RazerGenie::openCustomEditor()
 
 void RazerGenie::deviceAdded()
 {
-    qDebug() << "DEVICE WAS ADDED!";
+    qInfo() << "DEVICE WAS ADDED!";
     refreshDeviceList();
 }
 
 void RazerGenie::deviceRemoved()
 {
-    qDebug() << "DEVICE WAS REMOVED!";
+    qInfo() << "DEVICE WAS REMOVED!";
     refreshDeviceList();
 }
 
