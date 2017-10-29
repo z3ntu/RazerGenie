@@ -40,7 +40,7 @@ private:
     QLayout* generateKeyboard();
     QLayout* generateMousemat();
     QLayout* generateMouse();
-    bool parseKeyboardJSON();
+    bool parseKeyboardJSON(QString jsonname);
     bool updateKeyrow(int row);
     void clearAll();
 

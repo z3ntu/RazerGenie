@@ -53,17 +53,19 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
     // Generate other buttons depending on the device type
     QString type = device->getDeviceType();
     if(type == "keyboard") {
-        if(!parseKeyboardJSON()) {
-            closeWindow();
-        }
-
-        // e.g. BlackWidow Chroma
-        if(dimens[0] == 6 && dimens[1] == 22) {
-            vbox->addLayout(generateKeyboard());
+        if(dimens[0] == 6 && dimens[1] == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
+            if(!parseKeyboardJSON("razerdefault22")) {
+                closeWindow();
+            }
+        } else if(dimens[0] == 6 && dimens[1] == 25) { // Razer Blade Pro 2017
+            if(!parseKeyboardJSON("razerblade25")) {
+                closeWindow();
+            }
         } else {
             QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimens[0]) + " " + QString::number(dimens[1]));
             closeWindow();
         }
+        vbox->addLayout(generateKeyboard());
     } else if(type == "firefly") {
         // e.g. Firefly
         if(dimens[0] == 1 && dimens[1] == 15) {
@@ -129,7 +131,17 @@ QLayout* CustomEditor::generateKeyboard()
     //TODO: Add missing logo button
     QVBoxLayout *vbox = new QVBoxLayout();
     //TODO: Get physical layout from daemon and use
-    QJsonObject keyboardLayout = keyboardKeys["de_DE"].toObject();
+    QJsonObject keyboardLayout;
+    if(keyboardKeys.contains("de_DE")) {
+        keyboardLayout = keyboardKeys["de_DE"].toObject();
+    } else if(keyboardKeys.contains("en_US")) {
+        keyboardLayout = keyboardKeys["en_US"].toObject();
+    } else if(keyboardKeys.contains("en_GB")) {
+        keyboardLayout = keyboardKeys["en_GB"].toObject();
+    } else {
+        qWarning() << "Neither de_DE nor en_US nor en_GB was found in the layout file.";
+        return vbox;
+    }
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
@@ -194,24 +206,24 @@ QLayout* CustomEditor::generateMouse()
     return hbox;
 }
 
-bool CustomEditor::parseKeyboardJSON()
+bool CustomEditor::parseKeyboardJSON(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
-    QFile file_devel("../../data/keyboard_layouts.json"); // File during developemnt
-    QFile file_prod("../share/razergenie/keyboard_layouts.json"); // File for production
+    QFile file_devel("../../data/matrix_layouts/"+jsonname+".json"); // File during developemnt
+    QFile file_prod("../share/razergenie/matrix_layouts/"+jsonname+".json"); // File for production
 
     // Try to open the dev file (higher priority)
     if(file_devel.open(QIODevice::ReadOnly)) {
-        qDebug() << "RazerGenie: Using the development keyboard_layouts.json file.";
+        qDebug() << "RazerGenie: Using the development "+jsonname+".json file.";
         file = &file_devel;
     } else {
-        qDebug() << "RazerGenie: Development keyboard_layouts.json failed to open. Trying the production location. Error: " << file_devel.errorString();
+        qDebug() << "RazerGenie: Development "+jsonname+".json failed to open. Trying the production location. Error: " << file_devel.errorString();
 
         // Try to open the production file
         if(file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-            QMessageBox::information(0, "Error loading keyboard_layouts.json!", "The file keyboard_layouts.json, used for the custom editor failed to load: " + file_prod.errorString() + "\nThe editor won't open now.");
+            QMessageBox::information(0, "Error loading "+jsonname+".json!", "The file "+jsonname+".json, used for the custom editor failed to load: " + file_prod.errorString() + "\nThe editor won't open now.");
             return false;
         }
     }
