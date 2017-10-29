@@ -29,14 +29,14 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
-    QList<int> dimen = device->getMatrixDimensions();
-    qDebug() << dimen;
+    dimens = device->getMatrixDimensions();
+    qDebug() << dimens;
 
     // Initialize internal colors list
-    for(int i=0; i<dimen[0]; i++) {
-        colors << QVector<QColor>(dimen[1]);
+    for(int i=0; i<dimens[0]; i++) {
+        colors << QVector<QColor>(dimens[1]);
 
-        for(int j=0; j<dimen[1]; j++) {
+        for(int j=0; j<dimens[1]; j++) {
             colors[i][j] = QColor(Qt::black);
         }
     }
@@ -58,24 +58,25 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
         }
 
         // e.g. BlackWidow Chroma
-        if(dimen[0] == 6 && dimen[1] == 22) {
+        if(dimens[0] == 6 && dimens[1] == 22) {
             vbox->addLayout(generateKeyboard());
         } else {
-            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimen[0]) + " " + QString::number(dimen[1]));
+            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimens[0]) + " " + QString::number(dimens[1]));
             closeWindow();
         }
     } else if(type == "firefly") {
         // e.g. Firefly
-        if(dimen[0] == 1 && dimen[1] == 15) {
+        if(dimens[0] == 1 && dimens[1] == 15) {
             vbox->addLayout(generateMousemat());
         } else {
-            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimen[0]) + " " + QString::number(dimen[1]));
+            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimens[0]) + " " + QString::number(dimens[1]));
             closeWindow();
         }
     } /*else if(type == "mouse") {
         vbox-addLayout(generateMouse());
     } */else {
         QMessageBox::information(0, "Device type not implemented!", "Please open an issue in the RazerGenie repository. Device type: " + type);
+        closeWindow();
     }
 
     // Set every LED to "off"/black
@@ -176,9 +177,13 @@ QLayout* CustomEditor::generateKeyboard()
 QLayout* CustomEditor::generateMousemat()
 {
     QHBoxLayout *hbox = new QHBoxLayout();
-    for(int i=0; i<15; i++) {
-        QPushButton *btn = new QPushButton(QString::number(i));
+    for(int i=0; i<dimens[1]; i++) {
+        MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
+
+        connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
+
         hbox->addWidget(btn);
+        matrixPushButtons.append(btn);
     }
     return hbox;
 }
@@ -224,20 +229,20 @@ bool CustomEditor::parseKeyboardJSON()
 
 bool CustomEditor::updateKeyrow(int row)
 {
-    return device->setKeyRow(row, 0, device->getMatrixDimensions()[1]-1, colors[row]) && device->setCustom();
+    return device->setKeyRow(row, 0, dimens[1]-1, colors[row]) && device->setCustom();
 }
 
 void CustomEditor::clearAll()
 {
     QVector<QColor> blankColors;
     // Initialize the array with the width of the matrix with black = off
-    for(int i=0; i<device->getMatrixDimensions()[1]; i++) {
+    for(int i=0; i<dimens[1]; i++) {
         blankColors << QColor(Qt::black);
     }
 
     // Send one request per row
-    for(int i=0; i<device->getMatrixDimensions()[0]; i++) {
-        device->setKeyRow(i, 0, device->getMatrixDimensions()[1]-1, blankColors);
+    for(int i=0; i<dimens[0]; i++) {
+        device->setKeyRow(i, 0, dimens[1]-1, blankColors);
     }
 
     device->setCustom();

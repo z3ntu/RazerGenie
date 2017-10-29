@@ -47,6 +47,7 @@ private:
     QJsonObject keyboardKeys;
     QVector<MatrixPushButton*> matrixPushButtons;
     librazer::Device *device;
+    QList<int> dimens;
 
     QVector<QVector<QColor>> colors;
     QColor selectedColor;
