@@ -1,5 +1,6 @@
 conf_data = configuration_data()
 conf_data.set('version', '0.4')
+conf_data.set('datadir', join_paths(get_option('prefix'), get_option('datadir'), 'razergenie'))
 
 configure_file(input : 'config.h.in',
                output : 'config.h',

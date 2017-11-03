@@ -16,10 +16,7 @@ endif
 
 install_data('logo/razergenie.svg', install_dir : join_paths(get_option('datadir'), 'icons/hicolor/scalable/apps'))
 install_data('other/razergenie.desktop', install_dir : join_paths(get_option('datadir'), 'applications'))
-# Keyboard Layouts
-matrixlayoutdir = join_paths(get_option('datadir'), 'razergenie/matrix_layouts')
-install_data('data/matrix_layouts/razerblade25.json', install_dir : matrixlayoutdir)
-install_data('data/matrix_layouts/razerdefault22.json', install_dir : matrixlayoutdir)
 
+subdir('data')
 subdir('src/librazer')
 subdir('src')

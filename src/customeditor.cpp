@@ -17,6 +17,7 @@
  */
 
 #include "customeditor.h"
+#include "config.h"
 #include <QtWidgets>
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -210,7 +211,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
     QFile file_devel("../../data/matrix_layouts/"+jsonname+".json"); // File during developemnt
-    QFile file_prod("../share/razergenie/matrix_layouts/"+jsonname+".json"); // File for production
+    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".json"); // File for production
 
     // Try to open the dev file (higher priority)
     if(file_devel.open(QIODevice::ReadOnly)) {
