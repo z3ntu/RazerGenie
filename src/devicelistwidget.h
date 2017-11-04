@@ -25,6 +25,7 @@
 
 class DeviceListWidget : public QWidget
 {
+    Q_OBJECT
 public:
     DeviceListWidget(QWidget *parent, librazer::Device *device);
     librazer::Device *device();

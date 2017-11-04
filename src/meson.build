@@ -9,7 +9,7 @@ configure_file(input : 'config.h.in',
 razergenie_sources = ['main.cpp', 'razergenie.cpp', 'razerimagedownloader.cpp', 'razerdevicewidget.cpp', 'devicelistwidget.cpp', 'customeditor.cpp', 'matrixpushbutton.cpp']
 
 processed = qt5.preprocess(
-  moc_headers : ['razergenie.h', 'razerimagedownloader.h', 'customeditor.h'],
+  moc_headers : ['razergenie.h', 'razerimagedownloader.h', 'customeditor.h', 'devicelistwidget.h'],
   moc_sources : ['razergenie.cpp', 'razerimagedownloader.cpp'],
   ui_files : '../ui/razergenie.ui'
 )

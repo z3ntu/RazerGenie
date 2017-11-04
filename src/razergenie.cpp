@@ -346,11 +346,11 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
         // Set appropriate text
         if(currentLocation == librazer::Device::lighting) {
-            lightingLocationLabel = new QLabel("Lighting");
+            lightingLocationLabel = new QLabel(tr("Lighting"));
         } else if(currentLocation == librazer::Device::lighting_logo) {
-            lightingLocationLabel = new QLabel("Lighting Logo");
+            lightingLocationLabel = new QLabel(tr("Lighting Logo"));
         } else if(currentLocation == librazer::Device::lighting_scroll) {
-            lightingLocationLabel = new QLabel("Lighting Scroll");
+            lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
         } else {
             // Houston, we have a problem.
             showError("Unhanded lighting location in fillList()");

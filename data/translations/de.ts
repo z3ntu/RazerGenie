@@ -2,6 +2,76 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de" sourcelanguage="en">
 <context>
+    <name>CustomEditor</name>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="28"/>
+        <source>RazerGenie - Custom Editor</source>
+        <translation>RazerGenie - Custom Editor</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="66"/>
+        <location filename="../../src/customeditor.cpp" line="75"/>
+        <source>Unknown matrix dimensions</source>
+        <translation>Unbekannte Matrix Maße</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="66"/>
+        <location filename="../../src/customeditor.cpp" line="75"/>
+        <source>Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3</source>
+        <translation>Bitte öffne ein Issue in der RazerGenie Repository. Gerätname: %1 - Matix Maße: %2 %3</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="81"/>
+        <source>Device type not implemented!</source>
+        <translation>Gerät Typ nicht implementiert!</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="81"/>
+        <source>Please open an issue in the RazerGenie repository. Device type: %1</source>
+        <translation>Bitte öffne ein Issue in der RazerGenie Repository. Gerätname: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="113"/>
+        <source>Set</source>
+        <translation>Setzen</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="114"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="115"/>
+        <source>Clear All</source>
+        <translation>Alle löschen</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="227"/>
+        <source>Error loading %1.json!</source>
+        <translation>Fehler beim laden von%1.json!</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor.cpp" line="227"/>
+        <source>The file %1.json, used for the custom editor failed to load: %2
+The editor won&apos;t open now.</source>
+        <translation>Die Datei %1.json, welche für den Custom Editor benützt wird, wurde nicht geladen: %2
+Der Editor wird nicht geöffnet.</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceListWidget</name>
+    <message>
+        <location filename="../../src/devicelistwidget.cpp" line="39"/>
+        <source>Downloading image...</source>
+        <translation>Bild wird heruntegeladen...</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicelistwidget.cpp" line="71"/>
+        <source>No image</source>
+        <translation>Kein Bild</translation>
+    </message>
+</context>
+<context>
     <name>RazerGenie</name>
     <message>
         <location filename="../../src/razergenie.cpp" line="57"/>
@@ -75,6 +145,21 @@ Manuell den Daemon zu starten, wäre, &quot;openrazer-daemon&quot; in einem Term
         <location filename="../../src/razergenie.cpp" line="166"/>
         <source>The D-Bus connection was lost, which probably means that the daemon has crashed.</source>
         <translation>Die D-Bus Verbindung wurde unterbrochen, was wahrscheinlich heißt, dass der Daemon abgestürzt ist.</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="349"/>
+        <source>Lighting</source>
+        <translation>Beleuchtung</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="351"/>
+        <source>Lighting Logo</source>
+        <translation>Beleuchtung Logo</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="353"/>
+        <source>Lighting Scroll</source>
+        <translation>Beleuchtung Scroll</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="389"/>

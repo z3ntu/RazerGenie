@@ -25,7 +25,7 @@
 
 CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(parent)
 {
-    setWindowTitle("RazerGenie - Custom Editor");
+    setWindowTitle(tr("RazerGenie - Custom Editor"));
     this->device = device;
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
@@ -63,7 +63,7 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
                 closeWindow();
             }
         } else {
-            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimens[0]) + " " + QString::number(dimens[1]));
+            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens[0])).arg(QString::number(dimens[1])));
             closeWindow();
         }
         vbox->addLayout(generateKeyboard());
@@ -72,13 +72,13 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
         if(dimens[0] == 1 && dimens[1] == 15) {
             vbox->addLayout(generateMousemat());
         } else {
-            QMessageBox::information(0, "Unknown matrix dimensions", "Please open an issue in the RazerGenie repository. Device name: " + device->getDeviceName() + " - matrix dimens: " + QString::number(dimens[0]) + " " + QString::number(dimens[1]));
+            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens[0])).arg(QString::number(dimens[1])));
             closeWindow();
         }
     } /*else if(type == "mouse") {
         vbox-addLayout(generateMouse());
     } */else {
-        QMessageBox::information(0, "Device type not implemented!", "Please open an issue in the RazerGenie repository. Device type: " + type);
+        QMessageBox::information(0, tr("Device type not implemented!"), tr("Please open an issue in the RazerGenie repository. Device type: %1").arg(type));
         closeWindow();
     }
 
@@ -110,9 +110,9 @@ QLayout* CustomEditor::generateMainControls()
     btnColor->setPalette(pal);
     btnColor->setMaximumWidth(70);
 
-    QPushButton *btnSet = new QPushButton("Set");
-    QPushButton *btnClear = new QPushButton("Clear");
-    QPushButton *btnClearAll = new QPushButton("Clear All");
+    QPushButton *btnSet = new QPushButton(tr("Set"));
+    QPushButton *btnClear = new QPushButton(tr("Clear"));
+    QPushButton *btnClearAll = new QPushButton(tr("Clear All"));
 
     hbox->addWidget(btnColor);
     hbox->addWidget(btnSet);
@@ -224,7 +224,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
         if(file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-            QMessageBox::information(0, "Error loading "+jsonname+".json!", "The file "+jsonname+".json, used for the custom editor failed to load: " + file_prod.errorString() + "\nThe editor won't open now.");
+            QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
             return false;
         }
     }
