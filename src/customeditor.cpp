@@ -67,9 +67,10 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
             closeWindow();
         }
         vbox->addLayout(generateKeyboard());
-    } else if(type == "firefly") {
-        // e.g. Firefly
-        if(dimens[0] == 1 && dimens[1] == 15) {
+    } /*else if(type == "keypad") {
+        vbox-addLayout(generateKeypad());
+    } */else if(type == "mousemat") {
+        if(dimens[0] == 1 && dimens[1] == 15) { // e.g. Firefly
             vbox->addLayout(generateMousemat());
         } else {
             QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens[0])).arg(QString::number(dimens[1])));

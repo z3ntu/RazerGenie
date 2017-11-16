@@ -394,12 +394,20 @@ QString Device::getDeviceName()
 }
 
 /**
- * Returns the type of the device. Could be one of 'headset', 'mouse', 'mug', 'keyboard', 'tartarus' or another type, if added to the daemon.
+ * Returns the type of the device. Could be one of 'keyboard', 'mouse', 'mousemat', 'core', 'keypad', 'headset', 'mug' or another type, if added to the daemon.
  */
 QString Device::getDeviceType()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceType");
-    return QDBusMessageToString(m);
+    QString devicetype = QDBusMessageToString(m);
+    // Fix up devicetype for old versions of the daemon (PR #445 in openrazer/openrazer).
+    // TODO: Remove once the new daemon version was released (and was out for a while).
+    if(devicetype == "firefly") {
+        devicetype = "mousemat";
+    } else if(devicetype == "orbweaver" || devicetype == "tartarus") {
+        devicetype = "keypad";
+    }
+    return devicetype;
 }
 
 /**
