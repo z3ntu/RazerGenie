@@ -38,6 +38,9 @@
 
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
+    // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
+
     // What to do:
     // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
     // If enabled: Do nothing => DONE
@@ -50,13 +53,10 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         // Build a UI depending on what the status is.
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
-            //TODO: Show in error ui
-            qDebug() << "Daemon not installed";
-            //showError("The daemon is not installed or the version installed is too old. Please follow the instructions on the website: https://openrazer.github.io/");
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
-            QLabel *titleLabel = new QLabel("The daemon is not installed");
-            QLabel *textLabel = new QLabel("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!");
-            QPushButton *button = new QPushButton("Open website");
+            QLabel *titleLabel = new QLabel(tr("The daemon is not installed"));
+            QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!"));
+            QPushButton *button = new QPushButton(tr("Open website"));
             connect(button, &QPushButton::pressed, this, &RazerGenie::openWebsiteUrl);
 
             boxLayout->setAlignment(Qt::AlignTop);
@@ -68,10 +68,9 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(textLabel);
             boxLayout->addWidget(button);
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
-            qDebug() << "No systemd";
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
-            QLabel *titleLabel = new QLabel("The daemon is not available.");
-            QLabel *textLabel = new QLabel("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal and re-opening RazerGenie.");
+            QLabel *titleLabel = new QLabel(tr("The daemon is not available."));
+            QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal."));
 
             boxLayout->setAlignment(Qt::AlignTop);
 
@@ -81,12 +80,11 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(titleLabel);
             boxLayout->addWidget(textLabel);
         } else { // Daemon status here can be enabled, unknown (and potentially disabled)
-            qDebug() << "Unknown daemon status";
             QGridLayout *gridLayout = new QGridLayout(this);
-            QLabel *label = new QLabel("The daemon is currently not available. The status output is below.");
+            QLabel *label = new QLabel(tr("The daemon is currently not available. The status output is below."));
             QTextEdit *textEdit = new QTextEdit();
-            QLabel *issueLabel = new QLabel("If you think, there's a bug, you can report an issue on GitHub:");
-            QPushButton *issueButton = new QPushButton("Report issue");
+            QLabel *issueLabel = new QLabel(tr("If you think, there's a bug, you can report an issue on GitHub:"));
+            QPushButton *issueButton = new QPushButton(tr("Report issue"));
 
             textEdit->setReadOnly(true);
             textEdit->setText(librazer::getDaemonStatusOutput());
@@ -106,16 +104,14 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         setupUi();
 
         if(daemonStatus == librazer::daemonStatus::disabled) {
-            qDebug() << "Daemon disabled";
             QMessageBox msgBox;
-            msgBox.setText("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login.");
-            QPushButton *enableButton = msgBox.addButton("Enable", QMessageBox::ActionRole);
+            msgBox.setText(tr("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login."));
+            QPushButton *enableButton = msgBox.addButton(tr("Enable"), QMessageBox::ActionRole);
             msgBox.addButton(QMessageBox::Ignore);
             // Show message box
             msgBox.exec();
 
             if (msgBox.clickedButton() == enableButton) {
-                qDebug() << "enable daemon";
                 librazer::enableDaemon();
             } // ignore the cancel button
         }
@@ -139,7 +135,7 @@ void RazerGenie::setupUi()
 {
     ui_main.setupUi(this);
 
-    ui_main.versionLabel->setText("Daemon version: " + librazer::getDaemonVersion());
+    ui_main.versionLabel->setText(tr("Daemon version: %1").arg(librazer::getDaemonVersion()));
 
     fillDeviceList();
 
@@ -157,17 +153,17 @@ void RazerGenie::setupUi()
 
 void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 {
-    qDebug() << "Registered! " << serviceName;
+    qInfo() << "Registered! " << serviceName;
     fillDeviceList();
-    showInfo("The D-Bus connection was re-established.");
+    showInfo(tr("The D-Bus connection was re-established."));
 }
 
 void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
-    qDebug() << "Unregistered! " << serviceName;
+    qInfo() << "Unregistered! " << serviceName;
     clearDeviceList();
     //TODO: Show another placeholder screen with information that the daemon has been stopped?
-    showError("The D-Bus connection was lost.");
+    showError(tr("The D-Bus connection was lost, which probably means that the daemon has crashed."));
 }
 
 /**
@@ -192,7 +188,7 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
         int vid = split[0].toInt(&ok, 16);
         int pid = split[1].toInt(&ok, 16);
         if(!ok) {
-            qDebug() << "RazerGenie: Error while parsing the lsusb output.";
+            qWarning() << "RazerGenie: Error while parsing the lsusb output.";
             return QList<QPair<int, int>>();
         }
         returnList.append(qMakePair(vid, pid));
@@ -302,7 +298,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
     } else {
-        qDebug() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
+        qWarning() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
         listItemWidget->setNoImage();
     }
 
@@ -350,14 +346,15 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
         // Set appropriate text
         if(currentLocation == librazer::Device::lighting) {
-            lightingLocationLabel = new QLabel("Lighting");
+            lightingLocationLabel = new QLabel(tr("Lighting"));
         } else if(currentLocation == librazer::Device::lighting_logo) {
-            lightingLocationLabel = new QLabel("Lighting Logo");
+            lightingLocationLabel = new QLabel(tr("Lighting Logo"));
         } else if(currentLocation == librazer::Device::lighting_scroll) {
-            lightingLocationLabel = new QLabel("Lighting Scroll");
+            lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
         } else {
             // Houston, we have a problem.
             showError("Unhanded lighting location in fillList()");
+            continue;
         }
 
         QHBoxLayout *lightingHBox = new QHBoxLayout();
@@ -374,9 +371,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
         //TODO Battery
-        //TODO Keyboard stuff (dunno what exactly)
         //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
-        //TODO Matrix stuff
 
         if(currentLocation == librazer::Device::lighting) {
             // Add items from capabilities
@@ -391,7 +386,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
             // Brightness slider
             if(currentDevice->hasCapability("brightness")) {
-                brightnessLabel = new QLabel("Brightness");
+                brightnessLabel = new QLabel(tr("Brightness"));
                 brightnessSlider = new QSlider(Qt::Horizontal, widget);
                 if(currentDevice->hasCapability("get_brightness")) {
                     qDebug() << "Brightness:" << currentDevice->getBrightness();
@@ -416,7 +411,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
             // Brightness slider
             if(currentDevice->hasCapability("lighting_logo_brightness")) {
-                brightnessLabel = new QLabel("Brightness Logo");
+                brightnessLabel = new QLabel(tr("Brightness Logo"));
                 brightnessSlider = new QSlider(Qt::Horizontal, widget);
                 if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
                     brightnessSlider->setValue(currentDevice->getLogoBrightness());
@@ -440,7 +435,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
             // Brightness slider
             if(currentDevice->hasCapability("lighting_scroll_brightness")) {
-                brightnessLabel = new QLabel("Brightness Scroll");
+                brightnessLabel = new QLabel(tr("Brightness Scroll"));
                 brightnessSlider = new QSlider(Qt::Horizontal, widget);
                 if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
                     brightnessSlider->setValue(currentDevice->getScrollBrightness());
@@ -479,9 +474,9 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             for(int i=1; i<=2; i++) {
                 QString name;
                 if(i==1)
-                    name = "Left";
+                    name = tr("Left");
                 else
-                    name = "Right";
+                    name = tr("Right");
                 QRadioButton *radio = new QRadioButton(name, widget);
                 radio->setObjectName(QString::number(currentLocation) + "_radiobutton" + QString::number(i));
                 if(i==1) // set the 'left' checkbox to activated
@@ -496,7 +491,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 } else if(currentLocation == librazer::Device::lightingLocation::lighting_scroll) {
                     connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonScroll);
                 } else {
-                    qDebug() << "ERROR!! New lightingLocation which is not handled with the radio buttons.";
+                    qWarning() << "ERROR! New lightingLocation which is not handled with the radio buttons.";
                 }
             }
         }
@@ -506,7 +501,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         if(currentLocation == librazer::Device::lighting_logo) {
             // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
             if(currentDevice->hasCapability("lighting_logo_active") && !currentDevice->hasCapability("lighting_logo_none")) {
-                QCheckBox *activeCheckbox = new QCheckBox("Set Logo Active", widget);
+                QCheckBox *activeCheckbox = new QCheckBox(tr("Set Logo Active"), widget);
                 activeCheckbox->setChecked(currentDevice->getLogoActive());
                 verticalLayout->addWidget(activeCheckbox);
                 connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::logoActiveCheckbox);
@@ -517,7 +512,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         if(currentLocation == librazer::Device::lighting_scroll) {
             // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
             if(currentDevice->hasCapability("lighting_scroll_active") && !currentDevice->hasCapability("lighting_scroll_none")) {
-                QCheckBox *activeCheckbox = new QCheckBox("Set Scroll Active", widget);
+                QCheckBox *activeCheckbox = new QCheckBox(tr("Set Scroll Active"), widget);
                 activeCheckbox->setChecked(currentDevice->getScrollActive());
                 verticalLayout->addWidget(activeCheckbox);
                 connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::scrollActiveCheckbox);
@@ -543,15 +538,15 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         QHBoxLayout *dpiHeaderHBox = new QHBoxLayout();
 
         // Header
-        QLabel *dpiHeader = new QLabel("DPI", widget);
+        QLabel *dpiHeader = new QLabel(tr("DPI"), widget);
         dpiHeader->setFont(headerFont);
         dpiHeaderHBox->addWidget(dpiHeader);
 
         verticalLayout->addLayout(dpiHeaderHBox);
 
         // Labels
-        QLabel *dpiXLabel = new QLabel("DPI X");
-        QLabel *dpiYLabel = new QLabel("DPI Y");
+        QLabel *dpiXLabel = new QLabel(tr("DPI X"));
+        QLabel *dpiYLabel = new QLabel(tr("DPI Y"));
 
         // Read-only textboxes
         QTextEdit *dpiXText = new QTextEdit(widget);
@@ -572,7 +567,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         dpiYSlider->setObjectName("dpiY");
 
         // Sync checkbox
-        QLabel *dpiSyncLabel = new QLabel("Lock X/Y", widget);
+        QLabel *dpiSyncLabel = new QLabel(tr("Lock X/Y"), widget);
         QCheckBox *dpiSyncCheckbox = new QCheckBox(widget);
 
         // Get the current DPI and set the slider&text
@@ -584,7 +579,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             dpiXText->setText(QString::number(currDPI[0]));
             dpiYText->setText(QString::number(currDPI[1]));
         } else {
-            qDebug() << "RazerGenie: Skipping dpi because return value of getDPI() is wrong. Probably the broken fake driver.";
+            qWarning() << "RazerGenie: Skipping dpi because return value of getDPI() is wrong. Probably the broken fake driver.";
         }
 
         int maxDPI = currentDevice->maxDPI();
@@ -622,7 +617,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
     /* Poll rate */
     if(currentDevice->hasCapability("poll_rate")) {
-        QLabel *pollRateHeader = new QLabel("Polling rate", widget);
+        QLabel *pollRateHeader = new QLabel(tr("Polling rate"), widget);
         pollRateHeader->setFont(headerFont);
         verticalLayout->addWidget(pollRateHeader);
 
@@ -636,25 +631,23 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         connect(pollComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
     }
 
-#ifdef ENABLE_EXPERIMENTAL
     /* Custom lighting */
     if(currentDevice->hasCapability("lighting_led_matrix")) {
         QPushButton *button = new QPushButton(widget);
-        button->setText("Open custom editor (unfinished right now)"); // TODO Finish custom editor
+        button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);
         connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
     }
-#endif
 
     /* Spacer to bottom */
     QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     verticalLayout->addItem(spacer);
 
     /* Serial and firmware version labels */
-    QLabel *serialLabel = new QLabel("Serial number: " + serial);
+    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(serial));
     verticalLayout->addWidget(serialLabel);
 
-    QLabel *fwVerLabel = new QLabel("Firmware version: " + currentDevice->getFirmwareVersion());
+    QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(currentDevice->getFirmwareVersion()));
     verticalLayout->addWidget(fwVerLabel);
 
     ui_main.stackedWidget->addWidget(widget);
@@ -707,8 +700,8 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
             i.next();
             QList<QVariant> list = i.value().toList();
             if(list.count() != 2) {
-                qDebug() << "RazerGenie: Error while iterating through supportedDevices";
-                qDebug() << list;
+                qWarning() << "RazerGenie: Error while iterating through supportedDevices";
+                qWarning() << list;
                 continue;
             }
             int vid = list[0].toInt();
@@ -735,19 +728,19 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     QPushButton *button1;
     QPushButton *button2;
     if(matches.size() == 0) {
-        headerLabel = new QLabel("No device was detected");
-        textLabel = new QLabel("The OpenRazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC.");
-        button1 = new QPushButton("Open supported devices");
+        headerLabel = new QLabel(tr("No device was detected"));
+        textLabel = new QLabel(tr("The OpenRazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC."));
+        button1 = new QPushButton(tr("Open supported devices"));
         connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevicesUrl);
-        button2 = new QPushButton("Report issue");
+        button2 = new QPushButton(tr("Report issue"));
         connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
     } else {
-        headerLabel = new QLabel("The daemon didn't detect a device that is connected");
-        textLabel = new QLabel("Linux detected connected devices but the daemon didn't. This could be either due to a permission problem or a kernel module problem.");
+        headerLabel = new QLabel(tr("The daemon didn't detect a device that is connected"));
+        textLabel = new QLabel(tr("Linux detected connected devices but the daemon didn't. This could be either due to a permission problem or a kernel module problem."));
         qDebug() << matches;
-        button1 = new QPushButton("Open troubleshooting page");
+        button1 = new QPushButton(tr("Open troubleshooting page"));
         connect(button1, &QPushButton::pressed, this, &RazerGenie::openTroubleshootingUrl);
-        button2 = new QPushButton("Report issue");
+        button2 = new QPushButton(tr("Report issue"));
         connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
     }
     headerLabel->setFont(headerFont);
@@ -764,13 +757,13 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 void RazerGenie::toggleSync(bool sync)
 {
     if(!librazer::syncEffects(sync))
-        showError("Error while syncing devices.");
+        showError(tr("Error while syncing devices."));
 }
 
 void RazerGenie::toggleOffOnScreesaver(bool on)
 {
     if(!librazer::setTurnOffOnScreensaver(on))
-        showError("Error while toggling 'turn off on screensaver'");
+        showError(tr("Error while toggling 'turn off on screensaver'"));
 }
 
 void RazerGenie::colorButtonClicked()
@@ -790,7 +783,7 @@ void RazerGenie::colorButtonClicked()
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
     } else {
-        qDebug() << "User cancelled the dialog.";
+        qInfo() << "User cancelled the dialog.";
     }
     // objectName is location(int)_colorbuttonNR(1-3)
     // TODO: We shouldn't assume the world to be perfect!
@@ -988,7 +981,7 @@ void RazerGenie::applyEffectStandardLoc(QString identifier, librazer::Device *de
     } else if(identifier == "lighting_pulsate") {
         device->setPulsate();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1022,7 +1015,7 @@ void RazerGenie::applyEffectLogoLoc(QString identifier, librazer::Device *device
     } else if(identifier == "lighting_logo_breath_random") {
         device->setLogoBreathRandom();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1056,7 +1049,7 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, librazer::Device *devi
     } else if(identifier == "lighting_scroll_breath_random") {
         device->setScrollBreathRandom();
     } else {
-        qDebug() << identifier << " is not implemented yet!";
+        qWarning() << identifier << " is not implemented yet!";
     }
 }
 
@@ -1139,19 +1132,23 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
 
 void RazerGenie::openCustomEditor()
 {
-    CustomEditor *cust = new CustomEditor;
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    CustomEditor *cust = new CustomEditor(dev);
     cust->show();
 }
 
 void RazerGenie::deviceAdded()
 {
-    qDebug() << "DEVICE WAS ADDED!";
+    qInfo() << "DEVICE WAS ADDED!";
     refreshDeviceList();
 }
 
 void RazerGenie::deviceRemoved()
 {
-    qDebug() << "DEVICE WAS REMOVED!";
+    qInfo() << "DEVICE WAS REMOVED!";
     refreshDeviceList();
 }
 
@@ -1178,15 +1175,13 @@ void RazerGenie::openWebsiteUrl()
 void RazerGenie::showError(QString error)
 {
     QMessageBox messageBox;
-    messageBox.critical(0, "Error!", error);
+    messageBox.critical(0, tr("Error!"), error);
     messageBox.setFixedSize(500, 200);
 }
 
 void RazerGenie::showInfo(QString info)
 {
     QMessageBox messageBox;
-    messageBox.information(0, "Information!", info);
+    messageBox.information(0, tr("Information!"), info);
     messageBox.setFixedSize(500, 200);
 }
-
-#include "razergenie.moc"

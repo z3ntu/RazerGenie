@@ -16,13 +16,21 @@
  *
  */
 
+#include "config.h"
 #include <QApplication>
+#include <QTranslator>
 
 #include "razergenie.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    QTranslator translator;
+    bool ret = translator.load(QLocale::system(), QString(), QString(), QString(RAZERGENIE_DATADIR) + "/translations/");
+    qDebug() << "Translation loaded:" << ret;
+    app.installTranslator(&translator);
+
     RazerGenie w;
     w.show();
 

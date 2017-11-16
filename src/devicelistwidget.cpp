@@ -36,7 +36,7 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, librazer::Device *device) : 
         imageLabel = new QLabel(this);
         imageLabel->setPixmap(scaled);
     } else {
-        imageLabel = new QLabel("Downloading image...", this);
+        imageLabel = new QLabel(tr("Downloading image..."), this);
     }
     imageLabel->setAlignment(Qt::AlignCenter);
     layout->addWidget(imageLabel);
@@ -68,5 +68,5 @@ librazer::Device *DeviceListWidget::device()
 
 void DeviceListWidget::setNoImage()
 {
-    imageLabel->setText("No image");
+    imageLabel->setText(tr("No image"));
 }

@@ -13,13 +13,14 @@ set(razergenie_SRCS main.cpp
                     razerdevicewidget.cpp
                     devicelistwidget.cpp
                     customeditor.cpp
+                    matrixpushbutton.cpp
                     )
 
 QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui)
 
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_executable(razergenie ${razergenie_SRCS})
-target_link_libraries(razergenie razer Qt5::Widgets Qt5::DBus Qt5::Network)
+target_link_libraries(razergenie openrazer Qt5::Widgets Qt5::DBus Qt5::Network)
 
 install(TARGETS razergenie DESTINATION ${CMAKE_INSTALL_BINDIR})

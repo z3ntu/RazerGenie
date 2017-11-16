@@ -13,29 +13,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef DEVICELISTWIDGET_H
-#define DEVICELISTWIDGET_H
+#ifndef KEYBOARDKEY_H
+#define KEYBOARDKEY_H
 
-#include <librazer.h>
-#include <QWidget>
-#include <QLabel>
+#include <QString>
 
-class DeviceListWidget : public QWidget
+class KeyboardKey
 {
-    Q_OBJECT
 public:
-    DeviceListWidget(QWidget *parent, librazer::Device *device);
-    librazer::Device *device();
-    void setNoImage();
-public slots:
-    void imageDownloaded(QString &filename);
+    KeyboardKey(QString label, int width=120, int height=126);
+    ~KeyboardKey();
+    QString label();
+    int height();
+    int width();
 private:
-    QPixmap createPixmapFromFile(QString &filename);
-    librazer::Device *mDevice;
-    QLabel *imageLabel;
+    QString mLabel;
+    int mHeight;
+    int mWidth;
 };
 
-#endif // DEVICELISTWIDGET_H
+#endif // KEYBOARDKEY_H

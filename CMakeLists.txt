@@ -11,15 +11,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 
-set(RAZERGENIE_VERSION_MAJOR 0)
-set(RAZERGENIE_VERSION_MINOR 0)
-set(RAZERGENIE_VERSION_PATCH 1)
-set(RAZERGENIE_VERSION_STRING ${RAZERGENIE_VERSION_MAJOR}.${RAZERGENIE_VERSION_MINOR}.${RAZERGENIE_VERSION_PATCH})
+set(version 0.4)
+set(datadir ${CMAKE_INSTALL_PREFIX}/share/razergenie)
 
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
-find_package(Qt5 REQUIRED COMPONENTS DBus Network Xml Widgets)
+find_package(Qt5 REQUIRED COMPONENTS DBus LinguistTools Network Xml Widgets)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -32,6 +30,7 @@ include(KDECMakeSettings)
 include(FeatureSummary)
 include(CheckIncludeFiles)
 
+add_subdirectory(data)
 add_subdirectory(logo)
 add_subdirectory(other)
 add_subdirectory(src)

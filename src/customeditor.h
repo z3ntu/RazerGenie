@@ -20,13 +20,43 @@
 #define CUSTOMEDITOR_H
 
 #include <QWidget>
+#include <QJsonObject>
+#include <librazer.h>
+#include "matrixpushbutton.h"
+
+enum DrawStatus {
+    set, clear
+};
 
 class CustomEditor : public QWidget
 {
     Q_OBJECT
 public:
-    CustomEditor(QWidget* parent = 0);
+    CustomEditor(librazer::Device* device, QWidget* parent = 0);
     ~CustomEditor();
+private:
+    void closeWindow();
+    QLayout* generateMainControls();
+    QLayout* generateKeyboard();
+    QLayout* generateMousemat();
+    QLayout* generateMouse();
+    bool parseKeyboardJSON(QString jsonname);
+    bool updateKeyrow(int row);
+    void clearAll();
+
+    QJsonObject keyboardKeys;
+    QVector<MatrixPushButton*> matrixPushButtons;
+    librazer::Device *device;
+    QList<int> dimens;
+
+    QVector<QVector<QColor>> colors;
+    QColor selectedColor;
+    DrawStatus drawStatus;
+private slots:
+    void colorButtonClicked();
+    void onMatrixPushButtonClicked();
+    void setDrawStatusSet();
+    void setDrawStatusClear();
 };
 
 #endif // CUSTOMEDITOR_H

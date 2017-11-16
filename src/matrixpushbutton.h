@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2017  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2017  Luca Weiss <luca@z3ntu.xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,29 +14,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef DEVICELISTWIDGET_H
-#define DEVICELISTWIDGET_H
+#ifndef MATRIXPUSHBUTTON_H
+#define MATRIXPUSHBUTTON_H
 
-#include <librazer.h>
-#include <QWidget>
-#include <QLabel>
+#include <QPushButton>
 
-class DeviceListWidget : public QWidget
+class MatrixPushButton : public QPushButton
 {
-    Q_OBJECT
 public:
-    DeviceListWidget(QWidget *parent, librazer::Device *device);
-    librazer::Device *device();
-    void setNoImage();
-public slots:
-    void imageDownloaded(QString &filename);
+    MatrixPushButton(QString label);
+    void setMatrixPos(int matrixX, int matrixY);
+    QPair<int, int> matrixPos();
+    void setButtonColor(QColor color);
+    void resetButtonColor();
 private:
-    QPixmap createPixmapFromFile(QString &filename);
-    librazer::Device *mDevice;
-    QLabel *imageLabel;
+    QString mLabel;
+    QPair<int, int> mMatrixPos;
 };
 
-#endif // DEVICELISTWIDGET_H
+#endif // MATRIXPUSHBUTTON_H

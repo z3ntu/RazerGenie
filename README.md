@@ -15,31 +15,11 @@ If you are using a distribution not listed here please let me know and I'll try 
 ## How to compile
 ```
 mkdir build && cd build
-# Either:
-cmake ..
-# Or - to enable experimental (=unfinished) features
-cmake -DENABLE_EXPERIMENTAL=ON ..
-make
+meson ..
+# If you want to enable experimental (=unfinished) features
+meson configure -Denable_experimental=true
+ninja
 ./src/razergenie
-# You could install it with 'make install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).
+# You could install it with 'ninja install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).
 ```
 
-## Dependencies
-* Qt5 (+ the modules: DBus, Network & Xml)
-* razer-drivers
-* cmake
-* extra-cmake-modules
-
-#### Ubuntu
-```
-sudo apt install cmake extra-cmake-modules qt5-default
-```
-
-#### Arch Linux
-```
-sudo pacman -S --needed cmake extra-cmake-modules qt5-base
-```
-
-## TODO
-* Implement keyboard gui (individual lighting etc)
-* Several more things marked as //TODO in the source code

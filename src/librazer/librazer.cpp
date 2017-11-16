@@ -156,7 +156,7 @@ bool isDaemonRunning()
  */
 QVariantHash getSupportedDevices()
 {
-    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "supportedDevices");
+    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "supportedDevices");
     QString ret = QDBusMessageToString(m);
     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
@@ -258,7 +258,7 @@ daemonStatus getDaemonStatus()
     else if(error == "Failed to get unit file state for openrazer-daemon.service: No such file or directory\n") return daemonStatus::not_installed;
     else if(process.exitCode() == 255) return daemonStatus::no_systemd;
     else {
-        qDebug() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
+        qWarning() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
         return daemonStatus::unknown;
     }
 }
@@ -394,12 +394,20 @@ QString Device::getDeviceName()
 }
 
 /**
- * Returns the type of the device. Could be one of 'headset', 'mouse', 'mug', 'keyboard', 'tartarus' or another type, if added to the daemon.
+ * Returns the type of the device. Could be one of 'keyboard', 'mouse', 'mousemat', 'core', 'keypad', 'headset', 'mug' or another type, if added to the daemon.
  */
 QString Device::getDeviceType()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceType");
-    return QDBusMessageToString(m);
+    QString devicetype = QDBusMessageToString(m);
+    // Fix up devicetype for old versions of the daemon (PR #445 in openrazer/openrazer).
+    // TODO: Remove once the new daemon version was released (and was out for a while).
+    if(devicetype == "firefly") {
+        devicetype = "mousemat";
+    } else if(devicetype == "orbweaver" || devicetype == "tartarus") {
+        devicetype = "keypad";
+    }
+    return devicetype;
 }
 
 /**
@@ -483,7 +491,7 @@ int Device::getPollRate()
 bool Device::setPollRate(ushort pollrate)
 {
     if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
-        qDebug() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
+        qWarning() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
         return false;
     }
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
@@ -766,7 +774,7 @@ bool Device::setBacklightActive(bool active)
 }
 
 /**
- * Sets the lighting to custom mode.
+ * Sets the lighting to custom mode (applies effects set from setKeyRow()).
  */
 bool Device::setCustom()
 {
@@ -776,16 +784,16 @@ bool Device::setCustom()
 
 /**
  * Sets the lighting of a key row to the specified colors.
+ * Note, that you have to call setCustom() after setting otherwise the effect won't be displayed (even if you have already called setCustom() before).
+ * Currently the driver only accepts whole rows that are sent.
  */
-bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> colors)
+bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
 {
-    /*
     if(colors.count() != (endcol+1)-startcol) {
         qWarning() << "Invalid 'colors' length. startcol:" << startcol << " - endcol:" << endcol << " needs " << (endcol+1)-startcol << " entries in colors!";
         return false;
     }
-    int len = (endcol+1)-startcol + ((endcol+1)-startcol*3);
-    */
+
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setKeyRow");
 
     QByteArray parameters;
@@ -799,7 +807,6 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QList<QColor> co
         parameters[counter++] = c.green();
         parameters[counter++] = c.blue();
     }
-    qDebug() << parameters;
 
     QList<QVariant> args;
     args.append(parameters);
@@ -1210,9 +1217,9 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
  */
 void printError(QDBusMessage& message, const char *functionname)
 {
-    qDebug() << "librazer: There was an error in" << functionname << "!";
-    qDebug() << "librazer:" << message.errorName();
-    qDebug() << "librazer:" << message.errorMessage();
+    qWarning() << "librazer: There was an error in" << functionname << "!";
+    qWarning() << "librazer:" << message.errorName();
+    qWarning() << "librazer:" << message.errorMessage();
 }
 
 /**
