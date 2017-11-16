@@ -192,6 +192,7 @@ QLayout* CustomEditor::generateMousemat()
     QHBoxLayout *hbox = new QHBoxLayout();
     for(int i=0; i<dimens[1]; i++) {
         MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
+        btn->setMatrixPos(0, i);
 
         connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
 
