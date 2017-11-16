@@ -191,6 +191,7 @@ QLayout* CustomEditor::generateKeyboard()
 QLayout* CustomEditor::generateMousemat()
 {
     QHBoxLayout *hbox = new QHBoxLayout();
+    // TODO: Improve visual style of the mousemat grid (make it look like the mousepad!)
     for(int i=0; i<dimens[1]; i++) {
         MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
         btn->setMatrixPos(0, i);
