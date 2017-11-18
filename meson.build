@@ -1,7 +1,7 @@
 project('razergenie', 'cpp',
         default_options : ['cpp_std=c++11'])
 
-razergenie_version = '0.4'
+razergenie_version = '0.5'
 libopenrazer_version = '0.0.1'
 
 qt5 = import('qt5')
