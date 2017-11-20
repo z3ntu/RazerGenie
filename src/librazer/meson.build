@@ -10,7 +10,7 @@ libopenrazer = shared_library('openrazer',
 # Demo executable
 if get_option('buildtype') == 'debug'
   message('Building libopenrazerdemo...')
-  librazerdemo = executable('libopenrazerdemo', 'librazer.cpp',
+  librazerdemo = executable('libopenrazerdemo', 'libopenrazerdemo.cpp',
                             dependencies : qt5_dep,
                             link_with : libopenrazer)
 endif

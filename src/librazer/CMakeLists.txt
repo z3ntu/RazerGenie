@@ -18,7 +18,7 @@ set_target_properties(openrazer PROPERTIES VERSION ${LIBRAZER_VERSION_STRING}
 
 # Demo executable
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_executable(libopenrazerdemo librazer.cpp)
+    add_executable(libopenrazerdemo libopenrazerdemo.cpp)
     target_link_libraries(libopenrazerdemo openrazer Qt5::DBus Qt5::Xml Qt5::Widgets)
 endif()
 
