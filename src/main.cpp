@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QTranslator>
 
 #include "razergenie.h"
@@ -25,6 +26,14 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QApplication::setApplicationName("RazerGenie");
+    QApplication::setApplicationVersion(RAZERGENIE_VERSION);
+
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.process(app);
 
     QTranslator translator;
     bool ret = translator.load(QLocale::system(), QString(), QString(), QString(RAZERGENIE_DATADIR) + "/translations/");
