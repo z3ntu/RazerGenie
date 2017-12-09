@@ -314,7 +314,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     QList<librazer::Device::lightingLocation> lightingLocationsTodo;
 
     // Check what lighting locations the device has
-    if(currentDevice->hasCapability("lighting"))
+    if(currentDevice->hasCapability("lighting") || currentDevice->hasCapability("lighting_bw2013"))
         lightingLocationsTodo.append(librazer::Device::lighting);
     if(currentDevice->hasCapability("lighting_logo"))
         lightingLocationsTodo.append(librazer::Device::lighting_logo);
@@ -516,6 +516,24 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 activeCheckbox->setChecked(currentDevice->getScrollActive());
                 verticalLayout->addWidget(activeCheckbox);
                 connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::scrollActiveCheckbox);
+            }
+        }
+
+        /* Profile LED checkboxes */
+        if(currentLocation == librazer::Device::lighting) {
+            if(currentDevice->hasCapability("lighting_profile_leds")) {
+                for(int i=1; i<=3; ++i) {
+                    QString i_str = QString::number(i);
+                    QCheckBox *profileLedCheckbox = new QCheckBox(tr("Profile LED %1").arg(i_str), widget);
+                    bool enabled = false;
+                    if(i == 1) enabled = currentDevice->getRedLED();
+                    else if(i == 2) enabled = currentDevice->getGreenLED();
+                    else if(i == 3) enabled = currentDevice->getBlueLED();
+                    profileLedCheckbox->setChecked(enabled);
+                    profileLedCheckbox->setObjectName(i_str);
+                    verticalLayout->addWidget(profileLedCheckbox);
+                    connect(profileLedCheckbox, &QCheckBox::clicked, this, &RazerGenie::profileLedCheckbox);
+                }
             }
         }
 
@@ -978,6 +996,8 @@ void RazerGenie::applyEffectStandardLoc(QString identifier, librazer::Device *de
         device->setRipple(c.red(), c.green(), c.blue(), librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
     } else if(identifier == "lighting_ripple_random") {
         device->setRippleRandomColor(librazer::RIPPLE_REFRESH_RATE); //TODO Configure refreshrate?
+    } else if(identifier == "lighting_static_bw2013") {
+        device->setStatic_bw2013();
     } else if(identifier == "lighting_pulsate") {
         device->setPulsate();
     } else {
@@ -1128,6 +1148,22 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
 
     dev->setScrollActive(checked);
     qDebug() << checked;
+}
+
+void RazerGenie::profileLedCheckbox(bool checked)
+{
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    QCheckBox *sender = qobject_cast<QCheckBox*>(QObject::sender());
+
+    if(sender->objectName() == "1") {
+        dev->setRedLED(checked);
+    } else if(sender->objectName() == "2") {
+        dev->setGreenLED(checked);
+    } else if(sender->objectName() == "3") {
+        dev->setBlueLED(checked);
+    }
 }
 
 void RazerGenie::openCustomEditor()

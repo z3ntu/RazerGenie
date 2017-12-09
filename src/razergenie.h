@@ -63,6 +63,8 @@ public slots:
     void logoActiveCheckbox(bool checked);
     void scrollActiveCheckbox(bool checked);
 
+    void profileLedCheckbox(bool checked);
+
     void openCustomEditor();
 
     void dbusServiceRegistered(const QString &serviceName);
