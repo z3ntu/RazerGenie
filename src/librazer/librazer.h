@@ -71,7 +71,8 @@ const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_static", "Static", 1),
     RazerCapability("lighting_ripple", "Ripple", 1), // Needs "refresh_rate"
     RazerCapability("lighting_ripple_random", "Ripple random", 0), // Needs "refresh_rate"
-    RazerCapability("lighting_pulsate", "Pulsate", 1),
+    RazerCapability("lighting_pulsate", "Pulsate", 0),
+    RazerCapability("lighting_static_bw2013", "Static", 0),
 };
 
 const static QList<RazerCapability> logoComboBoxCapabilites {
@@ -212,6 +213,7 @@ public:
     bool setStarlightDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar speed);
     bool setStarlightRandom(uchar speed);
     // bw2013
+    bool setStatic_bw2013();
     bool setPulsate();
 
     bool getBacklightActive();
@@ -261,6 +263,14 @@ public:
 
     bool setScrollBrightness(double brightness);
     double getScrollBrightness();
+
+    // - Profile LED -
+    bool getBlueLED();
+    bool setBlueLED(bool on);
+    bool getGreenLED();
+    bool setGreenLED(bool on);
+    bool getRedLED();
+    bool setRedLED(bool on);
 
     enum lightingLocation {
         lighting, lighting_logo, lighting_scroll

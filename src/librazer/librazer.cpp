@@ -99,7 +99,11 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_ripple", hasCapabilityInternal("razer.device.lighting.custom", "setRipple"));
     capabilities.insert("lighting_ripple_random", hasCapabilityInternal("razer.device.lighting.custom", "setRippleRandomColour"));
 
+    capabilities.insert("lighting_bw2013", hasCapabilityInternal("razer.device.lighting.bw2013"));
+    capabilities.insert("lighting_static_bw2013", hasCapabilityInternal("razer.device.lighting.bw2013", "setStatic"));
     capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.bw2013", "setPulsate"));
+
+    capabilities.insert("lighting_profile_leds", hasCapabilityInternal("razer.device.lighting.profile_led", "getRedLED"));
 
     capabilities.insert("lighting_led_matrix", hasMatrix());
     capabilities.insert("lighting_led_single", hasCapabilityInternal("razer.device.lighting.chroma", "setKey"));
@@ -744,6 +748,15 @@ bool Device::setStarlightRandom(uchar speed)
 }
 
 /**
+ * Sets the lighting to static (without color - bw2013 version).
+ */
+bool Device::setStatic_bw2013()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.bw2013", "setStatic");
+    return QDBusMessageToVoid(m);
+}
+
+/**
  * Sets the lighting to pulsate.
  */
 bool Device::setPulsate()
@@ -1192,6 +1205,69 @@ double Device::getScrollBrightness()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollBrightness");
     return QDBusMessageToDouble(m);
+}
+
+/**
+ * Gets if the blue profile LED is on/off.
+ */
+bool Device::getBlueLED()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getBlueLED");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Sets the blue profile LED to on/off.
+ */
+bool Device::setBlueLED(bool on)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setBlueLED");
+    QList<QVariant> args;
+    args.append(on);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Gets if the green profile LED is on/off.
+ */
+bool Device::getGreenLED()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getGreenLED");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Sets the green profile LED to on/off.
+ */
+bool Device::setGreenLED(bool on)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setGreenLED");
+    QList<QVariant> args;
+    args.append(on);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Gets if the red profile LED is on/off.
+ */
+bool Device::getRedLED()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getRedLED");
+    return QDBusMessageToBool(m);
+}
+
+/**
+ * Sets the red profile LED to on/off.
+ */
+bool Device::setRedLED(bool on)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setRedLED");
+    QList<QVariant> args;
+    args.append(on);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
 }
 
 // ----- MISC METHODS FOR LIBRAZER -----
