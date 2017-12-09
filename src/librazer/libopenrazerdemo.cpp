@@ -53,6 +53,10 @@ int main()
             qDebug() << device.setBacklightActive(false);
             qDebug() << device.getBacklightActive();
         }
+        if(device.hasCapability("kbd_layout")) {
+            qDebug() << "Keyboard layout:";
+            qDebug() << device.getKeyboardLayout();
+        }
 
 //         if(device.hasMatrix()) {
 //             QList<int> dimen = device.getMatrixDimensions();

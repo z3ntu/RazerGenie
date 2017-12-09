@@ -138,15 +138,25 @@ QLayout* CustomEditor::generateKeyboard()
     QVBoxLayout *vbox = new QVBoxLayout();
     //TODO: Get physical layout from daemon and use
     QJsonObject keyboardLayout;
-    if(keyboardKeys.contains("de_DE")) {
-        keyboardLayout = keyboardKeys["de_DE"].toObject();
-    } else if(keyboardKeys.contains("en_US")) {
-        keyboardLayout = keyboardKeys["en_US"].toObject();
-    } else if(keyboardKeys.contains("en_GB")) {
-        keyboardLayout = keyboardKeys["en_GB"].toObject();
+    bool found = false;
+    QString kbdLayout = device->getKeyboardLayout();
+    if(kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
+        keyboardLayout = keyboardKeys[kbdLayout].toObject();
     } else {
-        qWarning() << "Neither de_DE nor en_US nor en_GB was found in the layout file.";
-        return vbox;
+        QStringList langs;
+        langs << "de_DE" << "en_US" << "en_GB";
+        QString lang;
+        foreach(lang, langs) {
+            if(keyboardKeys.contains(lang)) {
+                keyboardLayout = keyboardKeys[lang].toObject();
+                found = true;
+                break;
+            }
+        }
+        if(found == false) {
+            qWarning() << "Neither de_DE nor en_US nor en_GB was found in the layout file.";
+            return vbox;
+        }
     }
 
     // Iterate over rows in the object
