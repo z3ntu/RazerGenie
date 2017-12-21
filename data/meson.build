@@ -1,7 +1,8 @@
 # Matrix Layouts
 matrixlayoutdir = join_paths(get_option('datadir'), 'razergenie/matrix_layouts')
-install_data('matrix_layouts/razerblade25.json', install_dir : matrixlayoutdir)
+install_data('matrix_layouts/razerblade16.json', install_dir : matrixlayoutdir)
 install_data('matrix_layouts/razerdefault22.json', install_dir : matrixlayoutdir)
+install_data('matrix_layouts/razerblade25.json', install_dir : matrixlayoutdir)
 
 # Translations
 languages = ['de']  # add new languages here!

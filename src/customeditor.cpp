@@ -54,7 +54,11 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
     // Generate other buttons depending on the device type
     QString type = device->getDeviceType();
     if(type == "keyboard") {
-        if(dimens[0] == 6 && dimens[1] == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
+        if(dimens[0] == 6 && dimens[1] == 16) { // Razer Blade Stealth (Late 2017)
+            if(!parseKeyboardJSON("razerblade16")) {
+                closeWindow();
+            }
+        } else if(dimens[0] == 6 && dimens[1] == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
             if(!parseKeyboardJSON("razerdefault22")) {
                 closeWindow();
             }
