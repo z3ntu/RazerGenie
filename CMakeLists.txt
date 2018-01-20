@@ -3,6 +3,7 @@ project(razergenie)
 
 # Experimental features switch
 option(ENABLE_EXPERIMENTAL "ENABLE_EXPERIMENTAL" OFF)
+option(INCLUDE_MATRIX_DISCOVERY "INCLUDE_MATRIX_DISCOVERY" OFF)
 
 # Fix for GCC < 6.0
 set(CMAKE_CXX_STANDARD 11)

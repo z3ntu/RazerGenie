@@ -24,7 +24,7 @@
 #include <QHBoxLayout>
 #include <QEvent>
 
-CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(parent)
+CustomEditor::CustomEditor(librazer::Device* device, bool launchMatrixDiscovery, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("RazerGenie - Custom Editor"));
     this->device = device;
@@ -54,7 +54,11 @@ CustomEditor::CustomEditor(librazer::Device* device, QWidget *parent) : QWidget(
 
     // Generate other buttons depending on the device type
     QString type = device->getDeviceType();
-    if(type == "keyboard") {
+
+    // Generate matrix discovery if requested - ignore device type
+    if(launchMatrixDiscovery) {
+        vbox->addLayout(generateMatrixDiscovery());
+    } else if(type == "keyboard") {
         if(dimens[0] == 6 && dimens[1] == 16) { // Razer Blade Stealth (Late 2017)
             if(!parseKeyboardJSON("razerblade16")) {
                 closeWindow();
@@ -229,6 +233,25 @@ QLayout* CustomEditor::generateMouse()
 {
     QHBoxLayout *hbox = new QHBoxLayout();
     return hbox;
+}
+
+QLayout* CustomEditor::generateMatrixDiscovery()
+{
+    QVBoxLayout *vbox = new QVBoxLayout();
+    for(int i=0; i<dimens[0]; i++) {
+        QHBoxLayout *hbox = new QHBoxLayout();
+        for(int j=0; j<dimens[1]; j++) {
+            MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
+            btn->setMatrixPos(i, j);
+
+            connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
+
+            hbox->addWidget(btn);
+            matrixPushButtons.append(btn);
+        }
+        vbox->addLayout(hbox);
+    }
+    return vbox;
 }
 
 bool CustomEditor::parseKeyboardJSON(QString jsonname)

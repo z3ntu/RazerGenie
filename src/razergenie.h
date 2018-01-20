@@ -66,6 +66,9 @@ public slots:
     void profileLedCheckbox(bool checked);
 
     void openCustomEditor();
+#ifdef INCLUDE_MATRIX_DISCOVERY
+    void openMatrixDiscovery();
+#endif
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);

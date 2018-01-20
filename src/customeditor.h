@@ -32,7 +32,7 @@ class CustomEditor : public QWidget
 {
     Q_OBJECT
 public:
-    CustomEditor(librazer::Device* device, QWidget* parent = 0);
+    CustomEditor(librazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = 0);
     ~CustomEditor();
 private:
     void closeWindow();
@@ -40,6 +40,8 @@ private:
     QLayout* generateKeyboard();
     QLayout* generateMousemat();
     QLayout* generateMouse();
+    QLayout* generateMatrixDiscovery();
+
     bool parseKeyboardJSON(QString jsonname);
     bool updateKeyrow(int row);
     void clearAll();

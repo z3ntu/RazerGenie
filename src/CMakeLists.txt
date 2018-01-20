@@ -7,6 +7,13 @@ else()
     message("razergenie: Experimental features disabled.")
 endif()
 
+if(INCLUDE_MATRIX_DISCOVERY)
+    add_definitions(-DINCLUDE_MATRIX_DISCOVERY)
+    message("razergenie: Matrix discovery feature included.")
+else()
+    message("razergenie: Matrix discovery feature not included.")
+endif()
+
 set(razergenie_SRCS main.cpp
                     razergenie.cpp
                     razerimagedownloader.cpp

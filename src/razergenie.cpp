@@ -656,6 +656,12 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);
         connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
+#ifdef INCLUDE_MATRIX_DISCOVERY
+        QPushButton *buttonD = new QPushButton(widget);
+        buttonD->setText(tr("Launch matrix discovery"));
+        verticalLayout->addWidget(buttonD);
+        connect(buttonD, &QPushButton::clicked, this, &RazerGenie::openMatrixDiscovery);
+#endif
     }
 
     /* Spacer to bottom */
@@ -1176,6 +1182,18 @@ void RazerGenie::openCustomEditor()
     CustomEditor *cust = new CustomEditor(dev);
     cust->show();
 }
+
+#ifdef INCLUDE_MATRIX_DISCOVERY
+void RazerGenie::openMatrixDiscovery()
+{
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    librazer::Device *dev = devices.value(item->getSerial());
+
+    CustomEditor *cust = new CustomEditor(dev, true);
+    cust->show();
+}
+#endif
 
 void RazerGenie::deviceAdded()
 {
