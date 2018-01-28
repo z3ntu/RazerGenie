@@ -18,6 +18,7 @@
 
 #include "customeditor.h"
 #include "config.h"
+#include "util.h"
 #include <QtWidgets>
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -143,6 +144,12 @@ QLayout* CustomEditor::generateKeyboard()
     if(kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
         keyboardLayout = keyboardKeys[kbdLayout].toObject();
     } else {
+        if(kbdLayout == "unknown") {
+            util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
+        } else {
+            util::showInfo(tr("Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.").arg(kbdLayout));
+            closeWindow();
+        }
         QStringList langs;
         langs << "de_DE" << "en_US" << "en_GB";
         QString lang;
@@ -153,9 +160,9 @@ QLayout* CustomEditor::generateKeyboard()
                 break;
             }
         }
-        if(found == false) {
-            qWarning() << "Neither de_DE nor en_US nor en_GB was found in the layout file.";
-            return vbox;
+        if(!found) {
+            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
+            closeWindow();
         }
     }
 
