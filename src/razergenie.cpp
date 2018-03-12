@@ -30,6 +30,7 @@
 #include "razerdevicewidget.h"
 #include "devicelistwidget.h"
 #include "customeditor.h"
+#include "util.h"
 
 #define newIssueUrl "https://github.com/openrazer/openrazer/issues/new"
 #define supportedDevicesUrl "https://github.com/openrazer/openrazer/blob/master/README.md#device-support"
@@ -155,7 +156,7 @@ void RazerGenie::dbusServiceRegistered(const QString &serviceName)
 {
     qInfo() << "Registered! " << serviceName;
     fillDeviceList();
-    showInfo(tr("The D-Bus connection was re-established."));
+    util::showInfo(tr("The D-Bus connection was re-established."));
 }
 
 void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
@@ -163,7 +164,7 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
     qInfo() << "Unregistered! " << serviceName;
     clearDeviceList();
     //TODO: Show another placeholder screen with information that the daemon has been stopped?
-    showError(tr("The D-Bus connection was lost, which probably means that the daemon has crashed."));
+    util::showError(tr("The D-Bus connection was lost, which probably means that the daemon has crashed."));
 }
 
 /**
@@ -353,7 +354,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
         } else {
             // Houston, we have a problem.
-            showError("Unhanded lighting location in fillList()");
+            util::showError("Unhanded lighting location in fillList()");
             continue;
         }
 
@@ -775,13 +776,13 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 void RazerGenie::toggleSync(bool sync)
 {
     if(!librazer::syncEffects(sync))
-        showError(tr("Error while syncing devices."));
+        util::showError(tr("Error while syncing devices."));
 }
 
 void RazerGenie::toggleOffOnScreesaver(bool on)
 {
     if(!librazer::setTurnOffOnScreensaver(on))
-        showError(tr("Error while toggling 'turn off on screensaver'"));
+        util::showError(tr("Error while toggling 'turn off on screensaver'"));
 }
 
 void RazerGenie::colorButtonClicked()
@@ -1092,7 +1093,7 @@ void RazerGenie::applyEffect(librazer::Device::lightingLocation loc)
     } else if(loc == librazer::Device::lightingLocation::lighting_scroll) {
         applyEffectScrollLoc(identifier, dev);
     } else {
-        showError("Unhandled lighting location in applyEffect()");
+        util::showError("Unhandled lighting location in applyEffect()");
     }
 }
 
@@ -1206,18 +1207,4 @@ void RazerGenie::openTroubleshootingUrl()
 void RazerGenie::openWebsiteUrl()
 {
     QDesktopServices::openUrl(QUrl(websiteUrl));
-}
-
-void RazerGenie::showError(QString error)
-{
-    QMessageBox messageBox;
-    messageBox.critical(0, tr("Error!"), error);
-    messageBox.setFixedSize(500, 200);
-}
-
-void RazerGenie::showInfo(QString info)
-{
-    QMessageBox messageBox;
-    messageBox.information(0, tr("Information!"), info);
-    messageBox.setFixedSize(500, 200);
 }

@@ -93,8 +93,6 @@ private:
     void addDeviceToGui(const QString &serial);
     bool removeDeviceFromGui(const QString &serial);
     QWidget *getNoDevicePlaceholder();
-    void showError(QString error);
-    void showInfo(QString info);
 
     QPair<librazer::Device*, QString> commonCombo(int index);
 

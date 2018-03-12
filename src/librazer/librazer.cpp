@@ -76,6 +76,7 @@ void Device::setupCapabilities()
     capabilities.insert("poll_rate", hasCapabilityInternal("razer.device.misc", "setPollRate"));
     capabilities.insert("mug", hasCapabilityInternal("razer.device.misc.mug", "isMugPresent"));
     capabilities.insert("backlight", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightActive"));
+    capabilities.insert("kbd_layout", hasCapabilityInternal("razer.device.misc", "getKeyboardLayout"));
 
     capabilities.insert("macro_logic", hasCapabilityInternal("razer.device.macro"));
 
@@ -420,6 +421,15 @@ QString Device::getDeviceType()
 QString Device::getFirmwareVersion()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getFirmware");
+    return QDBusMessageToString(m);
+}
+
+/**
+ * Returns the physical layout of the keyboard (e.g. 'de_DE', 'en_US', 'en_GB' or 'unknown')
+ */
+QString Device::getKeyboardLayout()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getKeyboardLayout");
     return QDBusMessageToString(m);
 }
 

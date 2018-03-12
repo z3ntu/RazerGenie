@@ -18,6 +18,7 @@
 
 #include "customeditor.h"
 #include "config.h"
+#include "util.h"
 #include <QtWidgets>
 #include <QPushButton>
 #include <QHBoxLayout>
@@ -138,15 +139,31 @@ QLayout* CustomEditor::generateKeyboard()
     QVBoxLayout *vbox = new QVBoxLayout();
     //TODO: Get physical layout from daemon and use
     QJsonObject keyboardLayout;
-    if(keyboardKeys.contains("de_DE")) {
-        keyboardLayout = keyboardKeys["de_DE"].toObject();
-    } else if(keyboardKeys.contains("en_US")) {
-        keyboardLayout = keyboardKeys["en_US"].toObject();
-    } else if(keyboardKeys.contains("en_GB")) {
-        keyboardLayout = keyboardKeys["en_GB"].toObject();
+    bool found = false;
+    QString kbdLayout = device->getKeyboardLayout();
+    if(kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
+        keyboardLayout = keyboardKeys[kbdLayout].toObject();
     } else {
-        qWarning() << "Neither de_DE nor en_US nor en_GB was found in the layout file.";
-        return vbox;
+        if(kbdLayout == "unknown") {
+            util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
+        } else {
+            util::showInfo(tr("Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.").arg(kbdLayout));
+            closeWindow();
+        }
+        QStringList langs;
+        langs << "de_DE" << "en_US" << "en_GB";
+        QString lang;
+        foreach(lang, langs) {
+            if(keyboardKeys.contains(lang)) {
+                keyboardLayout = keyboardKeys[lang].toObject();
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
+            closeWindow();
+        }
     }
 
     // Iterate over rows in the object
