@@ -102,26 +102,6 @@ Der Editor wird nicht geöffnet.</translation>
 <context>
     <name>RazerGenie</name>
     <message>
-        <location filename="../../src/razergenie.cpp" line="58"/>
-        <source>The daemon is not installed</source>
-        <translation>Der Daemon ist nicht installiert</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="59"/>
-        <source>The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!</source>
-        <translation>Der Daemon ist nicht installiert oder die installierte Version ist zu alt. Bitte folge der Installationsanleitung auf der Webseite!</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="60"/>
-        <source>Open website</source>
-        <translation>Webseite öffnen</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="73"/>
-        <source>The daemon is not available.</source>
-        <translation>Der Daemon ist nicht verfügbar.</translation>
-    </message>
-    <message>
         <location filename="../../src/razergenie.cpp" line="74"/>
         <source>The OpenRazer daemon is not started and you are not using systemd as your init system.
 You have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.
@@ -133,9 +113,33 @@ Du musst entweder den Daemon manuell jedes Mal nach dem einloggen oder du richte
 Manuell den Daemon zu starten, wäre, &quot;openrazer-daemon&quot; in einem Terminal auszuführen.</translation>
     </message>
     <message>
+        <location filename="../../src/razergenie.cpp" line="58"/>
+        <source>The OpenRazer daemon is not installed</source>
+        <translation>Der OpenRazer Daemon ist nicht installiert</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="59"/>
+        <source>The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!
+
+If you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package.</source>
+        <translation>Der OpenRazer Daemon ist nicht installiert oder die installierte Version ist zu alt. Bitte folge der Installationsanleitung auf der Webseite!
+
+Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhalb von flatpak von einem Distributionspackage installieren.</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="60"/>
+        <source>Open OpenRazer website</source>
+        <translation>OpenRazer Webseite öffnen</translation>
+    </message>
+    <message>
+        <location filename="../../src/razergenie.cpp" line="73"/>
+        <source>The OpenRazer daemon is not available.</source>
+        <translation>Der OpenRazer Daemon ist nicht verfügbar.</translation>
+    </message>
+    <message>
         <location filename="../../src/razergenie.cpp" line="85"/>
-        <source>The daemon is currently not available. The status output is below.</source>
-        <translation>Der Daemon ist derzeit nicht verfügbar. Die Statusausgabe ist unterhalb.</translation>
+        <source>The OpenRazer daemon is currently not available. The status output is below.</source>
+        <translation>Der OpenRazer Daemon ist derzeit nicht verfügbar. Die Statusausgabe ist unterhalb.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="87"/>
