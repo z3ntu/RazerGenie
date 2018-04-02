@@ -4,6 +4,10 @@ install_data('matrix_layouts/razerblade16.json', install_dir : matrixlayoutdir)
 install_data('matrix_layouts/razerdefault22.json', install_dir : matrixlayoutdir)
 install_data('matrix_layouts/razerblade25.json', install_dir : matrixlayoutdir)
 
+# Appstream XML
+metadatadir = join_paths(get_option('datadir'), 'metainfo')
+install_data('xyz.z3ntu.razergenie.appdata.xml', install_dir: metadatadir)
+
 # Translations
 languages = ['de']  # add new languages here!
 translationsdir = join_paths(get_option('datadir'), 'razergenie/translations')
