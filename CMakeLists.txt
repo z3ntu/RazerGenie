@@ -12,7 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 
-set(version 0.6)
+set(version 0.7)
 set(datadir ${CMAKE_INSTALL_PREFIX}/share/razergenie)
 
 find_package(ECM REQUIRED NO_MODULE)

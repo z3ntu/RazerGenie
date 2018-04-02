@@ -19,6 +19,21 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="0.7" date="2018-04-02">
+      <description>
+        <p>RazerGenie:</p>
+        <ul>
+          <li>Use the physical keyboard layout from the daemon for the custom editor (new feature in OpenRazer v2.3.0)</li>
+          <li>Add warning when keyboard layout is unknown</li>
+          <li>Prepare for flatpak packages (rename logo and desktop file with flatpak application ID, add appstream metadata) - see flathub/flathub#320</li>
+          <li>Add the matrix discovery feature (helps with figuring out which LEDs are on what matrix position) - has to be enabled explicitely</li>
+        </ul>
+        <p>libopenrazer:</p>
+        <ul>
+          <li>Improve daemon status detection</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.6" date="2017-12-23">
       <description>
         <p>RazerGenie:</p>
