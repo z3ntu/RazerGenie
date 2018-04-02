@@ -55,9 +55,9 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
         if(daemonStatus == librazer::daemonStatus::not_installed) {
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
-            QLabel *titleLabel = new QLabel(tr("The daemon is not installed"));
-            QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!"));
-            QPushButton *button = new QPushButton(tr("Open website"));
+            QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not installed"));
+            QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!\n\nIf you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package."));
+            QPushButton *button = new QPushButton(tr("Open OpenRazer website"));
             connect(button, &QPushButton::pressed, this, &RazerGenie::openWebsiteUrl);
 
             boxLayout->setAlignment(Qt::AlignTop);
@@ -70,7 +70,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(button);
         } else if(daemonStatus == librazer::daemonStatus::no_systemd) {
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
-            QLabel *titleLabel = new QLabel(tr("The daemon is not available."));
+            QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not available."));
             QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal."));
 
             boxLayout->setAlignment(Qt::AlignTop);
@@ -82,7 +82,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(textLabel);
         } else { // Daemon status here can be enabled, unknown (and potentially disabled)
             QGridLayout *gridLayout = new QGridLayout(this);
-            QLabel *label = new QLabel(tr("The daemon is currently not available. The status output is below."));
+            QLabel *label = new QLabel(tr("The OpenRazer daemon is currently not available. The status output is below."));
             QTextEdit *textEdit = new QTextEdit();
             QLabel *issueLabel = new QLabel(tr("If you think, there's a bug, you can report an issue on GitHub:"));
             QPushButton *issueButton = new QPushButton(tr("Report issue"));

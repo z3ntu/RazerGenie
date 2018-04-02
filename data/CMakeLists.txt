@@ -3,6 +3,9 @@ install(FILES matrix_layouts/razerblade16.json DESTINATION share/razergenie/matr
 install(FILES matrix_layouts/razerdefault22.json DESTINATION share/razergenie/matrix_layouts)
 install(FILES matrix_layouts/razerblade25.json DESTINATION share/razergenie/matrix_layouts)
 
+# Appstream XML
+install(FILES xyz.z3ntu.razergenie.appdata.xml DESTINATION share/metainfo)
+
 # Translations
 set(TRANSLATION_FILES
     translations/de.ts)  # add new languages here!

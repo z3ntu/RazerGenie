@@ -1,1 +1,1 @@
-install(FILES razergenie.svg DESTINATION share/icons/hicolor/scalable/apps)
+install(FILES xyz.z3ntu.razergenie.svg DESTINATION share/icons/hicolor/scalable/apps)

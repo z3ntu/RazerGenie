@@ -20,6 +20,7 @@
 #include <QDBusConnection>
 #include <QDebug>
 #include <QDomDocument>
+#include <QFileInfo>
 #include <QDBusArgument>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -261,8 +262,13 @@ daemonStatus getDaemonStatus()
     if(output == "enabled\n") return daemonStatus::enabled;
     else if(output == "disabled\n") return daemonStatus::disabled;
     else if(error == "Failed to get unit file state for openrazer-daemon.service: No such file or directory\n") return daemonStatus::not_installed;
-    else if(process.exitCode() == 255) return daemonStatus::no_systemd;
-    else {
+    else if(process.error() == QProcess::FailedToStart) { // check if systemctl could be started - fails on non-systemd distros and flatpak
+        QFileInfo daemonFile("/usr/bin/openrazer-daemon");
+        // if the daemon executable does not exist, show the not_installed message - probably flatpak
+        if(!daemonFile.exists()) return daemonStatus::not_installed;
+        // otherwise show the no_systemd message - probably a non-systemd distro
+        return daemonStatus::no_systemd;
+    } else {
         qWarning() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
         return daemonStatus::unknown;
     }
