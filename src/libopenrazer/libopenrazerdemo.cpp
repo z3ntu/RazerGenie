@@ -1,17 +1,17 @@
-#include "librazer.h"
+#include "libopenrazer.h"
 #include <QDebug>
 
 // Main method for testing / playing.
 int main()
 {
-    qDebug() << "Daemon running:" << librazer::isDaemonRunning();
-    qDebug() << "Daemon version:" << librazer::getDaemonVersion();
-    qDebug() << "Supported devices:" << librazer::getSupportedDevices();
-    QStringList serialnrs = librazer::getConnectedDevices();
-    librazer::syncEffects(false);
+    qDebug() << "Daemon running:" << libopenrazer::isDaemonRunning();
+    qDebug() << "Daemon version:" << libopenrazer::getDaemonVersion();
+    qDebug() << "Supported devices:" << libopenrazer::getSupportedDevices();
+    QStringList serialnrs = libopenrazer::getConnectedDevices();
+    libopenrazer::syncEffects(false);
     foreach (const QString &str, serialnrs) {
         qDebug() << "-----------------";
-        librazer::Device device = librazer::Device(str);
+        libopenrazer::Device device = libopenrazer::Device(str);
         qDebug() << "Devicename:" << device.getDeviceName();
         qDebug() << "Serial: " << str;
 
@@ -29,9 +29,9 @@ int main()
         }
 
         if(device.hasCapability("poll_rate")) {
-            qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_125HZ);
+            qDebug() << "Set_pollrate:" << device.setPollRate(libopenrazer::POLL_125HZ);
             qDebug() << "Pollrate:" << device.getPollRate();
-            qDebug() << "Set_pollrate:" << device.setPollRate(librazer::POLL_1000HZ);
+            qDebug() << "Set_pollrate:" << device.setPollRate(libopenrazer::POLL_1000HZ);
             qDebug() << "Pollrate:" << device.getPollRate();
         }
 

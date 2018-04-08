@@ -1,4 +1,4 @@
-add_subdirectory(librazer)
+add_subdirectory(libopenrazer)
 
 if(ENABLE_EXPERIMENTAL)
     add_definitions(-DENABLE_EXPERIMENTAL)

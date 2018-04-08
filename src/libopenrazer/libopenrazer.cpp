@@ -30,9 +30,9 @@
 
 #include <iostream>
 
-#include "librazer.h"
+#include "libopenrazer.h"
 
-namespace librazer
+namespace libopenrazer
 {
 
 /**
@@ -269,7 +269,7 @@ daemonStatus getDaemonStatus()
         // otherwise show the no_systemd message - probably a non-systemd distro
         return daemonStatus::no_systemd;
     } else {
-        qWarning() << "librazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
+        qWarning() << "libopenrazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
         return daemonStatus::unknown;
     }
 }
@@ -506,12 +506,12 @@ int Device::getPollRate()
 }
 
 /**
- * Sets the poll rate. Use one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ.
+ * Sets the poll rate. Use one of libopenrazer::POLL_125HZ, libopenrazer::POLL_500HZ or libopenrazer::POLL_1000HZ.
  */
 bool Device::setPollRate(ushort pollrate)
 {
     if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
-        qWarning() << "librazer: setPollRate(): Has to be one of librazer::POLL_125HZ, librazer::POLL_500HZ or librazer::POLL_1000HZ";
+        qWarning() << "libopenrazer: setPollRate(): Has to be one of libopenrazer::POLL_125HZ, libopenrazer::POLL_500HZ or libopenrazer::POLL_1000HZ";
         return false;
     }
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
@@ -682,7 +682,7 @@ bool Device::setBreathRandom()
 
 /**
  * Sets the lighting to reactive mode.
- * Use one of librazer::REACTIVE_* for speed.
+ * Use one of libopenrazer::REACTIVE_* for speed.
  */
 bool Device::setReactive(uchar r, uchar g, uchar b, uchar speed)
 {
@@ -707,7 +707,7 @@ bool Device::setSpectrum()
 
 /**
  * Sets the lighting to wave.
- * Use librazer::WAVE_RIGHT or librazer::WAVE_LEFT.
+ * Use libopenrazer::WAVE_RIGHT or libopenrazer::WAVE_LEFT.
  */
 bool Device::setWave(const int direction)
 {
@@ -1309,9 +1309,9 @@ QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString 
  */
 void printError(QDBusMessage& message, const char *functionname)
 {
-    qWarning() << "librazer: There was an error in" << functionname << "!";
-    qWarning() << "librazer:" << message.errorName();
-    qWarning() << "librazer:" << message.errorMessage();
+    qWarning() << "libopenrazer: There was an error in" << functionname << "!";
+    qWarning() << "libopenrazer:" << message.errorName();
+    qWarning() << "libopenrazer:" << message.errorMessage();
 }
 
 /**

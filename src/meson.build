@@ -14,7 +14,7 @@ processed = qt5.preprocess(
   ui_files : '../ui/razergenie.ui'
 )
 
-incdir = include_directories('librazer')
+incdir = include_directories('libopenrazer')
 
 razergenie = executable('razergenie',
                         [razergenie_sources, processed],

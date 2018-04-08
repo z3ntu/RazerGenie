@@ -21,7 +21,7 @@
 
 #include <QWidget>
 #include <QJsonObject>
-#include <librazer.h>
+#include <libopenrazer.h>
 #include "matrixpushbutton.h"
 
 enum DrawStatus {
@@ -32,7 +32,7 @@ class CustomEditor : public QWidget
 {
     Q_OBJECT
 public:
-    CustomEditor(librazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = 0);
+    CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = 0);
     ~CustomEditor();
 private:
     void closeWindow();
@@ -48,7 +48,7 @@ private:
 
     QJsonObject keyboardKeys;
     QVector<MatrixPushButton*> matrixPushButtons;
-    librazer::Device *device;
+    libopenrazer::Device *device;
     QList<int> dimens;
 
     QVector<QVector<QColor>> colors;

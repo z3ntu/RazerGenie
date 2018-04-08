@@ -17,7 +17,7 @@ endpoints=($(grep -rh "@endpoint" $daemon_source | cut -d"'" -f2,4 | sed "s/'/\"
 
 for method in "${endpoints[@]}"; do
   echo -e "Searching for: ${BLUE}$method${NC} ..."
-  method_grep=$(grep "$method" librazer.cpp)
+  method_grep=$(grep "$method" libopenrazer.cpp)
   if [ ! -z $(echo $method_grep | grep "capabilities.insert") ]; then
     echo -e "Capabilities: ${GREEN}ok${NC}"
   else

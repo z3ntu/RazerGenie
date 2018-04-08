@@ -19,7 +19,7 @@
 #ifndef DEVICELISTWIDGET_H
 #define DEVICELISTWIDGET_H
 
-#include <librazer.h>
+#include <libopenrazer.h>
 #include <QWidget>
 #include <QLabel>
 
@@ -27,14 +27,14 @@ class DeviceListWidget : public QWidget
 {
     Q_OBJECT
 public:
-    DeviceListWidget(QWidget *parent, librazer::Device *device);
-    librazer::Device *device();
+    DeviceListWidget(QWidget *parent, libopenrazer::Device *device);
+    libopenrazer::Device *device();
     void setNoImage();
 public slots:
     void imageDownloaded(QString &filename);
 private:
     QPixmap createPixmapFromFile(QString &filename);
-    librazer::Device *mDevice;
+    libopenrazer::Device *mDevice;
     QLabel *imageLabel;
 };
 

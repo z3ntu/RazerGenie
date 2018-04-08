@@ -1,5 +1,5 @@
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
-libopenrazer_sources = ['librazer.cpp', 'razercapability.cpp']
+libopenrazer_sources = ['libopenrazer.cpp', 'razercapability.cpp']
 libopenrazer = shared_library('openrazer',
                           libopenrazer_sources,
                           version : libopenrazer_version,
@@ -10,7 +10,7 @@ libopenrazer = shared_library('openrazer',
 # Demo executable
 if get_option('buildtype') == 'debug'
   message('Building libopenrazerdemo...')
-  librazerdemo = executable('libopenrazerdemo', 'libopenrazerdemo.cpp',
+  libopenrazerdemo = executable('libopenrazerdemo', 'libopenrazerdemo.cpp',
                             dependencies : qt5_dep,
                             link_with : libopenrazer)
 endif

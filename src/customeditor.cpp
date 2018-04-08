@@ -24,7 +24,7 @@
 #include <QHBoxLayout>
 #include <QEvent>
 
-CustomEditor::CustomEditor(librazer::Device* device, bool launchMatrixDiscovery, QWidget *parent) : QWidget(parent)
+CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("RazerGenie - Custom Editor"));
     this->device = device;

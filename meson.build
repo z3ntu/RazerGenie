@@ -25,5 +25,5 @@ install_data('logo/xyz.z3ntu.razergenie.svg', install_dir : join_paths(get_optio
 install_data('other/xyz.z3ntu.razergenie.desktop', install_dir : join_paths(get_option('datadir'), 'applications'))
 
 subdir('data')
-subdir('src/librazer')
+subdir('src/libopenrazer')
 subdir('src')

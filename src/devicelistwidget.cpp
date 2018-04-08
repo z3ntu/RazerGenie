@@ -22,7 +22,7 @@
 #include <QVBoxLayout>
 #include <QIcon>
 
-DeviceListWidget::DeviceListWidget(QWidget *parent, librazer::Device *device) : QWidget(parent)
+DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device) : QWidget(parent)
 {
     this->mDevice = device;
 
@@ -61,7 +61,7 @@ void DeviceListWidget::imageDownloaded(QString &filename)
     imageLabel->setPixmap(scaled);
 }
 
-librazer::Device *DeviceListWidget::device()
+libopenrazer::Device *DeviceListWidget::device()
 {
     return mDevice;
 }

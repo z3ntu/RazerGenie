@@ -25,7 +25,7 @@
 
 // NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
 
-namespace librazer
+namespace libopenrazer
 {
 // --- UPDATE FROM https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/constants.py ---
 // Macro LED effect ID's

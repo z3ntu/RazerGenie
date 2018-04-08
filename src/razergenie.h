@@ -21,7 +21,7 @@
 
 #include "ui_razergenie.h"
 #include "razerimagedownloader.h"
-#include "librazer/librazer.h"
+#include "libopenrazer/libopenrazer.h"
 #include <QComboBox>
 
 class RazerGenie : public QWidget
@@ -97,20 +97,20 @@ private:
     bool removeDeviceFromGui(const QString &serial);
     QWidget *getNoDevicePlaceholder();
 
-    QPair<librazer::Device*, QString> commonCombo(int index);
+    QPair<libopenrazer::Device*, QString> commonCombo(int index);
 
     void getRazerDevices(void);
-    QColor getColorForButton(int num, librazer::Device::lightingLocation location);
-    int getWaveDirection(librazer::Device::lightingLocation location);
+    QColor getColorForButton(int num, libopenrazer::Device::lightingLocation location);
+    int getWaveDirection(libopenrazer::Device::lightingLocation location);
 
-    void applyEffect(librazer::Device::lightingLocation location);
-    void applyEffectStandardLoc(QString identifier, librazer::Device *device);
-    void applyEffectLogoLoc(QString identifier, librazer::Device *device);
-    void applyEffectScrollLoc(QString identifier, librazer::Device *device);
+    void applyEffect(libopenrazer::Device::lightingLocation location);
+    void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);
+    void applyEffectLogoLoc(QString identifier, libopenrazer::Device *device);
+    void applyEffectScrollLoc(QString identifier, libopenrazer::Device *device);
 
     bool syncDpi = true;
 
-    QHash<QString, librazer::Device*> devices;
+    QHash<QString, libopenrazer::Device*> devices;
 };
 
 
