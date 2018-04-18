@@ -219,6 +219,11 @@ public:
 
     bool getBacklightActive();
     bool setBacklightActive(bool active);
+    uchar getBacklightEffect();
+    bool setBacklightBrightness(double brightness);
+    double getBacklightBrightness();
+    bool setBacklightStatic(uchar r, uchar g, uchar b);
+    bool setBacklightSpectrum();
 
     // - Custom(?) -
     bool setCustom();

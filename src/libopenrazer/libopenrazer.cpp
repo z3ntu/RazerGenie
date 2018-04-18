@@ -141,6 +141,11 @@ void Device::setupCapabilities()
 
     capabilities.insert("lighting_backlight", hasCapabilityInternal("razer.device.lighting.backlight"));
     capabilities.insert("lighting_backlight_active", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightActive"));
+    capabilities.insert("get_lighting_backlight_effect", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightEffect"));
+    capabilities.insert("lighting_backlight_brightness", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightBrightness"));
+    capabilities.insert("get_lighting_backlight_brightness", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightBrightness"));
+    capabilities.insert("lighting_backlight_spectrum", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightSpectrum"));
+    capabilities.insert("lighting_backlight_static", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightStatic"));
 }
 
 /**
@@ -803,6 +808,59 @@ bool Device::setBacklightActive(bool active)
 }
 
 /**
+ * Returns the current backlight effect.
+ */
+uchar Device::getBacklightEffect()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "getBacklightEffect");
+    return QDBusMessageToByte(m);
+}
+
+/**
+ * Sets the backlight brightness (0-100).
+ */
+bool Device::setBacklightBrightness(double brightness)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightBrightness");
+    QList<QVariant> args;
+    args.append(brightness);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Gets the current backlight brightness (0-100).
+ */
+double Device::getBacklightBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "getBacklightBrightness");
+    return QDBusMessageToDouble(m);
+}
+
+/**
+ * Sets the backlight to static lighting.
+ */
+bool Device::setBacklightStatic(uchar r, uchar g, uchar b)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightStatic");
+    QList<QVariant> args;
+    args.append(r);
+    args.append(g);
+    args.append(b);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/**
+ * Sets the backlight to spectrum.
+ */
+bool Device::setBacklightSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+/**
  * Sets the lighting to custom mode (applies effects set from setKeyRow()).
  */
 bool Device::setCustom()
@@ -1015,7 +1073,7 @@ bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
  */
 bool Device::setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathDual");
     QList<QVariant> args;
     args.append(r);
     args.append(g);
