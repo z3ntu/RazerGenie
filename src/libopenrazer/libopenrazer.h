@@ -98,6 +98,12 @@ const static QList<RazerCapability> scrollComboBoxCapabilites {
     RazerCapability("lighting_scroll_breath_dual", "Breath Dual", 2),
     RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
 };
+
+const static QList<RazerCapability> backlightComboBoxCapabilites {
+    RazerCapability("lighting_backlight_spectrum", "Spectrum", 0),
+    RazerCapability("lighting_backlight_static", "Static", 1),
+};
+
 // Daemon controls
 QStringList getConnectedDevices();
 QString getDaemonVersion();
@@ -279,7 +285,7 @@ public:
     bool setRedLED(bool on);
 
     enum lightingLocation {
-        lighting, lighting_logo, lighting_scroll
+        lighting, lighting_logo, lighting_scroll, lighting_backlight
     };
 };
 

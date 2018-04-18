@@ -321,6 +321,8 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         lightingLocationsTodo.append(libopenrazer::Device::lighting_logo);
     if(currentDevice->hasCapability("lighting_scroll"))
         lightingLocationsTodo.append(libopenrazer::Device::lighting_scroll);
+    if(currentDevice->hasCapability("lighting_backlight"))
+        lightingLocationsTodo.append(libopenrazer::Device::lighting_backlight);
 
     // Declare header font
     QFont headerFont("Arial", 15, QFont::Bold);
@@ -352,6 +354,8 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             lightingLocationLabel = new QLabel(tr("Lighting Logo"));
         } else if(currentLocation == libopenrazer::Device::lighting_scroll) {
             lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
+        } else if(currentLocation == libopenrazer::Device::lighting_backlight) {
+            lightingLocationLabel = new QLabel(tr("Lighting Backlight"));
         } else {
             // Houston, we have a problem.
             util::showError("Unhanded lighting location in fillList()");
@@ -446,6 +450,29 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 }
                 connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::scrollBrightnessChanged);
             }
+        } else if(currentLocation == libopenrazer::Device::lighting_backlight) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::backlightComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::backlightComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::backlightComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::backlightComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::backlightCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("lighting_backlight_brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness Backlight"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_lighting_backlight_brightness")) {
+                    brightnessSlider->setValue(currentDevice->getBacklightBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::backlightBrightnessChanged);
+            }
         }
 
         // Only add combobox if a capability was actually added
@@ -517,6 +544,17 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 activeCheckbox->setChecked(currentDevice->getScrollActive());
                 verticalLayout->addWidget(activeCheckbox);
                 connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::scrollActiveCheckbox);
+            }
+        }
+
+        /* 'Set Backlight Active' checkbox */
+        if(currentLocation == libopenrazer::Device::lighting_backlight) {
+            // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
+            if(currentDevice->hasCapability("lighting_backlight_active") && !currentDevice->hasCapability("lighting_backlight_none")) {
+                QCheckBox *activeCheckbox = new QCheckBox(tr("Set Backlight Active"), widget);
+                activeCheckbox->setChecked(currentDevice->getBacklightActive());
+                verticalLayout->addWidget(activeCheckbox);
+                connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::backlightActiveCheckbox);
             }
         }
 
@@ -882,6 +920,17 @@ void RazerGenie::logoCombo(int index)
     applyEffectLogoLoc(identifier, dev);
 }
 
+void RazerGenie::backlightCombo(int index)
+{
+    QPair<libopenrazer::Device*, QString> tuple = commonCombo(index);
+    libopenrazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
+    qDebug() << tuple;
+
+    applyEffectBacklightLoc(identifier, dev);
+}
+
 QColor RazerGenie::getColorForButton(int num, libopenrazer::Device::lightingLocation location)
 {
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
@@ -921,6 +970,15 @@ void RazerGenie::logoBrightnessChanged(int value)
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
+}
+
+void RazerGenie::backlightBrightnessChanged(int value)
+{
+    qDebug() << value;
+
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+    dev->setBacklightBrightness(value);
 }
 
 void RazerGenie::dpiChanged(int orig_value)
@@ -1080,6 +1138,20 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, libopenrazer::Device *
     }
 }
 
+void RazerGenie::applyEffectBacklightLoc(QString identifier, libopenrazer::Device *device)
+{
+    libopenrazer::Device::lightingLocation zone = libopenrazer::Device::lightingLocation::lighting_backlight;
+
+    if(identifier == "lighting_backlight_spectrum") {
+        device->setBacklightSpectrum();
+    } else if(identifier == "lighting_backlight_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setBacklightStatic(c.red(), c.green(), c.blue());
+    } else {
+        qWarning() << identifier << " is not implemented yet!";
+    }
+}
+
 
 void RazerGenie::applyEffect(libopenrazer::Device::lightingLocation loc)
 {
@@ -1098,6 +1170,8 @@ void RazerGenie::applyEffect(libopenrazer::Device::lightingLocation loc)
         applyEffectLogoLoc(identifier, dev);
     } else if(loc == libopenrazer::Device::lightingLocation::lighting_scroll) {
         applyEffectScrollLoc(identifier, dev);
+    } else if(loc == libopenrazer::Device::lightingLocation::lighting_backlight) {
+        applyEffectBacklightLoc(identifier, dev);
     } else {
         util::showError("Unhandled lighting location in applyEffect()");
     }
@@ -1154,6 +1228,16 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
     libopenrazer::Device *dev = devices.value(item->getSerial());
 
     dev->setScrollActive(checked);
+    qDebug() << checked;
+}
+
+void RazerGenie::backlightActiveCheckbox(bool checked)
+{
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+
+    dev->setBacklightActive(checked);
     qDebug() << checked;
 }
 

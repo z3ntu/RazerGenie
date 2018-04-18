@@ -42,11 +42,13 @@ public slots:
     void standardCombo(int index);
     void scrollCombo(int index);
     void logoCombo(int index);
+    void backlightCombo(int index);
 
     // Brightness sliders
     void brightnessChanged(int value);
     void scrollBrightnessChanged(int value);
     void logoBrightnessChanged(int value);
+    void backlightBrightnessChanged(int value);
 
     void waveRadioButtonStandard(bool enabled);
     void waveRadioButtonLogo(bool enabled);
@@ -62,6 +64,7 @@ public slots:
     // 'Set active' checkbox
     void logoActiveCheckbox(bool checked);
     void scrollActiveCheckbox(bool checked);
+    void backlightActiveCheckbox(bool checked);
 
     void profileLedCheckbox(bool checked);
 
@@ -107,6 +110,7 @@ private:
     void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);
     void applyEffectLogoLoc(QString identifier, libopenrazer::Device *device);
     void applyEffectScrollLoc(QString identifier, libopenrazer::Device *device);
+    void applyEffectBacklightLoc(QString identifier, libopenrazer::Device *device);
 
     bool syncDpi = true;
 
