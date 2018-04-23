@@ -104,7 +104,7 @@ private:
 
     void getRazerDevices(void);
     QColor getColorForButton(int num, libopenrazer::Device::lightingLocation location);
-    int getWaveDirection(libopenrazer::Device::lightingLocation location);
+    libopenrazer::WaveDirection getWaveDirection(libopenrazer::Device::lightingLocation location);
 
     void applyEffect(libopenrazer::Device::lightingLocation location);
     void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);

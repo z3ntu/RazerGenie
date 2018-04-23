@@ -47,13 +47,13 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
     // If enabled: Do nothing => DONE
     // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://openrazer.github.io/"
     // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
-    libopenrazer::daemonStatus daemonStatus = libopenrazer::getDaemonStatus();
+    libopenrazer::DaemonStatus daemonStatus = libopenrazer::getDaemonStatus();
 
     // Check if daemon available
     if(!libopenrazer::isDaemonRunning()) {
         // Build a UI depending on what the status is.
 
-        if(daemonStatus == libopenrazer::daemonStatus::not_installed) {
+        if(daemonStatus == libopenrazer::DaemonStatus::NotInstalled) {
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not installed"));
             QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!\n\nIf you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package."));
@@ -68,7 +68,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(titleLabel);
             boxLayout->addWidget(textLabel);
             boxLayout->addWidget(button);
-        } else if(daemonStatus == libopenrazer::daemonStatus::no_systemd) {
+        } else if(daemonStatus == libopenrazer::DaemonStatus::NoSystemd) {
             QVBoxLayout *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not available."));
             QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal."));
@@ -104,7 +104,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         // Set up the normal UI
         setupUi();
 
-        if(daemonStatus == libopenrazer::daemonStatus::disabled) {
+        if(daemonStatus == libopenrazer::DaemonStatus::Disabled) {
             QMessageBox msgBox;
             msgBox.setText(tr("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login."));
             QPushButton *enableButton = msgBox.addButton(tr("Enable"), QMessageBox::ActionRole);
@@ -525,7 +525,6 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         }
 
         /* 'Set Logo Active' checkbox */
-        //TODO New location for the checkbox?
         if(currentLocation == libopenrazer::Device::lighting_logo) {
             // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
             if(currentDevice->hasCapability("lighting_logo_active") && !currentDevice->hasCapability("lighting_logo_none")) {
@@ -938,7 +937,7 @@ QColor RazerGenie::getColorForButton(int num, libopenrazer::Device::lightingLoca
     return pal.color(QPalette::Button);
 }
 
-int RazerGenie::getWaveDirection(libopenrazer::Device::lightingLocation location)
+libopenrazer::WaveDirection RazerGenie::getWaveDirection(libopenrazer::Device::lightingLocation location)
 {
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
 

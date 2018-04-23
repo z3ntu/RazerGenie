@@ -29,35 +29,24 @@ namespace libopenrazer
 {
 // --- UPDATE FROM https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/constants.py ---
 // Macro LED effect ID's
-const int MACRO_LED_STATIC = 0x00;
-const int MACRO_LED_BLINK = 0x01;
+enum MacroLEDEffect { MACRO_LED_STATIC = 0x00, MACRO_LED_BLINK = 0x01 };
 
 // Wave Directions
-const int WAVE_RIGHT = 0x01;
-const int WAVE_LEFT = 0x02;
+enum WaveDirection { WAVE_RIGHT = 0x01, WAVE_LEFT = 0x02 };
 
 // Reactive
-const int REACTIVE_500MS = 0x01;
-const int REACTIVE_1000MS = 0x02;
-const int REACTIVE_1500MS = 0x03;
-const int REACTIVE_2000MS = 0x04;
+enum ReactiveSpeed { REACTIVE_500MS = 0x01, REACTIVE_1000MS = 0x02, REACTIVE_1500MS = 0x03, REACTIVE_2000MS = 0x04 };
 
 // Starlight
-const int STARLIGHT_FAST = 0x01;
-const int STARLIGHT_NORMAL = 0x02;
-const int STARLIGHT_SLOW = 0x03;
+enum StarlightSpeed { STARLIGHT_FAST = 0x01, STARLIGHT_NORMAL = 0x02, STARLIGHT_SLOW = 0x03 };
 
 // Ripple
 const double RIPPLE_REFRESH_RATE = 0.05;
 
 // Poll rates
-const ushort POLL_1000HZ = 1000;
-const ushort POLL_500HZ = 500;
-const ushort POLL_125HZ = 125;
+enum PollRate { POLL_1000HZ = 1000, POLL_500HZ = 500, POLL_125HZ = 125 };
 
-enum daemonStatus {
-    enabled, disabled, not_installed, no_systemd, unknown
-};
+enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 
 const static QList<RazerCapability> lightingComboBoxCapabilites {
     RazerCapability("lighting_breath_single", "Breath Single", 1),
@@ -121,23 +110,10 @@ bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
 bool getTurnOffOnScreensaver();
 
 // Misc
-daemonStatus getDaemonStatus();
+DaemonStatus getDaemonStatus();
 QString getDaemonStatusOutput();
 bool enableDaemon();
 // bool disableDaemon();
-
-/* Helper methods */
-bool QDBusMessageToBool(const QDBusMessage &message);
-int QDBusMessageToInt(const QDBusMessage &message);
-double QDBusMessageToDouble(const QDBusMessage &message);
-QString QDBusMessageToString(const QDBusMessage &message);
-uchar QDBusMessageToByte(const QDBusMessage &message);
-QStringList QDBusMessageToStringList(const QDBusMessage &message);
-QList<int> QDBusMessageToIntArray(const QDBusMessage &message);
-QDomDocument QDBusMessageToXML(const QDBusMessage &message);
-bool QDBusMessageToVoid(const QDBusMessage& message);
-QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method);
-void printError(QDBusMessage& message, const char *functionname);
 
 // - Signal Connect Mehtods -
 bool connectDeviceAdded(QObject *receiver, const char *slot);
@@ -213,7 +189,7 @@ public:
     bool setBreathRandom();
     bool setReactive(uchar r, uchar g, uchar b, uchar speed);
     bool setSpectrum();
-    bool setWave(const int direction);
+    bool setWave(WaveDirection direction);
     bool setNone();
     // Starlight
     bool setStarlightSingle(uchar r, uchar g, uchar b, uchar speed);

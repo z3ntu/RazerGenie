@@ -57,6 +57,12 @@ int main()
             qDebug() << "Keyboard layout:";
             qDebug() << device.getKeyboardLayout();
         }
+        if(device.hasCapability("battery")) {
+            qDebug() << "Battery:";
+            qDebug() << "level: " << device.getBatteryLevel();
+            qDebug() << "isCharging: " << device.isCharging();
+            device.setIdleTime(10);
+        }
 
 //         if(device.hasMatrix()) {
 //             QList<int> dimen = device.getMatrixDimensions();
