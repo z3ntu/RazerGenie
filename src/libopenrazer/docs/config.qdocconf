@@ -1,0 +1,19 @@
+headerdirs = ..
+sources = libopenrazer.qdoc
+sourcedirs = ..
+
+sources.fileextensions = "*.cpp"
+headers.fileextensions = "*.h"
+
+outputdir  = ./html
+outputformats = HTML
+
+# path to the CSS files if you would like to use any (here it's the current directory)
+HTML.stylesheets = style.css
+# the string that actually includes the CSS into documentation file
+HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\"/>\n"
+# what to append to every page after header
+HTML.postheader = "<p class=\"header\"><small>[My awesome documentation]</small></p><hr/>"
+# what to append to every page after the content
+HTML.footer = "<hr/><p class=\"footer\"><small>[some footer and whatnot information]</small></p>"
+

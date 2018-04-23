@@ -52,19 +52,45 @@ RazerCapability::~RazerCapability()
 {
 }
 
+/*!
+ * \fn int libopenrazer::RazerCapability::getNumColors() const
+ *
+ * Returns the number of colors this capability can use.
+ */
 int RazerCapability::getNumColors() const
 {
     return numColors;
 }
 
+/*!
+ * \fn QString libopenrazer::RazerCapability::getIdentifier() const
+ *
+ * Returns a string identifying the capability
+ *
+ * e.g. \c "lighting_logo_spectrum"
+ */
 QString RazerCapability::getIdentifier() const
 {
     return identifier;
 }
+
+/*!
+ * \fn QString libopenrazer::RazerCapability::getDisplayString() const
+ *
+ * Returns a human-readable string describing the capability
+ *
+ * e.g. \c "Spectrum"
+ */
 QString RazerCapability::getDisplayString() const
 {
     return displayString;
 }
+
+/*!
+ * \fn bool libopenrazer::RazerCapability::isWave() const
+ *
+ * Returns if the capability is the wave effect.
+ */
 bool RazerCapability::isWave() const
 {
     return wave;

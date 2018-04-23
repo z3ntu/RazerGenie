@@ -1,0 +1,41 @@
+body {
+   font-family: "Verdana";
+   font-size: 14px;
+   max-width: 80%;
+   margin: auto;
+}
+
+h1, h2, h3 {
+   color: green;
+}
+
+div.sidebar {
+    float: right;
+}
+
+pre {
+    padding: 15px;
+}
+div.qmlproto {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+pre, div.qmlproto {
+    font-family: "Courier New";
+    font-size: 20px;
+    margin-left: 2em;
+    background-color: #F2F2F2;
+}
+
+hr {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+p.header {
+    margin-bottom: -1em;
+}
+p.footer {
+    text-align: right;
+    margin-top: -1em;
+}

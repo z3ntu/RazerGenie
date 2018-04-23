@@ -32,6 +32,12 @@
 
 #include "libopenrazer.h"
 
+/*!
+    \namespace libopenrazer
+    \inmodule libopenrazer
+
+    \brief Contains miscellaneous identifiers used throughout the Qt library.
+*/
 namespace libopenrazer
 {
 
@@ -742,6 +748,8 @@ double Device::getBatteryLevel()
 
 /**
  * Sets the idle time of the device.
+ *
+ * idle_time is the time in seconds - with a maximum of 15 minutes (900 seconds)
  */
 bool Device::setIdleTime(ushort idle_time)
 {
@@ -775,8 +783,12 @@ bool Device::isMugPresent()
 
 // ------ LIGHTING EFFECTS ------
 
-/**
- * Sets the lighting to static lighting.
+/*!
+ * \fn bool libopenrazer::Device::setStatic(QColor color)
+ *
+ * Sets the lighting to static lighting in the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setStatic(QColor color)
 {
@@ -865,8 +877,12 @@ bool Device::setReactive(QColor color, ReactiveSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::setSpectrum()
+ *
  * Sets the lighting to spectrum mode.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setSpectrum()
 {
@@ -874,9 +890,12 @@ bool Device::setSpectrum()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to wave.
- * Use libopenrazer::WAVE_RIGHT or libopenrazer::WAVE_LEFT.
+/*!
+ * \fn bool libopenrazer::Device::setWave(WaveDirection direction)
+ *
+ * Sets the lighting effect to wave, in the direction \a direction.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setWave(WaveDirection direction)
 {
@@ -896,6 +915,13 @@ bool Device::setNone()
     return QDBusMessageToVoid(m);
 }
 
+/*!
+ * \fn bool libopenrazer::Device::setStarlightSingle(QColor color, StarlightSpeed speed)
+ *
+ * Sets the lighting to starlight effect with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
+ */
 bool Device::setStarlightSingle(QColor color, StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightSingle");
@@ -908,6 +934,13 @@ bool Device::setStarlightSingle(QColor color, StarlightSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
+/*!
+ * \fn bool libopenrazer::Device::setStarlightDual(QColor color, QColor color2, StarlightSpeed speed)
+ *
+ * Sets the lighting to starlight effect with the specified \a color, \a color2 and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
+ */
 bool Device::setStarlightDual(QColor color, QColor color2, StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightDual");
@@ -923,6 +956,13 @@ bool Device::setStarlightDual(QColor color, QColor color2, StarlightSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
+/*!
+ * \fn bool libopenrazer::Device::setStarlightRandom(StarlightSpeed speed)
+ *
+ * Sets the lighting to starlight effect with the specified \a speed.
+ *
+ * Returns if the D-Bus call was successful.
+ */
 bool Device::setStarlightRandom(StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightRandom");
@@ -932,8 +972,12 @@ bool Device::setStarlightRandom(StarlightSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::setStatic_bw2013()
+ *
  * Sets the lighting to static (without color - bw2013 version).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setStatic_bw2013()
 {
@@ -1279,8 +1323,12 @@ double Device::getLogoBrightness()
     return QDBusMessageToDouble(m);
 }
 
-/**
- * Sets the scrollwheel to static lighting.
+/*!
+ * \fn bool libopenrazer::Device::setScrollStatic(QColor color)
+ *
+ * Sets the scrollwheel to static lighting with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollStatic(QColor color)
 {
@@ -1351,8 +1399,12 @@ bool Device::setScrollPulsate(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to spectrum.
+/*!
+ * \fn bool libopenrazer::Device::setScrollSpectrum()
+ *
+ * Sets the scroll to the spectrum effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollSpectrum()
 {
@@ -1369,8 +1421,12 @@ bool Device::setScrollNone()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to reactive.
+/*!
+ * \fn bool libopenrazer::Device::setScrollReactive(QColor color, ReactiveSpeed speed)
+ *
+ * Sets the scroll to the reactive effect with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollReactive(QColor color, ReactiveSpeed speed)
 {

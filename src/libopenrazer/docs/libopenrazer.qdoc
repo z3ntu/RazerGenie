@@ -1,0 +1,74 @@
+/*!
+    \enum libopenrazer::DaemonStatus
+
+    This enum type specifies the possible statuses of the OpenRazer daemon as detected by libopenrazer:
+
+    \value Enabled
+           The OpenRazer daemon systemd unit is enabled i.e. the daemon gets autostarted at login.
+    \value Disabled
+           The OpenRazer daemon systemd unit is disabled i.e. the daemon does not get started at login.
+    \value NotInstalled
+           The daemon is not installed (systemd unit and/or openrazer-daemon executable is missing).
+    \value NoSystemd
+           The daemon is installed but 'systemctl' is not available but /usr/bin/openrazer-daemon exists.
+    \value Unknown
+           The detection mechanism didn't detect the status.
+*/
+/*!
+    \enum libopenrazer::MacroLEDEffect
+
+    This enum type specifices the possible values for the Macro LED effect.
+
+    \value MACRO_LED_STATIC
+           Lets the macro LED light up.
+    \value MACRO_LED_BLINK
+           Lets the macro lED blink.
+*/
+/*!
+    \enum libopenrazer::WaveDirection
+
+    This enum type specifices the possible values for the wave effect direction.
+
+    \value WAVE_RIGHT
+           The wave effect goes from left to right.
+    \value WAVE_LEFT
+           The wave effect goes from right to left.
+*/
+/*!
+    \enum libopenrazer::ReactiveSpeed
+
+    This enum type specifices the possible values for the reactive effect speed i.e. how long the key lights up.
+
+    \value REACTIVE_500MS
+           The key lights up for 500ms.
+    \value REACTIVE_1000MS
+           The key lights up for 1s (1000ms).
+    \value REACTIVE_1500MS
+           The key lights up for 1.5s (1500ms).
+    \value REACTIVE_2000MS
+           The key lights up for 2s (2000ms).
+*/
+/*!
+    \enum libopenrazer::StarlightSpeed
+
+    This enum type specifices the possible values for the starlight effect speed.
+
+    \value STARLIGHT_FAST
+           The starlight effect changes fast.
+    \value STARLIGHT_NORMAL
+           The starlight effect changes normal.
+    \value STARLIGHT_SLOW
+           The starlight effect changes slowly.
+*/
+/*!
+    \enum libopenrazer::PollRate
+
+    This enum type specifices the possible values for the polling rate.
+
+    \value POLL_1000HZ
+           The mouse reports the position with 1000Hz.
+    \value POLL_500HZ
+           The mouse reports the position with 500Hz.
+    \value POLL_125HZ
+           The mouse reports the position with 125Hz.
+*/
