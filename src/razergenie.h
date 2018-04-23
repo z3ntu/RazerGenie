@@ -103,10 +103,10 @@ private:
     QPair<libopenrazer::Device*, QString> commonCombo(int index);
 
     void getRazerDevices(void);
-    QColor getColorForButton(int num, libopenrazer::Device::lightingLocation location);
-    libopenrazer::WaveDirection getWaveDirection(libopenrazer::Device::lightingLocation location);
+    QColor getColorForButton(int num, libopenrazer::Device::LightingLocation location);
+    libopenrazer::WaveDirection getWaveDirection(libopenrazer::Device::LightingLocation location);
 
-    void applyEffect(libopenrazer::Device::lightingLocation location);
+    void applyEffect(libopenrazer::Device::LightingLocation location);
     void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);
     void applyEffectLogoLoc(QString identifier, libopenrazer::Device *device);
     void applyEffectScrollLoc(QString identifier, libopenrazer::Device *device);

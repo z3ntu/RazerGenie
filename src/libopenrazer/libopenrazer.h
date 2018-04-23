@@ -164,7 +164,7 @@ public:
 
     // --- POLL RATE ---
     int getPollRate();
-    bool setPollRate(ushort pollrate);
+    bool setPollRate(PollRate pollrate);
 
     // --- DPI ---
     bool setDPI(int dpi_x, int dpi_y);
@@ -182,19 +182,19 @@ public:
 
     // --- LIGHTING EFFECTS ---
     // - Default -
-    bool setStatic(uchar r, uchar g, uchar b);
-    bool setBreathSingle(uchar r, uchar g, uchar b);
-    bool setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
-    bool setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar r3, uchar g3, uchar b3);
+    bool setStatic(QColor color);
+    bool setBreathSingle(QColor color);
+    bool setBreathDual(QColor color, QColor color2);
+    bool setBreathTriple(QColor color, QColor color2, QColor color3);
     bool setBreathRandom();
-    bool setReactive(uchar r, uchar g, uchar b, uchar speed);
+    bool setReactive(QColor color, ReactiveSpeed speed);
     bool setSpectrum();
     bool setWave(WaveDirection direction);
     bool setNone();
     // Starlight
-    bool setStarlightSingle(uchar r, uchar g, uchar b, uchar speed);
-    bool setStarlightDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar speed);
-    bool setStarlightRandom(uchar speed);
+    bool setStarlightSingle(QColor color, StarlightSpeed speed);
+    bool setStarlightDual(QColor color, QColor color2, StarlightSpeed speed);
+    bool setStarlightRandom(StarlightSpeed speed);
     // bw2013
     bool setStatic_bw2013();
     bool setPulsate();
@@ -204,7 +204,7 @@ public:
     uchar getBacklightEffect();
     bool setBacklightBrightness(double brightness);
     double getBacklightBrightness();
-    bool setBacklightStatic(uchar r, uchar g, uchar b);
+    bool setBacklightStatic(QColor color);
     bool setBacklightSpectrum();
 
     // - Custom(?) -
@@ -212,41 +212,41 @@ public:
     bool setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors);
 
     // - Custom -
-    bool setRipple(uchar r, uchar g, uchar b, double refresh_rate);
+    bool setRipple(QColor color, double refresh_rate);
     bool setRippleRandomColor(double refresh_rate);
 
     bool setBrightness(double brightness);
     double getBrightness();
 
     // - Logo -
-    bool setLogoStatic(uchar r, uchar g, uchar b);
+    bool setLogoStatic(QColor color);
     bool setLogoActive(bool active);
     bool getLogoActive();
     uchar getLogoEffect();
-    bool setLogoBlinking(uchar r, uchar g, uchar b);
-    bool setLogoPulsate(uchar r, uchar g, uchar b);
+    bool setLogoBlinking(QColor color);
+    bool setLogoPulsate(QColor color);
     bool setLogoSpectrum();
     bool setLogoNone();
-    bool setLogoReactive(uchar r, uchar g, uchar b, uchar speed);
-    bool setLogoBreathSingle(uchar r, uchar g, uchar b);
-    bool setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
+    bool setLogoReactive(QColor color, ReactiveSpeed speed);
+    bool setLogoBreathSingle(QColor color);
+    bool setLogoBreathDual(QColor color, QColor color2);
     bool setLogoBreathRandom();
 
     bool setLogoBrightness(double brightness);
     double getLogoBrightness();
 
     // - Scroll -
-    bool setScrollStatic(uchar r, uchar g, uchar b);
+    bool setScrollStatic(QColor color);
     bool setScrollActive(bool active);
     bool getScrollActive();
     uchar getScrollEffect();
-    bool setScrollBlinking(uchar r, uchar g, uchar b);
-    bool setScrollPulsate(uchar r, uchar g, uchar b);
+    bool setScrollBlinking(QColor color);
+    bool setScrollPulsate(QColor color);
     bool setScrollSpectrum();
     bool setScrollNone();
-    bool setScrollReactive(uchar r, uchar g, uchar b, uchar speed);
-    bool setScrollBreathSingle(uchar r, uchar g, uchar b);
-    bool setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2);
+    bool setScrollReactive(QColor color, ReactiveSpeed speed);
+    bool setScrollBreathSingle(QColor color);
+    bool setScrollBreathDual(QColor color, QColor color2);
     bool setScrollBreathRandom();
 
     bool setScrollBrightness(double brightness);
@@ -260,11 +260,12 @@ public:
     bool getRedLED();
     bool setRedLED(bool on);
 
-    enum lightingLocation {
-        lighting, lighting_logo, lighting_scroll, lighting_backlight
-    };
+    enum LightingLocation { Lighting, LightingLogo, LightingScroll, LightingBacklight };
 };
 
 }
+
+// Needed for casting from QVariant
+Q_DECLARE_METATYPE(libopenrazer::PollRate)
 
 #endif // LIBRAZER_H

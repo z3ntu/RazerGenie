@@ -681,12 +681,8 @@ int Device::getPollRate()
 /**
  * Sets the poll rate. Use one of libopenrazer::POLL_125HZ, libopenrazer::POLL_500HZ or libopenrazer::POLL_1000HZ.
  */
-bool Device::setPollRate(ushort pollrate)
+bool Device::setPollRate(PollRate pollrate)
 {
-    if(pollrate != POLL_125HZ && pollrate != POLL_500HZ && pollrate != POLL_1000HZ) {
-        qWarning() << "libopenrazer: setPollRate(): Has to be one of libopenrazer::POLL_125HZ, libopenrazer::POLL_500HZ or libopenrazer::POLL_1000HZ";
-        return false;
-    }
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setPollRate");
     QList<QVariant> args;
     args.append(pollrate);
@@ -782,13 +778,13 @@ bool Device::isMugPresent()
 /**
  * Sets the lighting to static lighting.
  */
-bool Device::setStatic(uchar r, uchar g, uchar b)
+bool Device::setStatic(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStatic");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -796,13 +792,13 @@ bool Device::setStatic(uchar r, uchar g, uchar b)
 /**
  * Sets the lighting to random breath lighting.
  */
-bool Device::setBreathSingle(uchar r, uchar g, uchar b)
+bool Device::setBreathSingle(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathSingle");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -810,16 +806,16 @@ bool Device::setBreathSingle(uchar r, uchar g, uchar b)
 /**
  * Sets the lighting to dual breath lighting.
  */
-bool Device::setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
+bool Device::setBreathDual(QColor color, QColor color2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathDual");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    args.append(r2);
-    args.append(g2);
-    args.append(b2);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -827,19 +823,19 @@ bool Device::setBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar 
 /**
  * Sets the lighting to triple breath lighting.
  */
-bool Device::setBreathTriple(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar r3, uchar g3, uchar b3)
+bool Device::setBreathTriple(QColor color, QColor color2, QColor color3)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setBreathTriple");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    args.append(r2);
-    args.append(g2);
-    args.append(b2);
-    args.append(r3);
-    args.append(g3);
-    args.append(b3);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
+    args.append(color3.red());
+    args.append(color3.green());
+    args.append(color3.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -857,13 +853,13 @@ bool Device::setBreathRandom()
  * Sets the lighting to reactive mode.
  * Use one of libopenrazer::REACTIVE_* for speed.
  */
-bool Device::setReactive(uchar r, uchar g, uchar b, uchar speed)
+bool Device::setReactive(QColor color, ReactiveSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setReactive");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     args.append(speed);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
@@ -900,34 +896,34 @@ bool Device::setNone()
     return QDBusMessageToVoid(m);
 }
 
-bool Device::setStarlightSingle(uchar r, uchar g, uchar b, uchar speed)
+bool Device::setStarlightSingle(QColor color, StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightSingle");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     args.append(speed);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
 
-bool Device::setStarlightDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2, uchar speed)
+bool Device::setStarlightDual(QColor color, QColor color2, StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightDual");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    args.append(r2);
-    args.append(g2);
-    args.append(b2);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
     args.append(speed);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
 
-bool Device::setStarlightRandom(uchar speed)
+bool Device::setStarlightRandom(StarlightSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setStarlightRandom");
     QList<QVariant> args;
@@ -1008,13 +1004,13 @@ double Device::getBacklightBrightness()
 /**
  * Sets the backlight to static lighting.
  */
-bool Device::setBacklightStatic(uchar r, uchar g, uchar b)
+bool Device::setBacklightStatic(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.backlight", "setBacklightStatic");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1072,13 +1068,13 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> 
 /**
  * Sets the lighting to ripple.
  */
-bool Device::setRipple(uchar r, uchar g, uchar b, double refresh_rate)
+bool Device::setRipple(QColor color, double refresh_rate)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.custom", "setRipple");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     args.append(refresh_rate);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
@@ -1120,13 +1116,13 @@ double Device::getBrightness()
 /**
  * Sets the logo to static lighting.
  */
-bool Device::setLogoStatic(uchar r, uchar g, uchar b)
+bool Device::setLogoStatic(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoStatic");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1164,13 +1160,13 @@ uchar Device::getLogoEffect()
 /**
  * Sets the logo to blinking.
  */
-bool Device::setLogoBlinking(uchar r, uchar g, uchar b)
+bool Device::setLogoBlinking(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBlinking");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1178,13 +1174,13 @@ bool Device::setLogoBlinking(uchar r, uchar g, uchar b)
 /**
  * Sets the logo to pulsate.
  */
-bool Device::setLogoPulsate(uchar r, uchar g, uchar b)
+bool Device::setLogoPulsate(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoPulsate");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1210,13 +1206,13 @@ bool Device::setLogoNone()
 /**
  * Sets the logo to reactive.
  */
-bool Device::setLogoReactive(uchar r, uchar g, uchar b, uchar speed)
+bool Device::setLogoReactive(QColor color, ReactiveSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoReactive");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     args.append(speed);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
@@ -1225,13 +1221,13 @@ bool Device::setLogoReactive(uchar r, uchar g, uchar b, uchar speed)
 /**
  * Sets the logo to single breath.
  */
-bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
+bool Device::setLogoBreathSingle(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathSingle");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1239,16 +1235,16 @@ bool Device::setLogoBreathSingle(uchar r, uchar g, uchar b)
 /**
  * Sets the logo to dual breath.
  */
-bool Device::setLogoBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
+bool Device::setLogoBreathDual(QColor color, QColor color2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoBreathDual");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    args.append(r2);
-    args.append(g2);
-    args.append(b2);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1286,13 +1282,13 @@ double Device::getLogoBrightness()
 /**
  * Sets the scrollwheel to static lighting.
  */
-bool Device::setScrollStatic(uchar r, uchar g, uchar b)
+bool Device::setScrollStatic(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollStatic");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1330,13 +1326,13 @@ uchar Device::getScrollEffect()
 /**
  * Sets scroll to blinking.
  */
-bool Device::setScrollBlinking(uchar r, uchar g, uchar b)
+bool Device::setScrollBlinking(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBlinking");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1344,13 +1340,13 @@ bool Device::setScrollBlinking(uchar r, uchar g, uchar b)
 /**
  * Sets the scroll to pulsate.
  */
-bool Device::setScrollPulsate(uchar r, uchar g, uchar b)
+bool Device::setScrollPulsate(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollPulsate");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1376,13 +1372,13 @@ bool Device::setScrollNone()
 /**
  * Sets the scroll to reactive.
  */
-bool Device::setScrollReactive(uchar r, uchar g, uchar b, uchar speed)
+bool Device::setScrollReactive(QColor color, ReactiveSpeed speed)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollReactive");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     args.append(speed);
     m.setArguments(args);
     return QDBusMessageToVoid(m);
@@ -1391,13 +1387,13 @@ bool Device::setScrollReactive(uchar r, uchar g, uchar b, uchar speed)
 /**
  * Sets the scroll to single breath.
  */
-bool Device::setScrollBreathSingle(uchar r, uchar g, uchar b)
+bool Device::setScrollBreathSingle(QColor color)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
@@ -1405,16 +1401,16 @@ bool Device::setScrollBreathSingle(uchar r, uchar g, uchar b)
 /**
  * Sets the scroll to dual breath.
  */
-bool Device::setScrollBreathDual(uchar r, uchar g, uchar b, uchar r2, uchar g2, uchar b2)
+bool Device::setScrollBreathDual(QColor color, QColor color2)
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
     QList<QVariant> args;
-    args.append(r);
-    args.append(g);
-    args.append(b);
-    args.append(r2);
-    args.append(g2);
-    args.append(b2);
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
     m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
