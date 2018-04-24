@@ -22,7 +22,6 @@ else
 endif
 
 install_data('logo/xyz.z3ntu.razergenie.svg', install_dir : join_paths(get_option('datadir'), 'icons/hicolor/scalable/apps'))
-install_data('other/xyz.z3ntu.razergenie.desktop', install_dir : join_paths(get_option('datadir'), 'applications'))
 
 subdir('data')
 subdir('src/libopenrazer')

@@ -6,6 +6,9 @@ install(FILES matrix_layouts/razerblade25.json DESTINATION share/razergenie/matr
 # Appstream XML
 install(FILES xyz.z3ntu.razergenie.appdata.xml DESTINATION share/metainfo)
 
+# Desktop file
+install(FILES xyz.z3ntu.razergenie.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+
 # Translations
 set(TRANSLATION_FILES
     translations/de.ts)  # add new languages here!

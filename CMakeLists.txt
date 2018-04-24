@@ -33,5 +33,4 @@ include(CheckIncludeFiles)
 
 add_subdirectory(data)
 add_subdirectory(logo)
-add_subdirectory(other)
 add_subdirectory(src)
