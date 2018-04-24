@@ -1,3 +1,5 @@
+project = libopenrazer
+
 headerdirs = ..
 sources = libopenrazer.qdoc
 sourcedirs = ..
@@ -5,15 +7,19 @@ sourcedirs = ..
 sources.fileextensions = "*.cpp"
 headers.fileextensions = "*.h"
 
-outputdir  = ./html
 outputformats = HTML
+outputdir  = ./html
 
-# path to the CSS files if you would like to use any (here it's the current directory)
+HTML.extraimages = ../../../logo/xyz.z3ntu.razergenie.svg
+
 HTML.stylesheets = style.css
-# the string that actually includes the CSS into documentation file
-HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\"/>\n"
-# what to append to every page after header
-HTML.postheader = "<p class=\"header\"><small>[My awesome documentation]</small></p><hr/>"
-# what to append to every page after the content
-HTML.footer = "<hr/><p class=\"footer\"><small>[some footer and whatnot information]</small></p>"
 
+HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\"/>\n"
+
+HTML.postheader = "<p>" \
+                  "<a class=\"header\" href=\"libopenrazer.html\">" \
+                  "<img src=\"images/xyz.z3ntu.razergenie.svg\" alt=\"RazerGenie logo\" class=\"logo\">" \
+                  "<span>libopenrazer Documentation</span>" \
+                  "</a>" \
+                  "</p>" \
+                  "<hr/>"

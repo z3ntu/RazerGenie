@@ -1,3 +1,5 @@
+/* Initial CSS from https://retifrav.github.io/blog/2017/05/24/documenting-qt-project-with-qdoc/ */
+
 body {
    font-family: "Verdana";
    font-size: 14px;
@@ -15,15 +17,8 @@ div.sidebar {
 
 pre {
     padding: 15px;
-}
-div.qmlproto {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-pre, div.qmlproto {
     font-family: "Courier New";
-    font-size: 20px;
-    margin-left: 2em;
+    font-size: 15px;
     background-color: #F2F2F2;
 }
 
@@ -32,10 +27,53 @@ hr {
     margin-bottom: 2em;
 }
 
-p.header {
+a.header {
     margin-bottom: -1em;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    color: #000;
 }
+
 p.footer {
     text-align: right;
     margin-top: -1em;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: green;
+}
+
+.logo {
+    width: 50px;
+    margin-right: 10px;
+}
+
+table, table td, table th {
+    border: 1px solid #eee;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table td, table th {
+    padding: 5px 5px;
+}
+
+h3.fn {
+    font-size: 1.4em;
+    padding: 10px 0 10px 0;
+    border-bottom: 2px #eee solid;
+    word-wrap: break-word;
+}
+
+li:first-of-type {
+    display: none;
 }

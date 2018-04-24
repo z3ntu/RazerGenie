@@ -405,6 +405,32 @@ bool enableDaemon()
 
 // ====== DEVICE CLASS ======
 
+/*!
+ * \class libopenrazer::Device
+ * \inmodule libopenrazer
+ *
+ * \brief The libopenrazer::Device class provides an abstraction for the OpenRazer daemon D-Bus interface for easy interaction from C++ applications.
+ */
+
+/*!
+ * \fn libopenrazer::Device::Device(QString serial)
+ *
+ * Constructs a new device object with the given \a serial.
+ */
+Device::Device(QString s)
+{
+    mSerial = s;
+    Introspect();
+    setupCapabilities();
+}
+
+/*
+ * Destructor
+ */
+Device::~Device()
+{
+}
+
 /**
  * Fill "introspection" variable with data from the dbus introspection xml
  */
@@ -516,25 +542,6 @@ void Device::setupCapabilities()
     capabilities.insert("get_lighting_backlight_brightness", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightBrightness"));
     capabilities.insert("lighting_backlight_spectrum", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightSpectrum"));
     capabilities.insert("lighting_backlight_static", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightStatic"));
-}
-
-/*!
- * \fn libopenrazer::Device::Device(QString serial)
- *
- * Constructs a new device object with the given \a serial.
- */
-Device::Device(QString s)
-{
-    mSerial = s;
-    Introspect();
-    setupCapabilities();
-}
-
-/*
- * Destructor
- */
-Device::~Device()
-{
 }
 
 /*!

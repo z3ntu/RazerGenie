@@ -20,6 +20,12 @@
 
 namespace libopenrazer
 {
+/*!
+ * \class libopenrazer::RazerCapability
+ * \inmodule libopenrazer
+ *
+ * \brief The libopenrazer::RazerCapability class provides helper-class used by libopenrazer for providing lists of lighting effect capabilities that can be implemented e.g. in a combobox. It can contain the number of colors an effect needs, if the effect is the 'Wave' effect and a human readable string for displaying in the UI.
+ */
 RazerCapability::RazerCapability()
 {
     this->identifier = "";
