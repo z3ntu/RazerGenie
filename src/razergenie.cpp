@@ -390,7 +390,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             }
 
             // Connect signal from combobox
-            connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::standardCombo);
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::standardCombo);
 
             // Brightness slider
             if(currentDevice->hasCapability("brightness")) {
@@ -415,7 +415,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             }
 
             // Connect signal from combobox
-            connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::logoCombo);
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::logoCombo);
 
             // Brightness slider
             if(currentDevice->hasCapability("lighting_logo_brightness")) {
@@ -439,7 +439,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             }
 
             // Connect signal from combobox
-            connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::scrollCombo);
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::scrollCombo);
 
             // Brightness slider
             if(currentDevice->hasCapability("lighting_scroll_brightness")) {
@@ -462,7 +462,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             }
 
             // Connect signal from combobox
-            connect(comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::backlightCombo);
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::backlightCombo);
 
             // Brightness slider
             if(currentDevice->hasCapability("lighting_backlight_brightness")) {
@@ -687,7 +687,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         pollComboBox->setCurrentText(QString::number(currentDevice->getPollRate()) + " Hz");
         verticalLayout->addWidget(pollComboBox);
 
-        connect(pollComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
+        connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
     }
 
     /* Custom lighting */
