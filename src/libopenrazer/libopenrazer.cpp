@@ -36,7 +36,7 @@
     \namespace libopenrazer
     \inmodule libopenrazer
 
-    \brief Contains miscellaneous identifiers used throughout the Qt library.
+    \brief Contains methods, enums and classes to interface with the OpenRazer daemon via the D-Bus interface.
 */
 namespace libopenrazer
 {
@@ -209,8 +209,10 @@ bool QDBusMessageToVoid(const QDBusMessage &message)
     // TODO: Handle error ?
 }
 
-/**
- * Returns if the daemon is running (and responding to the version call)
+/*!
+ * \fn bool libopenrazer::isDaemonRunning()
+ *
+ * Returns if the daemon is running (and responding to the version call).
  */
 bool isDaemonRunning()
 {
@@ -223,8 +225,12 @@ bool isDaemonRunning()
     }
 }
 
-/**
- * Returns a list of supported devices in the format of QHash<QString(DeviceName), QList<double(VID), double(PID)>>
+/*!
+ * \fn QVariantHash libopenrazer::getSupportedDevices()
+ *
+ * Returns a list of supported devices in the format of \c {QHash<QString(DeviceName), QList<double(VID), double(PID)>>}.
+ *
+ * \sa Device::getVid(), Device::getPid()
  */
 QVariantHash getSupportedDevices()
 {
@@ -233,9 +239,12 @@ QVariantHash getSupportedDevices()
     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
 
-/**
- * Gets a list of connected devices in form of their serial number.
- * Can be used to create a 'Device' object and get further information about the devices.
+/*!
+ * \fn QStringList libopenrazer::getConnectedDevices()
+ *
+ * Returns a list of connected devices in form of their serial number (e.g. \c ['XX0000000001', 'PM1439131641838']).
+ *
+ * Can be used to create a libopenrazer::Device object and get further information about the device.
  */
 QStringList getConnectedDevices()
 {
@@ -243,27 +252,32 @@ QStringList getConnectedDevices()
     return QDBusMessageToStringList(m);
 }
 
-/**
- * If devices should sync effects.
- * Example: Set it to 'on', set the lighting on one device to something, other devices connected will automatically get set to the same effect.
+/*!
+ * \fn bool libopenrazer::syncEffects(bool yes)
+ *
+ * If devices should sync effects, as specified by \a yes.
+ *
+ * Example: Set it to \c 'on', set the lighting on one device to something, other devices connected will automatically get set to the same effect.
+ *
+ * Returns if the D-Bus call was successful.
+ *
+ * \sa getSyncEffects()
  */
 bool syncEffects(bool yes)
 {
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "syncEffects");
-
-    // Set arguments
     QList<QVariant> args;
-    //yes ? args.append("True") : args.append("False"); // maybe bool works here
     args.append(yes);
     m.setArguments(args);
-
-    bool queued = QDBusConnection::sessionBus().send(m);
-    qDebug() << "Queued: " << queued;
-    return queued;
+    return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns the daemon version currently running.
+/*!
+ * \fn bool libopenrazer::getSyncEffects()
+ *
+ * Returns if devices should sync effect.
+ *
+ * \sa syncEffects()
  */
 bool getSyncEffects()
 {
@@ -271,8 +285,10 @@ bool getSyncEffects()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns the daemon version currently running.
+/*!
+ * \fn QString libopenrazer::getDaemonVersion()
+ *
+ * Returns the daemon version currently running (e.g. \c '2.3.0').
  */
 QString getDaemonVersion()
 {
@@ -280,8 +296,12 @@ QString getDaemonVersion()
     return QDBusMessageToString(m);
 }
 
-/**
- * Stops the daemon. WARNING: FURTHER COMMUNICATION WILL NOT BE POSSIBLE.
+/*!
+ * \fn bool libopenrazer::stopDaemon()
+ *
+ * Stops the OpenRazer daemon. \b WARNING: FURTHER COMMUNICATION WILL NOT BE POSSIBLE.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool stopDaemon()
 {
@@ -289,8 +309,14 @@ bool stopDaemon()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets if the Chroma lighting should turn off if the screensaver is turned on.
+/*!
+ * \fn bool libopenrazer::setTurnOffOnScreensaver(bool turnOffOnScreensaver)
+ *
+ * Sets if the LEDs should turn off if the screensaver is turned on, as specified by \a turnOffOnScreensaver.
+ *
+ * Returns if the D-Bus call was successful.
+ *
+ * \sa getTurnOffOnScreensaver()
  */
 bool setTurnOffOnScreensaver(bool turnOffOnScreensaver)
 {
@@ -298,12 +324,15 @@ bool setTurnOffOnScreensaver(bool turnOffOnScreensaver)
     QList<QVariant> args;
     args.append(turnOffOnScreensaver);
     m.setArguments(args);
-
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets if the Chroma lighting should turn off if the screensaver is turned on.
+/*!
+ * \fn bool libopenrazer::getTurnOffOnScreensaver()
+ *
+ * Returns if the LEDs should turn off if the screensaver is turned on.
+ *
+ * \sa setTurnOffOnScreensaver()
  */
 bool getTurnOffOnScreensaver()
 {
@@ -311,8 +340,10 @@ bool getTurnOffOnScreensaver()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns if the systemd user unit for the daemon is enabled.
+/*!
+ * \fn DaemonStatus libopenrazer::getDaemonStatus()
+ *
+ * Returns status of the daemon, see DaemonStatus.
  */
 DaemonStatus getDaemonStatus()
 {
@@ -340,8 +371,10 @@ DaemonStatus getDaemonStatus()
     }
 }
 
-/**
- * Returns the multiline output of "systemctl --user status openrazer-daemon.service"
+/*!
+ * \fn QString libopenrazer::getDaemonStatusOutput()
+ *
+ * Returns the multiline output of \c {"systemctl --user status openrazer-daemon.service"}.
  */
 QString getDaemonStatusOutput()
 {
@@ -355,8 +388,12 @@ QString getDaemonStatusOutput()
     return output + "\n" + error;
 }
 
-/**
- * Enables the daemon to auto-start when the user logs in. Runs "systemctl --user enable openrazer-daemon.service"
+/*!
+ * \fn bool libopenrazer::enableDaemon()
+ *
+ * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl --user enable openrazer-daemon.service"}
+ *
+ * Returns if the call was successful.
  */
 bool enableDaemon()
 {
@@ -481,8 +518,10 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_backlight_static", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightStatic"));
 }
 
-/**
- * Constructs a new device object with the given serial.
+/*!
+ * \fn libopenrazer::Device::Device(QString serial)
+ *
+ * Constructs a new device object with the given \a serial.
  */
 Device::Device(QString s)
 {
@@ -491,35 +530,58 @@ Device::Device(QString s)
     setupCapabilities();
 }
 
-/**
+/*
  * Destructor
  */
 Device::~Device()
 {
-    //TODO Write
 }
 
-/**
- * Connects the device_added signal of the daemon to the specified method.
- * TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
+/*!
+ * \fn bool libopenrazer::connectDeviceAdded(QObject *receiver, const char *slot)
+ *
+ * Connects the \c device_added signal of the daemon to the specified method using the \a receiver and \a slot.
+ *
+ * Can be used in the Qt4-style Signal&Slot syntax, e.g.:
+ * \code
+ * libopenrazer::connectDeviceAdded(this, SLOT(deviceAdded()));
+ * \endcode
+ *
+ * Returns if the connection was successful.
+ *
+ * \sa connectDeviceRemoved()
  */
+// TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
 bool connectDeviceAdded(QObject *receiver, const char *slot)
 {
     return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_added", receiver, slot);
 }
 
-/**
- * Connects the device_removed signal of the daemon to the specified method.
- * TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
+/*!
+ * \fn bool libopenrazer::connectDeviceRemoved(QObject *receiver, const char *slot)
+ *
+ * Connects the \c device_removed signal of the daemon to the specified method using the \a receiver and \a slot.
+ *
+ * Can be used in the Qt4-style Signal&Slot syntax, e.g.:
+ * \code
+ * libopenrazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
+ * \endcode
+ *
+ * Returns if the connection was successful.
+ *
+ * \sa connectDeviceAdded()
  */
+// TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
 bool connectDeviceRemoved(QObject *receiver, const char *slot)
 {
     return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_removed", receiver, slot);
 }
 
 // ---- MISC METHODS ----
-/**
- * Returns the serial
+/*!
+ * \fn QString libopenrazer::Device::serial()
+ *
+ * Returns the device serial.
  */
 QString Device::serial()
 {
@@ -537,34 +599,52 @@ bool Device::hasCapabilityInternal(const QString &interface, const QString &meth
     return introspection.contains(interface + ";" + method);
 }
 
-/**
- * Returns if a device has a given capability.
+/*!
+ * \fn bool libopenrazer::Device::hasCapability(const QString &name)
+ *
+ * Returns if a device has a given capability with the given \a name. Capability strings can be listed with getAllCapabilities() or viewed in \c libopenrazer.cpp.
+ *
+ * \sa getAllCapabilities()
  */
 bool Device::hasCapability(const QString &name)
 {
     return capabilities.value(name);
 }
 
-/**
- * Returns a QHash object with all capabilities.
+/*!
+ * \fn QHash<QString, bool> libopenrazer::Device::getAllCapabilities()
+ *
+ * Returns a \c QHash object with all capabilities, \c QString is the name of the capability and \c bool if the device has that capability.
+ *
+ * \sa hasCapability()
  */
 QHash<QString, bool> Device::getAllCapabilities()
 {
     return capabilities;
 }
 
-/**
- * Returns the .png filename for pictures.
+/*!
+ * \fn QString libopenrazer::Device::getPngFilename()
+ *
+ * Returns the filename for the \c top_img picture (e.g. \c razer-naga-hex-gallery-12.png).
+ *
  * Could return an empty string (qstring.isEmpty()) if no picture was found.
+ *
+ * \sa getRazerUrls(), getPngUrl()
  */
 QString Device::getPngFilename()
 {
     return getRazerUrls().value("top_img").toString().split("/").takeLast();
 }
 
-/**
- * Returns the download url for pictures.
- * Could return an empty string (qstring.isEmpty()) if no picture was found.
+/*!
+ * \fn QString libopenrazer::Device::getPngUrl()
+ *
+ * Returns the URL for the \c top_img picture.
+ *
+ * Could return an empty string (\c qstring.isEmpty()) if no picture was found.
+ *
+ * \sa getRazerUrls(), getPngFilename()
  */
 QString Device::getPngUrl()
 {
@@ -574,8 +654,45 @@ QString Device::getPngUrl()
 
 // ----- DBUS METHODS -----
 
-/**
- * Returns a human readable device name like "Razer DeathAdder Chroma" or "Razer Kraken 7.1 (Rainie)".
+/*!
+ * \fn QString libopenrazer::Device::getDeviceMode()
+ *
+ * Returns the device mode of the device, like '0:0' or '3:0' for normal mode and driver mode respetively.
+ *
+ * \sa setDeviceMode()
+ */
+QString Device::getDeviceMode()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceMode");
+    return QDBusMessageToString(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setDeviceMode(uchar mode_id, uchar param)
+ *
+ * Sets the device mode to the specified \a mode_id and \a param.
+ * Allowed values are 0x00 (normal mode) and 0x03 (driver mode) for \a mode_id and 0x00 for param.
+ *
+ * When the device is set to Driver Mode, tilting the mouse wheel stops working, and the 'Up DPI' and 'Down DPI' buttons don't actually do anything. Razer Synapse on Windows is supposed to change the DPI instead of the mouse.
+ *
+ * Returns if the D-Bus call was successful.
+ *
+ * \sa getDeviceMode()
+ */
+bool Device::setDeviceMode(uchar mode_id, uchar param)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setDeviceMode");
+    QList<QVariant> args;
+    args.append(mode_id);
+    args.append(param);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn QString libopenrazer::Device::getDeviceName()
+ *
+ * Returns a human readable device name like \c {"Razer DeathAdder Chroma"} or \c {"Razer Kraken 7.1"}.
  */
 QString Device::getDeviceName()
 {
@@ -583,8 +700,10 @@ QString Device::getDeviceName()
     return QDBusMessageToString(m);
 }
 
-/**
- * Returns the type of the device. Could be one of 'keyboard', 'mouse', 'mousemat', 'core', 'keypad', 'headset', 'mug' or another type, if added to the daemon.
+/*!
+ * \fn QString libopenrazer::Device::getDeviceType()
+ *
+ * Returns the type of the device. Could be one of \c 'keyboard', \c 'mouse', \c 'mousemat', \c 'core', \c 'keypad', \c 'headset', \c 'mug' or another type, if added to the daemon.
  */
 QString Device::getDeviceType()
 {
@@ -600,8 +719,21 @@ QString Device::getDeviceType()
     return devicetype;
 }
 
-/**
- * Returns the firmware version of the device.
+/*!
+ * \fn QString libopenrazer::Device::getDriverVersion()
+ *
+ * Returns the kernel driver version used by the device (e.g. \c '2.3.0').
+ */
+QString Device::getDriverVersion()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDriverVersion");
+    return QDBusMessageToString(m);
+}
+
+/*!
+ * \fn QString libopenrazer::Device::getFirmwareVersion()
+ *
+ * Returns the firmware version of the device (e.g. \c 'v1.0').
  */
 QString Device::getFirmwareVersion()
 {
@@ -609,8 +741,10 @@ QString Device::getFirmwareVersion()
     return QDBusMessageToString(m);
 }
 
-/**
- * Returns the physical layout of the keyboard (e.g. 'de_DE', 'en_US', 'en_GB' or 'unknown')
+/*!
+ * \fn QString libopenrazer::Device::getKeyboardLayout()
+ *
+ * Returns the physical layout of the keyboard (e.g. \c 'de_DE', \c 'en_US', \c 'en_GB' or \c 'unknown')
  */
 QString Device::getKeyboardLayout()
 {
@@ -618,10 +752,12 @@ QString Device::getKeyboardLayout()
     return QDBusMessageToString(m);
 }
 
-/**
- * Returns a QVariantHash (QHash\<QString, QVariant>).
- * Most likely contains keys "top_img", "side_img", "store", "perspective_img".
- * Values are QVariant\<QString> with a full url as value.
+/*!
+ * \fn QVariantHash libopenrazer::Device::getRazerUrls()
+ *
+ * Returns a QVariantHash (\c {QHash<QString, QVariant>}).
+ * Most likely contains keys \c "top_img", \c "side_img", \c "store" and \c "perspective_img".
+ * Values are \c QVariant<QString> with a full URL as value.
  */
 QVariantHash Device::getRazerUrls()
 {
@@ -630,8 +766,10 @@ QVariantHash Device::getRazerUrls()
     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
 }
 
-/**
- * Return usb vendor id as integer in decimal notation. Should always be 5426 (-> Hex 1532)
+/*!
+ * \fn int libopenrazer::Device::getVid()
+ *
+ * Returns the USB vendor ID as integer in decimal notation. Should always be \c 5426 (-> Hex \c 1532)
  */
 int Device::getVid()
 {
@@ -639,8 +777,10 @@ int Device::getVid()
     return QDBusMessageToIntArray(m)[0];
 }
 
-/**
- * Return usb product id as integer in decimal notation.
+/*!
+ * \fn int libopenrazer::Device::getPid()
+ *
+ * Returns USB product ID as integer in decimal notation.
  */
 int Device::getPid()
 {
@@ -648,7 +788,9 @@ int Device::getPid()
     return QDBusMessageToIntArray(m)[1];
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::hasDedicatedMacroKeys()
+ *
  * Returns if the device has dedicated macro keys.
  */
 bool Device::hasDedicatedMacroKeys()
@@ -657,7 +799,9 @@ bool Device::hasDedicatedMacroKeys()
     return QDBusMessageToBool(m);
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::hasMatrix()
+ *
  * Returns if the device has a matrix. Dimensions can be gotten with getMatrixDimensions()
  */
 bool Device::hasMatrix()
@@ -666,8 +810,10 @@ bool Device::hasMatrix()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns the matrix dimensions. If the device has no matrix, it will return -1 for both numbers.
+/*!
+ * \fn QList<int> libopenrazer::Device::getMatrixDimensions()
+ *
+ * Returns the matrix dimensions in the format of \c [6, 22]. If the device has no matrix, it will return \c -1 for both numbers.
  */
 QList<int> Device::getMatrixDimensions()
 {
@@ -675,8 +821,10 @@ QList<int> Device::getMatrixDimensions()
     return QDBusMessageToIntArray(m);
 }
 
-/**
- * Returns the poll rate.
+/*!
+ * \fn int libopenrazer::Device::getPollRate()
+ *
+ * Returns the current poll rate.
  */
 int Device::getPollRate()
 {
@@ -684,8 +832,12 @@ int Device::getPollRate()
     return QDBusMessageToInt(m);
 }
 
-/**
- * Sets the poll rate. Use one of libopenrazer::POLL_125HZ, libopenrazer::POLL_500HZ or libopenrazer::POLL_1000HZ.
+/*!
+ * \fn bool libopenrazer::Device::setPollRate(PollRate pollrate)
+ *
+ * Sets the poll rate of the mouse to the specified \a pollrate.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setPollRate(PollRate pollrate)
 {
@@ -696,8 +848,12 @@ bool Device::setPollRate(PollRate pollrate)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the DPI.
+/*!
+ * \fn bool libopenrazer::Device::setDPI(int dpi_x, int dpi_y)
+ *
+ * Sets the DPI of the mouse to the specified \a dpi_x for the x-Axis and \a dpi_y for the y-Axis. Maximum value is what is returned by maxDPI().
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setDPI(int dpi_x, int dpi_y)
 {
@@ -709,8 +865,10 @@ bool Device::setDPI(int dpi_x, int dpi_y)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns the DPI.
+/*!
+ * \fn QList<int> libopenrazer::Device::getDPI()
+ *
+ * Returns the DPI of the mouse (e.g. \c [800, 800]).
  */
 QList<int> Device::getDPI()
 {
@@ -718,7 +876,9 @@ QList<int> Device::getDPI()
     return QDBusMessageToIntArray(m);
 }
 
-/**
+/*!
+ * \fn int libopenrazer::Device::maxDPI()
+ *
  * Returns the maximum DPI possible for the device.
  */
 int Device::maxDPI()
@@ -728,7 +888,9 @@ int Device::maxDPI()
 }
 
 // BATTERY
-/**
+/*!
+ * \fn bool libopenrazer::Device::isCharging()
+ *
  * Returns if the device is charging.
  */
 bool Device::isCharging()
@@ -737,8 +899,10 @@ bool Device::isCharging()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns the battery level between 0 and 100. Could maybe be -1 ???
+/*!
+ * \fn double libopenrazer::Device::getBatteryLevel()
+ *
+ * Returns the battery level between \c 0 and \c 100. Could potentially be \c -1 ???
  */
 double Device::getBatteryLevel()
 {
@@ -746,10 +910,13 @@ double Device::getBatteryLevel()
     return QDBusMessageToDouble(m);
 }
 
-/**
- * Sets the idle time of the device.
+/*!
+ * \fn bool libopenrazer::Device::setIdleTime(ushort idle_time)
  *
- * idle_time is the time in seconds - with a maximum of 15 minutes (900 seconds)
+ * Sets the idle time of the device, the time before the mouse goes idle.
+ * \a idle_time is the time in seconds, with a maximum of 15 minutes (900 seconds).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setIdleTime(ushort idle_time)
 {
@@ -760,8 +927,13 @@ bool Device::setIdleTime(ushort idle_time)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the low battery threshold.
+/*!
+ * \fn bool libopenrazer::Device::setLowBatteryThreshold(uchar threshold)
+ *
+ * Sets the low battery threshold to the specified \a threshold in percent which lets the mouse flash due to low battery.
+ * The \c threshold is capped at 25% (so 25), recommended value is 10.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLowBatteryThreshold(uchar threshold)
 {
@@ -772,7 +944,9 @@ bool Device::setLowBatteryThreshold(uchar threshold)
     return QDBusMessageToVoid(m);
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::isMugPresent()
+ *
  * Returns if the mug is on the mug holder.
  */
 bool Device::isMugPresent()
@@ -801,8 +975,12 @@ bool Device::setStatic(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to random breath lighting.
+/*!
+ * \fn bool libopenrazer::Device::setBreathSingle(QColor color)
+ *
+ * Sets the lighting to the single breath effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBreathSingle(QColor color)
 {
@@ -815,8 +993,12 @@ bool Device::setBreathSingle(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to dual breath lighting.
+/*!
+ * \fn bool libopenrazer::Device::setBreathDual(QColor color, QColor color2)
+ *
+ * Sets the lighting to the dual breath effect with the specified \a color and \a color2.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBreathDual(QColor color, QColor color2)
 {
@@ -832,8 +1014,12 @@ bool Device::setBreathDual(QColor color, QColor color2)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to triple breath lighting.
+/*!
+ * \fn bool libopenrazer::Device::setBreathTriple(QColor color, QColor color2, QColor color3)
+ *
+ * Sets the lighting to the triple breath effect with the specified \a color, \a color2 and \a color3.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBreathTriple(QColor color, QColor color2, QColor color3)
 {
@@ -852,8 +1038,12 @@ bool Device::setBreathTriple(QColor color, QColor color2, QColor color3)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to random breath lighting.
+/*!
+ * \fn bool libopenrazer::Device::setBreathRandom()
+ *
+ * Sets the lighting wheel to the random breath effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBreathRandom()
 {
@@ -861,9 +1051,12 @@ bool Device::setBreathRandom()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to reactive mode.
- * Use one of libopenrazer::REACTIVE_* for speed.
+/*!
+ * \fn bool libopenrazer::Device::setReactive(QColor color, ReactiveSpeed speed)
+ *
+ * Sets the lighting to reactive mode with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setReactive(QColor color, ReactiveSpeed speed)
 {
@@ -906,8 +1099,12 @@ bool Device::setWave(WaveDirection direction)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to "off".
+/*!
+ * \fn bool libopenrazer::Device::setNone()
+ *
+ * Sets the LED to none / off.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setNone()
 {
@@ -985,8 +1182,12 @@ bool Device::setStatic_bw2013()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to pulsate.
+/*!
+ * \fn bool libopenrazer::Device::setPulsate()
+ *
+ * Sets the lighting to pulsate mode.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setPulsate()
 {
@@ -994,8 +1195,10 @@ bool Device::setPulsate()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns if the backlight is active.
+/*!
+ * \fn bool libopenrazer::Device::getBacklightActive()
+ *
+ * Returns if the backlight LED is active.
  */
 bool Device::getBacklightActive()
 {
@@ -1003,8 +1206,12 @@ bool Device::getBacklightActive()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Sets the backlight to active.
+/*!
+ * \fn bool libopenrazer::Device::setBacklightActive(bool active)
+ *
+ * Sets the backlight active i.e. lights on, specified by \a active.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBacklightActive(bool active)
 {
@@ -1015,8 +1222,10 @@ bool Device::setBacklightActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns the current backlight effect.
+/*!
+ * \fn uchar libopenrazer::Device::getBacklightEffect()
+ *
+ * Returns the current effect on the backlight LED. Values are defined in LEDEffect.
  */
 uchar Device::getBacklightEffect()
 {
@@ -1024,8 +1233,12 @@ uchar Device::getBacklightEffect()
     return QDBusMessageToByte(m);
 }
 
-/**
- * Sets the backlight brightness (0-100).
+/*!
+ * \fn bool libopenrazer::Device::setBacklightBrightness(double brightness)
+ *
+ * Sets the backlight \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBacklightBrightness(double brightness)
 {
@@ -1036,8 +1249,10 @@ bool Device::setBacklightBrightness(double brightness)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets the current backlight brightness (0-100).
+/*!
+ * \fn double libopenrazer::Device::getBacklightBrightness()
+ *
+ * Returns the current backlight brightness (0-100).
  */
 double Device::getBacklightBrightness()
 {
@@ -1045,8 +1260,12 @@ double Device::getBacklightBrightness()
     return QDBusMessageToDouble(m);
 }
 
-/**
- * Sets the backlight to static lighting.
+/*!
+ * \fn bool libopenrazer::Device::setBacklightStatic(QColor color)
+ *
+ * Sets the backlight to static lighting with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBacklightStatic(QColor color)
 {
@@ -1059,8 +1278,12 @@ bool Device::setBacklightStatic(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the backlight to spectrum.
+/*!
+ * \fn bool libopenrazer::Device::setBacklightSpectrum()
+ *
+ * Sets the backlight to the spectrum effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBacklightSpectrum()
 {
@@ -1068,8 +1291,14 @@ bool Device::setBacklightSpectrum()
     return QDBusMessageToVoid(m);
 }
 
-/**
+/*!
+ * \fn bool libopenrazer::Device::setCustom()
+ *
  * Sets the lighting to custom mode (applies effects set from setKeyRow()).
+ *
+ * Returns if the D-Bus call was successful.
+ *
+ * \sa setKeyRow()
  */
 bool Device::setCustom()
 {
@@ -1077,10 +1306,17 @@ bool Device::setCustom()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting of a key row to the specified colors.
+/*!
+ * \fn bool libopenrazer::Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
+ *
+ * Sets the lighting of a key row to the specified \a colors.
+ * \a row is the row in the matrix, \a startcol the column the \a colors list starts and \a endcol where the list ends.
  * Note, that you have to call setCustom() after setting otherwise the effect won't be displayed (even if you have already called setCustom() before).
  * Currently the driver only accepts whole rows that are sent.
+ *
+ * Returns if the D-Bus call was successful.
+ *
+ * \sa setCustom()
  */
 bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
 {
@@ -1109,8 +1345,13 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> 
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to ripple.
+/*!
+ * \fn bool libopenrazer::Device::setRipple(QColor color, double refresh_rate)
+ *
+ * Sets the lighting to the ripple effect with the specified \a color and \a refresh_rate.
+ * Default refresh rate is \c libopenrazer::RIPPLE_REFRESH_RATE (0.05). 0.01 is faster but uses more CPU.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setRipple(QColor color, double refresh_rate)
 {
@@ -1124,8 +1365,13 @@ bool Device::setRipple(QColor color, double refresh_rate)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the lighting to random ripple.
+/*!
+ * \fn bool libopenrazer::Device::setRippleRandomColor(double refresh_rate)
+ *
+ * Sets the lighting to the random ripple effect with the specified \a refresh_rate.
+ * Default refresh rate is \c libopenrazer::RIPPLE_REFRESH_RATE (0.05). 0.01 is faster but uses more CPU.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setRippleRandomColor(double refresh_rate)
 {
@@ -1136,8 +1382,12 @@ bool Device::setRippleRandomColor(double refresh_rate)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the brightness (0-100).
+/*!
+ * \fn bool libopenrazer::Device::setBrightness(double brightness)
+ *
+ * Sets the \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBrightness(double brightness)
 {
@@ -1148,8 +1398,10 @@ bool Device::setBrightness(double brightness)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets the current brightness (0-100).
+/*!
+ * \fn double libopenrazer::Device::getBrightness()
+ *
+ * Returns the current brightness (0-100).
  */
 double Device::getBrightness()
 {
@@ -1157,8 +1409,12 @@ double Device::getBrightness()
     return QDBusMessageToDouble(m);
 }
 
-/**
- * Sets the logo to static lighting.
+/*!
+ * \fn bool libopenrazer::Device::setLogoStatic(QColor color)
+ *
+ * Sets the logo to static lighting in the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoStatic(QColor color)
 {
@@ -1171,8 +1427,12 @@ bool Device::setLogoStatic(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo active.
+/*!
+ * \fn bool libopenrazer::Device::setLogoActive(bool active)
+ *
+ * Sets the logo active i.e. lights on, specified by \a active.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoActive(bool active)
 {
@@ -1183,8 +1443,10 @@ bool Device::setLogoActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns if the logo is active.
+/*!
+ * \fn bool libopenrazer::Device::getLogoActive()
+ *
+ * Returns if the logo LED is active.
  */
 bool Device::getLogoActive()
 {
@@ -1192,8 +1454,10 @@ bool Device::getLogoActive()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns the current logo effect.
+/*!
+ * \fn uchar libopenrazer::Device::getLogoEffect()
+ *
+ * Returns the current effect on the logo LED. Values are defined in LEDEffect.
  */
 uchar Device::getLogoEffect()
 {
@@ -1201,8 +1465,12 @@ uchar Device::getLogoEffect()
     return QDBusMessageToByte(m);
 }
 
-/**
- * Sets the logo to blinking.
+/*!
+ * \fn bool libopenrazer::Device::setLogoBlinking(QColor color)
+ *
+ * Sets the logo to the blinking effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoBlinking(QColor color)
 {
@@ -1215,8 +1483,12 @@ bool Device::setLogoBlinking(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to pulsate.
+/*!
+ * \fn bool libopenrazer::Device::setLogoPulsate(QColor color)
+ *
+ * Sets the logo to the pulsate effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoPulsate(QColor color)
 {
@@ -1229,8 +1501,12 @@ bool Device::setLogoPulsate(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to spectrum.
+/*!
+ * \fn bool libopenrazer::Device::setLogoSpectrum()
+ *
+ * Sets the logo to the spectrum effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoSpectrum()
 {
@@ -1238,8 +1514,12 @@ bool Device::setLogoSpectrum()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to none.
+/*!
+ * \fn bool libopenrazer::Device::setLogoNone()
+ *
+ * Sets the logo LED to none / off.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoNone()
 {
@@ -1247,8 +1527,12 @@ bool Device::setLogoNone()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to reactive.
+/*!
+ * \fn bool libopenrazer::Device::setLogoReactive(QColor color, ReactiveSpeed speed)
+ *
+ * Sets the logo to the reactive effect with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoReactive(QColor color, ReactiveSpeed speed)
 {
@@ -1262,8 +1546,12 @@ bool Device::setLogoReactive(QColor color, ReactiveSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to single breath.
+/*!
+ * \fn bool libopenrazer::Device::setLogoBreathSingle(QColor color)
+ *
+ * Sets the logo to the single breath effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoBreathSingle(QColor color)
 {
@@ -1276,8 +1564,12 @@ bool Device::setLogoBreathSingle(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to dual breath.
+/*!
+ * \fn bool libopenrazer::Device::setLogoBreathDual(QColor color, QColor color2)
+ *
+ * Sets the logo to the dual breath effect with the specified \a color and \a color2.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoBreathDual(QColor color, QColor color2)
 {
@@ -1293,8 +1585,12 @@ bool Device::setLogoBreathDual(QColor color, QColor color2)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo to random breath.
+/*!
+ * \fn bool libopenrazer::Device::setLogoBreathRandom()
+ *
+ * Sets the logo to the random breath effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoBreathRandom()
 {
@@ -1302,8 +1598,12 @@ bool Device::setLogoBreathRandom()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the logo brightness (0-100).
+/*!
+ * \fn bool libopenrazer::Device::setLogoBrightness(double brightness)
+ *
+ * Sets the logo \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setLogoBrightness(double brightness)
 {
@@ -1314,8 +1614,10 @@ bool Device::setLogoBrightness(double brightness)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets the current logo brightness (0-100).
+/*!
+ * \fn double libopenrazer::Device::getLogoBrightness()
+ *
+ * Returns the current logo brightness (0-100).
  */
 double Device::getLogoBrightness()
 {
@@ -1341,8 +1643,12 @@ bool Device::setScrollStatic(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll active.
+/*!
+ * \fn bool libopenrazer::Device::setScrollActive(bool active)
+ *
+ * Sets the scrollwheel active i.e. lights on, specified by \a active.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollActive(bool active)
 {
@@ -1353,8 +1659,10 @@ bool Device::setScrollActive(bool active)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Returns if the scroll if active.
+/*!
+ * \fn bool libopenrazer::Device::getScrollActive()
+ *
+ * Returns if the scroll wheel LED is active.
  */
 bool Device::getScrollActive()
 {
@@ -1362,8 +1670,10 @@ bool Device::getScrollActive()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Returns the current scroll effect.
+/*!
+ * \fn uchar libopenrazer::Device::getScrollEffect()
+ *
+ * Returns the current effect on the scroll wheel LED. Values are defined in LEDEffect.
  */
 uchar Device::getScrollEffect()
 {
@@ -1371,8 +1681,12 @@ uchar Device::getScrollEffect()
     return QDBusMessageToByte(m);
 }
 
-/**
- * Sets scroll to blinking.
+/*!
+ * \fn bool libopenrazer::Device::setScrollBlinking(QColor color)
+ *
+ * Sets the scroll wheel to the blinking effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollBlinking(QColor color)
 {
@@ -1385,8 +1699,12 @@ bool Device::setScrollBlinking(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to pulsate.
+/*!
+ * \fn bool libopenrazer::Device::setScrollPulsate(QColor color)
+ *
+ * Sets the scroll wheel to the pulsate effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollPulsate(QColor color)
 {
@@ -1402,7 +1720,7 @@ bool Device::setScrollPulsate(QColor color)
 /*!
  * \fn bool libopenrazer::Device::setScrollSpectrum()
  *
- * Sets the scroll to the spectrum effect.
+ * Sets the scroll wheel to the spectrum effect.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -1412,8 +1730,12 @@ bool Device::setScrollSpectrum()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to none.
+/*!
+ * \fn bool libopenrazer::Device::setScrollNone()
+ *
+ * Sets the scroll wheel LED to none / off.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollNone()
 {
@@ -1440,8 +1762,12 @@ bool Device::setScrollReactive(QColor color, ReactiveSpeed speed)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to single breath.
+/*!
+ * \fn bool libopenrazer::Device::setScrollBreathSingle(QColor color)
+ *
+ * Sets the scroll wheel to the single breath effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollBreathSingle(QColor color)
 {
@@ -1454,8 +1780,12 @@ bool Device::setScrollBreathSingle(QColor color)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to dual breath.
+/*!
+ * \fn bool libopenrazer::Device::setScrollBreathDual(QColor color, QColor color2)
+ *
+ * Sets the scroll wheel to the dual breath effect with the specified \a color and \a color2.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollBreathDual(QColor color, QColor color2)
 {
@@ -1471,8 +1801,12 @@ bool Device::setScrollBreathDual(QColor color, QColor color2)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll to random breath.
+/*!
+ * \fn bool libopenrazer::Device::setScrollBreathRandom()
+ *
+ * Sets the scroll wheel to the random breath effect.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollBreathRandom()
 {
@@ -1480,8 +1814,12 @@ bool Device::setScrollBreathRandom()
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Sets the scroll wheel brightness (0-100).
+/*!
+ * \fn bool libopenrazer::Device::setScrollBrightness(double brightness)
+ *
+ * Sets the scroll wheel \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setScrollBrightness(double brightness)
 {
@@ -1492,8 +1830,10 @@ bool Device::setScrollBrightness(double brightness)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets the current scroll brightness (0-100).
+/*!
+ * \fn double libopenrazer::Device::getScrollBrightness()
+ *
+ * Returns the current scroll wheel brightness (0-100).
  */
 double Device::getScrollBrightness()
 {
@@ -1501,8 +1841,10 @@ double Device::getScrollBrightness()
     return QDBusMessageToDouble(m);
 }
 
-/**
- * Gets if the blue profile LED is on/off.
+/*!
+ * \fn bool libopenrazer::Device::getBlueLED()
+ *
+ * Returns if the blue profile LED is on/off.
  */
 bool Device::getBlueLED()
 {
@@ -1510,8 +1852,12 @@ bool Device::getBlueLED()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Sets the blue profile LED to on/off.
+/*!
+ * \fn bool libopenrazer::Device::setBlueLED(bool on)
+ *
+ * Sets the blue profile LED to on/off, specified by \a on.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setBlueLED(bool on)
 {
@@ -1522,8 +1868,10 @@ bool Device::setBlueLED(bool on)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets if the green profile LED is on/off.
+/*!
+ * \fn bool libopenrazer::Device::getGreenLED()
+ *
+ * Returns if the green profile LED is on/off.
  */
 bool Device::getGreenLED()
 {
@@ -1531,8 +1879,12 @@ bool Device::getGreenLED()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Sets the green profile LED to on/off.
+/*!
+ * \fn bool libopenrazer::Device::setGreenLED(bool on)
+ *
+ * Sets the green profile LED to on/off, specified by \a on.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setGreenLED(bool on)
 {
@@ -1543,8 +1895,10 @@ bool Device::setGreenLED(bool on)
     return QDBusMessageToVoid(m);
 }
 
-/**
- * Gets if the red profile LED is on/off.
+/*!
+ * \fn bool libopenrazer::Device::getRedLED()
+ *
+ * Returns if the red profile LED is on/off.
  */
 bool Device::getRedLED()
 {
@@ -1552,8 +1906,12 @@ bool Device::getRedLED()
     return QDBusMessageToBool(m);
 }
 
-/**
- * Sets the red profile LED to on/off.
+/*!
+ * \fn bool libopenrazer::Device::setRedLED(bool on)
+ *
+ * Sets the red profile LED to on/off, specified by \a on.
+ *
+ * Returns if the D-Bus call was successful.
  */
 bool Device::setRedLED(bool on)
 {

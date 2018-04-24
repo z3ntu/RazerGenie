@@ -72,3 +72,31 @@
     \value POLL_125HZ
            The mouse reports the position with 125Hz.
 */
+/*!
+    \enum libopenrazer::LEDEffect
+
+    This enum type specifices the possible values for the Logo LED and Scroll Wheel LED effects.
+
+    \value STATIC
+           The LED lights up in one solid color.
+    \value BLINKING
+           The LED blinks.
+    \value PULSATE
+           The LED pulsates in a color.
+    \value SPECTRUM
+           The LED fades through all colors.
+*/
+/*!
+    \enum libopenrazer::Device::LightingLocation
+
+    This enum type specifices the possible locations for LEDs.
+
+    \value Lighting
+           The standard location.
+    \value LightingLogo
+           The logo LED.
+    \value LightingScroll
+           The scroll wheel LED.
+    \value LightingBacklight
+           The backlight LED (sometimes keypad LED).
+*/

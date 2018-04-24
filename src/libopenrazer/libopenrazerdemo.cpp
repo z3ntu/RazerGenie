@@ -13,6 +13,10 @@ int main()
         qDebug() << "-----------------";
         libopenrazer::Device device = libopenrazer::Device(str);
         qDebug() << "Devicename:" << device.getDeviceName();
+        qDebug() << "Devicemode:" << device.getDeviceMode();
+//         device.setDeviceMode(0x03, 0x00);
+//         qDebug() << "Devicemode:" << device.getDeviceMode();
+        qDebug() << "Driver version:" << device.getDriverVersion();
         qDebug() << "Serial: " << str;
 
         if(device.hasCapability("dpi")) {
