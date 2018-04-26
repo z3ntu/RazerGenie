@@ -315,7 +315,10 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     QList<libopenrazer::Device::LightingLocation> lightingLocationsTodo;
 
     // Check what lighting locations the device has
-    if(currentDevice->hasCapability("lighting") || currentDevice->hasCapability("lighting_bw2013"))
+    if(currentDevice->hasCapability("lighting") ||
+       currentDevice->hasCapability("lighting_bw2013") ||
+       currentDevice->hasCapability("lighting_profile_leds") ||
+       currentDevice->hasCapability("brightness"))
         lightingLocationsTodo.append(libopenrazer::Device::Lighting);
     if(currentDevice->hasCapability("lighting_logo"))
         lightingLocationsTodo.append(libopenrazer::Device::LightingLogo);

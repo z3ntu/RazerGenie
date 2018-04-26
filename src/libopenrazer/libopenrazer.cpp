@@ -432,7 +432,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_static_bw2013", hasCapabilityInternal("razer.device.lighting.bw2013", "setStatic"));
     capabilities.insert("lighting_pulsate", hasCapabilityInternal("razer.device.lighting.bw2013", "setPulsate"));
 
-    capabilities.insert("lighting_profile_leds", hasCapabilityInternal("razer.device.lighting.profile_led", "getRedLED"));
+    capabilities.insert("lighting_profile_leds", hasCapabilityInternal("razer.device.lighting.profile_led"));
 
     capabilities.insert("lighting_led_matrix", hasMatrix());
     capabilities.insert("lighting_led_single", hasCapabilityInternal("razer.device.lighting.chroma", "setKey"));
