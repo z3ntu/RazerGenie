@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QApplication::setApplicationName("RazerGenie");
     QApplication::setApplicationVersion(RAZERGENIE_VERSION);
+    QApplication::setOrganizationName("razergenie"); // for QSettings
 
     QCommandLineParser parser;
     parser.addHelpOption();

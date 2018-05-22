@@ -72,6 +72,7 @@ public slots:
 #ifdef INCLUDE_MATRIX_DISCOVERY
     void openMatrixDiscovery();
 #endif
+    void openPreferences();
 
     void dbusServiceRegistered(const QString &serviceName);
     void dbusServiceUnregistered(const QString &serviceName);

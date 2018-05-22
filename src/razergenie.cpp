@@ -27,6 +27,7 @@
 #include "libopenrazer/libopenrazer.h"
 #include "libopenrazer/razercapability.h"
 #include "customeditor/customeditor.h"
+#include "preferences/preferences.h"
 #include "razerimagedownloader.h"
 #include "razerdevicewidget.h"
 #include "devicelistwidget.h"
@@ -141,6 +142,7 @@ void RazerGenie::setupUi()
     fillDeviceList();
 
     //Connect signals
+    connect(ui_main.preferencesButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
     ui_main.syncCheckBox->setChecked(libopenrazer::getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
@@ -298,6 +300,8 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     if(!currentDevice->getPngFilename().isEmpty()) {
         RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
+        connect(dl, &RazerImageDownloader::downloadErrored, listItemWidget, &DeviceListWidget::imageDownloadErrored);
+        dl->startDownload();
     } else {
         qWarning() << ".png mapping for device '" + currentDevice->getDeviceName() + "' (PID "+QString::number(currentDevice->getPid())+") missing.";
         listItemWidget->setNoImage();
@@ -1280,6 +1284,12 @@ void RazerGenie::openMatrixDiscovery()
     cust->show();
 }
 #endif
+
+void RazerGenie::openPreferences()
+{
+    Preferences *prefs = new Preferences();
+    prefs->show();
+}
 
 void RazerGenie::deviceAdded()
 {

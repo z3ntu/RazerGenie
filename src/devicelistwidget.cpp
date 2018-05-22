@@ -30,8 +30,8 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
     layout->setMargin(2);
 
     // Add icon
-    if(!device->getPngFilename().isEmpty()) {
-        QString path = RazerImageDownloader::getDownloadPath() + device->getPngFilename();
+    QString path = RazerImageDownloader::getDownloadPath() + device->getPngFilename();
+    if(QFile(path).exists()) {
         QPixmap scaled = createPixmapFromFile(path);
         imageLabel = new QLabel(this);
         imageLabel->setPixmap(scaled);
@@ -39,12 +39,12 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
         imageLabel = new QLabel(tr("Downloading image..."), this);
     }
     imageLabel->setAlignment(Qt::AlignCenter);
+    imageLabel->setWordWrap(true);
     layout->addWidget(imageLabel);
 
     QLabel *deviceName = new QLabel(device->getDeviceName(), this);
     deviceName->setWordWrap(true);
     deviceName->setAlignment(Qt::AlignCenter);
-
     layout->addWidget(deviceName);
 }
 
@@ -59,6 +59,14 @@ void DeviceListWidget::imageDownloaded(QString &filename)
     qDebug() << "DeviceListWidget: Received signal!" << filename;
     QPixmap scaled = createPixmapFromFile(filename);
     imageLabel->setPixmap(scaled);
+}
+
+void DeviceListWidget::imageDownloadErrored(QString reason, QString longReason)
+{
+    qDebug() << "DeviceListWidget: Received errored signal!";
+    qDebug() << "DeviceListWidget: Reason:" << reason;
+    qDebug() << "DeviceListWidget: Long reason:" << longReason;
+    imageLabel->setText(reason);
 }
 
 libopenrazer::Device *DeviceListWidget::device()

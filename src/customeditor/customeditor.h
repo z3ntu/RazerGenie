@@ -19,7 +19,7 @@
 #ifndef CUSTOMEDITOR_H
 #define CUSTOMEDITOR_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QJsonObject>
 #include <libopenrazer.h>
 #include "matrixpushbutton.h"
@@ -28,7 +28,7 @@ enum DrawStatus {
     set, clear
 };
 
-class CustomEditor : public QWidget
+class CustomEditor : public QDialog
 {
     Q_OBJECT
 public:

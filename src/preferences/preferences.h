@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * Copyright (C) 2018  Luca Weiss <luca (at) z3ntu (dot) xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,19 @@
  *
  */
 
-#ifndef RAZERIMAGEDOWNLOADER_H
-#define RAZERIMAGEDOWNLOADER_H
+#ifndef PREFERENCES_H
+#define PREFERENCES_H
 
-#include <QFile>
+#include <QDialog>
 #include <QSettings>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkReply>
 
-class RazerImageDownloader : public QObject
+class Preferences : public QDialog
 {
-    Q_OBJECT
 public:
-    RazerImageDownloader(QUrl url, QObject *parent);
-    ~RazerImageDownloader();
-    void startDownload();
-    static QString getDownloadPath();
-signals:
-    void downloadFinished(QString &filename);
-    void downloadErrored(QString reason, QString longReason);
+    Preferences(QWidget* parent = 0);
+    ~Preferences();
 private:
-    QFile *_file;
-    QString _filepath;
-    QUrl url;
-    QNetworkAccessManager *manager;
     QSettings settings;
-private slots:
-    void finished(QNetworkReply* reply);
 };
 
-#endif // RAZERIMAGEDOWNLOADER_H
+#endif // PREFERENCES_H
