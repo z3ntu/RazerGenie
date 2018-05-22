@@ -12,6 +12,7 @@ Packages are available for these distributions:
 * **Arch Linux:** you can install the package from the AUR: [razergenie](https://aur.archlinux.org/packages/razergenie/) or [razergenie-git](https://aur.archlinux.org/packages/razergenie-git/)
 * **Debian/Fedora/openSUSE/Ubuntu:** [Download from OBS (openSUSE Build Service)](https://software.opensuse.org//download.html?project=hardware%3Arazer&package=razergenie)
 * **Solus:** Install `razergenie` via the Software Center
+* **Flatpak:** RazerGenie is available on [Flathub](https://flathub.org/apps/details/xyz.z3ntu.razergenie)!
 
 Before installing RazerGenie please follow the [instructions on how to install OpenRazer](https://openrazer.github.io/#download) as you might hit unexpected problems otherwise.
 
