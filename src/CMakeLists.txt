@@ -19,9 +19,9 @@ set(razergenie_SRCS main.cpp
                     razerimagedownloader.cpp
                     razerdevicewidget.cpp
                     devicelistwidget.cpp
-                    customeditor.cpp
-                    matrixpushbutton.cpp
                     util.cpp
+                    customeditor/customeditor.cpp
+                    customeditor/matrixpushbutton.cpp
                     )
 
 QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui)

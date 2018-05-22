@@ -26,10 +26,10 @@
 #include "razergenie.h"
 #include "libopenrazer/libopenrazer.h"
 #include "libopenrazer/razercapability.h"
+#include "customeditor/customeditor.h"
 #include "razerimagedownloader.h"
 #include "razerdevicewidget.h"
 #include "devicelistwidget.h"
-#include "customeditor.h"
 #include "util.h"
 
 #define newIssueUrl "https://github.com/openrazer/openrazer/issues/new"
