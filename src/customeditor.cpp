@@ -141,7 +141,6 @@ QLayout* CustomEditor::generateKeyboard()
 {
     //TODO: Add missing logo button
     QVBoxLayout *vbox = new QVBoxLayout();
-    //TODO: Get physical layout from daemon and use
     QJsonObject keyboardLayout;
     bool found = false;
     QString kbdLayout = device->getKeyboardLayout();
