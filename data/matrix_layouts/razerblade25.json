@@ -112,7 +112,7 @@
             {"label": "ctrl", "matrix": [5, 0]},
             {"label": "fn", "matrix": [5, 2]},
             {"label": "\ud83d\udc27", "matrix": [5, 3]},
-            {"label": "alt", "matrix": [5, 4]},
+            {"label": "alt", "matrix": [5, 5]},
             {"label": "space", "width": 324, "matrix": [5, 7]},
             {"label": "alt", "matrix": [5, 10]},
             {"label": "ctrl", "matrix": [5, 12]},
