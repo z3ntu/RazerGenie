@@ -159,7 +159,7 @@
             {"label": "L", "matrix": [3, 10]},
             {"label": ";", "matrix": [3, 11]},
             {"label": "'", "matrix": [3, 12]},
-            {"label": "enter", "width": 142, "matrix": [3, 15]}
+            {"label": "enter", "width": 143, "matrix": [3, 15]}
         ],
         "row4": [
             {"label": "shift", "width": 142, "matrix": [4, 1]},
@@ -173,20 +173,20 @@
             {"label": ",", "matrix": [4, 10]},
             {"label": ".", "matrix": [4, 11]},
             {"label": "/", "matrix": [4, 12]},
-            {"label": "shift", "width": 175, "matrix": [4, 15]}
+            {"label": "shift", "width": 176, "matrix": [4, 15]}
         ],
         "row5": [
-            {"label": "ctrl", "width": 80, "matrix": [5, 1]},
+            {"label": "ctrl", "width": 76, "matrix": [5, 1]},
             {"label": "fn", "matrix": [5, 2]},
             {"label": "\ud83d\udc27", "matrix": [5, 3]},
             {"label": "alt", "matrix": [5, 4]},
             {"label": "space", "width": 324, "disabled": true},
-            {"label": "alt gr", "matrix": [5, 9]},
+            {"label": "alt", "matrix": [5, 9]},
             {"label": "fn", "matrix": [5, 10]},
             {"label": "ctrl", "matrix": [5, 11]},
             {"label": "\ud83e\udc38", "width": 50, "matrix": [5, 12]},
-            {"label": "\ud83e\udc39", "width": 27, "matrix": [5, 13]},
-            {"label": "\ud83e\udc3b", "width": 27, "matrix": [5, 14]},
+            {"label": "\ud83e\udc39", "width": 29, "matrix": [5, 13]},
+            {"label": "\ud83e\udc3b", "width": 29, "matrix": [5, 14]},
             {"label": "\ud83e\udc3a", "width": 50, "matrix": [5, 15]}
         ]
     }
