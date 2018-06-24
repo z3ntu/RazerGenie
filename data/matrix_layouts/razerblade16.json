@@ -173,7 +173,7 @@
             {"label": ",", "matrix": [4, 10]},
             {"label": ".", "matrix": [4, 11]},
             {"label": "/", "matrix": [4, 12]},
-            {"label": "shift", "width": 173, "matrix": [4, 15]}
+            {"label": "shift", "width": 175, "matrix": [4, 15]}
         ],
         "row5": [
             {"label": "ctrl", "width": 80, "matrix": [5, 1]},
