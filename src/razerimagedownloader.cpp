@@ -49,7 +49,7 @@ void RazerImageDownloader::startDownload()
         return;
     }
     if(!settings.value("downloadImages").toBool()) {
-        emit downloadErrored("Image download disabled", "Image downloading is disabled. Visit the preferences to enable it.");
+        emit downloadErrored(tr("Image download disabled"), tr("Image downloading is disabled. Visit the preferences to enable it."));
         return;
     }
 
@@ -74,7 +74,7 @@ RazerImageDownloader::~RazerImageDownloader()
 void RazerImageDownloader::finished(QNetworkReply* reply)
 {
     if(reply->error() != QNetworkReply::NoError) {
-        emit downloadErrored("Network Error", QVariant::fromValue(reply->error()).value<QString>());
+        emit downloadErrored(tr("Network Error"), QVariant::fromValue(reply->error()).value<QString>());
         return;
     }
 

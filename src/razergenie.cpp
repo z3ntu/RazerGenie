@@ -342,7 +342,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
     // Lighting header
     if(lightingLocationsTodo.size() != 0) {
-        QLabel *lightingHeader = new QLabel("Lighting", widget);
+        QLabel *lightingHeader = new QLabel(tr("Lighting"), widget);
         lightingHeader->setFont(headerFont);
         verticalLayout->addWidget(lightingHeader);
     }

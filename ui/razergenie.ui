@@ -82,7 +82,7 @@
        <item>
         <widget class="QLabel" name="versionLabel">
          <property name="text">
-          <string>Driver version: X.X.X</string>
+          <string notr="true">Daemon version: X.X.X</string>
          </property>
         </widget>
        </item>

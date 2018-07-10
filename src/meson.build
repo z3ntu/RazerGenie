@@ -10,7 +10,7 @@ razergenie_sources = ['main.cpp', 'razergenie.cpp', 'razerimagedownloader.cpp', 
                       'customeditor/customeditor.cpp', 'customeditor/matrixpushbutton.cpp', 'preferences/preferences.cpp']
 
 processed = qt5.preprocess(
-  moc_headers : ['razergenie.h', 'razerimagedownloader.h', 'customeditor/customeditor.h', 'devicelistwidget.h'],
+  moc_headers : ['razergenie.h', 'razerimagedownloader.h', 'devicelistwidget.h', 'customeditor/customeditor.h', 'preferences/preferences.h'],
   ui_files : '../ui/razergenie.ui'
 )
 
