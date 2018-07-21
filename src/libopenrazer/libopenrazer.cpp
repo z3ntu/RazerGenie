@@ -163,25 +163,25 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
  */
 QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
 {
-    QList<int> *retList = new QList<int>();
+    QList<int> retList;
     QDBusMessage msg = QDBusConnection::sessionBus().call(message);
     if(msg.type() == QDBusMessage::ReplyMessage) {
 //         qDebug() << "reply :" << msg; // sth like QDBusMessage(type=MethodReturn, service=":1.1482", signature="ai", contents=([Argument: ai {5426, 67}]) )
 //         qDebug() << "reply arguments : " << msg.arguments();
 //         qDebug() << "reply[0] :" << msg.arguments().at(0);
-        // ugh
+
         const QDBusArgument myArg = msg.arguments().at(0).value<QDBusArgument>();
         myArg.beginArray();
         while (!myArg.atEnd()) {
             int myElement = qdbus_cast<int>(myArg);
-            retList->append(myElement);
+            retList.append(myElement);
         }
         myArg.endArray();
-        return *retList;
+        return retList;
     }
     // TODO: Handle error
     printError(msg, Q_FUNC_INFO);
-    return *retList;
+    return retList;
 }
 
 /**

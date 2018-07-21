@@ -130,7 +130,11 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
 RazerGenie::~RazerGenie()
 {
-//    delete ui;
+    QHashIterator<QString, libopenrazer::Device*> i(devices);
+    while (i.hasNext()) {
+        i.next();
+        delete i.value();
+    }
 }
 
 void RazerGenie::setupUi()
@@ -229,22 +233,21 @@ void RazerGenie::refreshDeviceList()
     while (i.hasNext()) {
         i.next();
         if(serialnrs.contains(i.key())) {
-            qDebug() << "Keep:";
-            qDebug() << i.key();
+            qDebug() << "Keep: " << i.key();
             serialnrs.removeOne(i.key());
         } else {
-            qDebug() << "Remove:";
-            qDebug() << i.key();
+            libopenrazer::Device* dev = i.value();
+            qDebug() << "Remove: " << i.key();
             serialnrs.removeOne(i.key());
-            devices.remove(i.key());
             removeDeviceFromGui(i.key());
+            devices.remove(i.key());
+            delete dev;
         }
     }
     QStringListIterator j(serialnrs);
     while(j.hasNext()) {
         QString serial = j.next();
-        qDebug() << "Add:";
-        qDebug() << serial;
+        qDebug() << "Add: " << serial;
         addDeviceToGui(serial);
     }
 }
@@ -725,7 +728,6 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
 bool RazerGenie::removeDeviceFromGui(const QString &serial)
 {
-    qDebug() << "Remove device" << serial;
     int index = -1;
     for(int i=0; i<ui_main.listWidget->count(); i++) {
         // get item for index
@@ -1270,6 +1272,7 @@ void RazerGenie::openCustomEditor()
     libopenrazer::Device *dev = devices.value(item->getSerial());
 
     CustomEditor *cust = new CustomEditor(dev);
+    cust->setAttribute(Qt::WA_DeleteOnClose);
     cust->show();
 }
 
@@ -1281,6 +1284,7 @@ void RazerGenie::openMatrixDiscovery()
     libopenrazer::Device *dev = devices.value(item->getSerial());
 
     CustomEditor *cust = new CustomEditor(dev, true);
+    cust->setAttribute(Qt::WA_DeleteOnClose);
     cust->show();
 }
 #endif
@@ -1288,6 +1292,7 @@ void RazerGenie::openMatrixDiscovery()
 void RazerGenie::openPreferences()
 {
     Preferences *prefs = new Preferences();
+    prefs->setAttribute(Qt::WA_DeleteOnClose);
     prefs->show();
 }
 
