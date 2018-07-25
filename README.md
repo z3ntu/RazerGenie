@@ -7,6 +7,10 @@ RazerGenie is using [OpenRazer](https://openrazer.github.io) for providing contr
 ![Screenshot of the RazerGenie main window](https://z3ntu.github.io/RazerGenie/screenshots/mainwindow.png)
 ![Screenshot of the RazerGenie custom editor](https://z3ntu.github.io/RazerGenie/screenshots/customeditor.png)
 
+## Features
+
+It supports basically everything Razer Synapse supports minus macros and key remapping.
+
 ## Installation
 Packages are available for these distributions:
 * **Arch Linux:** you can install the package from the AUR: [razergenie](https://aur.archlinux.org/packages/razergenie/) or [razergenie-git](https://aur.archlinux.org/packages/razergenie-git/)
