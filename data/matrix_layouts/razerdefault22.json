@@ -94,7 +94,8 @@
             {"label": null},
             {"label": "4", "matrix": [3, 18]},
             {"label": "5", "matrix": [3, 19]},
-            {"label": "6", "matrix": [3, 20]}
+            {"label": "6", "matrix": [3, 20]},
+            {"label": "+", "disabled": true}
         ],
         "row4": [
             {"label": "M4", "matrix": [4, 0]},
@@ -133,7 +134,8 @@
             {"label": "\ud83e\udc3b", "matrix": [5, 16]},
             {"label": "\ud83e\udc3a", "matrix": [5, 17]},
             {"label": "0", "width": 126, "matrix": [5, 19]},
-            {"label": ",", "matrix": [5, 20]}
+            {"label": ",", "matrix": [5, 20]},
+            {"label": "enter", "disabled": true}
         ]
     }
 }
