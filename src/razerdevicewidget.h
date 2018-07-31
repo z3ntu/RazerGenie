@@ -20,17 +20,18 @@
 #define RAZERDEVICEWIDGET_H
 
 #include <QWidget>
+#include <QDBusObjectPath>
 
 class RazerDeviceWidget : public QWidget
 {
 public:
-    RazerDeviceWidget(const QString& name, const QString& serial);
+    RazerDeviceWidget(const QString& name, const QDBusObjectPath& devicePath);
     ~RazerDeviceWidget();
 
-    QString getSerial();
+    QDBusObjectPath getDevicePath();
 private:
     QString name;
-    QString serial;
+    QDBusObjectPath devicePath;
 };
 
 #endif // RAZERDEVICEWIDGET_H

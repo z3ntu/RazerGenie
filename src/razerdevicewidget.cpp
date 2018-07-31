@@ -18,15 +18,15 @@
 
 #include "razerdevicewidget.h"
 
-RazerDeviceWidget::RazerDeviceWidget (const QString &name, const QString &serial) : QWidget ()
+RazerDeviceWidget::RazerDeviceWidget (const QString &name, const QDBusObjectPath &devicePath) : QWidget ()
 {
     this->name = name;
-    this->serial = serial;
+    this->devicePath = devicePath;
 }
 
-QString RazerDeviceWidget::getSerial()
+QDBusObjectPath RazerDeviceWidget::getDevicePath()
 {
-    return serial;
+    return devicePath;
 }
 
 RazerDeviceWidget::~RazerDeviceWidget()

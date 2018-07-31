@@ -7,17 +7,17 @@ int main()
     qDebug() << "Daemon running:" << libopenrazer::isDaemonRunning();
     qDebug() << "Daemon version:" << libopenrazer::getDaemonVersion();
     qDebug() << "Supported devices:" << libopenrazer::getSupportedDevices();
-    QStringList serialnrs = libopenrazer::getConnectedDevices();
+    QList<QDBusObjectPath> devicePaths = libopenrazer::getConnectedDevices();
     libopenrazer::syncEffects(false);
-    foreach (const QString &str, serialnrs) {
+    foreach (const QDBusObjectPath &devicePath, devicePaths) {
         qDebug() << "-----------------";
-        libopenrazer::Device device = libopenrazer::Device(str);
+        libopenrazer::Device device = libopenrazer::Device(devicePath);
         qDebug() << "Devicename:" << device.getDeviceName();
         qDebug() << "Devicemode:" << device.getDeviceMode();
 //         device.setDeviceMode(0x03, 0x00);
 //         qDebug() << "Devicemode:" << device.getDeviceMode();
         qDebug() << "Driver version:" << device.getDriverVersion();
-        qDebug() << "Serial: " << str;
+//         qDebug() << "Serial: " << str;
 
         if(device.hasCapability("dpi")) {
             qDebug() << "DPI";

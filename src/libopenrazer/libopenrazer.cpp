@@ -32,6 +32,8 @@
 
 #include "libopenrazer.h"
 
+#define OPENRAZER_SERVICE_NAME "io.github.openrazer1"
+
 /*!
     \namespace libopenrazer
     \inmodule libopenrazer
@@ -48,7 +50,7 @@ namespace libopenrazer
  */
 QDBusMessage Device::prepareDeviceQDBusMessage(const QString &interface, const QString &method)
 {
-    return QDBusMessage::createMethodCall("org.razer", "/org/razer/device/" + mSerial, interface, method);
+    return QDBusMessage::createMethodCall(OPENRAZER_SERVICE_NAME, mObjectPath.path(), interface, method);
 }
 
 /**
@@ -56,17 +58,18 @@ QDBusMessage Device::prepareDeviceQDBusMessage(const QString &interface, const Q
  */
 QDBusMessage prepareGeneralQDBusMessage(const QString &interface, const QString &method)
 {
-    return QDBusMessage::createMethodCall("org.razer", "/org/razer", interface, method);
+    return QDBusMessage::createMethodCall(OPENRAZER_SERVICE_NAME, "/io/github/openrazer1", interface, method);
 }
 
 /**
  * Prints out relevant error information about a failed DBus call.
  */
-void printError(QDBusMessage& message, const char *functionname)
+void printError(QDBusMessage reqMessage, QDBusMessage& message, const char *functionname)
 {
     qWarning() << "libopenrazer: There was an error in" << functionname << "!";
     qWarning() << "libopenrazer:" << message.errorName();
     qWarning() << "libopenrazer:" << message.errorMessage();
+    qWarning() << "libopenrazer:" << reqMessage.service() << reqMessage.path() << reqMessage.interface() << reqMessage.member();
 }
 
 /**
@@ -80,7 +83,7 @@ bool QDBusMessageToBool(const QDBusMessage &message)
         return msg.arguments()[0].toBool();
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -95,7 +98,7 @@ int QDBusMessageToInt(const QDBusMessage &message)
         return msg.arguments()[0].toInt();
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -110,7 +113,7 @@ double QDBusMessageToDouble(const QDBusMessage &message)
         return msg.arguments()[0].toDouble();
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return false;
 }
 
@@ -125,7 +128,7 @@ QString QDBusMessageToString(const QDBusMessage &message)
         return msg.arguments()[0].toString();
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return "error";
 }
 
@@ -140,7 +143,7 @@ uchar QDBusMessageToByte(const QDBusMessage &message)
         return msg.arguments()[0].value<uchar>();
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return 0x00;
 }
 
@@ -154,8 +157,25 @@ QStringList QDBusMessageToStringList(const QDBusMessage &message)
         return msg.arguments()[0].toStringList();// VID / PID
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return msg.arguments()[0].toStringList();
+}
+
+/**
+ * Sends a QDBusMessage and returns the QDBusObjectPath array value.
+ */
+QList<QDBusObjectPath> QDBusMessageToObjectPathArray(const QDBusMessage &message)
+{
+    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
+    if(msg.type() == QDBusMessage::ReplyMessage) {
+        qDebug() << msg;
+        qDebug() << "reply arguments : " << msg.arguments();
+        qDebug() << "reply[0] :" << msg.arguments().at(0);
+        return qdbus_cast<QList<QDBusObjectPath>>(msg.arguments()[0].value<QDBusArgument>());
+    }
+    // TODO: Handle error
+    printError(message, msg, Q_FUNC_INFO);
+    return QList<QDBusObjectPath>();
 }
 
 /**
@@ -180,7 +200,7 @@ QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
         return retList;
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return retList;
 }
 
@@ -196,7 +216,7 @@ QDomDocument QDBusMessageToXML(const QDBusMessage &message)
         return doc;
     }
     // TODO: Handle error
-    printError(msg, Q_FUNC_INFO);
+    printError(message, msg, Q_FUNC_INFO);
     return doc;
 }
 
@@ -216,7 +236,7 @@ bool QDBusMessageToVoid(const QDBusMessage &message)
  */
 bool isDaemonRunning()
 {
-    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
+    QDBusMessage m = prepareGeneralQDBusMessage("io.github.openrazer1.Manager", "getVersion");
     QDBusMessage msg = QDBusConnection::sessionBus().call(m);
     if(msg.type() == QDBusMessage::ReplyMessage) {
         return true;
@@ -234,6 +254,7 @@ bool isDaemonRunning()
  */
 QVariantHash getSupportedDevices()
 {
+    return QVariantHash();
     QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "supportedDevices");
     QString ret = QDBusMessageToString(m);
     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
@@ -246,10 +267,10 @@ QVariantHash getSupportedDevices()
  *
  * Can be used to create a libopenrazer::Device object and get further information about the device.
  */
-QStringList getConnectedDevices()
+QList<QDBusObjectPath> getConnectedDevices()
 {
-    QDBusMessage m = prepareGeneralQDBusMessage("razer.devices", "getDevices");
-    return QDBusMessageToStringList(m);
+    QDBusMessage m = prepareGeneralQDBusMessage("io.github.openrazer1.Manager", "getDevices");
+    return QDBusMessageToObjectPathArray(m);
 }
 
 /*!
@@ -292,7 +313,7 @@ bool getSyncEffects()
  */
 QString getDaemonVersion()
 {
-    QDBusMessage m = prepareGeneralQDBusMessage("razer.daemon", "version");
+    QDBusMessage m = prepareGeneralQDBusMessage("io.github.openrazer1.Manager", "getVersion");
     return QDBusMessageToString(m);
 }
 
@@ -417,9 +438,9 @@ bool enableDaemon()
  *
  * Constructs a new device object with the given \a serial.
  */
-Device::Device(QString s)
+Device::Device(QDBusObjectPath objectPath)
 {
-    mSerial = s;
+    mObjectPath = objectPath;
     Introspect();
     setupCapabilities();
 }
@@ -561,7 +582,7 @@ void Device::setupCapabilities()
 // TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
 bool connectDeviceAdded(QObject *receiver, const char *slot)
 {
-    return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_added", receiver, slot);
+    return QDBusConnection::sessionBus().connect(OPENRAZER_SERVICE_NAME, "/org/razer", "razer.devices", "device_added", receiver, slot);
 }
 
 /*!
@@ -581,7 +602,7 @@ bool connectDeviceAdded(QObject *receiver, const char *slot)
 // TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
 bool connectDeviceRemoved(QObject *receiver, const char *slot)
 {
-    return QDBusConnection::sessionBus().connect("org.razer", "/org/razer", "razer.devices", "device_removed", receiver, slot);
+    return QDBusConnection::sessionBus().connect(OPENRAZER_SERVICE_NAME, "/org/razer", "razer.devices", "device_removed", receiver, slot);
 }
 
 // ---- MISC METHODS ----
@@ -590,9 +611,9 @@ bool connectDeviceRemoved(QObject *receiver, const char *slot)
  *
  * Returns the device serial.
  */
-QString Device::serial()
+QDBusObjectPath Device::objectPath()
 {
-    return mSerial;
+    return mObjectPath;
 }
 
 /**
@@ -696,6 +717,12 @@ bool Device::setDeviceMode(uchar mode_id, uchar param)
     return QDBusMessageToVoid(m);
 }
 
+QString Device::getSerial()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("io.github.openrazer1.Device", "getSerial");
+    return QDBusMessageToString(m);
+}
+
 /*!
  * \fn QString libopenrazer::Device::getDeviceName()
  *
@@ -703,7 +730,7 @@ bool Device::setDeviceMode(uchar mode_id, uchar param)
  */
 QString Device::getDeviceName()
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceName");
+    QDBusMessage m = prepareDeviceQDBusMessage("io.github.openrazer1.Device", "getName");
     return QDBusMessageToString(m);
 }
 
@@ -714,16 +741,8 @@ QString Device::getDeviceName()
  */
 QString Device::getDeviceType()
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceType");
-    QString devicetype = QDBusMessageToString(m);
-    // Fix up devicetype for old versions of the daemon (PR #445 in openrazer/openrazer).
-    // TODO: Remove once the new daemon version was released (and was out for a while).
-    if(devicetype == "firefly") {
-        devicetype = "mousemat";
-    } else if(devicetype == "orbweaver" || devicetype == "tartarus") {
-        devicetype = "keypad";
-    }
-    return devicetype;
+    QDBusMessage m = prepareDeviceQDBusMessage("io.github.openrazer1.Device", "getType");
+    return QDBusMessageToString(m);
 }
 
 /*!
@@ -744,7 +763,7 @@ QString Device::getDriverVersion()
  */
 QString Device::getFirmwareVersion()
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getFirmware");
+    QDBusMessage m = prepareDeviceQDBusMessage("io.github.openrazer1.Device", "getFirmwareVersion");
     return QDBusMessageToString(m);
 }
 
@@ -781,6 +800,7 @@ QVariantHash Device::getRazerUrls()
 int Device::getVid()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
+    return 0x00;
     return QDBusMessageToIntArray(m)[0];
 }
 
@@ -792,6 +812,7 @@ int Device::getVid()
 int Device::getPid()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getVidPid");
+    return 0x00;
     return QDBusMessageToIntArray(m)[1];
 }
 
@@ -1398,8 +1419,9 @@ bool Device::setRippleRandomColor(double refresh_rate)
  */
 bool Device::setBrightness(double brightness)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.brightness", "setBrightness");
+    QDBusMessage m = prepareDeviceQDBusMessage("io.github.openrazer1.Device", "setBrightness");
     QList<QVariant> args;
+    args.append(0x01);
     args.append(brightness);
     m.setArguments(args);
     return QDBusMessageToVoid(m);

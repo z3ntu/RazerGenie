@@ -21,6 +21,7 @@
 
 #include <QDomDocument>
 #include <QDBusMessage>
+#include <QDBusObjectPath>
 #include "razercapability.h"
 
 // NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
@@ -96,7 +97,7 @@ const static QList<RazerCapability> backlightComboBoxCapabilites {
 };
 
 // Daemon controls
-QStringList getConnectedDevices();
+QList<QDBusObjectPath> getConnectedDevices();
 QString getDaemonVersion();
 bool stopDaemon();
 bool isDaemonRunning();
@@ -124,7 +125,7 @@ bool connectDeviceRemoved(QObject *receiver, const char *slot);
 class Device
 {
 private:
-    QString mSerial;
+    QDBusObjectPath mObjectPath;
     QStringList introspection;
     QHash<QString, bool> capabilities;
 
@@ -134,10 +135,10 @@ private:
 
     bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
 public:
-    Device(QString serial);
+    Device(QDBusObjectPath objectPath);
     ~Device();
 
-    QString serial();
+    QDBusObjectPath objectPath();
     bool hasCapability(const QString &name);
     QHash<QString, bool> getAllCapabilities();
     QString getPngFilename();
@@ -146,6 +147,7 @@ public:
     // --- MISC METHODS ---
     QString getDeviceMode();
     bool setDeviceMode(uchar mode_id, uchar param);
+    QString getSerial();
     QString getDeviceName();
     QString getDeviceType();
     QString getDriverVersion();

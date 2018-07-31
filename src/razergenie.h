@@ -97,8 +97,8 @@ private:
     void refreshDeviceList();
     void clearDeviceList();
 
-    void addDeviceToGui(const QString &serial);
-    bool removeDeviceFromGui(const QString &serial);
+    void addDeviceToGui(const QDBusObjectPath &devicePath);
+    bool removeDeviceFromGui(const QDBusObjectPath &devicePath);
     QWidget *getNoDevicePlaceholder();
 
     QPair<libopenrazer::Device*, QString> commonCombo(int index);
@@ -115,7 +115,7 @@ private:
 
     bool syncDpi = true;
 
-    QHash<QString, libopenrazer::Device*> devices;
+    QHash<QDBusObjectPath, libopenrazer::Device*> devices;
 };
 
 

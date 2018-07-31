@@ -130,7 +130,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
 RazerGenie::~RazerGenie()
 {
-    QHashIterator<QString, libopenrazer::Device*> i(devices);
+    QHashIterator<QDBusObjectPath, libopenrazer::Device*> i(devices);
     while (i.hasNext()) {
         i.next();
         delete i.value();
@@ -148,14 +148,14 @@ void RazerGenie::setupUi()
     //Connect signals
     connect(ui_main.preferencesButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
-    ui_main.syncCheckBox->setChecked(libopenrazer::getSyncEffects());
+//     ui_main.syncCheckBox->setChecked(libopenrazer::getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
-    ui_main.screensaverCheckBox->setChecked(libopenrazer::getTurnOffOnScreensaver());
+//     ui_main.screensaverCheckBox->setChecked(libopenrazer::getTurnOffOnScreensaver());
 
     connect(ui_main.listWidget, &QListWidget::currentRowChanged, ui_main.stackedWidget, &QStackedWidget::setCurrentIndex);
 
-    libopenrazer::connectDeviceAdded(this, SLOT(deviceAdded()));
-    libopenrazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
+//     libopenrazer::connectDeviceAdded(this, SLOT(deviceAdded()));
+//     libopenrazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
 }
 
 void RazerGenie::dbusServiceRegistered(const QString &serviceName)
@@ -206,14 +206,14 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
 void RazerGenie::fillDeviceList()
 {
     // Get all connected devices
-    QStringList serialnrs = libopenrazer::getConnectedDevices();
+    QList<QDBusObjectPath> devicePaths = libopenrazer::getConnectedDevices();
 
     // Iterate through all devices
-    foreach (const QString &serial, serialnrs) {
-        addDeviceToGui(serial);
+    foreach (const QDBusObjectPath &devicePath, devicePaths) {
+        addDeviceToGui(devicePath);
     }
 
-    if(serialnrs.size() == 0) {
+    if(devicePaths.size() == 0) {
         // Add placeholder widget
         ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
     }
@@ -228,27 +228,27 @@ void RazerGenie::refreshDeviceList()
     // if still in new, remove from new list
     // if not in new, remove from both
     // go through new (remaining items) list and add
-    QStringList serialnrs = libopenrazer::getConnectedDevices();
-    QMutableHashIterator<QString, libopenrazer::Device*> i(devices);
+    QList<QDBusObjectPath> devicePaths = libopenrazer::getConnectedDevices();
+    QMutableHashIterator<QDBusObjectPath, libopenrazer::Device*> i(devices);
     while (i.hasNext()) {
         i.next();
-        if(serialnrs.contains(i.key())) {
-            qDebug() << "Keep: " << i.key();
-            serialnrs.removeOne(i.key());
+        if(devicePaths.contains(i.key())) {
+            qDebug() << "Keep: " << i.key().path();
+            devicePaths.removeOne(i.key());
         } else {
             libopenrazer::Device* dev = i.value();
-            qDebug() << "Remove: " << i.key();
-            serialnrs.removeOne(i.key());
+            qDebug() << "Remove: " << i.key().path();
+            devicePaths.removeOne(i.key());
             removeDeviceFromGui(i.key());
             devices.remove(i.key());
             delete dev;
         }
     }
-    QStringListIterator j(serialnrs);
+    QListIterator<QDBusObjectPath> j(devicePaths);
     while(j.hasNext()) {
-        QString serial = j.next();
-        qDebug() << "Add: " << serial;
-        addDeviceToGui(serial);
+        QDBusObjectPath devicePath = j.next();
+        qDebug() << "Add: " << devicePath.path();
+        addDeviceToGui(devicePath);
     }
 }
 
@@ -269,16 +269,16 @@ void RazerGenie::clearDeviceList()
     ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
 }
 
-void RazerGenie::addDeviceToGui(const QString &serial)
+void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 {
     // Create device instance with current serial
-    libopenrazer::Device *currentDevice = new libopenrazer::Device(serial);
+    libopenrazer::Device *currentDevice = new libopenrazer::Device(devicePath);
 
     // Setup variables for easy access
     QString type = currentDevice->getDeviceType();
     QString name = currentDevice->getDeviceName();
 
-    qDebug() << serial;
+//     qDebug() << devicePath;
     qDebug() << name;
 
     if(devices.isEmpty()) {
@@ -297,7 +297,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     ui_main.listWidget->setItemWidget(listItem, listItemWidget);
 
     // Insert current device pointer with serial lookup into a QHash
-    devices.insert(serial, currentDevice);
+    devices.insert(devicePath, currentDevice);
 
     // Download image for device
     if(!currentDevice->getPngFilename().isEmpty()) {
@@ -314,7 +314,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     qDebug() << type;
 
     /* Create actual DeviceWidget */
-    RazerDeviceWidget *widget = new RazerDeviceWidget(name, serial);
+    RazerDeviceWidget *widget = new RazerDeviceWidget(name, devicePath);
 
     QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
 
@@ -322,17 +322,17 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     QList<libopenrazer::Device::LightingLocation> lightingLocationsTodo;
 
     // Check what lighting locations the device has
-    if(currentDevice->hasCapability("lighting") ||
-       currentDevice->hasCapability("lighting_bw2013") ||
-       currentDevice->hasCapability("lighting_profile_leds") ||
-       currentDevice->hasCapability("brightness"))
-        lightingLocationsTodo.append(libopenrazer::Device::Lighting);
-    if(currentDevice->hasCapability("lighting_logo"))
-        lightingLocationsTodo.append(libopenrazer::Device::LightingLogo);
-    if(currentDevice->hasCapability("lighting_scroll"))
-        lightingLocationsTodo.append(libopenrazer::Device::LightingScroll);
-    if(currentDevice->hasCapability("lighting_backlight"))
-        lightingLocationsTodo.append(libopenrazer::Device::LightingBacklight);
+//     if(currentDevice->hasCapability("lighting") ||
+//        currentDevice->hasCapability("lighting_bw2013") ||
+//        currentDevice->hasCapability("lighting_profile_leds") ||
+//        currentDevice->hasCapability("brightness"))
+    lightingLocationsTodo.append(libopenrazer::Device::Lighting);
+//     if(currentDevice->hasCapability("lighting_logo"))
+//         lightingLocationsTodo.append(libopenrazer::Device::LightingLogo);
+//     if(currentDevice->hasCapability("lighting_scroll"))
+//         lightingLocationsTodo.append(libopenrazer::Device::LightingScroll);
+//     if(currentDevice->hasCapability("lighting_backlight"))
+//         lightingLocationsTodo.append(libopenrazer::Device::LightingBacklight);
 
     // Declare header font
     QFont headerFont("Arial", 15, QFont::Bold);
@@ -400,18 +400,18 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::standardCombo);
 
             // Brightness slider
-            if(currentDevice->hasCapability("brightness")) {
-                brightnessLabel = new QLabel(tr("Brightness"));
-                brightnessSlider = new QSlider(Qt::Horizontal, widget);
-                if(currentDevice->hasCapability("get_brightness")) {
-                    qDebug() << "Brightness:" << currentDevice->getBrightness();
-                    brightnessSlider->setValue(currentDevice->getBrightness());
-                } else {
-                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
-                    brightnessSlider->setValue(100);
-                }
-                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::brightnessChanged);
+//             if(currentDevice->hasCapability("brightness")) {
+            brightnessLabel = new QLabel(tr("Brightness"));
+            brightnessSlider = new QSlider(Qt::Horizontal, widget);
+            if(currentDevice->hasCapability("get_brightness")) {
+                qDebug() << "Brightness:" << currentDevice->getBrightness();
+                brightnessSlider->setValue(currentDevice->getBrightness());
+            } else {
+                // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                brightnessSlider->setValue(100);
             }
+            connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::brightnessChanged);
+//             }
 
         } else if(currentLocation == libopenrazer::Device::LightingLogo) {
             // Add items from capabilities
@@ -716,7 +716,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     verticalLayout->addItem(spacer);
 
     /* Serial and firmware version labels */
-    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(serial));
+    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(currentDevice->getSerial()));
     verticalLayout->addWidget(serialLabel);
 
     QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(currentDevice->getFirmwareVersion()));
@@ -726,7 +726,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 //         qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
 }
 
-bool RazerGenie::removeDeviceFromGui(const QString &serial)
+bool RazerGenie::removeDeviceFromGui(const QDBusObjectPath &devicePath)
 {
     int index = -1;
     for(int i=0; i<ui_main.listWidget->count(); i++) {
@@ -735,7 +735,7 @@ bool RazerGenie::removeDeviceFromGui(const QString &serial)
         // get itemwidget for the item
         DeviceListWidget *widget = dynamic_cast<DeviceListWidget*>(ui_main.listWidget->itemWidget(item));
         // compare serial
-        if(widget->device()->serial() == serial) {
+        if(widget->device()->objectPath() == devicePath) {
             index = i;
             break;
         }
@@ -868,7 +868,7 @@ QPair<libopenrazer::Device*, QString> RazerGenie::commonCombo(int index)
     QString identifier = capability.getIdentifier();
 
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     // Show/hide the color buttons
     if(capability.getNumColors() == 0) { // hide all
@@ -958,7 +958,7 @@ void RazerGenie::brightnessChanged(int value)
     qDebug() << value;
 
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
     dev->setBrightness(value);
 }
 
@@ -967,7 +967,7 @@ void RazerGenie::scrollBrightnessChanged(int value)
     qDebug() << value;
 
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
     dev->setScrollBrightness(value);
 }
 
@@ -976,7 +976,7 @@ void RazerGenie::logoBrightnessChanged(int value)
     qDebug() << value;
 
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
     dev->setLogoBrightness(value);
 }
 
@@ -985,7 +985,7 @@ void RazerGenie::backlightBrightnessChanged(int value)
     qDebug() << value;
 
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
     dev->setBacklightBrightness(value);
 }
 
@@ -1007,7 +1007,7 @@ void RazerGenie::dpiChanged(int orig_value)
 
             // get device pointer
             RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-            libopenrazer::Device *dev = devices.value(item->getSerial());
+            libopenrazer::Device *dev = devices.value(item->getDevicePath());
             // set DPI
             dev->setDPI(value, value); // set for both X & Y
         } else {
@@ -1018,7 +1018,7 @@ void RazerGenie::dpiChanged(int orig_value)
     } /* if DPI should NOT be synced */ else {
         // get device pointer
         RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-        libopenrazer::Device *dev = devices.value(item->getSerial());
+        libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
         // set DPI (with value from other slider)
         if(sender->objectName() == "dpiX") {
@@ -1170,7 +1170,7 @@ void RazerGenie::applyEffect(libopenrazer::Device::LightingLocation loc)
     libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();
     QString identifier = capability.getIdentifier();
 
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     if(loc == libopenrazer::Device::Lighting) {
         applyEffectStandardLoc(identifier, dev);
@@ -1213,7 +1213,7 @@ void RazerGenie::pollCombo(int /* index */)
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
     dev->setPollRate(sender->currentData().value<libopenrazer::PollRate>());
@@ -1223,7 +1223,7 @@ void RazerGenie::logoActiveCheckbox(bool checked)
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     dev->setLogoActive(checked);
     qDebug() << checked;
@@ -1233,7 +1233,7 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     dev->setScrollActive(checked);
     qDebug() << checked;
@@ -1243,7 +1243,7 @@ void RazerGenie::backlightActiveCheckbox(bool checked)
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     dev->setBacklightActive(checked);
     qDebug() << checked;
@@ -1252,7 +1252,7 @@ void RazerGenie::backlightActiveCheckbox(bool checked)
 void RazerGenie::profileLedCheckbox(bool checked)
 {
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     QCheckBox *sender = qobject_cast<QCheckBox*>(QObject::sender());
 
@@ -1269,7 +1269,7 @@ void RazerGenie::openCustomEditor()
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     CustomEditor *cust = new CustomEditor(dev);
     cust->setAttribute(Qt::WA_DeleteOnClose);
@@ -1281,7 +1281,7 @@ void RazerGenie::openMatrixDiscovery()
 {
     // get device pointer
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getSerial());
+    libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     CustomEditor *cust = new CustomEditor(dev, true);
     cust->setAttribute(Qt::WA_DeleteOnClose);
