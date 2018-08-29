@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "US": {
+=======
+    "en_US": {
+>>>>>>> 44c678e... razerdefault22: Add en_US keymap
         "row0": [
             {"label": null},
             {"label": "esc", "matrix": [0, 1]},
@@ -119,9 +123,15 @@
             {"label": "ctrl", "width": 94, "matrix": [5, 1]},
             {"label": "\ud83d\udc27", "matrix": [5, 2]},
             {"label": "alt", "width": 94, "matrix": [5, 3]},
+<<<<<<< HEAD
             {"label": "space", "width": 388, "matrix": [5, 7]},
             {"label": "alt", "width": 94, "matrix": [5, 11]},
             {"label": "fn", "matrix": [5, 12]},
+=======
+            {"label": "space", "width": 388},
+            {"label": "alt", "width": 94, "matrix": [5, 11]},
+            {"label": "fn"},
+>>>>>>> 44c678e... razerdefault22: Add en_US keymap
             {"label": "\u2630", "matrix": [5, 13]},
             {"label": "ctrl", "width": 92, "matrix": [5, 14]},
             {"label": "\ud83e\udc38", "matrix": [5, 15]},
@@ -133,7 +143,11 @@
         ]
     },
 
+<<<<<<< HEAD
     "German": {
+=======
+    "de_DE": {
+>>>>>>> 44c678e... razerdefault22: Add en_US keymap
         "row0": [
             {"label": null},
             {"label": "esc", "matrix": [0, 1]},
@@ -529,7 +543,7 @@
             {"label": "alt", "width": 94, "matrix": [5, 3]},
             {"label": "espace", "width": 388, "matrix": [5, 7]},
             {"label": "alt gr", "width": 94, "matrix": [5, 11]},
-            {"label": "fn"},
+            {"label": "fn", "matrix": [5, 12]},
             {"label": "\u2630", "matrix": [5, 13]},
             {"label": "ctrl", "width": 92, "matrix": [5, 14]},
             {"label": "\u2190", "matrix": [5, 15]},
