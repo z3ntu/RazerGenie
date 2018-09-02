@@ -1,5 +1,7 @@
 project = libopenrazer
 
+moduleheader = libopenrazermodule.h
+
 headerdirs = ..
 sources = libopenrazer.qdoc
 sourcedirs = ..

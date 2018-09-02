@@ -1,3 +1,5 @@
+subdir('docs')
+
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
 libopenrazer_sources = ['libopenrazer.cpp', 'razercapability.cpp']
 libopenrazer = shared_library('openrazer',
