@@ -116,6 +116,7 @@ private:
     bool syncDpi = true;
 
     QHash<QDBusObjectPath, libopenrazer::Device*> devices;
+    libopenrazer::Manager *manager;
 };
 
 

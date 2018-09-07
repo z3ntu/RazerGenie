@@ -39,7 +39,8 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
     razergenieVersionLabel->setText(tr("RazerGenie Version: %1").arg(RAZERGENIE_VERSION));
 
     QLabel *openrazerVersionLabel = new QLabel(this);
-    openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(libopenrazer::getDaemonVersion()));
+    // FIXME reenable
+//     openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(libopenrazer::getDaemonVersion()));
 
     QLabel *generalLabel = new QLabel(this);
     generalLabel->setText(tr("General:"));

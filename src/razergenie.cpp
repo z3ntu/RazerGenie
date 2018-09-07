@@ -43,15 +43,17 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
     // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 
+    manager = new libopenrazer::Manager();
+
     // What to do:
     // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
     // If enabled: Do nothing => DONE
     // If not_installed: "The daemon is not installed (or the version is too old). Please follow the instructions on the website https://openrazer.github.io/"
     // If no_systemd: Check if daemon is not running: "It seems you are not using systemd as your init system. You have to find a way to auto-start the daemon yourself."
-    libopenrazer::DaemonStatus daemonStatus = libopenrazer::getDaemonStatus();
+    libopenrazer::DaemonStatus daemonStatus = manager->getDaemonStatus();
 
     // Check if daemon available
-    if(!libopenrazer::isDaemonRunning()) {
+    if(!manager->isDaemonRunning()) {
         // Build a UI depending on what the status is.
 
         if(daemonStatus == libopenrazer::DaemonStatus::NotInstalled) {
@@ -89,7 +91,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             QPushButton *issueButton = new QPushButton(tr("Report issue"));
 
             textEdit->setReadOnly(true);
-            textEdit->setText(libopenrazer::getDaemonStatusOutput());
+            textEdit->setText(manager->getDaemonStatusOutput());
 
             gridLayout->addWidget(label, 0, 1, 1, 2);
             gridLayout->addWidget(textEdit, 1, 1, 1, 2);
@@ -114,7 +116,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             msgBox.exec();
 
             if (msgBox.clickedButton() == enableButton) {
-                libopenrazer::enableDaemon();
+                manager->enableDaemon();
             } // ignore the cancel button
         }
 
@@ -141,16 +143,16 @@ void RazerGenie::setupUi()
 {
     ui_main.setupUi(this);
 
-    ui_main.versionLabel->setText(tr("Daemon version: %1").arg(libopenrazer::getDaemonVersion()));
+    ui_main.versionLabel->setText(tr("Daemon version: %1").arg(manager->getDaemonVersion()));
 
     fillDeviceList();
 
     //Connect signals
     connect(ui_main.preferencesButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
-//     ui_main.syncCheckBox->setChecked(libopenrazer::getSyncEffects());
+    ui_main.syncCheckBox->setChecked(manager->getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
-//     ui_main.screensaverCheckBox->setChecked(libopenrazer::getTurnOffOnScreensaver());
+    ui_main.screensaverCheckBox->setChecked(manager->getTurnOffOnScreensaver());
 
     connect(ui_main.listWidget, &QListWidget::currentRowChanged, ui_main.stackedWidget, &QStackedWidget::setCurrentIndex);
 
@@ -206,7 +208,7 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
 void RazerGenie::fillDeviceList()
 {
     // Get all connected devices
-    QList<QDBusObjectPath> devicePaths = libopenrazer::getConnectedDevices();
+    QList<QDBusObjectPath> devicePaths = manager->getConnectedDevices();
 
     // Iterate through all devices
     foreach (const QDBusObjectPath &devicePath, devicePaths) {
@@ -228,7 +230,7 @@ void RazerGenie::refreshDeviceList()
     // if still in new, remove from new list
     // if not in new, remove from both
     // go through new (remaining items) list and add
-    QList<QDBusObjectPath> devicePaths = libopenrazer::getConnectedDevices();
+    QList<QDBusObjectPath> devicePaths = manager->getConnectedDevices();
     QMutableHashIterator<QDBusObjectPath, libopenrazer::Device*> i(devices);
     while (i.hasNext()) {
         i.next();
@@ -765,7 +767,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 
     // Don't even iterate if there are no devices detected by lsusb.
     if(connectedDevices.count() != 0) {
-        QHashIterator<QString, QVariant> i(libopenrazer::getSupportedDevices());
+        QHashIterator<QString, QVariant> i(manager->getSupportedDevices());
         // Iterate through the supported devices
         while (i.hasNext()) {
             i.next();
@@ -827,13 +829,13 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 
 void RazerGenie::toggleSync(bool sync)
 {
-    if(!libopenrazer::syncEffects(sync))
+    if(!manager->syncEffects(sync))
         util::showError(tr("Error while syncing devices."));
 }
 
 void RazerGenie::toggleOffOnScreesaver(bool on)
 {
-    if(!libopenrazer::setTurnOffOnScreensaver(on))
+    if(!manager->setTurnOffOnScreensaver(on))
         util::showError(tr("Error while toggling 'turn off on screensaver'"));
 }
 

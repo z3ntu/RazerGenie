@@ -22,7 +22,10 @@
 #include <QDomDocument>
 #include <QDBusMessage>
 #include <QDBusObjectPath>
+#include <QDBusInterface>
+
 #include "razercapability.h"
+#include "razer_test.h"
 
 // NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
 
@@ -96,44 +99,52 @@ const static QList<RazerCapability> backlightComboBoxCapabilites {
     RazerCapability("lighting_backlight_static", "Static", 1),
 };
 
-// Daemon controls
-QList<QDBusObjectPath> getConnectedDevices();
-QString getDaemonVersion();
-bool stopDaemon();
-bool isDaemonRunning();
-
-QVariantHash getSupportedDevices();
-
-// Sync
-bool syncEffects(bool yes);
-bool getSyncEffects();
-
-// Screensaver
-bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
-bool getTurnOffOnScreensaver();
-
-// Misc
-DaemonStatus getDaemonStatus();
-QString getDaemonStatusOutput();
-bool enableDaemon();
-// bool disableDaemon();
-
-// - Signal Connect Mehtods -
-bool connectDeviceAdded(QObject *receiver, const char *slot);
-bool connectDeviceRemoved(QObject *receiver, const char *slot);
-
-class Device
+class Manager : public QObject
 {
+    Q_OBJECT
 private:
+    QDBusInterface *iface;
+
+    QDBusInterface *managerIface();
+
+public:
+    // Daemon controls
+    QList<QDBusObjectPath> getConnectedDevices();
+    QString getDaemonVersion();
+    bool stopDaemon();
+    bool isDaemonRunning();
+
+    QVariantHash getSupportedDevices();
+
+    // Sync
+    bool syncEffects(bool yes);
+    bool getSyncEffects();
+
+    // Screensaver
+    bool setTurnOffOnScreensaver(bool turnOffOnScreensaver);
+    bool getTurnOffOnScreensaver();
+
+    // Misc
+    DaemonStatus getDaemonStatus();
+    QString getDaemonStatusOutput();
+    bool enableDaemon();
+    // bool disableDaemon();
+
+    // - Signal Connect Mehtods -
+    bool connectDeviceAdded(QObject *receiver, const char *slot);
+    bool connectDeviceRemoved(QObject *receiver, const char *slot);
+};
+
+class Device : public QObject
+{
+    Q_OBJECT
+private:
+    QDBusInterface *iface;
+    QDBusInterface *deviceIface();
+
     QDBusObjectPath mObjectPath;
-    QStringList introspection;
     QHash<QString, bool> capabilities;
 
-    QDBusMessage prepareDeviceQDBusMessage(const QString &interface, const QString &method);
-    void Introspect();
-    void setupCapabilities();
-
-    bool hasCapabilityInternal(const QString &interface, const QString &method = QString());
 public:
     Device(QDBusObjectPath objectPath);
     ~Device();
@@ -150,7 +161,6 @@ public:
     QString getSerial();
     QString getDeviceName();
     QString getDeviceType();
-    QString getDriverVersion();
     QString getFirmwareVersion();
     QString getKeyboardLayout();
     QVariantHash getRazerUrls();
@@ -167,12 +177,12 @@ public:
     QList<int> getMatrixDimensions();
 
     // --- POLL RATE ---
-    int getPollRate();
+    uint getPollRate();
     bool setPollRate(PollRate pollrate);
 
     // --- DPI ---
-    bool setDPI(int dpi_x, int dpi_y);
-    QList<int> getDPI();
+    bool setDPI(razer_test::RazerDPI dpi);
+    razer_test::RazerDPI getDPI();
     int maxDPI();
 
     // --- BATTERY ----
