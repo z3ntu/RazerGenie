@@ -55,7 +55,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
 
     // Add items from capabilities
     for(auto ledFx : libopenrazer::ledFxList) {
-        if(device->hasCapability(ledFx.getIdentifier())) {
+        if(device->hasFx(ledFx.getIdentifier())) {
             comboBox->addItem(ledFx.getDisplayString(), QVariant::fromValue(ledFx));
         }
     }
@@ -64,7 +64,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
     connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &LedWidget::fxComboboxChanged);
 
     // Brightness slider
-    if(device->hasCapability("brightness")) {
+    if(device->hasFx("brightness")) {
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         qDebug() << "Brightness:" << led->getBrightness();

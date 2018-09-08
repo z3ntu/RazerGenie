@@ -350,7 +350,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* DPI sliders */
-    if(currentDevice->hasCapability("dpi")) {
+    if(currentDevice->hasFeature("dpi")) {
         // HBoxes
         QHBoxLayout *dpiXHBox = new QHBoxLayout();
         QHBoxLayout *dpiYHBox = new QHBoxLayout();
@@ -431,7 +431,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* Poll rate */
-    if(currentDevice->hasCapability("poll_rate")) {
+    if(currentDevice->hasFeature("poll_rate")) {
         QLabel *pollRateHeader = new QLabel(tr("Polling rate"), widget);
         pollRateHeader->setFont(headerFont);
         verticalLayout->addWidget(pollRateHeader);
@@ -447,7 +447,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* Custom lighting */
-    if(currentDevice->hasCapability("lighting_led_matrix")) {
+    if(currentDevice->hasFeature("led_matrix")) {
         QPushButton *button = new QPushButton(widget);
         button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);

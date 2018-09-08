@@ -120,7 +120,6 @@ public:
     ~Device();
 
     QDBusObjectPath objectPath();
-    bool hasCapability(const QString &name); // TODO REMOVE
     bool hasFx(const QString &fxStr);
     bool hasFeature(const QString &featureStr);
     QHash<QString, bool> getAllCapabilities();

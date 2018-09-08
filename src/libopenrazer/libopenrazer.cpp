@@ -547,18 +547,6 @@ QDBusObjectPath Device::objectPath()
     return mObjectPath;
 }
 
-/*!
- * \fn bool libopenrazer::Device::hasCapability(const QString &name)
- *
- * Returns if a device has a given capability with the given \a name. Capability strings can be listed with getAllCapabilities() or viewed in \c libopenrazer.cpp.
- *
- * \sa getAllCapabilities()
- */
-bool Device::hasCapability(const QString &name)
-{
-    return supportedFx.contains(name) || supportedFeatures.contains(name);
-}
-
 bool Device::hasFx(const QString &fxStr)
 {
     return supportedFx.contains(fxStr);

@@ -21,7 +21,7 @@ int main()
 //         qDebug() << "Driver version:" << device->getDriverVersion();
         qDebug() << "Serial: " << device->getSerial();
 
-        if(device->hasCapability("dpi")) {
+        if(device->hasFeature("dpi")) {
             qDebug() << "DPI";
             razer_test::RazerDPI dpi = device->getDPI();
             qDebug() << dpi.dpi_x << dpi.dpi_y;
@@ -31,7 +31,7 @@ int main()
             qDebug() << "maxdpi: " << device->maxDPI();
         }
 
-        if(device->hasCapability("poll_rate")) {
+        if(device->hasFeature("poll_rate")) {
             qDebug() << "Set_pollrate:" << device->setPollRate(libopenrazer::POLL_125HZ);
             qDebug() << "Pollrate:" << device->getPollRate();
             qDebug() << "Set_pollrate:" << device->setPollRate(libopenrazer::POLL_1000HZ);
@@ -41,13 +41,13 @@ int main()
         foreach (const QDBusObjectPath &ledPath, device->getLeds()) {
             libopenrazer::Led *led = new libopenrazer::Led(ledPath);
 
-            if(device->hasCapability("brightness")) {
+            if(device->hasFx("brightness")) {
                 qDebug() << "getBrightness";
                 qDebug() << led->getBrightness();
             }
         }
 
-        if(device->hasCapability("kbd_layout")) {
+        if(device->hasFeature("kbd_layout")) {
             qDebug() << "Keyboard layout:";
             qDebug() << device->getKeyboardLayout();
         }
