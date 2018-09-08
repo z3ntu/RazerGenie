@@ -1,6 +1,7 @@
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
 libopenrazer_sources = [
     'libopenrazer.cpp',
+    'device.cpp',
     'led.cpp',
     'manager.cpp',
     'razercapability.cpp'

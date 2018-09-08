@@ -9,6 +9,7 @@ set(LIBRAZER_VERSION_STRING ${LIBRAZER_VERSION_MAJOR}.${LIBRAZER_VERSION_MINOR}.
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
 add_library(openrazer SHARED
             libopenrazer.cpp
+            device.cpp
             led.cpp
             manager.cpp
             razercapability.cpp

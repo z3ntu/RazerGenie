@@ -1,5 +1,5 @@
 {
-    "en_US": {
+    "US": {
         "row0": [
             {"label": "esc", "matrix": [0, 2]},
             {"label": "F1", "matrix": [0, 3]},

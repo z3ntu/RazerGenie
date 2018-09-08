@@ -31,7 +31,8 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
-    dimens = device->getMatrixDimensions();
+//     dimens = device->getMatrixDimensions();
+    dimens = {6, 22}; // FIXME
     qDebug() << dimens;
 
     // Initialize internal colors list
@@ -288,7 +289,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
 
 bool CustomEditor::updateKeyrow(int row)
 {
-    return device->setKeyRow(row, 0, dimens[1]-1, colors[row]) && device->setCustom();
+    return device->defineCustomFrame(row, 0, dimens[1]-1, colors[row]) && device->displayCustomFrame();
 }
 
 void CustomEditor::clearAll()
@@ -301,10 +302,10 @@ void CustomEditor::clearAll()
 
     // Send one request per row
     for(int i=0; i<dimens[0]; i++) {
-        device->setKeyRow(i, 0, dimens[1]-1, blankColors);
+        device->defineCustomFrame(i, 0, dimens[1]-1, blankColors);
     }
 
-    device->setCustom();
+    device->displayCustomFrame();
 
     // Reset view
     for(int i=0; i<matrixPushButtons.size(); i++) {

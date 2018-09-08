@@ -67,6 +67,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
     if(device->hasFx("brightness")) {
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
+        brightnessSlider->setMaximum(255);
         qDebug() << "Brightness:" << led->getBrightness();
         brightnessSlider->setValue(led->getBrightness());
         connect(brightnessSlider, &QSlider::valueChanged, this, &LedWidget::brightnessSliderChanged);

@@ -447,7 +447,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* Custom lighting */
-    if(currentDevice->hasFeature("led_matrix")) {
+    if(currentDevice->hasFx("custom_frame")) {
         QPushButton *button = new QPushButton(widget);
         button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);
@@ -650,9 +650,9 @@ void RazerGenie::openCustomEditor()
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
-//     CustomEditor *cust = new CustomEditor(dev);
-//     cust->setAttribute(Qt::WA_DeleteOnClose);
-//     cust->show();
+    CustomEditor *cust = new CustomEditor(dev);
+    cust->setAttribute(Qt::WA_DeleteOnClose);
+    cust->show();
 }
 
 #ifdef INCLUDE_MATRIX_DISCOVERY
@@ -662,9 +662,9 @@ void RazerGenie::openMatrixDiscovery()
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
-//     CustomEditor *cust = new CustomEditor(dev, true);
-//     cust->setAttribute(Qt::WA_DeleteOnClose);
-//     cust->show();
+    CustomEditor *cust = new CustomEditor(dev, true);
+    cust->setAttribute(Qt::WA_DeleteOnClose);
+    cust->show();
 }
 #endif
 

@@ -58,7 +58,7 @@ enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 const static QList<RazerCapability> ledFxList {
     RazerCapability("off", "Off", 0),
     RazerCapability("static", "Static", 1),
-    RazerCapability("breathing", "Breathing Single", 1),
+    RazerCapability("breathing", "Breathing", 1),
     RazerCapability("breathing_dual", "Breathing Dual", 2),
     RazerCapability("breathing_random", "Breathing Random", 0),
     RazerCapability("blinking", "Blinking", 1),
@@ -81,7 +81,6 @@ private:
 public:
     Manager();
 
-    // Daemon controls
     QList<QDBusObjectPath> getDevices();
     QString getDaemonVersion();
     bool stopDaemon();
@@ -127,7 +126,6 @@ public:
     QDBusObjectPath objectPath();
     bool hasFx(const QString &fxStr);
     bool hasFeature(const QString &featureStr);
-    QHash<QString, bool> getAllCapabilities();
     QString getPngFilename();
     QString getPngUrl();
 
@@ -153,11 +151,11 @@ public:
     // --- DPI ---
     bool setDPI(razer_test::RazerDPI dpi);
     razer_test::RazerDPI getDPI();
-    int maxDPI();
+    ushort maxDPI();
 
     // - Custom frame -
-    bool setCustom();
-    bool setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors);
+    bool displayCustomFrame();
+    bool defineCustomFrame(uchar row, uchar startColumn, uchar endColumn, QVector<QColor> colorData);
 };
 
 class Led : public QObject

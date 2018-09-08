@@ -21,8 +21,8 @@ set(razergenie_SRCS main.cpp
                     devicelistwidget.cpp
                     ledwidget.cpp
                     util.cpp
-#                    customeditor/customeditor.cpp
-#                    customeditor/matrixpushbutton.cpp
+                    customeditor/customeditor.cpp
+                    customeditor/matrixpushbutton.cpp
                     preferences/preferences.cpp
                     )
 

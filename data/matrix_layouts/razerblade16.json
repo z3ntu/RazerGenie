@@ -1,5 +1,5 @@
 {
-    "de_DE": {
+    "German": {
         "row0": [
             {"label": "esc", "matrix": [0, 1]},
             {"label": "F1", "matrix": [0, 2]},
@@ -96,7 +96,7 @@
         ]
     },
 
-    "en_US": {
+    "US": {
         "row0": [
             {"label": "esc", "matrix": [0, 1]},
             {"label": "F1", "matrix": [0, 2]},
