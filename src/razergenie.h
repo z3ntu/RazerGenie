@@ -35,17 +35,6 @@ public slots:
     void toggleSync(bool);
     void toggleOffOnScreesaver(bool on);
 
-    // Color buttons
-    void colorButtonClicked();
-
-    // Effect comboboxes
-    void standardCombo(int index);
-
-    // Brightness sliders
-    void brightnessChanged(int value);
-
-    void waveRadioButtonStandard(bool enabled);
-
     // DPI checkbox & slider
     void dpiChanged(int value);
     void dpiSyncCheckbox(bool checked);
@@ -86,14 +75,7 @@ private:
     bool removeDeviceFromGui(const QDBusObjectPath &devicePath);
     QWidget *getNoDevicePlaceholder();
 
-    QPair<libopenrazer::Device*, QString> commonCombo(int index);
-
     void getRazerDevices(void);
-    QColor getColorForButton(int num, uchar ledId);
-    libopenrazer::WaveDirection getWaveDirection(uchar ledId);
-
-    void applyEffect(uchar ledId);
-    void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);
 
     bool syncDpi = true;
 

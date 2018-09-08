@@ -54,49 +54,16 @@ enum PollRate { POLL_1000HZ = 1000, POLL_500HZ = 500, POLL_125HZ = 125 };
 
 enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 
-const static QList<RazerCapability> lightingComboBoxCapabilites {
-    RazerCapability("lighting_breath_single", "Breath Single", 1),
-    RazerCapability("lighting_breath_dual", "Breath Dual", 2),
-    RazerCapability("lighting_breath_triple", "Breath Triple", 3),
-    RazerCapability("lighting_breath_random", "Breath Random", 0),
-    RazerCapability("lighting_wave", "Wave", true),
-    RazerCapability("lighting_reactive", "Reactive", 1),
-    RazerCapability("lighting_none", "None", 0),
-    RazerCapability("lighting_spectrum", "Spectrum", 0),
-    RazerCapability("lighting_static", "Static", 1),
-    RazerCapability("lighting_ripple", "Ripple", 1), // Needs "refresh_rate"
-    RazerCapability("lighting_ripple_random", "Ripple random", 0), // Needs "refresh_rate"
-    RazerCapability("lighting_pulsate", "Pulsate", 0),
-    RazerCapability("lighting_static_bw2013", "Static", 0),
-};
-
-const static QList<RazerCapability> logoComboBoxCapabilites {
-    RazerCapability("lighting_logo_blinking", "Blinking", 1),
-    RazerCapability("lighting_logo_pulsate", "Pulsate", 1),
-    RazerCapability("lighting_logo_spectrum", "Spectrum", 0),
-    RazerCapability("lighting_logo_static", "Static", 1),
-    RazerCapability("lighting_logo_none", "None", 0),
-    RazerCapability("lighting_logo_reactive", "Reactive", 1),
-    RazerCapability("lighting_logo_breath_single", "Breath Single", 1),
-    RazerCapability("lighting_logo_breath_dual", "Breath Dual", 2),
-    RazerCapability("lighting_logo_breath_random", "Breath random", 0),
-};
-
-const static QList<RazerCapability> scrollComboBoxCapabilites {
-    RazerCapability("lighting_scroll_blinking", "Blinking", 1),
-    RazerCapability("lighting_scroll_pulsate", "Pulsate", 1),
-    RazerCapability("lighting_scroll_spectrum", "Spectrum", 0),
-    RazerCapability("lighting_scroll_static", "Static", 1),
-    RazerCapability("lighting_scroll_none", "None", 0),
-    RazerCapability("lighting_scroll_reactive", "Reactive", 1),
-    RazerCapability("lighting_scroll_breath_single", "Breath Single", 1),
-    RazerCapability("lighting_scroll_breath_dual", "Breath Dual", 2),
-    RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
-};
-
-const static QList<RazerCapability> backlightComboBoxCapabilites {
-    RazerCapability("lighting_backlight_spectrum", "Spectrum", 0),
-    RazerCapability("lighting_backlight_static", "Static", 1),
+const static QList<RazerCapability> ledFxList {
+    RazerCapability("off", "Off", 0),
+    RazerCapability("static", "Static", 1),
+    RazerCapability("breathing", "Breathing Single", 1),
+    RazerCapability("breathing_dual", "Breathing Dual", 2),
+    RazerCapability("breathing_random", "Breathing Random", 0),
+    RazerCapability("blinking", "Blinking", 1),
+    RazerCapability("spectrum", "Spectrum", 0),
+    RazerCapability("wave", "Wave", true),
+    RazerCapability("reactive", "Reactive", 1),
 };
 
 class Manager : public QObject
@@ -176,7 +143,7 @@ public:
     QVariantHash getRazerUrls();
 
     // --- POLL RATE ---
-    uint getPollRate();
+    ushort getPollRate();
     bool setPollRate(PollRate pollrate);
 
     // --- DPI ---
@@ -202,9 +169,11 @@ public:
     Led(QDBusObjectPath objectPath);
     ~Led();
 
+    QDBusObjectPath getObjectPath();
+
     bool setNone();
     bool setStatic(QColor color);
-    bool setBreathingSingle(QColor color);
+    bool setBreathing(QColor color);
     bool setBreathingDual(QColor color, QColor color2);
     bool setBreathingRandom();
     bool setBlinking(QColor color);

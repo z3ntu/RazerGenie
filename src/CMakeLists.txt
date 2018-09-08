@@ -19,6 +19,7 @@ set(razergenie_SRCS main.cpp
                     razerimagedownloader.cpp
                     razerdevicewidget.cpp
                     devicelistwidget.cpp
+                    ledwidget.cpp
                     util.cpp
 #                    customeditor/customeditor.cpp
 #                    customeditor/matrixpushbutton.cpp

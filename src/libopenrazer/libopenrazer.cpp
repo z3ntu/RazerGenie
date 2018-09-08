@@ -679,9 +679,9 @@ bool Device::setDeviceMode(uchar mode_id, uchar param)
 
 QString Device::getSerial()
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("getSerial");
+    QDBusReply<QString> reply = deviceIface()->call("getSerial");
     if (reply.isValid())
-        return reply.value().variant().toString();
+        return reply.value();
     else
         return "error";
 }
@@ -721,9 +721,9 @@ QString Device::getDeviceType()
  */
 QString Device::getFirmwareVersion()
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("getFirmwareVersion");
+    QDBusReply<QString> reply = deviceIface()->call("getFirmwareVersion");
     if (reply.isValid())
-        return reply.value().variant().toString();
+        return reply.value();
     else
         return "error";
 }
@@ -735,9 +735,9 @@ QString Device::getFirmwareVersion()
  */
 QString Device::getKeyboardLayout()
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("getKeyboardLayout");
+    QDBusReply<QString> reply = deviceIface()->call("getKeyboardLayout");
     if (reply.isValid())
-        return reply.value().variant().toString();
+        return reply.value();
     else
         return "error";
 }
@@ -762,11 +762,11 @@ QVariantHash Device::getRazerUrls()
  *
  * Returns the current poll rate.
  */
-uint Device::getPollRate()
+ushort Device::getPollRate()
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("getPollRate");
+    QDBusReply<ushort> reply = deviceIface()->call("getPollRate");
     if (reply.isValid())
-        return reply.value().variant().toUInt();
+        return reply.value();
     else
         return 0;
 }
@@ -780,7 +780,7 @@ uint Device::getPollRate()
  */
 bool Device::setPollRate(PollRate pollrate)
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("setPollRate", pollrate);
+    QDBusReply<QDBusVariant> reply = deviceIface()->call("setPollRate", static_cast<ushort>(pollrate));
     return reply.isValid();
 }
 
@@ -804,9 +804,9 @@ bool Device::setDPI(razer_test::RazerDPI dpi)
  */
 razer_test::RazerDPI Device::getDPI()
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("getDPI");
+    QDBusReply<razer_test::RazerDPI> reply = deviceIface()->call("getDPI");
     if (reply.isValid())
-        return reply.value().variant().value<razer_test::RazerDPI>();
+        return reply.value();
     else
         return {0, 0};
 }
@@ -818,7 +818,7 @@ razer_test::RazerDPI Device::getDPI()
  */
 int Device::maxDPI()
 {
-    return 10000;
+    return 10000; // FIXME
 //     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "maxDPI");
 //     return QDBusMessageToInt(m);
 }
@@ -879,84 +879,4 @@ bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> 
 //     return QDBusMessageToVoid(m);
 }
 
-/*!
- * \fn bool libopenrazer::Device::getBlueLED()
- *
- * Returns if the blue profile LED is on/off.
- */
-// bool Device::getBlueLED()
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getBlueLED");
-//     return QDBusMessageToBool(m);
-// }
-
-/*!
- * \fn bool libopenrazer::Device::setBlueLED(bool on)
- *
- * Sets the blue profile LED to on/off, specified by \a on.
- *
- * Returns if the D-Bus call was successful.
- */
-// bool Device::setBlueLED(bool on)
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setBlueLED");
-//     QList<QVariant> args;
-//     args.append(on);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
-// }
-
-/*!
- * \fn bool libopenrazer::Device::getGreenLED()
- *
- * Returns if the green profile LED is on/off.
- */
-// bool Device::getGreenLED()
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getGreenLED");
-//     return QDBusMessageToBool(m);
-// }
-
-/*!
- * \fn bool libopenrazer::Device::setGreenLED(bool on)
- *
- * Sets the green profile LED to on/off, specified by \a on.
- *
- * Returns if the D-Bus call was successful.
- */
-// bool Device::setGreenLED(bool on)
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setGreenLED");
-//     QList<QVariant> args;
-//     args.append(on);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
-// }
-
-/*!
- * \fn bool libopenrazer::Device::getRedLED()
- *
- * Returns if the red profile LED is on/off.
- */
-// bool Device::getRedLED()
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "getRedLED");
-//     return QDBusMessageToBool(m);
-// }
-
-/*!
- * \fn bool libopenrazer::Device::setRedLED(bool on)
- *
- * Sets the red profile LED to on/off, specified by \a on.
- *
- * Returns if the D-Bus call was successful.
- */
-// bool Device::setRedLED(bool on)
-// {
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.profile_led", "setRedLED");
-//     QList<QVariant> args;
-//     args.append(on);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
-// }
 }
