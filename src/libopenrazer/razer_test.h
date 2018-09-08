@@ -31,7 +31,7 @@ struct RazerDPI {
 };
 
 // Marshall the RazerDPI data into a D-Bus argument
-QDBusArgument &operator<<(QDBusArgument &argument, const RazerDPI &razerDPI)
+inline QDBusArgument &operator<<(QDBusArgument &argument, const RazerDPI &razerDPI)
 {
     argument.beginStructure();
     argument << razerDPI.dpi_x << razerDPI.dpi_y;
@@ -40,7 +40,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const RazerDPI &razerDPI)
 }
 
 // Retrieve the RazerDPI data from the D-Bus argument
-const QDBusArgument &operator>>(const QDBusArgument &argument, RazerDPI &razerDPI)
+inline const QDBusArgument &operator>>(const QDBusArgument &argument, RazerDPI &razerDPI)
 {
     argument.beginStructure();
     argument >> razerDPI.dpi_x >> razerDPI.dpi_y;

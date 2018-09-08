@@ -9,29 +9,26 @@ int main()
     qDebug() << "Daemon running:" << manager->isDaemonRunning();
     qDebug() << "Daemon version:" << manager->getDaemonVersion();
     qDebug() << "Supported devices:" << manager->getSupportedDevices();
-    QList<QDBusObjectPath> devicePaths = manager->getConnectedDevices();
     manager->syncEffects(false);
-    foreach (const QDBusObjectPath &devicePath, devicePaths) {
+
+    foreach (const QDBusObjectPath &devicePath, manager->getDevices()) {
         qDebug() << "-----------------";
         libopenrazer::Device *device = new libopenrazer::Device(devicePath);
         qDebug() << "Devicename:" << device->getDeviceName();
         qDebug() << "Devicemode:" << device->getDeviceMode();
 //         device->setDeviceMode(0x03, 0x00);
 //         qDebug() << "Devicemode:" << device->getDeviceMode();
-        qDebug() << "Driver version:" << device->getDriverVersion();
-//         qDebug() << "Serial: " << str;
+//         qDebug() << "Driver version:" << device->getDriverVersion();
+        qDebug() << "Serial: " << device->getSerial();
 
         if(device->hasCapability("dpi")) {
             qDebug() << "DPI";
-            qDebug() << device->getDPI();
-            device->setDPI(500, 500);
-            qDebug() << device->getDPI();
+            razer_test::RazerDPI dpi = device->getDPI();
+            qDebug() << dpi.dpi_x << dpi.dpi_y;
+            device->setDPI({500, 500});
+            dpi = device->getDPI();
+            qDebug() << dpi.dpi_x << dpi.dpi_y;
             qDebug() << "maxdpi: " << device->maxDPI();
-        }
-
-        if(device->hasCapability("mug")) {
-            qDebug() << "isMugPresent";
-            qDebug() << device->isMugPresent();
         }
 
         if(device->hasCapability("poll_rate")) {
@@ -41,33 +38,18 @@ int main()
             qDebug() << "Pollrate:" << device->getPollRate();
         }
 
-        if(device->hasCapability("get_brightness")) {
-            qDebug() << "getBrightness";
-            qDebug() << device->getBrightness();
+        foreach (const QDBusObjectPath &ledPath, device->getLeds()) {
+            libopenrazer::Led *led = new libopenrazer::Led(ledPath);
+
+            if(device->hasCapability("brightness")) {
+                qDebug() << "getBrightness";
+                qDebug() << led->getBrightness();
+            }
         }
-        if(device->hasCapability("get_lighting_logo_brightness")) {
-            qDebug() << "getLogoBrightness";
-            qDebug() << device->getLogoBrightness();
-        }
-        if(device->hasCapability("get_lighting_scroll_brightness")) {
-            qDebug() << "getScrollBrightness";
-            qDebug() << device->getScrollBrightness();
-        }
-        if(device->hasCapability("backlight")) {
-            qDebug() << "Backlight:";
-            qDebug() << device->getBacklightActive();
-            qDebug() << device->setBacklightActive(false);
-            qDebug() << device->getBacklightActive();
-        }
+
         if(device->hasCapability("kbd_layout")) {
             qDebug() << "Keyboard layout:";
             qDebug() << device->getKeyboardLayout();
-        }
-        if(device->hasCapability("battery")) {
-            qDebug() << "Battery:";
-            qDebug() << "level: " << device->getBatteryLevel();
-            qDebug() << "isCharging: " << device->isCharging();
-            device->setIdleTime(10);
         }
 
 //         if(device->hasMatrix()) {

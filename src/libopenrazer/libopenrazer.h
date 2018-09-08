@@ -103,13 +103,14 @@ class Manager : public QObject
 {
     Q_OBJECT
 private:
-    QDBusInterface *iface;
-
+    QDBusInterface *iface = nullptr;
     QDBusInterface *managerIface();
 
 public:
+    Manager();
+
     // Daemon controls
-    QList<QDBusObjectPath> getConnectedDevices();
+    QList<QDBusObjectPath> getDevices();
     QString getDaemonVersion();
     bool stopDaemon();
     bool isDaemonRunning();
@@ -139,21 +140,30 @@ class Device : public QObject
 {
     Q_OBJECT
 private:
-    QDBusInterface *iface;
+    QDBusInterface *iface = nullptr;
     QDBusInterface *deviceIface();
 
     QDBusObjectPath mObjectPath;
-    QHash<QString, bool> capabilities;
+
+    QStringList supportedFx;
+    QStringList supportedFeatures;
 
 public:
     Device(QDBusObjectPath objectPath);
     ~Device();
 
     QDBusObjectPath objectPath();
-    bool hasCapability(const QString &name);
+    bool hasCapability(const QString &name); // TODO REMOVE
+    bool hasFx(const QString &fxStr);
+    bool hasFeature(const QString &featureStr);
     QHash<QString, bool> getAllCapabilities();
     QString getPngFilename();
     QString getPngUrl();
+
+    QList<QDBusObjectPath> getLeds();
+
+    QStringList getSupportedFx();
+    QStringList getSupportedFeatures();
 
     // --- MISC METHODS ---
     QString getDeviceMode();
@@ -164,17 +174,6 @@ public:
     QString getFirmwareVersion();
     QString getKeyboardLayout();
     QVariantHash getRazerUrls();
-    // VID / PID
-    int getVid();
-    int getPid();
-
-    // --- MACRO ---
-    bool hasDedicatedMacroKeys();
-    //TODO Rest
-
-    // --- MATRIX ---
-    bool hasMatrix();
-    QList<int> getMatrixDimensions();
 
     // --- POLL RATE ---
     uint getPollRate();
@@ -185,96 +184,36 @@ public:
     razer_test::RazerDPI getDPI();
     int maxDPI();
 
-    // --- BATTERY ----
-    bool isCharging();
-    double getBatteryLevel();
-    bool setIdleTime(ushort idle_time);
-    bool setLowBatteryThreshold(uchar threshold);
-
-    // --- MUG ---
-    bool isMugPresent();
-
-    // --- LIGHTING EFFECTS ---
-    // - Default -
-    bool setStatic(QColor color);
-    bool setBreathSingle(QColor color);
-    bool setBreathDual(QColor color, QColor color2);
-    bool setBreathTriple(QColor color, QColor color2, QColor color3);
-    bool setBreathRandom();
-    bool setReactive(QColor color, ReactiveSpeed speed);
-    bool setSpectrum();
-    bool setWave(WaveDirection direction);
-    bool setNone();
-    // Starlight
-    bool setStarlightSingle(QColor color, StarlightSpeed speed);
-    bool setStarlightDual(QColor color, QColor color2, StarlightSpeed speed);
-    bool setStarlightRandom(StarlightSpeed speed);
-    // bw2013
-    bool setStatic_bw2013();
-    bool setPulsate();
-
-    bool getBacklightActive();
-    bool setBacklightActive(bool active);
-    uchar getBacklightEffect();
-    bool setBacklightBrightness(double brightness);
-    double getBacklightBrightness();
-    bool setBacklightStatic(QColor color);
-    bool setBacklightSpectrum();
-
-    // - Custom(?) -
+    // - Custom frame -
     bool setCustom();
     bool setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors);
+};
 
-    // - Custom -
-    bool setRipple(QColor color, double refresh_rate);
-    bool setRippleRandomColor(double refresh_rate);
+class Led : public QObject
+{
+    Q_OBJECT
+private:
+    QDBusInterface *iface = nullptr;
+    QDBusInterface *ledIface();
 
-    bool setBrightness(double brightness);
-    double getBrightness();
+    QDBusObjectPath mObjectPath;
 
-    // - Logo -
-    bool setLogoStatic(QColor color);
-    bool setLogoActive(bool active);
-    bool getLogoActive();
-    uchar getLogoEffect();
-    bool setLogoBlinking(QColor color);
-    bool setLogoPulsate(QColor color);
-    bool setLogoSpectrum();
-    bool setLogoNone();
-    bool setLogoReactive(QColor color, ReactiveSpeed speed);
-    bool setLogoBreathSingle(QColor color);
-    bool setLogoBreathDual(QColor color, QColor color2);
-    bool setLogoBreathRandom();
+public:
+    Led(QDBusObjectPath objectPath);
+    ~Led();
 
-    bool setLogoBrightness(double brightness);
-    double getLogoBrightness();
+    bool setNone();
+    bool setStatic(QColor color);
+    bool setBreathingSingle(QColor color);
+    bool setBreathingDual(QColor color, QColor color2);
+    bool setBreathingRandom();
+    bool setBlinking(QColor color);
+    bool setSpectrum();
+    bool setWave(WaveDirection direction);
+    bool setReactive(QColor color, ReactiveSpeed speed);
 
-    // - Scroll -
-    bool setScrollStatic(QColor color);
-    bool setScrollActive(bool active);
-    bool getScrollActive();
-    uchar getScrollEffect();
-    bool setScrollBlinking(QColor color);
-    bool setScrollPulsate(QColor color);
-    bool setScrollSpectrum();
-    bool setScrollNone();
-    bool setScrollReactive(QColor color, ReactiveSpeed speed);
-    bool setScrollBreathSingle(QColor color);
-    bool setScrollBreathDual(QColor color, QColor color2);
-    bool setScrollBreathRandom();
-
-    bool setScrollBrightness(double brightness);
-    double getScrollBrightness();
-
-    // - Profile LED -
-    bool getBlueLED();
-    bool setBlueLED(bool on);
-    bool getGreenLED();
-    bool setGreenLED(bool on);
-    bool getRedLED();
-    bool setRedLED(bool on);
-
-    enum LightingLocation { Lighting, LightingLogo, LightingScroll, LightingBacklight };
+    bool setBrightness(uchar brightness);
+    uchar getBrightness();
 };
 
 }

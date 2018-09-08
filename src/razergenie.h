@@ -40,19 +40,11 @@ public slots:
 
     // Effect comboboxes
     void standardCombo(int index);
-    void scrollCombo(int index);
-    void logoCombo(int index);
-    void backlightCombo(int index);
 
     // Brightness sliders
     void brightnessChanged(int value);
-    void scrollBrightnessChanged(int value);
-    void logoBrightnessChanged(int value);
-    void backlightBrightnessChanged(int value);
 
     void waveRadioButtonStandard(bool enabled);
-    void waveRadioButtonLogo(bool enabled);
-    void waveRadioButtonScroll(bool enabled);
 
     // DPI checkbox & slider
     void dpiChanged(int value);
@@ -60,13 +52,6 @@ public slots:
 
     // Poll combobox
     void pollCombo(int /* index */);
-
-    // 'Set active' checkbox
-    void logoActiveCheckbox(bool checked);
-    void scrollActiveCheckbox(bool checked);
-    void backlightActiveCheckbox(bool checked);
-
-    void profileLedCheckbox(bool checked);
 
     void openCustomEditor();
 #ifdef INCLUDE_MATRIX_DISCOVERY
@@ -104,14 +89,11 @@ private:
     QPair<libopenrazer::Device*, QString> commonCombo(int index);
 
     void getRazerDevices(void);
-    QColor getColorForButton(int num, libopenrazer::Device::LightingLocation location);
-    libopenrazer::WaveDirection getWaveDirection(libopenrazer::Device::LightingLocation location);
+    QColor getColorForButton(int num, uchar ledId);
+    libopenrazer::WaveDirection getWaveDirection(uchar ledId);
 
-    void applyEffect(libopenrazer::Device::LightingLocation location);
+    void applyEffect(uchar ledId);
     void applyEffectStandardLoc(QString identifier, libopenrazer::Device *device);
-    void applyEffectLogoLoc(QString identifier, libopenrazer::Device *device);
-    void applyEffectScrollLoc(QString identifier, libopenrazer::Device *device);
-    void applyEffectBacklightLoc(QString identifier, libopenrazer::Device *device);
 
     bool syncDpi = true;
 

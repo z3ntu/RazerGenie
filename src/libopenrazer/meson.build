@@ -1,5 +1,5 @@
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
-libopenrazer_sources = ['libopenrazer.cpp', 'razercapability.cpp']
+libopenrazer_sources = ['libopenrazer.cpp', 'led.cpp', 'razercapability.cpp']
 libopenrazer = shared_library('openrazer',
                           libopenrazer_sources,
                           version : libopenrazer_version,
