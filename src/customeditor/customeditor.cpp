@@ -31,15 +31,14 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
-//     dimens = device->getMatrixDimensions();
-    dimens = {6, 22}; // FIXME
-    qDebug() << dimens;
+    dimens = device->getMatrixDimensions();
+    qDebug() << dimens.x << dimens.y;
 
     // Initialize internal colors list
-    for(int i=0; i<dimens[0]; i++) {
-        colors << QVector<QColor>(dimens[1]);
+    for(int i=0; i<dimens.x; i++) {
+        colors << QVector<QColor>(dimens.y);
 
-        for(int j=0; j<dimens[1]; j++) {
+        for(int j=0; j<dimens.y; j++) {
             colors[i][j] = QColor(Qt::black);
         }
     }
@@ -60,30 +59,30 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     if(launchMatrixDiscovery) {
         vbox->addLayout(generateMatrixDiscovery());
     } else if(type == "keyboard") {
-        if(dimens[0] == 6 && dimens[1] == 16) { // Razer Blade Stealth (Late 2017)
+        if(dimens.x == 6 && dimens.y == 16) { // Razer Blade Stealth (Late 2017)
             if(!parseKeyboardJSON("razerblade16")) {
                 closeWindow();
             }
-        } else if(dimens[0] == 6 && dimens[1] == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
+        } else if(dimens.x == 6 && dimens.y == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
             if(!parseKeyboardJSON("razerdefault22")) {
                 closeWindow();
             }
-        } else if(dimens[0] == 6 && dimens[1] == 25) { // Razer Blade Pro 2017
+        } else if(dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
             if(!parseKeyboardJSON("razerblade25")) {
                 closeWindow();
             }
         } else {
-            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens[0])).arg(QString::number(dimens[1])));
+            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
             closeWindow();
         }
         vbox->addLayout(generateKeyboard());
     } /*else if(type == "keypad") {
         vbox-addLayout(generateKeypad());
-    } */else if(type == "mousemat") {
-        if(dimens[0] == 1 && dimens[1] == 15) { // e.g. Firefly
+    } */else if(type == "mousepad") {
+        if(dimens.x == 1 && dimens.y == 15) { // e.g. Firefly
             vbox->addLayout(generateMousemat());
         } else {
-            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens[0])).arg(QString::number(dimens[1])));
+            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
             closeWindow();
         }
     } /*else if(type == "mouse") {
@@ -217,7 +216,7 @@ QLayout* CustomEditor::generateMousemat()
 {
     QHBoxLayout *hbox = new QHBoxLayout();
     // TODO: Improve visual style of the mousemat grid (make it look like the mousepad!)
-    for(int i=0; i<dimens[1]; i++) {
+    for(int i=0; i<dimens.y; i++) {
         MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
         btn->setMatrixPos(0, i);
 
@@ -238,9 +237,9 @@ QLayout* CustomEditor::generateMouse()
 QLayout* CustomEditor::generateMatrixDiscovery()
 {
     QVBoxLayout *vbox = new QVBoxLayout();
-    for(int i=0; i<dimens[0]; i++) {
+    for(int i=0; i<dimens.x; i++) {
         QHBoxLayout *hbox = new QHBoxLayout();
-        for(int j=0; j<dimens[1]; j++) {
+        for(int j=0; j<dimens.y; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
             btn->setMatrixPos(i, j);
 
@@ -289,20 +288,20 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
 
 bool CustomEditor::updateKeyrow(int row)
 {
-    return device->defineCustomFrame(row, 0, dimens[1]-1, colors[row]) && device->displayCustomFrame();
+    return device->defineCustomFrame(row, 0, dimens.y-1, colors[row]) && device->displayCustomFrame();
 }
 
 void CustomEditor::clearAll()
 {
     QVector<QColor> blankColors;
     // Initialize the array with the width of the matrix with black = off
-    for(int i=0; i<dimens[1]; i++) {
+    for(int i=0; i<dimens.y; i++) {
         blankColors << QColor(Qt::black);
     }
 
     // Send one request per row
-    for(int i=0; i<dimens[0]; i++) {
-        device->defineCustomFrame(i, 0, dimens[1]-1, blankColors);
+    for(int i=0; i<dimens.x; i++) {
+        device->defineCustomFrame(i, 0, dimens.y-1, blankColors);
     }
 
     device->displayCustomFrame();

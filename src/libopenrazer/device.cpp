@@ -339,4 +339,13 @@ bool Device::defineCustomFrame(uchar row, uchar startColumn, uchar endColumn, QV
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
+razer_test::MatrixDimensions Device::getMatrixDimensions()
+{
+    QVariant reply = deviceIface()->property("MatrixDimensions");
+    if(!reply.isNull())
+        return reply.value<razer_test::MatrixDimensions>();
+    else
+        return {0, 0};
+}
+
 }

@@ -25,8 +25,9 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 
+#include <razer_test.h>
+
 #include "razercapability.h"
-#include "razer_test.h"
 
 // NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
 
@@ -156,6 +157,7 @@ public:
     // - Custom frame -
     bool displayCustomFrame();
     bool defineCustomFrame(uchar row, uchar startColumn, uchar endColumn, QVector<QColor> colorData);
+    razer_test::MatrixDimensions getMatrixDimensions();
 };
 
 class Led : public QObject
