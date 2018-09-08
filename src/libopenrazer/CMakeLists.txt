@@ -10,6 +10,7 @@ set(LIBRAZER_VERSION_STRING ${LIBRAZER_VERSION_MAJOR}.${LIBRAZER_VERSION_MINOR}.
 add_library(openrazer SHARED
             libopenrazer.cpp
             led.cpp
+            manager.cpp
             razercapability.cpp
             )
 target_link_libraries(openrazer Qt5::Gui Qt5::DBus Qt5::Xml)

@@ -23,6 +23,7 @@
 #include <QDBusMessage>
 #include <QDBusObjectPath>
 #include <QDBusInterface>
+#include <QDBusReply>
 
 #include "razercapability.h"
 #include "razer_test.h"
@@ -65,6 +66,10 @@ const static QList<RazerCapability> ledFxList {
     RazerCapability("wave", "Wave", true),
     RazerCapability("reactive", "Reactive", 1),
 };
+
+void printDBusError(QDBusError error, const char *functionname);
+bool handleBoolReply (QDBusReply<bool> reply, const char *functionname);
+QString handleStringReply(QDBusReply<QString> reply, const char *functionname);
 
 class Manager : public QObject
 {

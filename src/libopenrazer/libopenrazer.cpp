@@ -45,6 +45,31 @@
 namespace libopenrazer
 {
 
+void printDBusError(QDBusError error, const char *functionname)
+{
+    qWarning("libopenrazer: There was an error in %s", functionname);
+    qWarning("libopenrazer: %s", qUtf8Printable(error.name()));
+    qWarning("libopenrazer: %s", qUtf8Printable(error.message()));
+}
+
+bool handleBoolReply (QDBusReply<bool> reply, const char *functionname)
+{
+    if(reply.isValid()) {
+        return true;
+    }
+    printDBusError(reply.error(), functionname);
+    return false;
+}
+
+QString handleStringReply(QDBusReply<QString> reply, const char *functionname)
+{
+    if(reply.isValid()) {
+        return reply.value();
+    }
+    printDBusError(reply.error(), functionname);
+    return "error";
+}
+
 // ----- MISC METHODS FOR LIBOPENRAZER -----
 
 QDBusInterface *Device::deviceIface()
@@ -95,376 +120,6 @@ void printError(QDBusMessage reqMessage, QDBusMessage& message, const char *func
     qWarning() << "libopenrazer:" << message.errorName();
     qWarning() << "libopenrazer:" << message.errorMessage();
     qWarning() << "libopenrazer:" << reqMessage.service() << reqMessage.path() << reqMessage.interface() << reqMessage.member();
-}
-
-/**
- * Sends a QDBusMessage and returns the boolean value.
- */
-bool QDBusMessageToBool(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        return msg.arguments()[0].toBool();
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return false;
-}
-
-/**
- * Sends a QDBusMessage and returns the integer value.
- */
-int QDBusMessageToInt(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        return msg.arguments()[0].toInt();
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return false;
-}
-
-/**
- * Sends a QDBusMessage and returns the double value.
- */
-double QDBusMessageToDouble(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        return msg.arguments()[0].toDouble();
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return false;
-}
-
-/**
- * Sends a QDBusMessage and returns the string value.
- */
-QString QDBusMessageToString(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        return msg.arguments()[0].toString();
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return "error";
-}
-
-/**
- * Sends a QDBusMessage and returns the string value.
- */
-uchar QDBusMessageToByte(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        // Everything went fine.
-        return msg.arguments()[0].value<uchar>();
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return 0x00;
-}
-
-/**
- * Sends a QDBusMessage and returns the stringlist value.
- */
-QStringList QDBusMessageToStringList(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        return msg.arguments()[0].toStringList();// VID / PID
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return msg.arguments()[0].toStringList();
-}
-
-/**
- * Sends a QDBusMessage and returns the QDBusObjectPath array value.
- */
-QList<QDBusObjectPath> QDBusMessageToObjectPathArray(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        qDebug() << msg;
-        qDebug() << "reply arguments : " << msg.arguments();
-        qDebug() << "reply[0] :" << msg.arguments().at(0);
-        return qdbus_cast<QList<QDBusObjectPath>>(msg.arguments()[0].value<QDBusArgument>());
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return QList<QDBusObjectPath>();
-}
-
-QList<QDBusObjectPath> QVariantToObjectPathArray(const QVariant &variant)
-{
-    return qdbus_cast<QList<QDBusObjectPath>>(variant);
-}
-
-/**
- * Sends a QDBusMessage and returns the int array value.
- */
-QList<int> QDBusMessageToIntArray(const QDBusMessage &message)
-{
-    QList<int> retList;
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-//         qDebug() << "reply :" << msg; // sth like QDBusMessage(type=MethodReturn, service=":1.1482", signature="ai", contents=([Argument: ai {5426, 67}]) )
-//         qDebug() << "reply arguments : " << msg.arguments();
-//         qDebug() << "reply[0] :" << msg.arguments().at(0);
-
-        const QDBusArgument myArg = msg.arguments().at(0).value<QDBusArgument>();
-        myArg.beginArray();
-        while (!myArg.atEnd()) {
-            int myElement = qdbus_cast<int>(myArg);
-            retList.append(myElement);
-        }
-        myArg.endArray();
-        return retList;
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return retList;
-}
-
-/**
- * Sends a QDBusMessage and returns the xml value.
- */
-QDomDocument QDBusMessageToXML(const QDBusMessage &message)
-{
-    QDBusMessage msg = QDBusConnection::sessionBus().call(message);
-    QDomDocument doc;
-    if(msg.type() == QDBusMessage::ReplyMessage) {
-        doc.setContent(msg.arguments()[0].toString());
-        return doc;
-    }
-    // TODO: Handle error
-    printError(message, msg, Q_FUNC_INFO);
-    return doc;
-}
-
-/**
- * Sends a QDBusMessage and returns if the call was successful.
- */
-bool QDBusMessageToVoid(const QDBusMessage &message)
-{
-    qDebug() << message;
-    return QDBusConnection::sessionBus().send(message);
-    // TODO: Handle error ?
-}
-
-/*!
- * \fn bool libopenrazer::isDaemonRunning()
- *
- * Returns if the daemon is running (and responding to the version call).
- */
-bool Manager::isDaemonRunning()
-{
-    QVariant reply = managerIface()->property("Version");
-    return !reply.isNull();
-}
-
-/*!
- * \fn QVariantHash libopenrazer::getSupportedDevices()
- *
- * Returns a list of supported devices in the format of \c {QHash<QString(DeviceName), QList<double(VID), double(PID)>>}.
- *
- * \sa Device::getVid(), Device::getPid()
- */
-QVariantHash Manager::getSupportedDevices()
-{
-    return QVariantHash();
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.devices", "supportedDevices");
-//     QString ret = QDBusMessageToString(m);
-//     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
-}
-
-/*!
- * \fn QStringList libopenrazer::getConnectedDevices()
- *
- * Returns a list of connected devices in form of their serial number (e.g. \c ['XX0000000001', 'PM1439131641838']).
- *
- * Can be used to create a libopenrazer::Device object and get further information about the device.
- */
-QList<QDBusObjectPath> Manager::getDevices()
-{
-    QVariant reply = managerIface()->property("Devices");
-    if (!reply.isNull())
-        return QVariantToObjectPathArray(reply);
-    else
-        return {};
-}
-
-/*!
- * \fn bool libopenrazer::syncEffects(bool yes)
- *
- * If devices should sync effects, as specified by \a yes.
- *
- * Example: Set it to \c 'on', set the lighting on one device to something, other devices connected will automatically get set to the same effect.
- *
- * Returns if the D-Bus call was successful.
- *
- * \sa getSyncEffects()
- */
-bool Manager::syncEffects(bool yes)
-{
-    return false;
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.devices", "syncEffects");
-//     QList<QVariant> args;
-//     args.append(yes);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
-}
-
-/*!
- * \fn bool libopenrazer::getSyncEffects()
- *
- * Returns if devices should sync effect.
- *
- * \sa syncEffects()
- */
-bool Manager::getSyncEffects()
-{
-    return false;
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.devices", "getSyncEffects");
-//     return QDBusMessageToBool(m);
-}
-
-/*!
- * \fn QString libopenrazer::getDaemonVersion()
- *
- * Returns the daemon version currently running (e.g. \c '2.3.0').
- */
-QString Manager::getDaemonVersion()
-{
-    QVariant reply = managerIface()->property("Version");
-    if(!reply.isNull())
-        return reply.toString();
-    else
-        return "error";
-}
-
-/*!
- * \fn bool libopenrazer::stopDaemon()
- *
- * Stops the OpenRazer daemon. \b WARNING: FURTHER COMMUNICATION WILL NOT BE POSSIBLE.
- *
- * Returns if the D-Bus call was successful.
- */
-bool Manager::stopDaemon()
-{
-    return false;
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.daemon", "stop");
-//     return QDBusMessageToVoid(m);
-}
-
-/*!
- * \fn bool libopenrazer::setTurnOffOnScreensaver(bool turnOffOnScreensaver)
- *
- * Sets if the LEDs should turn off if the screensaver is turned on, as specified by \a turnOffOnScreensaver.
- *
- * Returns if the D-Bus call was successful.
- *
- * \sa getTurnOffOnScreensaver()
- */
-bool Manager::setTurnOffOnScreensaver(bool turnOffOnScreensaver)
-{
-    return false;
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.devices", "enableTurnOffOnScreensaver");
-//     QList<QVariant> args;
-//     args.append(turnOffOnScreensaver);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
-}
-
-/*!
- * \fn bool libopenrazer::getTurnOffOnScreensaver()
- *
- * Returns if the LEDs should turn off if the screensaver is turned on.
- *
- * \sa setTurnOffOnScreensaver()
- */
-bool Manager::getTurnOffOnScreensaver()
-{
-    return false;
-//     QDBusMessage m = prepareManagerQDBusMessage("razer.devices", "getOffOnScreensaver");
-//     return QDBusMessageToBool(m);
-}
-
-/*!
- * \fn DaemonStatus libopenrazer::getDaemonStatus()
- *
- * Returns status of the daemon, see DaemonStatus.
- */
-DaemonStatus Manager::getDaemonStatus()
-{
-    // Scenarios to handle:
-    // - Command systemctl doesn't exist (e.g. Alpine or Gentoo) - exit code 255
-    // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
-    // Daemon can be not installed but enabled -.-
-    QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "openrazer-daemon.service");
-    process.waitForFinished();
-    QString output(process.readAllStandardOutput());
-    QString error(process.readAllStandardError());
-    if(output == "enabled\n") return DaemonStatus::Enabled;
-    else if(output == "disabled\n") return DaemonStatus::Disabled;
-    else if(error == "Failed to get unit file state for openrazer-daemon.service: No such file or directory\n") return DaemonStatus::NotInstalled;
-    else if(process.error() == QProcess::FailedToStart) { // check if systemctl could be started - fails on non-systemd distros and flatpak
-        QFileInfo daemonFile("/usr/bin/openrazer-daemon");
-        // if the daemon executable does not exist, show the not_installed message - probably flatpak
-        if(!daemonFile.exists()) return DaemonStatus::NotInstalled;
-        // otherwise show the NoSystemd message - probably a non-systemd distro
-        return DaemonStatus::NoSystemd;
-    } else {
-        qWarning() << "libopenrazer: There was an error checking if the daemon is enabled. Unit state is: " << output << ". Error message:" << error;
-        return DaemonStatus::Unknown;
-    }
-}
-
-/*!
- * \fn QString libopenrazer::getDaemonStatusOutput()
- *
- * Returns the multiline output of \c {"systemctl --user status openrazer-daemon.service"}.
- */
-QString Manager::getDaemonStatusOutput()
-{
-    QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "status" << "openrazer-daemon.service");
-    process.waitForFinished();
-    QString output(process.readAllStandardOutput());
-    QString error(process.readAllStandardError());
-    // TODO Handle systemctl not found
-    // TODO Check if output and error and only display what's filled (to get rid of stray newline)
-    return output + "\n" + error;
-}
-
-/*!
- * \fn bool libopenrazer::enableDaemon()
- *
- * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl --user enable openrazer-daemon.service"}
- *
- * Returns if the call was successful.
- */
-bool Manager::enableDaemon()
-{
-    QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "enable" << "openrazer-daemon.service");
-    process.waitForFinished();
-    return process.exitCode() == 0;
-}
-
-Manager::Manager()
-{
-    // Register types
-    qDBusRegisterMetaType<razer_test::RazerDPI>();
 }
 
 // ====== DEVICE CLASS ======
@@ -566,8 +221,7 @@ bool Device::hasFeature(const QString &featureStr)
  */
 QHash<QString, bool> Device::getAllCapabilities()
 {
-    // FIXME
-    return {};
+    return {}; // FIXME
 }
 
 /*!
@@ -605,7 +259,7 @@ QList<QDBusObjectPath> Device::getLeds()
 {
     QVariant reply = deviceIface()->property("Leds");
     if (!reply.isNull())
-        return QVariantToObjectPathArray(reply);
+        return qdbus_cast<QList<QDBusObjectPath>>(reply);
     else
         return {};
 }
@@ -637,9 +291,7 @@ QStringList Device::getSupportedFeatures()
  */
 QString Device::getDeviceMode()
 {
-    return "error";
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getDeviceMode");
-//     return QDBusMessageToString(m);
+    return "error"; // FIXME
 }
 
 /*!
@@ -656,22 +308,13 @@ QString Device::getDeviceMode()
  */
 bool Device::setDeviceMode(uchar mode_id, uchar param)
 {
-    return false;
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "setDeviceMode");
-//     QList<QVariant> args;
-//     args.append(mode_id);
-//     args.append(param);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
+    return false; // FIXME
 }
 
 QString Device::getSerial()
 {
     QDBusReply<QString> reply = deviceIface()->call("getSerial");
-    if (reply.isValid())
-        return reply.value();
-    else
-        return "error";
+    return handleStringReply(reply, Q_FUNC_INFO);
 }
 
 /*!
@@ -710,10 +353,7 @@ QString Device::getDeviceType()
 QString Device::getFirmwareVersion()
 {
     QDBusReply<QString> reply = deviceIface()->call("getFirmwareVersion");
-    if (reply.isValid())
-        return reply.value();
-    else
-        return "error";
+    return handleStringReply(reply, Q_FUNC_INFO);
 }
 
 /*!
@@ -724,10 +364,7 @@ QString Device::getFirmwareVersion()
 QString Device::getKeyboardLayout()
 {
     QDBusReply<QString> reply = deviceIface()->call("getKeyboardLayout");
-    if (reply.isValid())
-        return reply.value();
-    else
-        return "error";
+    return handleStringReply(reply, Q_FUNC_INFO);
 }
 
 /*!
@@ -739,10 +376,7 @@ QString Device::getKeyboardLayout()
  */
 QVariantHash Device::getRazerUrls()
 {
-    return {};
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.misc", "getRazerUrls");
-//     QString ret = QDBusMessageToString(m);
-//     return QJsonDocument::fromJson(ret.toUtf8()).object().toVariantHash();
+    return {}; // FIXME
 }
 
 /*!
@@ -753,10 +387,12 @@ QVariantHash Device::getRazerUrls()
 ushort Device::getPollRate()
 {
     QDBusReply<ushort> reply = deviceIface()->call("getPollRate");
-    if (reply.isValid())
+    if (reply.isValid()) {
         return reply.value();
-    else
+    } else {
+        printDBusError(reply.error(), Q_FUNC_INFO);
         return 0;
+    }
 }
 
 /*!
@@ -768,8 +404,8 @@ ushort Device::getPollRate()
  */
 bool Device::setPollRate(PollRate pollrate)
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("setPollRate", static_cast<ushort>(pollrate));
-    return reply.isValid();
+    QDBusReply<bool> reply = deviceIface()->call("setPollRate", static_cast<ushort>(pollrate));
+    return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
 /*!
@@ -781,8 +417,8 @@ bool Device::setPollRate(PollRate pollrate)
  */
 bool Device::setDPI(razer_test::RazerDPI dpi)
 {
-    QDBusReply<QDBusVariant> reply = deviceIface()->call("setDPI", QVariant::fromValue(dpi));
-    return reply.isValid();
+    QDBusReply<bool> reply = deviceIface()->call("setDPI", QVariant::fromValue(dpi));
+    return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
 /*!
@@ -793,10 +429,12 @@ bool Device::setDPI(razer_test::RazerDPI dpi)
 razer_test::RazerDPI Device::getDPI()
 {
     QDBusReply<razer_test::RazerDPI> reply = deviceIface()->call("getDPI");
-    if (reply.isValid())
+    if (reply.isValid()) {
         return reply.value();
-    else
+    } else {
+        printDBusError(reply.error(), Q_FUNC_INFO);
         return {0, 0};
+    }
 }
 
 /*!
@@ -807,8 +445,6 @@ razer_test::RazerDPI Device::getDPI()
 int Device::maxDPI()
 {
     return 10000; // FIXME
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "maxDPI");
-//     return QDBusMessageToInt(m);
 }
 
 /*!
@@ -822,9 +458,7 @@ int Device::maxDPI()
  */
 bool Device::setCustom()
 {
-    return false;
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setCustom");
-//     return QDBusMessageToVoid(m);
+    return false; // FIXME
 }
 
 /*!
@@ -841,30 +475,7 @@ bool Device::setCustom()
  */
 bool Device::setKeyRow(uchar row, uchar startcol, uchar endcol, QVector<QColor> colors)
 {
-    return false;
-//     if(colors.count() != (endcol+1)-startcol) {
-//         qWarning() << "Invalid 'colors' length. startcol:" << startcol << " - endcol:" << endcol << " needs " << (endcol+1)-startcol << " entries in colors!";
-//         return false;
-//     }
-//
-//     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.chroma", "setKeyRow");
-//
-//     QByteArray parameters;
-//     parameters[0] = row;
-//     parameters[1] = startcol;
-//     parameters[2] = endcol;
-//     int counter = 3;
-//     foreach(QColor c, colors) {
-//         // set the rgb to the parameters[i]
-//         parameters[counter++] = c.red();
-//         parameters[counter++] = c.green();
-//         parameters[counter++] = c.blue();
-//     }
-//
-//     QList<QVariant> args;
-//     args.append(parameters);
-//     m.setArguments(args);
-//     return QDBusMessageToVoid(m);
+    return false; // FIXME
 }
 
 }

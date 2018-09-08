@@ -1,5 +1,10 @@
 # The name automatically gets "lib" prepended to "openrazer" -> "libopenrazer.so"
-libopenrazer_sources = ['libopenrazer.cpp', 'led.cpp', 'razercapability.cpp']
+libopenrazer_sources = [
+    'libopenrazer.cpp',
+    'led.cpp',
+    'manager.cpp',
+    'razercapability.cpp'
+]
 libopenrazer_sources += qt5.preprocess(moc_headers : ['libopenrazer.h'])
 libopenrazer = shared_library('openrazer',
                           libopenrazer_sources,
