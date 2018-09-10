@@ -74,11 +74,11 @@ QDBusInterface *Device::deviceIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Device",
-                                   QDBusConnection::sessionBus(), this);
+                                   QDBusConnection::systemBus(), this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::sessionBus().lastError().message()));
+                qPrintable(QDBusConnection::systemBus().lastError().message()));
     }
     return iface;
 }
@@ -87,11 +87,11 @@ QDBusInterface *Manager::managerIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, "/io/github/openrazer1", "io.github.openrazer1.Manager",
-                                   QDBusConnection::sessionBus(), this);
+                                   QDBusConnection::systemBus(), this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::sessionBus().lastError().message()));
+                qPrintable(QDBusConnection::systemBus().lastError().message()));
     }
     return iface;
 }
@@ -100,11 +100,11 @@ QDBusInterface *Led::ledIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Led",
-                                   QDBusConnection::sessionBus(), this);
+                                   QDBusConnection::systemBus(), this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::sessionBus().lastError().message()));
+                qPrintable(QDBusConnection::systemBus().lastError().message()));
     }
     return iface;
 }
