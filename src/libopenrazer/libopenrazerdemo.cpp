@@ -45,6 +45,7 @@ int main()
                 qDebug() << "getBrightness";
                 qDebug() << led->getBrightness();
             }
+            delete led;
         }
 
         if(device->hasFeature("kbd_layout")) {
