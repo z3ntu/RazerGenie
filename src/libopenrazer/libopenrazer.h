@@ -122,7 +122,7 @@ private:
 
 public:
     Device(QDBusObjectPath objectPath);
-    ~Device();
+    ~Device() override;
 
     QDBusObjectPath objectPath();
     bool hasFx(const QString &fxStr);
@@ -171,7 +171,7 @@ private:
 
 public:
     Led(QDBusObjectPath objectPath);
-    ~Led();
+    ~Led() override;
 
     QDBusObjectPath getObjectPath();
 

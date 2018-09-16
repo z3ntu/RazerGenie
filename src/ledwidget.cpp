@@ -226,7 +226,7 @@ void LedWidget::applyEffectStandardLoc(QString fxStr)
 void LedWidget::applyEffect()
 {
     qDebug() << "applyEffect()";
-    QComboBox *combobox = findChild<QComboBox*>("combobox");
+    auto *combobox = findChild<QComboBox*>("combobox");
 
     libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();
     QString identifier = capability.getIdentifier();

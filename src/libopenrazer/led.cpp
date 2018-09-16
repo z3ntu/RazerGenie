@@ -34,8 +34,7 @@ Led::Led(QDBusObjectPath objectPath)
  * Destructor
  */
 Led::~Led()
-{
-}
+    = default;
 
 QDBusObjectPath Led::getObjectPath()
 {

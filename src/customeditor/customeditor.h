@@ -32,8 +32,8 @@ class CustomEditor : public QDialog
 {
     Q_OBJECT
 public:
-    CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = 0);
-    ~CustomEditor();
+    CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = nullptr);
+    ~CustomEditor() override;
 private:
     void closeWindow();
     QLayout* generateMainControls();

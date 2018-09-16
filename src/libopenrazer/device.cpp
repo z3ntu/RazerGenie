@@ -48,8 +48,7 @@ Device::Device(QDBusObjectPath objectPath)
  * Destructor
  */
 Device::~Device()
-{
-}
+    = default;
 
 /*!
  * \fn QString libopenrazer::Device::serial()

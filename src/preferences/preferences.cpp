@@ -29,7 +29,7 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
 
     QFont titleFont("Arial", 18, QFont::Bold);
 
-    QVBoxLayout *vbox = new QVBoxLayout(this);
+    auto *vbox = new QVBoxLayout(this);
 
     QLabel *aboutLabel = new QLabel(this);
     aboutLabel->setText(tr("About:"));
@@ -50,14 +50,14 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
     downloadText->setText(tr("For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the Razer Privacy Policy (https://www.razer.com/legal/privacy-policy)."));
     downloadText->setWordWrap(true);
 
-    QCheckBox *downloadCheckBox = new QCheckBox(this);
+    auto *downloadCheckBox = new QCheckBox(this);
     downloadCheckBox->setText(tr("Download device images"));
     downloadCheckBox->setChecked(settings.value("downloadImages").toBool());
     connect(downloadCheckBox, &QCheckBox::clicked, this, [=]( bool checked ) {
         settings.setValue("downloadImages", checked);
     });
 
-    QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    auto *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     vbox->addWidget(aboutLabel);
     vbox->addWidget(razergenieVersionLabel);
@@ -73,6 +73,4 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
 }
 
 Preferences::~Preferences()
-{
-
-}
+    = default;

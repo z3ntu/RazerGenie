@@ -26,8 +26,8 @@ class Preferences : public QDialog
 {
     Q_OBJECT
 public:
-    Preferences(QWidget* parent = 0);
-    ~Preferences();
+    Preferences(QWidget* parent = nullptr);
+    ~Preferences() override;
 private:
     QSettings settings;
 };

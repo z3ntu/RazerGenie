@@ -23,13 +23,13 @@
 void util::showError(QString error)
 {
     QMessageBox messageBox;
-    messageBox.critical(0, QMessageBox::tr("Error!"), error);
+    messageBox.critical(nullptr, QMessageBox::tr("Error!"), error);
     messageBox.setFixedSize(500, 200);
 }
 
 void util::showInfo(QString info)
 {
     QMessageBox messageBox;
-    messageBox.information(0, QMessageBox::tr("Information!"), info);
+    messageBox.information(nullptr, QMessageBox::tr("Information!"), info);
     messageBox.setFixedSize(500, 200);
 }

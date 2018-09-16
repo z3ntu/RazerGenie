@@ -4,7 +4,7 @@
 // Main method for testing / playing.
 int main()
 {
-    libopenrazer::Manager *manager = new libopenrazer::Manager();
+    auto *manager = new libopenrazer::Manager();
 
     qDebug() << "Daemon running:" << manager->isDaemonRunning();
     qDebug() << "Daemon version:" << manager->getDaemonVersion();

@@ -29,7 +29,7 @@ class RazerImageDownloader : public QObject
     Q_OBJECT
 public:
     RazerImageDownloader(QUrl url, QObject *parent);
-    ~RazerImageDownloader();
+    ~RazerImageDownloader() override;
     void startDownload();
     static QString getDownloadPath();
 signals:

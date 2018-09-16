@@ -55,8 +55,7 @@ RazerCapability::RazerCapability(const RazerCapability &other)
 }
 
 RazerCapability::~RazerCapability()
-{
-}
+    = default;
 
 /*!
  * \fn int libopenrazer::RazerCapability::getNumColors() const

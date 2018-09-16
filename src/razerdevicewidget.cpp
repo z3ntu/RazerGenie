@@ -30,5 +30,4 @@ QDBusObjectPath RazerDeviceWidget::getDevicePath()
 }
 
 RazerDeviceWidget::~RazerDeviceWidget()
-{
-}
+    = default;

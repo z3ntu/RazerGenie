@@ -29,7 +29,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     setWindowTitle(tr("RazerGenie - Custom Editor"));
     this->device = device;
 
-    QVBoxLayout *vbox = new QVBoxLayout(this);
+    auto *vbox = new QVBoxLayout(this);
 
     dimens = device->getMatrixDimensions();
     qDebug() << dimens.x << dimens.y;
@@ -72,7 +72,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
                 closeWindow();
             }
         } else {
-            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
+            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
             closeWindow();
         }
         vbox->addLayout(generateKeyboard());
@@ -82,13 +82,13 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
         if(dimens.x == 1 && dimens.y == 15) { // e.g. Firefly
             vbox->addLayout(generateMousemat());
         } else {
-            QMessageBox::information(0, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
+            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
             closeWindow();
         }
     } /*else if(type == "mouse") {
         vbox-addLayout(generateMouse());
     } */else {
-        QMessageBox::information(0, tr("Device type not implemented!"), tr("Please open an issue in the RazerGenie repository. Device type: %1").arg(type));
+        QMessageBox::information(nullptr, tr("Device type not implemented!"), tr("Please open an issue in the RazerGenie repository. Device type: %1").arg(type));
         closeWindow();
     }
 
@@ -97,9 +97,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
 }
 
 CustomEditor::~CustomEditor()
-{
-
-}
+    = default;
 
 void CustomEditor::closeWindow()
 {
@@ -109,9 +107,9 @@ void CustomEditor::closeWindow()
 
 QLayout* CustomEditor::generateMainControls()
 {
-    QHBoxLayout *hbox = new QHBoxLayout();
+    auto *hbox = new QHBoxLayout();
 
-    QPushButton *btnColor = new QPushButton();
+    auto *btnColor = new QPushButton();
     QPalette pal = btnColor->palette();
     pal.setColor(QPalette::Button, QColor(Qt::green));
 
@@ -140,7 +138,7 @@ QLayout* CustomEditor::generateMainControls()
 QLayout* CustomEditor::generateKeyboard()
 {
     //TODO: Add missing logo button
-    QVBoxLayout *vbox = new QVBoxLayout();
+    auto *vbox = new QVBoxLayout();
     QJsonObject keyboardLayout;
     bool found = false;
     QString kbdLayout = device->getKeyboardLayout();
@@ -174,7 +172,7 @@ QLayout* CustomEditor::generateKeyboard()
     for(it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
         QJsonArray row = (*it).toArray();
 
-        QHBoxLayout *hbox = new QHBoxLayout();
+        auto *hbox = new QHBoxLayout();
         hbox->setAlignment(Qt::AlignLeft);
 
         // Iterate over keys in row
@@ -203,7 +201,7 @@ QLayout* CustomEditor::generateKeyboard()
                 hbox->addWidget(btn);
                 matrixPushButtons.append(btn);
             } else {
-                QSpacerItem *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
+                auto *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
                 hbox->addItem(spacer);
             }
         }
@@ -214,7 +212,7 @@ QLayout* CustomEditor::generateKeyboard()
 
 QLayout* CustomEditor::generateMousemat()
 {
-    QHBoxLayout *hbox = new QHBoxLayout();
+    auto *hbox = new QHBoxLayout();
     // TODO: Improve visual style of the mousemat grid (make it look like the mousepad!)
     for(int i=0; i<dimens.y; i++) {
         MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
@@ -230,15 +228,15 @@ QLayout* CustomEditor::generateMousemat()
 
 QLayout* CustomEditor::generateMouse()
 {
-    QHBoxLayout *hbox = new QHBoxLayout();
+    auto *hbox = new QHBoxLayout();
     return hbox;
 }
 
 QLayout* CustomEditor::generateMatrixDiscovery()
 {
-    QVBoxLayout *vbox = new QVBoxLayout();
+    auto *vbox = new QVBoxLayout();
     for(int i=0; i<dimens.x; i++) {
-        QHBoxLayout *hbox = new QHBoxLayout();
+        auto *hbox = new QHBoxLayout();
         for(int j=0; j<dimens.y; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
             btn->setMatrixPos(i, j);
@@ -270,7 +268,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
         if(file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-            QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
+            QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
             return false;
         }
     }
@@ -307,21 +305,21 @@ void CustomEditor::clearAll()
     device->displayCustomFrame();
 
     // Reset view
-    for(int i=0; i<matrixPushButtons.size(); i++) {
-        matrixPushButtons.at(i)->resetButtonColor();
+    for(auto matrixPushButton : matrixPushButtons) {
+        matrixPushButton->resetButtonColor();
     }
 
     // Reset model
-    for(int i=0; i<colors.size(); i++) {
-        for(int j=0; j<colors[i].size(); j++) {
-            colors[i][j] = QColor(Qt::black);
+    for(auto & color : colors) {
+        for(auto & j : color) {
+            j = QColor(Qt::black);
         }
     }
 }
 
 void CustomEditor::colorButtonClicked()
 {
-    QPushButton *sender = qobject_cast<QPushButton*>(QObject::sender());
+    auto *sender = qobject_cast<QPushButton*>(QObject::sender());
 
     QPalette pal(sender->palette());
 
@@ -344,7 +342,7 @@ void CustomEditor::colorButtonClicked()
 
 void CustomEditor::onMatrixPushButtonClicked()
 {
-    MatrixPushButton *sender = dynamic_cast<MatrixPushButton*>(QObject::sender());
+    auto *sender = dynamic_cast<MatrixPushButton*>(QObject::sender());
     QPair<int, int> pos = sender->matrixPos();
     if(drawStatus == DrawStatus::set) {
         // Set color in model

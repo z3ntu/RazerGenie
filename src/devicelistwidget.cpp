@@ -26,7 +26,7 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
 {
     this->mDevice = device;
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto *layout = new QVBoxLayout(this);
     layout->setMargin(2);
 
     // Add icon

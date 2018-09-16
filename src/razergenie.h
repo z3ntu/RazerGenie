@@ -28,8 +28,8 @@ class RazerGenie : public QWidget
 {
     Q_OBJECT
 public:
-    RazerGenie(QWidget* parent = 0);
-    ~RazerGenie();
+    RazerGenie(QWidget* parent = nullptr);
+    ~RazerGenie() override;
 public slots:
     // General checkboxes
     void toggleSync(bool);
@@ -63,7 +63,7 @@ private:
     Ui::RazerGenieUi ui_main;
     void setupUi();
 
-    QWidget *noDevicePlaceholder = NULL;
+    QWidget *noDevicePlaceholder = nullptr;
 
     QList<QPair<int, int>> getConnectedDevices_lsusb();
 
@@ -75,7 +75,7 @@ private:
     bool removeDeviceFromGui(const QDBusObjectPath &devicePath);
     QWidget *getNoDevicePlaceholder();
 
-    void getRazerDevices(void);
+    void getRazerDevices();
 
     bool syncDpi = true;
 
