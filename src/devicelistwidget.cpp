@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QIcon>
+#include <QFileInfo>
 
 DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device) : QWidget(parent)
 {
@@ -31,7 +32,7 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
 
     // Add icon
     QString path = RazerImageDownloader::getDownloadPath() + device->getPngFilename();
-    if(QFile(path).exists()) {
+    if(QFile(path).exists() && QFileInfo(path).isFile()) {
         QPixmap scaled = createPixmapFromFile(path);
         imageLabel = new QLabel(this);
         imageLabel->setPixmap(scaled);
