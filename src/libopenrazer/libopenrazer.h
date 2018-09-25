@@ -49,11 +49,6 @@ enum StarlightSpeed { STARLIGHT_FAST = 0x01, STARLIGHT_NORMAL = 0x02, STARLIGHT_
 // Ripple
 const double RIPPLE_REFRESH_RATE = 0.05;
 
-enum LEDEffect { STATIC = 0x00, BLINKING = 0x01, PULSATE = 0x02, SPECTRUM = 0x04 };
-
-// Poll rates
-enum PollRate { POLL_1000HZ = 1000, POLL_500HZ = 500, POLL_125HZ = 125 };
-
 enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 
 const static QList<RazerCapability> ledFxList {
@@ -147,7 +142,7 @@ public:
 
     // --- POLL RATE ---
     ushort getPollRate();
-    bool setPollRate(PollRate pollrate);
+    bool setPollRate(ushort pollrate);
 
     // --- DPI ---
     bool setDPI(razer_test::RazerDPI dpi);
@@ -190,8 +185,5 @@ public:
 };
 
 }
-
-// Needed for casting from QVariant
-Q_DECLARE_METATYPE(libopenrazer::PollRate)
 
 #endif // LIBRAZER_H

@@ -437,9 +437,9 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
         verticalLayout->addWidget(pollRateHeader);
 
         auto *pollComboBox = new QComboBox;
-        pollComboBox->addItem("125 Hz", libopenrazer::POLL_125HZ);
-        pollComboBox->addItem("500 Hz", libopenrazer::POLL_500HZ);
-        pollComboBox->addItem("1000 Hz", libopenrazer::POLL_1000HZ);
+        pollComboBox->addItem("125 Hz", 125);
+        pollComboBox->addItem("500 Hz", 500);
+        pollComboBox->addItem("1000 Hz", 1000);
         pollComboBox->setCurrentText(QString::number(currentDevice->getPollRate()) + " Hz");
         verticalLayout->addWidget(pollComboBox);
 
@@ -641,7 +641,7 @@ void RazerGenie::pollCombo(int /* index */)
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     auto *sender = qobject_cast<QComboBox*>(QObject::sender());
-    dev->setPollRate(sender->currentData().value<libopenrazer::PollRate>());
+    dev->setPollRate(sender->currentData().value<ushort>());
 }
 
 void RazerGenie::openCustomEditor()

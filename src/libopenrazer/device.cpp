@@ -242,15 +242,15 @@ ushort Device::getPollRate()
 }
 
 /*!
- * \fn bool libopenrazer::Device::setPollRate(PollRate pollrate)
+ * \fn bool libopenrazer::Device::setPollRate(ushort pollrate)
  *
  * Sets the poll rate of the mouse to the specified \a pollrate.
  *
  * Returns if the D-Bus call was successful.
  */
-bool Device::setPollRate(PollRate pollrate)
+bool Device::setPollRate(ushort pollrate)
 {
-    QDBusReply<bool> reply = deviceIface()->call("setPollRate", static_cast<ushort>(pollrate));
+    QDBusReply<bool> reply = deviceIface()->call("setPollRate", QVariant::fromValue(pollrate));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 

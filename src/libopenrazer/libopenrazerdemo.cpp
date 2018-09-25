@@ -32,9 +32,9 @@ int main()
         }
 
         if(device->hasFeature("poll_rate")) {
-            qDebug() << "Set_pollrate:" << device->setPollRate(libopenrazer::POLL_125HZ);
+            qDebug() << "Set_pollrate:" << device->setPollRate(125);
             qDebug() << "Pollrate:" << device->getPollRate();
-            qDebug() << "Set_pollrate:" << device->setPollRate(libopenrazer::POLL_1000HZ);
+            qDebug() << "Set_pollrate:" << device->setPollRate(1000);
             qDebug() << "Pollrate:" << device->getPollRate();
         }
 
