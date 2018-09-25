@@ -33,18 +33,6 @@
 
 namespace libopenrazer
 {
-// --- UPDATE FROM https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/constants.py ---
-// Macro LED effect ID's
-enum MacroLEDEffect { MACRO_LED_STATIC = 0x00, MACRO_LED_BLINK = 0x01 };
-
-// Reactive
-enum ReactiveSpeed { REACTIVE_500MS = 0x01, REACTIVE_1000MS = 0x02, REACTIVE_1500MS = 0x03, REACTIVE_2000MS = 0x04 };
-
-// Starlight
-enum StarlightSpeed { STARLIGHT_FAST = 0x01, STARLIGHT_NORMAL = 0x02, STARLIGHT_SLOW = 0x03 };
-
-// Ripple
-const double RIPPLE_REFRESH_RATE = 0.05;
 
 enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 
@@ -175,7 +163,7 @@ public:
     bool setBlinking(QColor color);
     bool setSpectrum();
     bool setWave(razer_test::WaveDirection direction);
-    bool setReactive(QColor color, ReactiveSpeed speed);
+    bool setReactive(QColor color, razer_test::ReactiveSpeed speed);
 
     bool setBrightness(uchar brightness);
     uchar getBrightness();

@@ -152,9 +152,9 @@ bool Led::setWave(razer_test::WaveDirection direction)
  *
  * Returns if the D-Bus call was successful.
  */
-bool Led::setReactive(QColor color, ReactiveSpeed speed) // FIXME
+bool Led::setReactive(QColor color, razer_test::ReactiveSpeed speed)
 {
-    QDBusReply<bool> reply = ledIface()->call("setReactive", speed, QCOLOR_TO_QVARIANT(color));
+    QDBusReply<bool> reply = ledIface()->call("setReactive", QVariant::fromValue(speed), QCOLOR_TO_QVARIANT(color));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 

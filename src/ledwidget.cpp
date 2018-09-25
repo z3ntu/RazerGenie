@@ -217,7 +217,7 @@ void LedWidget::applyEffectStandardLoc(QString fxStr)
         mLed->setWave(getWaveDirection());
     } else if(fxStr == "reactive") {
         QColor c = getColorForButton(1);
-        mLed->setReactive(c, libopenrazer::REACTIVE_500MS); // TODO Configure speed?
+        mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
     } else {
         qWarning() << fxStr << " is not implemented yet!";
     }
