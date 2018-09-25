@@ -139,9 +139,9 @@ bool Led::setSpectrum()
  *
  * Returns if the D-Bus call was successful.
  */
-bool Led::setWave(WaveDirection direction) // FIXME
+bool Led::setWave(razer_test::WaveDirection direction)
 {
-    QDBusReply<bool> reply = ledIface()->call("setWave", direction);
+    QDBusReply<bool> reply = ledIface()->call("setWave", QVariant::fromValue(direction));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 

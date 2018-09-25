@@ -37,9 +37,6 @@ namespace libopenrazer
 // Macro LED effect ID's
 enum MacroLEDEffect { MACRO_LED_STATIC = 0x00, MACRO_LED_BLINK = 0x01 };
 
-// Wave Directions
-enum WaveDirection { WAVE_RIGHT = 0x01, WAVE_LEFT = 0x02 };
-
 // Reactive
 enum ReactiveSpeed { REACTIVE_500MS = 0x01, REACTIVE_1000MS = 0x02, REACTIVE_1500MS = 0x03, REACTIVE_2000MS = 0x04 };
 
@@ -177,7 +174,7 @@ public:
     bool setBreathingRandom();
     bool setBlinking(QColor color);
     bool setSpectrum();
-    bool setWave(WaveDirection direction);
+    bool setWave(razer_test::WaveDirection direction);
     bool setReactive(QColor color, ReactiveSpeed speed);
 
     bool setBrightness(uchar brightness);

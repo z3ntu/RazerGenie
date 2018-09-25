@@ -44,7 +44,7 @@ public:
     void waveRadioButtonChanged(bool enabled);
 
     QColor getColorForButton(int num);
-    libopenrazer::WaveDirection getWaveDirection();
+    razer_test::WaveDirection getWaveDirection();
 
     void applyEffect();
     void applyEffectStandardLoc(QString identifier);

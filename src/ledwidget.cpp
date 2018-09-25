@@ -182,9 +182,9 @@ QColor LedWidget::getColorForButton(int num)
     return pal.color(QPalette::Button);
 }
 
-libopenrazer::WaveDirection LedWidget::getWaveDirection()
+razer_test::WaveDirection LedWidget::getWaveDirection()
 {
-    return findChild<QRadioButton*>("radiobutton1")->isChecked() ? libopenrazer::WAVE_LEFT : libopenrazer::WAVE_RIGHT;
+    return findChild<QRadioButton*>("radiobutton1")->isChecked() ? razer_test::WaveDirection::RIGHT_TO_LEFT : razer_test::WaveDirection::LEFT_TO_RIGHT;
 }
 
 void LedWidget::brightnessSliderChanged(int value)
