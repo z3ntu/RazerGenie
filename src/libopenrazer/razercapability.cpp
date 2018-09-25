@@ -28,12 +28,12 @@ namespace libopenrazer
  */
 RazerCapability::RazerCapability()
 {
-    this->identifier = "";
+    this->identifier = razer_test::RazerEffect::Off;
     this->displayString = "";
     this->numColors = 0;
     this->wave = false;
 }
-RazerCapability::RazerCapability(QString identifier, QString displayString, int numColors)
+RazerCapability::RazerCapability(razer_test::RazerEffect identifier, QString displayString, int numColors)
 {
     this->identifier = identifier;
     this->displayString = displayString;
@@ -41,7 +41,7 @@ RazerCapability::RazerCapability(QString identifier, QString displayString, int 
     this->wave = false;
 }
 
-RazerCapability::RazerCapability(QString identifier, QString displayString, bool isWave) : RazerCapability(identifier, displayString, 0)
+RazerCapability::RazerCapability(razer_test::RazerEffect identifier, QString displayString, bool isWave) : RazerCapability(identifier, displayString, 0)
 {
     this->wave = isWave;
 }
@@ -68,13 +68,13 @@ int RazerCapability::getNumColors() const
 }
 
 /*!
- * \fn QString libopenrazer::RazerCapability::getIdentifier() const
+ * \fn razer_test::RazerEffect libopenrazer::RazerCapability::getIdentifier() const
  *
  * Returns a string identifying the capability
  *
  * e.g. \c "lighting_logo_spectrum"
  */
-QString RazerCapability::getIdentifier() const
+razer_test::RazerEffect RazerCapability::getIdentifier() const
 {
     return identifier;
 }

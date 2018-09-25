@@ -41,6 +41,24 @@ QDBusObjectPath Led::getObjectPath()
     return mObjectPath;
 }
 
+razer_test::RazerEffect Led::getCurrentEffect()
+{
+    QVariant reply = ledIface()->property("CurrentEffect");
+    if(!reply.isNull())
+        return reply.value<razer_test::RazerEffect>();
+    else
+        return razer_test::RazerEffect::Off;
+}
+
+QList<razer_test::RGB> Led::getCurrentColors()
+{
+    QVariant reply = ledIface()->property("CurrentColors");
+    if(!reply.isNull())
+        return reply.value<QList<razer_test::RGB>>();
+    else
+        return {};
+}
+
 /*!
  * \fn bool libopenrazer::Led::setNone()
  *

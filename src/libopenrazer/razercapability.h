@@ -22,23 +22,25 @@
 #include <QString>
 #include <QMetaType>
 
+#include <razer_test.h>
+
 namespace libopenrazer
 {
 class RazerCapability
 {
 public:
     RazerCapability();
-    RazerCapability(QString identifier, QString displayString, int numColors);
-    RazerCapability(QString identifier, QString displayString, bool wave);
+    RazerCapability(razer_test::RazerEffect identifier, QString displayString, int numColors);
+    RazerCapability(razer_test::RazerEffect, QString displayString, bool wave);
     RazerCapability(const RazerCapability &other);
     ~RazerCapability();
     int getNumColors() const;
-    QString getIdentifier() const;
+    razer_test::RazerEffect getIdentifier() const;
     QString getDisplayString() const;
     bool isWave() const;
 private:
     int numColors;
-    QString identifier;
+    razer_test::RazerEffect identifier;
     QString displayString;
     bool wave;
 };

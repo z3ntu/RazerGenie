@@ -53,10 +53,17 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
     //TODO Battery
     //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
+    razer_test::RazerEffect currentEffect = led->getCurrentEffect();
+    QList<razer_test::RGB> currentColors = led->getCurrentColors();
+
     // Add items from capabilities
     for(auto ledFx : libopenrazer::ledFxList) {
         if(device->hasFx(ledFx.getIdentifier())) {
             comboBox->addItem(ledFx.getDisplayString(), QVariant::fromValue(ledFx));
+            // Set selection to current effect
+            if(ledFx.getIdentifier() == currentEffect) {
+                comboBox->setCurrentIndex(comboBox->count() - 1);
+            }
         }
     }
 
@@ -81,7 +88,12 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
         for(int i=1; i<=3; i++) {
             auto *colorButton = new QPushButton(this);
             QPalette pal = colorButton->palette();
-            pal.setColor(QPalette::Button, QColor(Qt::green));
+            if(i - 1 < currentColors.count()) {
+                razer_test::RGB color = currentColors.at(i - 1);
+                pal.setColor(QPalette::Button, {color.r, color.g, color.b});
+            } else {
+                pal.setColor(QPalette::Button, QColor(Qt::green));
+            }
 
             colorButton->setAutoFillBackground(true);
             colorButton->setFlat(true);
@@ -192,34 +204,34 @@ void LedWidget::brightnessSliderChanged(int value)
     mLed->setBrightness(value);
 }
 
-void LedWidget::applyEffectStandardLoc(QString fxStr)
+void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
 {
-    if(fxStr == "off") {
+    if(fxStr == razer_test::RazerEffect::Off) {
         mLed->setNone();
-    } else if(fxStr == "static") {
+    } else if(fxStr == razer_test::RazerEffect::Static) {
         QColor c = getColorForButton(1);
         mLed->setStatic(c);
-    } else if(fxStr == "breathing") {
+    } else if(fxStr == razer_test::RazerEffect::Breathing) {
         QColor c = getColorForButton(1);
         mLed->setBreathing (c);
-    } else if(fxStr == "breathing_dual") {
+    } else if(fxStr == razer_test::RazerEffect::BreathingDual) {
         QColor c1 = getColorForButton(1);
         QColor c2 = getColorForButton(2);
         mLed->setBreathingDual(c1, c2);
-    } else if(fxStr == "breathing_random") {
+    } else if(fxStr == razer_test::RazerEffect::BreathingRandom) {
         mLed->setBreathingRandom();
-    } else if(fxStr == "blinking") {
+    } else if(fxStr == razer_test::RazerEffect::Blinking) {
         QColor c = getColorForButton(1);
         mLed->setBlinking(c);
-    } else if(fxStr == "spectrum") {
+    } else if(fxStr == razer_test::RazerEffect::Spectrum) {
         mLed->setSpectrum();
-    } else if(fxStr == "wave") {
+    } else if(fxStr == razer_test::RazerEffect::Wave) {
         mLed->setWave(getWaveDirection());
-    } else if(fxStr == "reactive") {
+    } else if(fxStr == razer_test::RazerEffect::Reactive) {
         QColor c = getColorForButton(1);
         mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
     } else {
-        qWarning() << fxStr << " is not implemented yet!";
+//         qWarning() << fxStr << " is not implemented yet!"; // FIXME
     }
 }
 
@@ -229,9 +241,8 @@ void LedWidget::applyEffect()
     auto *combobox = findChild<QComboBox*>("combobox");
 
     libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();
-    QString identifier = capability.getIdentifier();
 
-    applyEffectStandardLoc(identifier);
+    applyEffectStandardLoc(capability.getIdentifier());
 }
 
 void LedWidget::waveRadioButtonChanged(bool enabled)

@@ -47,7 +47,7 @@ public:
     razer_test::WaveDirection getWaveDirection();
 
     void applyEffect();
-    void applyEffectStandardLoc(QString identifier);
+    void applyEffectStandardLoc(razer_test::RazerEffect identifier);
 };
 
 #endif // LEDWIDGET_H

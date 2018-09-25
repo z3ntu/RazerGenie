@@ -65,6 +65,41 @@ bool Device::hasFx(const QString &fxStr)
     return supportedFx.contains(fxStr);
 }
 
+bool Device::hasFx(razer_test::RazerEffect fx)
+{
+    QString fxStr;
+    switch(fx) {
+    case razer_test::RazerEffect::Off:
+        fxStr = "off";
+        break;
+    case razer_test::RazerEffect::Static:
+        fxStr = "static";
+        break;
+    case razer_test::RazerEffect::Breathing:
+        fxStr = "breathing";
+        break;
+    case razer_test::RazerEffect::BreathingDual:
+        fxStr = "breathing_dual";
+        break;
+    case razer_test::RazerEffect::BreathingRandom:
+        fxStr = "breathing_random";
+        break;
+    case razer_test::RazerEffect::Blinking:
+        fxStr = "blinking";
+        break;
+    case razer_test::RazerEffect::Spectrum:
+        fxStr = "spectrum";
+        break;
+    case razer_test::RazerEffect::Wave:
+        fxStr = "wave";
+        break;
+    case razer_test::RazerEffect::Reactive:
+        fxStr = "reactive";
+        break;
+    }
+    return hasFx(fxStr);
+}
+
 bool Device::hasFeature(const QString &featureStr)
 {
     return supportedFeatures.contains(featureStr);

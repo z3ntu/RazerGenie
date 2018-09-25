@@ -113,18 +113,6 @@ QString Manager::getDaemonVersion()
 }
 
 /*!
- * \fn bool libopenrazer::stopDaemon()
- *
- * Stops the OpenRazer daemon. \b WARNING: FURTHER COMMUNICATION WILL NOT BE POSSIBLE.
- *
- * Returns if the D-Bus call was successful.
- */
-bool Manager::stopDaemon()
-{
-    return false; // FIXME
-}
-
-/*!
  * \fn bool libopenrazer::setTurnOffOnScreensaver(bool turnOffOnScreensaver)
  *
  * Sets if the LEDs should turn off if the screensaver is turned on, as specified by \a turnOffOnScreensaver.

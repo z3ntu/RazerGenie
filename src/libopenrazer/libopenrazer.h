@@ -37,15 +37,15 @@ namespace libopenrazer
 enum DaemonStatus { Enabled, Disabled, NotInstalled, NoSystemd, Unknown };
 
 const static QList<RazerCapability> ledFxList {
-    RazerCapability("off", "Off", 0),
-    RazerCapability("static", "Static", 1),
-    RazerCapability("breathing", "Breathing", 1),
-    RazerCapability("breathing_dual", "Breathing Dual", 2),
-    RazerCapability("breathing_random", "Breathing Random", 0),
-    RazerCapability("blinking", "Blinking", 1),
-    RazerCapability("spectrum", "Spectrum", 0),
-    RazerCapability("wave", "Wave", true),
-    RazerCapability("reactive", "Reactive", 1),
+    RazerCapability(razer_test::RazerEffect::Off, "Off", 0),
+    RazerCapability(razer_test::RazerEffect::Static, "Static", 1),
+    RazerCapability(razer_test::RazerEffect::Breathing, "Breathing", 1),
+    RazerCapability(razer_test::RazerEffect::BreathingDual, "Breathing Dual", 2),
+    RazerCapability(razer_test::RazerEffect::BreathingRandom, "Breathing Random", 0),
+    RazerCapability(razer_test::RazerEffect::Blinking, "Blinking", 1),
+    RazerCapability(razer_test::RazerEffect::Spectrum, "Spectrum", 0),
+    RazerCapability(razer_test::RazerEffect::Wave, "Wave", true),
+    RazerCapability(razer_test::RazerEffect::Reactive, "Reactive", 1),
 };
 
 void printDBusError(QDBusError error, const char *functionname);
@@ -64,7 +64,6 @@ public:
 
     QList<QDBusObjectPath> getDevices();
     QString getDaemonVersion();
-    bool stopDaemon();
     bool isDaemonRunning();
 
     QVariantHash getSupportedDevices();
@@ -106,6 +105,7 @@ public:
 
     QDBusObjectPath objectPath();
     bool hasFx(const QString &fxStr);
+    bool hasFx(razer_test::RazerEffect fx);
     bool hasFeature(const QString &featureStr);
     QString getPngFilename();
     QString getPngUrl();
@@ -154,6 +154,8 @@ public:
     ~Led() override;
 
     QDBusObjectPath getObjectPath();
+    razer_test::RazerEffect getCurrentEffect();
+    QList<razer_test::RGB> getCurrentColors();
 
     bool setNone();
     bool setStatic(QColor color);
