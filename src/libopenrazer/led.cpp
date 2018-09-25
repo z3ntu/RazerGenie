@@ -20,7 +20,7 @@
 
 #include "libopenrazer.h"
 
-#define QCOLOR_TO_UCHAR_RGB(c) QVariant::fromValue(static_cast<uchar>(c.red())), QVariant::fromValue(static_cast<uchar>(c.green())), QVariant::fromValue(static_cast<uchar>(c.blue()))
+#define QCOLOR_TO_QVARIANT(c) QVariant::fromValue(razer_test::RGB {static_cast<uchar>(c.red()), static_cast<uchar>(c.green()), static_cast<uchar>(c.blue())})
 
 namespace libopenrazer
 {
@@ -63,7 +63,7 @@ bool Led::setNone()
  */
 bool Led::setStatic(QColor color)
 {
-    QDBusReply<bool> reply = ledIface()->call("setStatic", QCOLOR_TO_UCHAR_RGB(color));
+    QDBusReply<bool> reply = ledIface()->call("setStatic", QCOLOR_TO_QVARIANT(color));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
@@ -76,7 +76,7 @@ bool Led::setStatic(QColor color)
  */
 bool Led::setBreathing(QColor color)
 {
-    QDBusReply<bool> reply = ledIface()->call("setBreathing", QCOLOR_TO_UCHAR_RGB(color));
+    QDBusReply<bool> reply = ledIface()->call("setBreathing", QCOLOR_TO_QVARIANT(color));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
@@ -89,7 +89,7 @@ bool Led::setBreathing(QColor color)
  */
 bool Led::setBreathingDual(QColor color, QColor color2)
 {
-    QDBusReply<bool> reply = ledIface()->call("setBreathingDual", QCOLOR_TO_UCHAR_RGB(color), QCOLOR_TO_UCHAR_RGB(color2));
+    QDBusReply<bool> reply = ledIface()->call("setBreathingDual", QCOLOR_TO_QVARIANT(color), QCOLOR_TO_QVARIANT(color2));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
@@ -115,7 +115,7 @@ bool Led::setBreathingRandom()
  */
 bool Led::setBlinking(QColor color)
 {
-    QDBusReply<bool> reply = ledIface()->call("setBlinking", QCOLOR_TO_UCHAR_RGB(color));
+    QDBusReply<bool> reply = ledIface()->call("setBlinking", QCOLOR_TO_QVARIANT(color));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
@@ -154,7 +154,7 @@ bool Led::setWave(WaveDirection direction) // FIXME
  */
 bool Led::setReactive(QColor color, ReactiveSpeed speed) // FIXME
 {
-    QDBusReply<bool> reply = ledIface()->call("setReactive", speed, QCOLOR_TO_UCHAR_RGB(color));
+    QDBusReply<bool> reply = ledIface()->call("setReactive", speed, QCOLOR_TO_QVARIANT(color));
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 

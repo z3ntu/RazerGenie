@@ -28,17 +28,7 @@ namespace libopenrazer
 Manager::Manager()
 {
     // Register the enums with the Qt system
-    qRegisterMetaType<razer_test::WaveDirection>("WaveDirection");
-    qDBusRegisterMetaType<razer_test::WaveDirection>();
-
-    qRegisterMetaType<razer_test::ReactiveSpeed>("ReactiveSpeed");
-    qDBusRegisterMetaType<razer_test::ReactiveSpeed>();
-
-    qRegisterMetaType<razer_test::RazerDPI>("RazerDPI");
-    qDBusRegisterMetaType<razer_test::RazerDPI>();
-
-    qRegisterMetaType<razer_test::MatrixDimensions>("MatrixDimensions");
-    qDBusRegisterMetaType<razer_test::MatrixDimensions>();
+    razer_test::registerMetaTypes();
 }
 
 /*!
