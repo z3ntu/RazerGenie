@@ -35,7 +35,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
     auto *verticalLayout = new QVBoxLayout(this);
 
     // Set appropriate text
-    QLabel *lightingLocationLabel = new QLabel(tr("Lighting")); // TODO: Adjust based on LED
+    QLabel *lightingLocationLabel = new QLabel(tr("Lighting %1").arg(libopenrazer::ledIdToStringTable.value(led->getLedId(), "error")));
 
     auto *lightingHBox = new QHBoxLayout();
     verticalLayout->addWidget(lightingLocationLabel);

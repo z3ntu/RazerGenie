@@ -59,6 +59,15 @@ QList<razer_test::RGB> Led::getCurrentColors()
         return {};
 }
 
+razer_test::RazerLedId Led::getLedId()
+{
+    QVariant reply = ledIface()->property("LedId");
+    if(!reply.isNull())
+        return reply.value<razer_test::RazerLedId>();
+    else
+        return razer_test::RazerLedId::Unspecified;
+}
+
 /*!
  * \fn bool libopenrazer::Led::setNone()
  *
