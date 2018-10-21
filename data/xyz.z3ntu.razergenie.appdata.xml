@@ -19,6 +19,7 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+<<<<<<< HEAD
     <release version="0.8.1" date="2018-10-21">
       <description>
         <p>libopenrazer:</p>
@@ -27,6 +28,8 @@
         </ul>
       </description>
     </release>
+=======
+>>>>>>> 2666d24... Release version 0.8
     <release version="0.8" date="2018-10-21">
       <description>
         <p>RazerGenie:</p>
