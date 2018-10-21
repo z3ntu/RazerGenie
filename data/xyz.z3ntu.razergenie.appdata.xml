@@ -19,6 +19,30 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="0.8" date="2018-10-21">
+      <description>
+        <p>RazerGenie:</p>
+        <ul>
+          <li>Implement backlight effects for Razer Naga Epic Chroma</li>
+          <li>Fix missing options on Razer Nostromo</li>
+          <li>Implement preferences to control downloading of device images</li>
+          <li>Fix alt-key mapping in razerblade25</li>
+          <li>Add en_US layout for Razer Blade Stealth (Late 2017)</li>
+          <li>Add fr_FR layout for Razer Blade Stealth (Late 2017)</li>
+          <li>razerdefault22: Add en_US keymap</li>
+          <li>razerdefault22: fill empty spots on numpad</li>
+          <li>Fix memory leaks</li>
+        </ul>
+        <p>libopenrazer:</p>
+        <ul>
+          <li>Finish rename of namespace to libopenrazer</li>
+          <li>Implement backlight methods used by Razer Naga Epic Chroma</li>
+          <li>QColor where possible, rebrand LightingLocation</li>
+          <li>Document libopenrazer, can be built with qdoc</li>
+          <li>Fix memory leaks</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.7" date="2018-04-02">
       <description>
         <p>RazerGenie:</p>
