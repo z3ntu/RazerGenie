@@ -19,6 +19,14 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="0.8.1" date="2018-10-21">
+      <description>
+        <p>libopenrazer:</p>
+        <ul>
+          <li>Make qdoc dependency optional (used for docs)</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.8" date="2018-10-21">
       <description>
         <p>RazerGenie:</p>
