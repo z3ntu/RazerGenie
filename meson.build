@@ -4,8 +4,12 @@ project('razergenie', 'cpp',
         default_options : ['cpp_std=c++11'])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 razergenie_version = '0.8'
+=======
+razergenie_version = '0.8.1'
+>>>>>>> 2f41ab4... Release version 0.8.1
 libopenrazer_version = '0.0.1'
 
 >>>>>>> 2666d24... Release version 0.8
