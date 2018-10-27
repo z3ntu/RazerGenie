@@ -35,6 +35,11 @@
 #include "libopenrazer.h"
 
 #define OPENRAZER_SERVICE_NAME "io.github.openrazer1"
+#if defined(Q_OS_LINUX)
+#define TARGET_BUS QDBusConnection::systemBus()
+#elif defined(Q_OS_DARWIN)
+#define TARGET_BUS QDBusConnection::sessionBus()
+#endif
 
 /*!
     \namespace libopenrazer
@@ -74,11 +79,11 @@ QDBusInterface *Device::deviceIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Device",
-                                   QDBusConnection::systemBus(), this);
+                                   TARGET_BUS, this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::systemBus().lastError().message()));
+                qPrintable(TARGET_BUS.lastError().message()));
     }
     return iface;
 }
@@ -87,11 +92,11 @@ QDBusInterface *Manager::managerIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, "/io/github/openrazer1", "io.github.openrazer1.Manager",
-                                   QDBusConnection::systemBus(), this);
+                                   TARGET_BUS, this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::systemBus().lastError().message()));
+                qPrintable(TARGET_BUS.lastError().message()));
     }
     return iface;
 }
@@ -100,11 +105,11 @@ QDBusInterface *Led::ledIface()
 {
     if(iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Led",
-                                   QDBusConnection::systemBus(), this);
+                                   TARGET_BUS, this);
     }
     if(!iface->isValid()) {
         fprintf(stderr, "%s\n",
-                qPrintable(QDBusConnection::systemBus().lastError().message()));
+                qPrintable(TARGET_BUS.lastError().message()));
     }
     return iface;
 }

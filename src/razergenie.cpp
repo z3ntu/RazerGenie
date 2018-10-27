@@ -39,6 +39,12 @@
 #define troubleshootingUrl "https://github.com/openrazer/openrazer/wiki/Troubleshooting"
 #define websiteUrl "https://openrazer.github.io/"
 
+#if defined(Q_OS_LINUX)
+#define TARGET_BUS QDBusConnection::systemBus()
+#elif defined(Q_OS_DARWIN)
+#define TARGET_BUS QDBusConnection::sessionBus()
+#endif
+
 RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 {
     // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
@@ -122,7 +128,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         }
 
         // Watch for dbus service changes (= daemon ends or gets started)
-        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("io.github.openrazer1", QDBusConnection::systemBus());
+        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("io.github.openrazer1", TARGET_BUS);
 
         connect(watcher, &QDBusServiceWatcher::serviceRegistered,
                 this, &RazerGenie::dbusServiceRegistered);
