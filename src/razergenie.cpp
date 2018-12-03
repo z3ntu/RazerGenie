@@ -462,7 +462,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
         QPushButton *buttonD = new QPushButton(widget);
         buttonD->setText(tr("Launch matrix discovery"));
         verticalLayout->addWidget(buttonD);
-        connect(buttonD, &QPushButton::clicked, this, &RazerGenie::openMatrixDiscovery);
+        connect(buttonD, &QPushButton::clicked, this, [this] { openCustomEditor(true); });
 #endif
     }
 
@@ -650,29 +650,24 @@ void RazerGenie::pollCombo(int /* index */)
     dev->setPollRate(sender->currentData().value<ushort>());
 }
 
-void RazerGenie::openCustomEditor()
+void RazerGenie::openCustomEditor(bool openMatrixDiscovery)
 {
     // get device pointer
     auto *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
-    auto *cust = new CustomEditor(dev);
+    // Set combobox(es) to "Custom Effect"
+    auto comboboxes = item->findChildren<QComboBox*>("combobox");
+    for(auto combobox : comboboxes) {
+        if(combobox->findText("Custom Effect") == -1)
+            combobox->addItem("Custom Effect");
+        combobox->setCurrentText("Custom Effect");
+    }
+
+    auto *cust = new CustomEditor(dev, openMatrixDiscovery);
     cust->setAttribute(Qt::WA_DeleteOnClose);
     cust->show();
 }
-
-#ifdef INCLUDE_MATRIX_DISCOVERY
-void RazerGenie::openMatrixDiscovery()
-{
-    // get device pointer
-    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
-    libopenrazer::Device *dev = devices.value(item->getDevicePath());
-
-    CustomEditor *cust = new CustomEditor(dev, true);
-    cust->setAttribute(Qt::WA_DeleteOnClose);
-    cust->show();
-}
-#endif
 
 void RazerGenie::openPreferences()
 {

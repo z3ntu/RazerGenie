@@ -163,6 +163,10 @@ void LedWidget::fxComboboxChanged(int index)
     auto *sender = qobject_cast<QComboBox*>(QObject::sender());
     libopenrazer::RazerCapability capability = sender->itemData(index).value<libopenrazer::RazerCapability>();
 
+    // Remove "Custom Effect" entry when you switch away from it - only gets added by the Custom Editor button
+    if(sender->itemText(index) != "Custom Effect")
+        sender->removeItem(sender->findText("Custom Effect"));
+
     // Show/hide the color buttons
     if(capability.getNumColors() == 0) { // hide all
         for(int i=1; i<=3; i++)
@@ -232,6 +236,7 @@ void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
         mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
     } else {
 //         qWarning() << fxStr << " is not implemented yet!"; // FIXME
+        qWarning() << "(insert fxstring here) is not implemented yet!";
     }
 }
 

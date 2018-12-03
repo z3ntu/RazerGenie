@@ -72,7 +72,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
                 closeWindow();
             }
         } else {
-            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
+            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName(), QString::number(dimens.x), QString::number(dimens.y)));
             closeWindow();
         }
         vbox->addLayout(generateKeyboard());
@@ -82,7 +82,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
         if(dimens.x == 1 && dimens.y == 15) { // e.g. Firefly
             vbox->addLayout(generateMousemat());
         } else {
-            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName()).arg(QString::number(dimens.x)).arg(QString::number(dimens.y)));
+            QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName(), QString::number(dimens.x), QString::number(dimens.y)));
             closeWindow();
         }
     } /*else if(type == "mouse") {
@@ -268,7 +268,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
         if(file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-            QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
+            QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname, file_prod.errorString()));
             return false;
         }
     }
@@ -305,7 +305,7 @@ void CustomEditor::clearAll()
     device->displayCustomFrame();
 
     // Reset view
-    for(auto matrixPushButton : matrixPushButtons) {
+    for(auto matrixPushButton : qAsConst(matrixPushButtons)) {
         matrixPushButton->resetButtonColor();
     }
 

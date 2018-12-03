@@ -160,7 +160,7 @@ public:
     uchar getBrightness();
 };
 
-const static QList<RazerCapability> ledFxList {
+const QList<RazerCapability> ledFxList {
     RazerCapability(razer_test::RazerEffect::Off, Led::tr("Off"), 0),
     RazerCapability(razer_test::RazerEffect::Static, Led::tr("Static"), 1),
     RazerCapability(razer_test::RazerEffect::Breathing, Led::tr("Breathing"), 1),
@@ -172,7 +172,7 @@ const static QList<RazerCapability> ledFxList {
     RazerCapability(razer_test::RazerEffect::Reactive, Led::tr("Reactive"), 1),
 };
 
-const static QHash<razer_test::RazerLedId, QString> ledIdToStringTable {
+const QHash<razer_test::RazerLedId, QString> ledIdToStringTable {
     {razer_test::RazerLedId::Unspecified, Led::tr("Unspecified")},
     {razer_test::RazerLedId::ScrollWheelLED, Led::tr("Scroll Wheel")},
     {razer_test::RazerLedId::BatteryLED, Led::tr("Battery")},

@@ -42,10 +42,7 @@ public slots:
     // Poll combobox
     void pollCombo(int /* index */);
 
-    void openCustomEditor();
-#ifdef INCLUDE_MATRIX_DISCOVERY
-    void openMatrixDiscovery();
-#endif
+    void openCustomEditor(bool openMatrixDiscovery = false);
     void openPreferences();
 
     void dbusServiceRegistered(const QString &serviceName);

@@ -74,7 +74,7 @@ RazerImageDownloader::~RazerImageDownloader()
 void RazerImageDownloader::finished(QNetworkReply* reply)
 {
     if(reply->error() != QNetworkReply::NoError) {
-        emit downloadErrored(tr("Network Error"), QVariant::fromValue(reply->error()).value<QString>());
+        emit downloadErrored(tr("Network Error"), QVariant::fromValue(reply->error()).toString());
         return;
     }
 
