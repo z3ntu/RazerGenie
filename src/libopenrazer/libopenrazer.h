@@ -146,7 +146,7 @@ public:
     QList<razer_test::RGB> getCurrentColors();
     razer_test::RazerLedId getLedId();
 
-    bool setNone();
+    bool setOff();
     bool setStatic(QColor color);
     bool setBreathing(QColor color);
     bool setBreathingDual(QColor color, QColor color2);

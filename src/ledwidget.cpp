@@ -211,7 +211,7 @@ void LedWidget::brightnessSliderChanged(int value)
 void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
 {
     if(fxStr == razer_test::RazerEffect::Off) {
-        mLed->setNone();
+        mLed->setOff();
     } else if(fxStr == razer_test::RazerEffect::Static) {
         QColor c = getColorForButton(1);
         mLed->setStatic(c);

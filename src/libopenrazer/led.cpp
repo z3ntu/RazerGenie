@@ -69,15 +69,15 @@ razer_test::RazerLedId Led::getLedId()
 }
 
 /*!
- * \fn bool libopenrazer::Led::setNone()
+ * \fn bool libopenrazer::Led::setOff()
  *
  * Sets the LED to none / off.
  *
  * Returns if the D-Bus call was successful.
  */
-bool Led::setNone()
+bool Led::setOff()
 {
-    QDBusReply<bool> reply = ledIface()->call("setNone");
+    QDBusReply<bool> reply = ledIface()->call("setOff");
     return handleBoolReply (reply, Q_FUNC_INFO);
 }
 
