@@ -11,7 +11,7 @@ install(FILES xyz.z3ntu.razergenie.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 # Translations
 set(TRANSLATION_FILES
-    translations/de.ts)  # add new languages here!
+    translations/de.ts translations/fr.ts)  # add new languages here!
 qt5_add_translation(QM_FILES ${TRANSLATION_FILES})
 
 add_custom_target(translations ALL DEPENDS ${QM_FILES}) # this is apparently needed that the .qm files are generated at all...
