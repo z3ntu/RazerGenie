@@ -419,7 +419,11 @@
         ]
     },
 
+<<<<<<< HEAD
     "French": {
+=======
+    "fr_FR": {
+>>>>>>> 02fe6c1... razerdefault22: Add fr_FR keymap
         "row0": [
             {"label": null},
             {"label": "esc", "matrix": [0, 1]},
@@ -553,6 +557,7 @@
             {"label": ".", "matrix": [5, 20]},
             {"label": "entrée", "disabled": true}
         ]
+<<<<<<< HEAD
     },
 
     "Portuguese": {
@@ -690,5 +695,7 @@
             {"label": ".", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
         ]
+=======
+>>>>>>> 02fe6c1... razerdefault22: Add fr_FR keymap
     }
 }
