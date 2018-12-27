@@ -1,6 +1,7 @@
 # Translations
 ts_files = [
   'de.ts',
+  'fr.ts',
   'nl.ts',
 ]
 qt.compile_translations(ts_files : ts_files,
