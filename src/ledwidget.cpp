@@ -46,7 +46,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
     QSlider *brightnessSlider = nullptr;
 
     comboBox->setObjectName("combobox");
-    qDebug() << "CURRENT LED: " << led->getObjectPath().path();
+//     qDebug() << "CURRENT LED: " << led->getObjectPath().path();
     //TODO More elegant solution instead of the sizePolicy?
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
@@ -75,7 +75,7 @@ LedWidget::LedWidget(QWidget* parent, libopenrazer::Device *device, libopenrazer
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         brightnessSlider->setMaximum(255);
-        qDebug() << "Brightness:" << led->getBrightness();
+//         qDebug() << "Brightness:" << led->getBrightness();
         brightnessSlider->setValue(led->getBrightness());
         connect(brightnessSlider, &QSlider::valueChanged, this, &LedWidget::brightnessSliderChanged);
     }

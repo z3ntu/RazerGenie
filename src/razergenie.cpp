@@ -288,7 +288,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     QString name = currentDevice->getDeviceName();
 
 //     qDebug() << devicePath;
-    qDebug() << name;
+//     qDebug() << name;
 
     if(devices.isEmpty()) {
         // Remove placeholder widget if inserted.
@@ -320,7 +320,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
-    qDebug() << type;
+//     qDebug() << type;
 
     /* Create actual DeviceWidget */
     auto *widget = new RazerDeviceWidget(name, devicePath);
@@ -397,14 +397,14 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
         // Get the current DPI and set the slider&text
         razer_test::RazerDPI currDPI = currentDevice->getDPI();
-        qDebug() << "currDPI:" << currDPI.dpi_x << currDPI.dpi_y;
+//         qDebug() << "currDPI:" << currDPI.dpi_x << currDPI.dpi_y;
         dpiXSlider->setValue(currDPI.dpi_x/100);
         dpiYSlider->setValue(currDPI.dpi_y/100);
         dpiXText->setText(QString::number(currDPI.dpi_x));
         dpiYText->setText(QString::number(currDPI.dpi_y));
 
         int maxDPI = currentDevice->maxDPI();
-        qDebug() << "maxDPI:" << maxDPI;
+//         qDebug() << "maxDPI:" << maxDPI;
         dpiXSlider->setMaximum(maxDPI/100);
         dpiYSlider->setMaximum(maxDPI/100);
 
