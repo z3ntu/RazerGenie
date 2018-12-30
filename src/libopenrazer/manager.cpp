@@ -150,15 +150,15 @@ DaemonStatus Manager::getDaemonStatus()
     // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
     // Daemon can be not installed but enabled -.-
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "openrazer-daemon.service");
+    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
     QString error(process.readAllStandardError());
     if(output == "enabled\n") return DaemonStatus::Enabled;
     else if(output == "disabled\n") return DaemonStatus::Disabled;
-    else if(error == "Failed to get unit file state for openrazer-daemon.service: No such file or directory\n") return DaemonStatus::NotInstalled;
+    else if(error == "Failed to get unit file state for razer_test.service: No such file or directory\n") return DaemonStatus::NotInstalled;
     else if(process.error() == QProcess::FailedToStart) { // check if systemctl could be started - fails on non-systemd distros and flatpak
-        QFileInfo daemonFile("/usr/bin/openrazer-daemon");
+        QFileInfo daemonFile("/usr/bin/razer_test");
         // if the daemon executable does not exist, show the not_installed message - probably flatpak
         if(!daemonFile.exists()) return DaemonStatus::NotInstalled;
         // otherwise show the NoSystemd message - probably a non-systemd distro
@@ -172,12 +172,12 @@ DaemonStatus Manager::getDaemonStatus()
 /*!
  * \fn QString libopenrazer::getDaemonStatusOutput()
  *
- * Returns the multiline output of \c {"systemctl --user status openrazer-daemon.service"}.
+ * Returns the multiline output of \c {"systemctl --user status razer_test.service"}.
  */
 QString Manager::getDaemonStatusOutput()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "status" << "openrazer-daemon.service");
+    process.start("systemctl", QStringList() << "--user" << "status" << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
     QString error(process.readAllStandardError());
@@ -189,14 +189,14 @@ QString Manager::getDaemonStatusOutput()
 /*!
  * \fn bool libopenrazer::enableDaemon()
  *
- * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl --user enable openrazer-daemon.service"}
+ * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl --user enable razer_test.service"}
  *
  * Returns if the call was successful.
  */
 bool Manager::enableDaemon()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "enable" << "openrazer-daemon.service");
+    process.start("systemctl", QStringList() << "--user" << "enable" << "razer_test.service");
     process.waitForFinished();
     return process.exitCode() == 0;
 }

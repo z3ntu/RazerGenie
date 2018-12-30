@@ -167,11 +167,11 @@ Der Editor wird nicht geöffnet.</translation>
         <source>The OpenRazer daemon is not started and you are not using systemd as your init system.
 You have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.
 
-Manually starting would be running &quot;openrazer-daemon&quot; in a terminal.</source>
+Manually starting would be running &quot;razer_test&quot; in a terminal.</source>
         <translation>Der OpenRazer Daemon ist nicht gestartet and du benutzt nicht systemd als dein Init-System.
 Du musst entweder den Daemon manuell jedes Mal nach dem einloggen oder du richtest eine andere Methode ein, um den Daemon automatisch zu starten.
 
-Manuell den Daemon zu starten, wäre, &quot;openrazer-daemon&quot; in einem Terminal auszuführen.</translation>
+Manuell den Daemon zu starten, wäre, &quot;razer_test&quot; in einem Terminal auszuführen.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="62"/>

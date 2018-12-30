@@ -8,9 +8,9 @@
     \value Disabled
            The OpenRazer daemon systemd unit is disabled i.e. the daemon does not get started at login.
     \value NotInstalled
-           The daemon is not installed (systemd unit and/or openrazer-daemon executable is missing).
+           The daemon is not installed (systemd unit and/or razer_test executable is missing).
     \value NoSystemd
-           The daemon is installed but 'systemctl' is not available but /usr/bin/openrazer-daemon exists.
+           The daemon is installed but 'systemctl' is not available but /usr/bin/razer_test exists.
     \value Unknown
            The detection mechanism didn't detect the status.
 */

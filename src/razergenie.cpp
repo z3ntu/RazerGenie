@@ -81,7 +81,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         } else if(daemonStatus == libopenrazer::DaemonStatus::NoSystemd) {
             auto *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not available."));
-            QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"openrazer-daemon\" in a terminal."));
+            QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"razer_test\" in a terminal."));
 
             boxLayout->setAlignment(Qt::AlignTop);
 
