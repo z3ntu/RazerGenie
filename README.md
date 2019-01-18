@@ -21,13 +21,12 @@ If you are using a distribution not listed here please let me know and I'll try 
 ## How to compile
 This is a quick and easy way to test the RazerGenie without installing it or to test the master branch.
 ```
-mkdir build && cd build
-meson ..
-# If you want to enable experimental (=unfinished) features
-meson configure -Denable_experimental=true
-ninja
-./src/razergenie
-# You could install it with 'ninja install' but that's not recommended as files get left in the filesystem (use a distribution package, if available!).
+meson builddir
+ninja -C builddir
+./builddir/src/razergenie
+# You could install it with 'ninja install' but that's not recommended
+# as the installation prefix has to be adjusted and files can get left
+# in the filesystem (use a distribution package, if available!).
 ```
 
 ## Bugs
