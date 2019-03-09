@@ -18,7 +18,7 @@ incdir = include_directories('libopenrazer')
 
 razergenie = executable('razergenie',
                         [razergenie_sources, processed],
-                        dependencies : qt5_dep,
+                        dependencies : [qt5_dep, razer_test_dep],
                         include_directories : incdir,
                         link_with : libopenrazer,
                         install : true)

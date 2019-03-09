@@ -7,6 +7,8 @@ libopenrazer_version = '0.0.1'
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: ['Core', 'Gui', 'Widgets', 'DBus', 'Network', 'Xml'])
 
+razer_test_dep = dependency('razer_test')
+
 if get_option('enable_experimental')
   add_global_arguments('-DENABLE_EXPERIMENTAL', language : 'cpp')
   message('razergenie: Experimental features enabled.')
