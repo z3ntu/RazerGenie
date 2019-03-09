@@ -39,7 +39,7 @@
 #define troubleshootingUrl "https://github.com/openrazer/openrazer/wiki/Troubleshooting"
 #define websiteUrl "https://openrazer.github.io/"
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
 #define TARGET_BUS QDBusConnection::systemBus()
 #elif defined(Q_OS_DARWIN) || defined(Q_OS_WIN)
 #define TARGET_BUS QDBusConnection::sessionBus()
