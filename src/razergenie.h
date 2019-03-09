@@ -49,8 +49,7 @@ public slots:
     void dbusServiceUnregistered(const QString &serviceName);
 
     // device signals
-    void deviceAdded();
-    void deviceRemoved();
+    void devicesChanged();
 
     void openIssueUrl();
     void openSupportedDevicesUrl();

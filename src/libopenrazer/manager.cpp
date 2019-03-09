@@ -216,29 +216,9 @@ bool Manager::enableDaemon()
  * \sa connectDeviceRemoved()
  */
 // TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
-bool Manager::connectDeviceAdded(QObject *receiver, const char *slot)
+bool Manager::connectDevicesChanged(QObject *receiver, const char *slot)
 {
-    return QDBusConnection::sessionBus().connect("io.github.openrazer1", "/org/razer", "razer.devices", "device_added", receiver, slot); // FIXME
-}
-
-/*!
- * \fn bool libopenrazer::connectDeviceRemoved(QObject *receiver, const char *slot)
- *
- * Connects the \c device_removed signal of the daemon to the specified method using the \a receiver and \a slot.
- *
- * Can be used in the Qt4-style Signal&Slot syntax, e.g.:
- * \code
- * libopenrazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
- * \endcode
- *
- * Returns if the connection was successful.
- *
- * \sa connectDeviceAdded()
- */
-// TODO New Qt5 connect style syntax - maybe https://stackoverflow.com/a/35501065/3527128
-bool Manager::connectDeviceRemoved(QObject *receiver, const char *slot)
-{
-    return QDBusConnection::sessionBus().connect("io.github.openrazer1", "/org/razer", "razer.devices", "device_removed", receiver, slot); // FIXME
+    return TARGET_BUS.connect(OPENRAZER_SERVICE_NAME, "/io/github/openrazer1", "io.github.openrazer1.Manager", "devicesChanged", receiver, slot);
 }
 
 }

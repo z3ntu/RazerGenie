@@ -29,6 +29,13 @@
 
 #include "razercapability.h"
 
+#define OPENRAZER_SERVICE_NAME "io.github.openrazer1"
+#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
+#define TARGET_BUS QDBusConnection::systemBus()
+#elif defined(Q_OS_DARWIN) || defined(Q_OS_WIN)
+#define TARGET_BUS QDBusConnection::sessionBus()
+#endif
+
 // NOTE: DBus types -> Qt/C++ types: http://doc.qt.io/qt-5/qdbustypesystem.html#primitive-types
 
 namespace libopenrazer
@@ -71,8 +78,7 @@ public:
     // bool disableDaemon();
 
     // - Signal Connect Mehtods -
-    bool connectDeviceAdded(QObject *receiver, const char *slot);
-    bool connectDeviceRemoved(QObject *receiver, const char *slot);
+    bool connectDevicesChanged(QObject *receiver, const char *slot);
 };
 
 class Device : public QObject

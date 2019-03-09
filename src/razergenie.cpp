@@ -163,8 +163,7 @@ void RazerGenie::setupUi()
 
     connect(ui_main.listWidget, &QListWidget::currentRowChanged, ui_main.stackedWidget, &QStackedWidget::setCurrentIndex);
 
-//     libopenrazer::connectDeviceAdded(this, SLOT(deviceAdded()));
-//     libopenrazer::connectDeviceRemoved(this, SLOT(deviceRemoved()));
+    manager->connectDevicesChanged(this, SLOT(devicesChanged()));
 }
 
 void RazerGenie::dbusServiceRegistered(const QString &serviceName)
@@ -676,15 +675,9 @@ void RazerGenie::openPreferences()
     prefs->show();
 }
 
-void RazerGenie::deviceAdded()
+void RazerGenie::devicesChanged()
 {
-    qInfo() << "DEVICE WAS ADDED!";
-    refreshDeviceList();
-}
-
-void RazerGenie::deviceRemoved()
-{
-    qInfo() << "DEVICE WAS REMOVED!";
+    qInfo() << "DEVICE HAVE CHANGED!";
     refreshDeviceList();
 }
 
