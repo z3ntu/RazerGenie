@@ -37,7 +37,7 @@
 #define OPENRAZER_SERVICE_NAME "io.github.openrazer1"
 #if defined(Q_OS_LINUX)
 #define TARGET_BUS QDBusConnection::systemBus()
-#elif defined(Q_OS_DARWIN)
+#elif defined(Q_OS_DARWIN) || defined(Q_OS_WIN)
 #define TARGET_BUS QDBusConnection::sessionBus()
 #endif
 
