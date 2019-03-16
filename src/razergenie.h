@@ -21,7 +21,9 @@
 
 #include "ui_razergenie.h"
 #include "razerimagedownloader.h"
-#include "libopenrazer/libopenrazer.h"
+
+#include <libopenrazer.h>
+
 #include <QComboBox>
 
 class RazerGenie : public QWidget

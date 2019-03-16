@@ -24,8 +24,6 @@
 #include <config.h>
 
 #include "razergenie.h"
-#include "libopenrazer/libopenrazer.h"
-#include "libopenrazer/razercapability.h"
 #include "customeditor/customeditor.h"
 #include "preferences/preferences.h"
 #include "razerimagedownloader.h"

@@ -1,8 +1,7 @@
 project('razergenie', 'cpp',
+        version : '0.7',
+        meson_version : '>=0.44.0',
         default_options : ['cpp_std=c++11'])
-
-razergenie_version = '0.7'
-libopenrazer_version = '0.0.1'
 
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: ['Core', 'Gui', 'Widgets', 'DBus', 'Network', 'Xml'])
