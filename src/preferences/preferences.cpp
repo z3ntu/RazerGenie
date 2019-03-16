@@ -23,7 +23,8 @@
 #include <libopenrazer.h>
 #include <config.h>
 
-Preferences::Preferences(QWidget *parent) : QDialog(parent)
+Preferences::Preferences(QWidget *parent)
+    : QDialog(parent)
 {
     setWindowTitle(tr("RazerGenie - Preferences"));
 
@@ -40,7 +41,7 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
 
     QLabel *openrazerVersionLabel = new QLabel(this);
     // FIXME reenable
-//     openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(libopenrazer::getDaemonVersion()));
+    // openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(libopenrazer::getDaemonVersion()));
 
     QLabel *generalLabel = new QLabel(this);
     generalLabel->setText(tr("General:"));
@@ -53,7 +54,7 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
     auto *downloadCheckBox = new QCheckBox(this);
     downloadCheckBox->setText(tr("Download device images"));
     downloadCheckBox->setChecked(settings.value("downloadImages").toBool());
-    connect(downloadCheckBox, &QCheckBox::clicked, this, [=]( bool checked ) {
+    connect(downloadCheckBox, &QCheckBox::clicked, this, [=](bool checked) {
         settings.setValue("downloadImages", checked);
     });
 
@@ -72,5 +73,4 @@ Preferences::Preferences(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(tr("RazerGenie - Preferences"));
 }
 
-Preferences::~Preferences()
-    = default;
+Preferences::~Preferences() = default;

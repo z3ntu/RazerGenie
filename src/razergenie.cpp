@@ -43,7 +43,8 @@
 #define TARGET_BUS QDBusConnection::sessionBus()
 #endif
 
-RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
+RazerGenie::RazerGenie(QWidget *parent)
+    : QWidget(parent)
 {
     // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
     QDir::setCurrent(QCoreApplication::applicationDirPath());
@@ -58,10 +59,10 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
     libopenrazer::DaemonStatus daemonStatus = manager->getDaemonStatus();
 
     // Check if daemon available
-    if(!manager->isDaemonRunning()) {
+    if (!manager->isDaemonRunning()) {
         // Build a UI depending on what the status is.
 
-        if(daemonStatus == libopenrazer::DaemonStatus::NotInstalled) {
+        if (daemonStatus == libopenrazer::DaemonStatus::NotInstalled) {
             auto *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not installed"));
             QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!\n\nIf you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package."));
@@ -76,7 +77,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
             boxLayout->addWidget(titleLabel);
             boxLayout->addWidget(textLabel);
             boxLayout->addWidget(button);
-        } else if(daemonStatus == libopenrazer::DaemonStatus::NoSystemd) {
+        } else if (daemonStatus == libopenrazer::DaemonStatus::NoSystemd) {
             auto *boxLayout = new QVBoxLayout(this);
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not available."));
             QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nManually starting would be running \"razer_test\" in a terminal."));
@@ -112,7 +113,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
         // Set up the normal UI
         setupUi();
 
-        if(daemonStatus == libopenrazer::DaemonStatus::Disabled) {
+        if (daemonStatus == libopenrazer::DaemonStatus::Disabled) {
             QMessageBox msgBox;
             msgBox.setText(tr("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login."));
             QPushButton *enableButton = msgBox.addButton(tr("Enable"), QMessageBox::ActionRole);
@@ -137,7 +138,7 @@ RazerGenie::RazerGenie(QWidget *parent) : QWidget(parent)
 
 RazerGenie::~RazerGenie()
 {
-    QHashIterator<QDBusObjectPath, libopenrazer::Device*> i(devices);
+    QHashIterator<QDBusObjectPath, libopenrazer::Device *> i(devices);
     while (i.hasNext()) {
         i.next();
         delete i.value();
@@ -186,7 +187,8 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
 {
     // Get list of Razer devices connected to the PC: lsusb | grep '1532:' | cut -d' ' -f6
     QProcess process;
-    process.start("bash", QStringList() << "-c" << "lsusb | grep '1532:' | cut -d' ' -f6");
+    process.start("bash", QStringList() << "-c"
+                                        << "lsusb | grep '1532:' | cut -d' ' -f6");
     process.waitForFinished();
     QStringList outputList = QString(process.readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
 
@@ -194,13 +196,13 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
 
     // Transform the list ["1234:abcd", "5678:def0"] into a QList with QPairs.
     QStringListIterator i(outputList);
-    while(i.hasNext()) {
+    while (i.hasNext()) {
         QStringList split = i.next().split(":");
         bool ok;
         //TODO: Check if count is 2? Otherwise SIGSEGV probably
         int vid = split[0].toInt(&ok, 16);
         int pid = split[1].toInt(&ok, 16);
-        if(!ok) {
+        if (!ok) {
             qWarning() << "RazerGenie: Error while parsing the lsusb output.";
             return QList<QPair<int, int>>();
         }
@@ -219,7 +221,7 @@ void RazerGenie::fillDeviceList()
         addDeviceToGui(devicePath);
     }
 
-    if(devicePaths.size() == 0) {
+    if (devicePaths.size() == 0) {
         // Add placeholder widget
         ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
     }
@@ -235,14 +237,14 @@ void RazerGenie::refreshDeviceList()
     // if not in new, remove from both
     // go through new (remaining items) list and add
     QList<QDBusObjectPath> devicePaths = manager->getDevices();
-    QMutableHashIterator<QDBusObjectPath, libopenrazer::Device*> i(devices);
+    QMutableHashIterator<QDBusObjectPath, libopenrazer::Device *> i(devices);
     while (i.hasNext()) {
         i.next();
-        if(devicePaths.contains(i.key())) {
+        if (devicePaths.contains(i.key())) {
             qDebug() << "Keep: " << i.key().path();
             devicePaths.removeOne(i.key());
         } else {
-            libopenrazer::Device* dev = i.value();
+            libopenrazer::Device *dev = i.value();
             qDebug() << "Remove: " << i.key().path();
             devicePaths.removeOne(i.key());
             removeDeviceFromGui(i.key());
@@ -251,7 +253,7 @@ void RazerGenie::refreshDeviceList()
         }
     }
     QListIterator<QDBusObjectPath> j(devicePaths);
-    while(j.hasNext()) {
+    while (j.hasNext()) {
         QDBusObjectPath devicePath = j.next();
         qDebug() << "Add: " << devicePath.path();
         addDeviceToGui(devicePath);
@@ -265,8 +267,8 @@ void RazerGenie::clearDeviceList()
     // Clear device list
     ui_main.listWidget->clear();
     // Clear stackedwidget
-    for(int i = ui_main.stackedWidget->count(); i >= 0; i--) {
-        QWidget* widget = ui_main.stackedWidget->widget(i);
+    for (int i = ui_main.stackedWidget->count(); i >= 0; i--) {
+        QWidget *widget = ui_main.stackedWidget->widget(i);
         ui_main.stackedWidget->removeWidget(widget);
         widget->deleteLater();
     }
@@ -284,16 +286,16 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     QString type = currentDevice->getDeviceType();
     QString name = currentDevice->getDeviceName();
 
-//     qDebug() << devicePath;
-//     qDebug() << name;
+    // qDebug() << devicePath;
+    // qDebug() << name;
 
-    if(devices.isEmpty()) {
+    if (devices.isEmpty()) {
         // Remove placeholder widget if inserted.
         ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(0));
     }
 
-//     qDebug() << "Width" << ui_main.listWidget->width();
-//     qDebug() << "Height" << ui_main.listWidget->height();
+    // qDebug() << "Width" << ui_main.listWidget->width();
+    // qDebug() << "Height" << ui_main.listWidget->height();
 
     // Add new device to the list
     auto *listItem = new QListWidgetItem();
@@ -306,7 +308,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     devices.insert(devicePath, currentDevice);
 
     // Download image for device
-    if(!currentDevice->getPngFilename().isEmpty()) {
+    if (!currentDevice->getPngFilename().isEmpty()) {
         RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
         connect(dl, &RazerImageDownloader::downloadErrored, listItemWidget, &DeviceListWidget::imageDownloadErrored);
@@ -317,7 +319,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
-//     qDebug() << type;
+    // qDebug() << type;
 
     /* Create actual DeviceWidget */
     auto *widget = new RazerDeviceWidget(name, devicePath);
@@ -326,7 +328,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
     // List of locations to iterate through
     QList<libopenrazer::Led *> leds;
-    foreach(const QDBusObjectPath &ledPath, currentDevice->getLeds()) {
+    foreach (const QDBusObjectPath &ledPath, currentDevice->getLeds()) {
         libopenrazer::Led *led = new libopenrazer::Led(ledPath);
         leds.append(led);
     }
@@ -341,19 +343,19 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     verticalLayout->addWidget(header);
 
     // Lighting header
-    if(leds.size() != 0) {
+    if (leds.size() != 0) {
         QLabel *lightingHeader = new QLabel(tr("Lighting"), widget);
         lightingHeader->setFont(headerFont);
         verticalLayout->addWidget(lightingHeader);
     }
 
     // Iterate through lighting locations
-    foreach(libopenrazer::Led *led, leds) {
+    foreach (libopenrazer::Led *led, leds) {
         verticalLayout->addWidget(new LedWidget(this, currentDevice, led));
     }
 
     /* DPI sliders */
-    if(currentDevice->hasFeature("dpi")) {
+    if (currentDevice->hasFeature("dpi")) {
         // HBoxes
         auto *dpiXHBox = new QHBoxLayout();
         auto *dpiYHBox = new QHBoxLayout();
@@ -394,16 +396,16 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
         // Get the current DPI and set the slider&text
         razer_test::RazerDPI currDPI = currentDevice->getDPI();
-//         qDebug() << "currDPI:" << currDPI.dpi_x << currDPI.dpi_y;
-        dpiXSlider->setValue(currDPI.dpi_x/100);
-        dpiYSlider->setValue(currDPI.dpi_y/100);
+        // qDebug() << "currDPI:" << currDPI.dpi_x << currDPI.dpi_y;
+        dpiXSlider->setValue(currDPI.dpi_x / 100);
+        dpiYSlider->setValue(currDPI.dpi_y / 100);
         dpiXText->setText(QString::number(currDPI.dpi_x));
         dpiYText->setText(QString::number(currDPI.dpi_y));
 
         int maxDPI = currentDevice->maxDPI();
-//         qDebug() << "maxDPI:" << maxDPI;
-        dpiXSlider->setMaximum(maxDPI/100);
-        dpiYSlider->setMaximum(maxDPI/100);
+        // qDebug() << "maxDPI:" << maxDPI;
+        dpiXSlider->setMaximum(maxDPI / 100);
+        dpiYSlider->setMaximum(maxDPI / 100);
 
         dpiXSlider->setTickInterval(10);
         dpiYSlider->setTickInterval(10);
@@ -434,7 +436,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* Poll rate */
-    if(currentDevice->hasFeature("poll_rate")) {
+    if (currentDevice->hasFeature("poll_rate")) {
         QLabel *pollRateHeader = new QLabel(tr("Polling rate"), widget);
         pollRateHeader->setFont(headerFont);
         verticalLayout->addWidget(pollRateHeader);
@@ -450,7 +452,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     }
 
     /* Custom lighting */
-    if(currentDevice->hasFx("custom_frame")) {
+    if (currentDevice->hasFx("custom_frame")) {
         auto *button = new QPushButton(widget);
         button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);
@@ -475,31 +477,31 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     verticalLayout->addWidget(fwVerLabel);
 
     ui_main.stackedWidget->addWidget(widget);
-//         qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
+    // qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
 }
 
 bool RazerGenie::removeDeviceFromGui(const QDBusObjectPath &devicePath)
 {
     int index = -1;
-    for(int i=0; i<ui_main.listWidget->count(); i++) {
+    for (int i = 0; i < ui_main.listWidget->count(); i++) {
         // get item for index
         QListWidgetItem *item = ui_main.listWidget->item(i);
         // get itemwidget for the item
-        auto *widget = dynamic_cast<DeviceListWidget*>(ui_main.listWidget->itemWidget(item));
+        auto *widget = dynamic_cast<DeviceListWidget *>(ui_main.listWidget->itemWidget(item));
         // compare serial
-        if(widget->device()->objectPath() == devicePath) {
+        if (widget->device()->objectPath() == devicePath) {
             index = i;
             break;
         }
     }
-    if(index == -1) {
+    if (index == -1) {
         return false;
     }
     ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(index));
     delete ui_main.listWidget->takeItem(index);
 
     // Add placeholder widget if the stackedWidget is empty after removing.
-    if(devices.isEmpty()) {
+    if (devices.isEmpty()) {
         ui_main.stackedWidget->addWidget(getNoDevicePlaceholder());
     }
     return true;
@@ -507,7 +509,7 @@ bool RazerGenie::removeDeviceFromGui(const QDBusObjectPath &devicePath)
 
 QWidget *RazerGenie::getNoDevicePlaceholder()
 {
-    if(noDevicePlaceholder != nullptr) {
+    if (noDevicePlaceholder != nullptr) {
         return noDevicePlaceholder;
     }
     // Generate placeholder widget with text "No device is connected.". Maybe add a usb pid check - at least add link to readme and troubleshooting page. Maybe add support for the future daemon troubleshooting option.
@@ -516,13 +518,13 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     QList<QPair<int, int>> matches;
 
     // Don't even iterate if there are no devices detected by lsusb.
-    if(connectedDevices.count() != 0) {
+    if (connectedDevices.count() != 0) {
         QHashIterator<QString, QVariant> i(manager->getSupportedDevices());
         // Iterate through the supported devices
         while (i.hasNext()) {
             i.next();
             QList<QVariant> list = i.value().toList();
-            if(list.count() != 2) {
+            if (list.count() != 2) {
                 qWarning() << "RazerGenie: Error while iterating through supportedDevices";
                 qWarning() << list;
                 continue;
@@ -533,7 +535,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
             QListIterator<QPair<int, int>> j(connectedDevices);
             while (j.hasNext()) {
                 QPair<int, int> x = j.next();
-                if(x.first == vid && x.second == pid) {
+                if (x.first == vid && x.second == pid) {
                     qDebug() << "Found a device match!";
                     matches.append(x);
                 }
@@ -550,7 +552,7 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
     QLabel *textLabel;
     QPushButton *button1;
     QPushButton *button2;
-    if(matches.size() == 0) {
+    if (matches.size() == 0) {
         headerLabel = new QLabel(tr("No device was detected"));
         textLabel = new QLabel(tr("The OpenRazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC."));
         button1 = new QPushButton(tr("Open supported devices"));
@@ -579,13 +581,13 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 
 void RazerGenie::toggleSync(bool sync)
 {
-    if(!manager->syncEffects(sync))
+    if (!manager->syncEffects(sync))
         util::showError(tr("Error while syncing devices."));
 }
 
 void RazerGenie::toggleOffOnScreesaver(bool on)
 {
-    if(!manager->setTurnOffOnScreensaver(on))
+    if (!manager->setTurnOffOnScreensaver(on))
         util::showError(tr("Error while toggling 'turn off on screensaver'"));
 }
 
@@ -593,41 +595,41 @@ void RazerGenie::dpiChanged(int orig_value)
 {
     ushort value = orig_value * 100;
 
-    auto *sender = qobject_cast<QSlider*>(QObject::sender());
+    auto *sender = qobject_cast<QSlider *>(QObject::sender());
 
     qDebug() << value;
     qDebug() << sender->objectName();
 
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     // if DPI should be synced
-    if(syncDpi) {
-        if(sender->objectName() == "dpiX") {
+    if (syncDpi) {
+        if (sender->objectName() == "dpiX") {
             // set the other slider
-            auto *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
+            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
             slider->setValue(orig_value);
 
             // set DPI
-            dev->setDPI({value, value}); // set for both X & Y
+            dev->setDPI({ value, value }); // set for both X & Y
         } else {
             // just set the slider (as the rest was done already or will be done)
-            auto *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
+            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
             slider->setValue(orig_value);
         }
     } /* if DPI should NOT be synced */ else {
         // set DPI (with value from other slider)
-        if(sender->objectName() == "dpiX") {
-            auto *slider = sender->parentWidget()->findChild<QSlider*>("dpiY");
-            dev->setDPI({value, static_cast<ushort>(slider->value()*100)});
+        if (sender->objectName() == "dpiX") {
+            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
+            dev->setDPI({ value, static_cast<ushort>(slider->value() * 100) });
         } else {
-            auto *slider = sender->parentWidget()->findChild<QSlider*>("dpiX");
-            dev->setDPI({static_cast<ushort>(slider->value()*100), value});
+            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
+            dev->setDPI({ static_cast<ushort>(slider->value() * 100), value });
         }
     }
     // Update textbox with new value
-    auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit*>(sender->objectName() + "Text");
+    auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit *>(sender->objectName() + "Text");
     dpitextbox->setText(QString::number(value));
 }
 
@@ -640,23 +642,23 @@ void RazerGenie::dpiSyncCheckbox(bool checked)
 void RazerGenie::pollCombo(int /* index */)
 {
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
-    auto *sender = qobject_cast<QComboBox*>(QObject::sender());
+    auto *sender = qobject_cast<QComboBox *>(QObject::sender());
     dev->setPollRate(sender->currentData().value<ushort>());
 }
 
 void RazerGenie::openCustomEditor(bool openMatrixDiscovery)
 {
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     // Set combobox(es) to "Custom Effect"
-    auto comboboxes = item->findChildren<QComboBox*>("combobox");
-    for(auto combobox : comboboxes) {
-        if(combobox->findText("Custom Effect") == -1)
+    auto comboboxes = item->findChildren<QComboBox *>("combobox");
+    for (auto combobox : comboboxes) {
+        if (combobox->findText("Custom Effect") == -1)
             combobox->addItem("Custom Effect");
         combobox->setCurrentText("Custom Effect");
     }

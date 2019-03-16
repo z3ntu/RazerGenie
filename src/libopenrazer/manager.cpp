@@ -22,8 +22,7 @@
 
 #include "libopenrazer.h"
 
-namespace libopenrazer
-{
+namespace libopenrazer {
 
 Manager::Manager()
 {
@@ -106,7 +105,7 @@ bool Manager::getSyncEffects()
 QString Manager::getDaemonVersion()
 {
     QVariant reply = managerIface()->property("Version");
-    if(!reply.isNull())
+    if (!reply.isNull())
         return reply.toString();
     else
         return "error";
@@ -150,17 +149,23 @@ DaemonStatus Manager::getDaemonStatus()
     // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
     // Daemon can be not installed but enabled -.-
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "is-enabled" << "razer_test.service");
+    process.start("systemctl", QStringList() << "--user"
+                                             << "is-enabled"
+                                             << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
     QString error(process.readAllStandardError());
-    if(output == "enabled\n") return DaemonStatus::Enabled;
-    else if(output == "disabled\n") return DaemonStatus::Disabled;
-    else if(error == "Failed to get unit file state for razer_test.service: No such file or directory\n") return DaemonStatus::NotInstalled;
-    else if(process.error() == QProcess::FailedToStart) { // check if systemctl could be started - fails on non-systemd distros and flatpak
+    if (output == "enabled\n")
+        return DaemonStatus::Enabled;
+    else if (output == "disabled\n")
+        return DaemonStatus::Disabled;
+    else if (error == "Failed to get unit file state for razer_test.service: No such file or directory\n")
+        return DaemonStatus::NotInstalled;
+    else if (process.error() == QProcess::FailedToStart) { // check if systemctl could be started - fails on non-systemd distros and flatpak
         QFileInfo daemonFile("/usr/bin/razer_test");
         // if the daemon executable does not exist, show the not_installed message - probably flatpak
-        if(!daemonFile.exists()) return DaemonStatus::NotInstalled;
+        if (!daemonFile.exists())
+            return DaemonStatus::NotInstalled;
         // otherwise show the NoSystemd message - probably a non-systemd distro
         return DaemonStatus::NoSystemd;
     } else {
@@ -177,7 +182,9 @@ DaemonStatus Manager::getDaemonStatus()
 QString Manager::getDaemonStatusOutput()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "status" << "razer_test.service");
+    process.start("systemctl", QStringList() << "--user"
+                                             << "status"
+                                             << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
     QString error(process.readAllStandardError());
@@ -196,7 +203,9 @@ QString Manager::getDaemonStatusOutput()
 bool Manager::enableDaemon()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user" << "enable" << "razer_test.service");
+    process.start("systemctl", QStringList() << "--user"
+                                             << "enable"
+                                             << "razer_test.service");
     process.waitForFinished();
     return process.exitCode() == 0;
 }

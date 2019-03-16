@@ -40,8 +40,7 @@
 
     \brief Contains methods, enums and classes to interface with the OpenRazer daemon via the D-Bus interface.
 */
-namespace libopenrazer
-{
+namespace libopenrazer {
 
 void printDBusError(QDBusError error, const char *functionname)
 {
@@ -50,9 +49,9 @@ void printDBusError(QDBusError error, const char *functionname)
     qWarning("libopenrazer: %s", qUtf8Printable(error.message()));
 }
 
-bool handleBoolReply (QDBusReply<bool> reply, const char *functionname)
+bool handleBoolReply(QDBusReply<bool> reply, const char *functionname)
 {
-    if(reply.isValid()) {
+    if (reply.isValid()) {
         return true;
     }
     printDBusError(reply.error(), functionname);
@@ -61,7 +60,7 @@ bool handleBoolReply (QDBusReply<bool> reply, const char *functionname)
 
 QString handleStringReply(QDBusReply<QString> reply, const char *functionname)
 {
-    if(reply.isValid()) {
+    if (reply.isValid()) {
         return reply.value();
     }
     printDBusError(reply.error(), functionname);
@@ -70,11 +69,11 @@ QString handleStringReply(QDBusReply<QString> reply, const char *functionname)
 
 QDBusInterface *Device::deviceIface()
 {
-    if(iface == nullptr) {
+    if (iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Device",
                                    TARGET_BUS, this);
     }
-    if(!iface->isValid()) {
+    if (!iface->isValid()) {
         fprintf(stderr, "%s\n",
                 qPrintable(TARGET_BUS.lastError().message()));
     }
@@ -83,11 +82,11 @@ QDBusInterface *Device::deviceIface()
 
 QDBusInterface *Manager::managerIface()
 {
-    if(iface == nullptr) {
+    if (iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, "/io/github/openrazer1", "io.github.openrazer1.Manager",
                                    TARGET_BUS, this);
     }
-    if(!iface->isValid()) {
+    if (!iface->isValid()) {
         fprintf(stderr, "%s\n",
                 qPrintable(TARGET_BUS.lastError().message()));
     }
@@ -96,11 +95,11 @@ QDBusInterface *Manager::managerIface()
 
 QDBusInterface *Led::ledIface()
 {
-    if(iface == nullptr) {
+    if (iface == nullptr) {
         iface = new QDBusInterface(OPENRAZER_SERVICE_NAME, mObjectPath.path(), "io.github.openrazer1.Led",
                                    TARGET_BUS, this);
     }
-    if(!iface->isValid()) {
+    if (!iface->isValid()) {
         fprintf(stderr, "%s\n",
                 qPrintable(TARGET_BUS.lastError().message()));
     }

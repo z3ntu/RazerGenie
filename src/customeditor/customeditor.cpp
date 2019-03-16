@@ -24,7 +24,8 @@
 #include <QHBoxLayout>
 #include <QEvent>
 
-CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery, QWidget *parent) : QDialog(parent)
+CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
+    : QDialog(parent)
 {
     setWindowTitle(tr("RazerGenie - Custom Editor"));
     this->device = device;
@@ -35,10 +36,10 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     qDebug() << dimens.x << dimens.y;
 
     // Initialize internal colors list
-    for(int i=0; i<dimens.x; i++) {
+    for (int i = 0; i < dimens.x; i++) {
         colors << QVector<QColor>(dimens.y);
 
-        for(int j=0; j<dimens.y; j++) {
+        for (int j = 0; j < dimens.y; j++) {
             colors[i][j] = QColor(Qt::black);
         }
     }
@@ -56,19 +57,19 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     QString type = device->getDeviceType();
 
     // Generate matrix discovery if requested - ignore device type
-    if(launchMatrixDiscovery) {
+    if (launchMatrixDiscovery) {
         vbox->addLayout(generateMatrixDiscovery());
-    } else if(type == "keyboard") {
-        if(dimens.x == 6 && dimens.y == 16) { // Razer Blade Stealth (Late 2017)
-            if(!parseKeyboardJSON("razerblade16")) {
+    } else if (type == "keyboard") {
+        if (dimens.x == 6 && dimens.y == 16) { // Razer Blade Stealth (Late 2017)
+            if (!parseKeyboardJSON("razerblade16")) {
                 closeWindow();
             }
-        } else if(dimens.x == 6 && dimens.y == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
-            if(!parseKeyboardJSON("razerdefault22")) {
+        } else if (dimens.x == 6 && dimens.y == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
+            if (!parseKeyboardJSON("razerdefault22")) {
                 closeWindow();
             }
-        } else if(dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
-            if(!parseKeyboardJSON("razerblade25")) {
+        } else if (dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
+            if (!parseKeyboardJSON("razerblade25")) {
                 closeWindow();
             }
         } else {
@@ -78,8 +79,9 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
         vbox->addLayout(generateKeyboard());
     } /*else if(type == "keypad") {
         vbox-addLayout(generateKeypad());
-    } */else if(type == "mousepad") {
-        if(dimens.x == 1 && dimens.y == 15) { // e.g. Firefly
+    } */
+    else if (type == "mousepad") {
+        if (dimens.x == 1 && dimens.y == 15) { // e.g. Firefly
             vbox->addLayout(generateMousemat());
         } else {
             QMessageBox::information(nullptr, tr("Unknown matrix dimensions"), tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName(), QString::number(dimens.x), QString::number(dimens.y)));
@@ -87,7 +89,8 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
         }
     } /*else if(type == "mouse") {
         vbox-addLayout(generateMouse());
-    } */else {
+    } */
+    else {
         QMessageBox::information(nullptr, tr("Device type not implemented!"), tr("Please open an issue in the RazerGenie repository. Device type: %1").arg(type));
         closeWindow();
     }
@@ -96,8 +99,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     clearAll();
 }
 
-CustomEditor::~CustomEditor()
-    = default;
+CustomEditor::~CustomEditor() = default;
 
 void CustomEditor::closeWindow()
 {
@@ -105,7 +107,7 @@ void CustomEditor::closeWindow()
     this->close();
 }
 
-QLayout* CustomEditor::generateMainControls()
+QLayout *CustomEditor::generateMainControls()
 {
     auto *hbox = new QHBoxLayout();
 
@@ -135,33 +137,35 @@ QLayout* CustomEditor::generateMainControls()
     return hbox;
 }
 
-QLayout* CustomEditor::generateKeyboard()
+QLayout *CustomEditor::generateKeyboard()
 {
     //TODO: Add missing logo button
     auto *vbox = new QVBoxLayout();
     QJsonObject keyboardLayout;
     bool found = false;
     QString kbdLayout = device->getKeyboardLayout();
-    if(kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
+    if (kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
         keyboardLayout = keyboardKeys[kbdLayout].toObject();
     } else {
-        if(kbdLayout == "unknown") {
+        if (kbdLayout == "unknown") {
             util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
         } else {
             util::showInfo(tr("Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.").arg(kbdLayout));
             closeWindow();
         }
         QStringList langs;
-        langs << "de_DE" << "en_US" << "en_GB";
+        langs << "de_DE"
+              << "en_US"
+              << "en_GB";
         QString lang;
-        foreach(lang, langs) {
-            if(keyboardKeys.contains(lang)) {
+        foreach (lang, langs) {
+            if (keyboardKeys.contains(lang)) {
                 keyboardLayout = keyboardKeys[lang].toObject();
                 found = true;
                 break;
             }
         }
-        if(!found) {
+        if (!found) {
             util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
             closeWindow();
         }
@@ -169,7 +173,7 @@ QLayout* CustomEditor::generateKeyboard()
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
-    for(it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
+    for (it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
         QJsonArray row = (*it).toArray();
 
         auto *hbox = new QHBoxLayout();
@@ -177,19 +181,19 @@ QLayout* CustomEditor::generateKeyboard()
 
         // Iterate over keys in row
         QJsonArray::const_iterator jt;
-        for(jt = row.constBegin(); jt != row.constEnd(); ++jt) {
+        for (jt = row.constBegin(); jt != row.constEnd(); ++jt) {
             QJsonObject obj = (*jt).toObject();
 
-            if(!obj["label"].isNull()) {
+            if (!obj["label"].isNull()) {
                 MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
                 int width = obj.contains("width") ? obj.value("width").toInt() : 60;
-                int height = /*obj.contains("height") ? obj.value("height").toInt() : */63;
+                int height = /*obj.contains("height") ? obj.value("height").toInt() : */ 63;
                 btn->setFixedSize(width, height);
-                if(obj.contains("matrix")) {
+                if (obj.contains("matrix")) {
                     QJsonArray arr = obj["matrix"].toArray();
                     btn->setMatrixPos(arr[0].toInt(), arr[1].toInt());
                 }
-                if(obj.contains("disabled")) {
+                if (obj.contains("disabled")) {
                     btn->setEnabled(false);
                 }
                 /*if(obj["cut"] == "enter") {
@@ -210,11 +214,11 @@ QLayout* CustomEditor::generateKeyboard()
     return vbox;
 }
 
-QLayout* CustomEditor::generateMousemat()
+QLayout *CustomEditor::generateMousemat()
 {
     auto *hbox = new QHBoxLayout();
     // TODO: Improve visual style of the mousemat grid (make it look like the mousepad!)
-    for(int i=0; i<dimens.y; i++) {
+    for (int i = 0; i < dimens.y; i++) {
         MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
         btn->setMatrixPos(0, i);
 
@@ -226,18 +230,18 @@ QLayout* CustomEditor::generateMousemat()
     return hbox;
 }
 
-QLayout* CustomEditor::generateMouse()
+QLayout *CustomEditor::generateMouse()
 {
     auto *hbox = new QHBoxLayout();
     return hbox;
 }
 
-QLayout* CustomEditor::generateMatrixDiscovery()
+QLayout *CustomEditor::generateMatrixDiscovery()
 {
     auto *vbox = new QVBoxLayout();
-    for(int i=0; i<dimens.x; i++) {
+    for (int i = 0; i < dimens.x; i++) {
         auto *hbox = new QHBoxLayout();
-        for(int j=0; j<dimens.y; j++) {
+        for (int j = 0; j < dimens.y; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
             btn->setMatrixPos(i, j);
 
@@ -254,18 +258,18 @@ QLayout* CustomEditor::generateMatrixDiscovery()
 bool CustomEditor::parseKeyboardJSON(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
-    QFile file_devel("../../data/matrix_layouts/"+jsonname+".json"); // File during developemnt
-    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".json"); // File for production
+    QFile file_devel("../../data/matrix_layouts/" + jsonname + ".json"); // File during developemnt
+    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/" + jsonname + ".json"); // File for production
 
     // Try to open the dev file (higher priority)
-    if(file_devel.open(QIODevice::ReadOnly)) {
-        qDebug() << "RazerGenie: Using the development "+jsonname+".json file.";
+    if (file_devel.open(QIODevice::ReadOnly)) {
+        qDebug() << "RazerGenie: Using the development " + jsonname + ".json file.";
         file = &file_devel;
     } else {
-        qDebug() << "RazerGenie: Development "+jsonname+".json failed to open. Trying the production location. Error: " << file_devel.errorString();
+        qDebug() << "RazerGenie: Development " + jsonname + ".json failed to open. Trying the production location. Error: " << file_devel.errorString();
 
         // Try to open the production file
-        if(file_prod.open(QIODevice::ReadOnly)) {
+        if (file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
             QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname, file_prod.errorString()));
@@ -286,32 +290,32 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
 
 bool CustomEditor::updateKeyrow(int row)
 {
-    return device->defineCustomFrame(row, 0, dimens.y-1, colors[row]) && device->displayCustomFrame();
+    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
 }
 
 void CustomEditor::clearAll()
 {
     QVector<QColor> blankColors;
     // Initialize the array with the width of the matrix with black = off
-    for(int i=0; i<dimens.y; i++) {
+    for (int i = 0; i < dimens.y; i++) {
         blankColors << QColor(Qt::black);
     }
 
     // Send one request per row
-    for(int i=0; i<dimens.x; i++) {
-        device->defineCustomFrame(i, 0, dimens.y-1, blankColors);
+    for (int i = 0; i < dimens.x; i++) {
+        device->defineCustomFrame(i, 0, dimens.y - 1, blankColors);
     }
 
     device->displayCustomFrame();
 
     // Reset view
-    for(auto matrixPushButton : qAsConst(matrixPushButtons)) {
+    for (auto matrixPushButton : qAsConst(matrixPushButtons)) {
         matrixPushButton->resetButtonColor();
     }
 
     // Reset model
-    for(auto & color : colors) {
-        for(auto & j : color) {
+    for (auto &color : colors) {
+        for (auto &j : color) {
             j = QColor(Qt::black);
         }
     }
@@ -319,14 +323,14 @@ void CustomEditor::clearAll()
 
 void CustomEditor::colorButtonClicked()
 {
-    auto *sender = qobject_cast<QPushButton*>(QObject::sender());
+    auto *sender = qobject_cast<QPushButton *>(QObject::sender());
 
     QPalette pal(sender->palette());
 
     QColor oldColor = pal.color(QPalette::Button);
 
     QColor color = QColorDialog::getColor(oldColor);
-    if(color.isValid()) {
+    if (color.isValid()) {
 
         // Colorize the button
         pal.setColor(QPalette::Button, color);
@@ -337,19 +341,18 @@ void CustomEditor::colorButtonClicked()
     } else {
         qDebug() << "User cancelled the dialog.";
     }
-
 }
 
 void CustomEditor::onMatrixPushButtonClicked()
 {
-    auto *sender = dynamic_cast<MatrixPushButton*>(QObject::sender());
+    auto *sender = dynamic_cast<MatrixPushButton *>(QObject::sender());
     QPair<int, int> pos = sender->matrixPos();
-    if(drawStatus == DrawStatus::set) {
+    if (drawStatus == DrawStatus::set) {
         // Set color in model
         colors[pos.first][pos.second] = selectedColor;
         // Set color in view
         sender->setButtonColor(selectedColor);
-    } else if(drawStatus == DrawStatus::clear) {
+    } else if (drawStatus == DrawStatus::clear) {
         qDebug() << "Clearing color.";
         // Set color in model
         colors[pos.first][pos.second] = QColor(Qt::black);

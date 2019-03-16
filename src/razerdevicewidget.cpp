@@ -18,7 +18,8 @@
 
 #include "razerdevicewidget.h"
 
-RazerDeviceWidget::RazerDeviceWidget (const QString &name, const QDBusObjectPath &devicePath) : QWidget ()
+RazerDeviceWidget::RazerDeviceWidget(const QString &name, const QDBusObjectPath &devicePath)
+    : QWidget()
 {
     this->name = name;
     this->devicePath = devicePath;
@@ -29,5 +30,4 @@ QDBusObjectPath RazerDeviceWidget::getDevicePath()
     return devicePath;
 }
 
-RazerDeviceWidget::~RazerDeviceWidget()
-    = default;
+RazerDeviceWidget::~RazerDeviceWidget() = default;

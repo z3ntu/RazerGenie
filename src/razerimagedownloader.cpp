@@ -29,8 +29,8 @@
 
 #include "razerimagedownloader.h"
 
-
-RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent) : QObject(parent)
+RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent)
+    : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     this->url = url;
@@ -45,10 +45,10 @@ void RazerImageDownloader::startDownload()
 
     _filepath = path + QFileInfo(url.path()).fileName();
     _file = new QFile(_filepath);
-    if(_file->exists()) {
+    if (_file->exists()) {
         return;
     }
-    if(!settings.value("downloadImages").toBool()) {
+    if (!settings.value("downloadImages").toBool()) {
         emit downloadErrored(tr("Image download disabled"), tr("Image downloading is disabled. Visit the preferences to enable it."));
         return;
     }
@@ -71,9 +71,9 @@ RazerImageDownloader::~RazerImageDownloader()
     delete manager;
 }
 
-void RazerImageDownloader::finished(QNetworkReply* reply)
+void RazerImageDownloader::finished(QNetworkReply *reply)
 {
-    if(reply->error() != QNetworkReply::NoError) {
+    if (reply->error() != QNetworkReply::NoError) {
         emit downloadErrored(tr("Network Error"), QVariant::fromValue(reply->error()).toString());
         return;
     }

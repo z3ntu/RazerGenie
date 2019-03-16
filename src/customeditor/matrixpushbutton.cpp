@@ -19,7 +19,8 @@
 #include <QDebug>
 #include <QStyle>
 
-MatrixPushButton::MatrixPushButton(QString label) : QPushButton(label)
+MatrixPushButton::MatrixPushButton(QString label)
+    : QPushButton(label)
 {
     //TODO: Get rid of light blue "selected" color - can get rid of with setFlat(true) or using a qlineargradient in the stylesheet
     mLabel = label;
@@ -38,7 +39,7 @@ QPair<int, int> MatrixPushButton::matrixPos()
 void MatrixPushButton::setButtonColor(QColor color)
 {
     // Calculate "the perfect font color" - from https://24ways.org/2010/calculating-color-contrast/
-    double yiq = ((color.red()*299)+(color.green()*587)+(color.blue()*114))/1000;
+    double yiq = ((color.red() * 299) + (color.green() * 587) + (color.blue() * 114)) / 1000;
     QString fontcolor = (yiq >= 128) ? "black" : "white";
 
     // Construct QPalette with the wanted color

@@ -18,8 +18,7 @@
 
 #include "razercapability.h"
 
-namespace libopenrazer
-{
+namespace libopenrazer {
 /*!
  * \class libopenrazer::RazerCapability
  * \inmodule libopenrazer
@@ -41,7 +40,8 @@ RazerCapability::RazerCapability(razer_test::RazerEffect identifier, QString dis
     this->wave = false;
 }
 
-RazerCapability::RazerCapability(razer_test::RazerEffect identifier, QString displayString, bool isWave) : RazerCapability(identifier, displayString, 0)
+RazerCapability::RazerCapability(razer_test::RazerEffect identifier, QString displayString, bool isWave)
+    : RazerCapability(identifier, displayString, 0)
 {
     this->wave = isWave;
 }
@@ -54,8 +54,7 @@ RazerCapability::RazerCapability(const RazerCapability &other)
     this->wave = other.wave;
 }
 
-RazerCapability::~RazerCapability()
-    = default;
+RazerCapability::~RazerCapability() = default;
 
 /*!
  * \fn int libopenrazer::RazerCapability::getNumColors() const
