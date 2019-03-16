@@ -670,7 +670,7 @@ void RazerGenie::openCustomEditor(bool openMatrixDiscovery)
 
 void RazerGenie::openPreferences()
 {
-    auto *prefs = new Preferences();
+    auto *prefs = new Preferences(manager);
     prefs->setAttribute(Qt::WA_DeleteOnClose);
     prefs->show();
 }

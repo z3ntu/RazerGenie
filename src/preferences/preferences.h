@@ -21,15 +21,19 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <libopenrazer.h>
+
 
 class Preferences : public QDialog
 {
     Q_OBJECT
 public:
-    Preferences(QWidget* parent = nullptr);
+    Preferences(libopenrazer::Manager *manager, QWidget* parent = nullptr);
     ~Preferences() override;
 private:
     QSettings settings;
+
+    libopenrazer::Manager *manager;
 };
 
 #endif // PREFERENCES_H

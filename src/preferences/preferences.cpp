@@ -23,8 +23,8 @@
 #include <libopenrazer.h>
 #include <config.h>
 
-Preferences::Preferences(QWidget *parent)
-    : QDialog(parent)
+Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
+    : QDialog(parent), manager(manager)
 {
     setWindowTitle(tr("RazerGenie - Preferences"));
 
@@ -40,8 +40,7 @@ Preferences::Preferences(QWidget *parent)
     razergenieVersionLabel->setText(tr("RazerGenie Version: %1").arg(RAZERGENIE_VERSION));
 
     QLabel *openrazerVersionLabel = new QLabel(this);
-    // FIXME reenable
-    // openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(libopenrazer::getDaemonVersion()));
+    openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(manager->getDaemonVersion()));
 
     QLabel *generalLabel = new QLabel(this);
     generalLabel->setText(tr("General:"));
