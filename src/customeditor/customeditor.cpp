@@ -157,8 +157,7 @@ QLayout *CustomEditor::generateKeyboard()
         langs << "de_DE"
               << "en_US"
               << "en_GB";
-        QString lang;
-        foreach (lang, langs) {
+        for (const QString &lang : langs) {
             if (keyboardKeys.contains(lang)) {
                 keyboardLayout = keyboardKeys[lang].toObject();
                 found = true;

@@ -149,8 +149,7 @@ DaemonStatus Manager::getDaemonStatus()
     // - Unit wasn't found (i.e. daemon is not installed - or only an old version) - exit code 1
     // Daemon can be not installed but enabled -.-
     QProcess process;
-    process.start("systemctl", QStringList() << "--user"
-                                             << "is-enabled"
+    process.start("systemctl", QStringList() << "is-enabled"
                                              << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
@@ -177,13 +176,12 @@ DaemonStatus Manager::getDaemonStatus()
 /*!
  * \fn QString libopenrazer::getDaemonStatusOutput()
  *
- * Returns the multiline output of \c {"systemctl --user status razer_test.service"}.
+ * Returns the multiline output of \c {"systemctl status razer_test.service"}.
  */
 QString Manager::getDaemonStatusOutput()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user"
-                                             << "status"
+    process.start("systemctl", QStringList() << "status"
                                              << "razer_test.service");
     process.waitForFinished();
     QString output(process.readAllStandardOutput());
@@ -196,15 +194,14 @@ QString Manager::getDaemonStatusOutput()
 /*!
  * \fn bool libopenrazer::enableDaemon()
  *
- * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl --user enable razer_test.service"}
+ * Enables the systemd unit for the OpenRazer daemon to auto-start when the user logs in. Runs \c {"systemctl enable razer_test.service"}
  *
  * Returns if the call was successful.
  */
 bool Manager::enableDaemon()
 {
     QProcess process;
-    process.start("systemctl", QStringList() << "--user"
-                                             << "enable"
+    process.start("systemctl", QStringList() << "enable"
                                              << "razer_test.service");
     process.waitForFinished();
     return process.exitCode() == 0;
