@@ -139,7 +139,7 @@ QList<QDBusObjectPath> Device::getLeds()
     if (!reply.isNull())
         return qdbus_cast<QList<QDBusObjectPath>>(reply);
     else
-        return {};
+        throw DBusException("Error getting Leds", "");
 }
 
 QStringList Device::getSupportedFx()
@@ -148,7 +148,7 @@ QStringList Device::getSupportedFx()
     if (!reply.isNull())
         return reply.toStringList();
     else
-        return {};
+        throw DBusException("Error getting SupportedFx", "");
 }
 
 QStringList Device::getSupportedFeatures()
@@ -157,7 +157,7 @@ QStringList Device::getSupportedFeatures()
     if (!reply.isNull())
         return reply.toStringList();
     else
-        return {};
+        throw DBusException("Error getting SupportedFeatures", "");
 }
 
 /*!
@@ -206,7 +206,7 @@ QString Device::getDeviceName()
     if (!reply.isNull())
         return reply.toString();
     else
-        return "error";
+        throw DBusException("Error getting Name", "");
 }
 
 /*!
@@ -220,7 +220,7 @@ QString Device::getDeviceType()
     if (!reply.isNull())
         return reply.toString();
     else
-        return "error";
+        throw DBusException("Error getting Type", "");
 }
 
 /*!
@@ -269,7 +269,7 @@ ushort Device::getPollRate()
         return reply.value();
     } else {
         printDBusError(reply.error(), Q_FUNC_INFO);
-        return 0;
+        throw DBusException(reply.error());
     }
 }
 
@@ -311,7 +311,7 @@ razer_test::RazerDPI Device::getDPI()
         return reply.value();
     } else {
         printDBusError(reply.error(), Q_FUNC_INFO);
-        return { 0, 0 };
+        throw DBusException(reply.error());
     }
 }
 
@@ -327,7 +327,7 @@ ushort libopenrazer::Device::maxDPI()
         return reply.value();
     } else {
         printDBusError(reply.error(), Q_FUNC_INFO);
-        return 0;
+        throw DBusException(reply.error());
     }
 }
 
@@ -376,7 +376,7 @@ razer_test::MatrixDimensions Device::getMatrixDimensions()
     if (!reply.isNull())
         return reply.value<razer_test::MatrixDimensions>();
     else
-        return { 0, 0 };
+        throw DBusException("Error getting MatrixDimensions", "");
 }
 
 }

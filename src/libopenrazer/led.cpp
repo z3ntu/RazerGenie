@@ -45,7 +45,7 @@ razer_test::RazerEffect Led::getCurrentEffect()
     if (!reply.isNull())
         return reply.value<razer_test::RazerEffect>();
     else
-        return razer_test::RazerEffect::Off;
+        throw DBusException("Error getting CurrentEffect", "");
 }
 
 QList<razer_test::RGB> Led::getCurrentColors()
@@ -54,7 +54,7 @@ QList<razer_test::RGB> Led::getCurrentColors()
     if (!reply.isNull())
         return reply.value<QList<razer_test::RGB>>();
     else
-        return {};
+        throw DBusException("Error getting CurrentColors", "");
 }
 
 razer_test::RazerLedId Led::getLedId()
@@ -63,7 +63,7 @@ razer_test::RazerLedId Led::getLedId()
     if (!reply.isNull())
         return reply.value<razer_test::RazerLedId>();
     else
-        return razer_test::RazerLedId::Unspecified;
+        throw DBusException("Error getting LedId", "");
 }
 
 /*!
@@ -208,7 +208,7 @@ uchar Led::getBrightness()
         return reply.value();
     } else {
         printDBusError(reply.error(), Q_FUNC_INFO);
-        return 0;
+        throw DBusException(reply.error());
     }
 }
 

@@ -24,6 +24,7 @@
 #include <QDBusObjectPath>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QException>
 
 #include <razer_test.h>
 
@@ -164,6 +165,20 @@ public:
 
     bool setBrightness(uchar brightness);
     uchar getBrightness();
+};
+
+class DBusException : public QException
+{
+public:
+    DBusException(const QDBusError& error);
+    DBusException(const QString &name, const QString &message);
+    void raise() const override;
+    DBusException *clone() const override;
+    QString getName();
+    QString getMessage();
+private:
+    QString name;
+    QString message;
 };
 
 const QList<RazerCapability> ledFxList {

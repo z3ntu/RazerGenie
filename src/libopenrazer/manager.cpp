@@ -66,7 +66,7 @@ QList<QDBusObjectPath> Manager::getDevices()
     if (!reply.isNull())
         return qdbus_cast<QList<QDBusObjectPath>>(reply);
     else
-        return {};
+        throw DBusException("Error getting Devices", "");
 }
 
 /*!
@@ -108,7 +108,7 @@ QString Manager::getDaemonVersion()
     if (!reply.isNull())
         return reply.toString();
     else
-        return "error";
+        throw DBusException("Error getting Version", "");
 }
 
 /*!

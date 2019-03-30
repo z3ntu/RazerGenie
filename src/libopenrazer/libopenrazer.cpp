@@ -55,7 +55,7 @@ bool handleBoolReply(QDBusReply<bool> reply, const char *functionname)
         return true;
     }
     printDBusError(reply.error(), functionname);
-    return false;
+    throw DBusException(reply.error());
 }
 
 QString handleStringReply(QDBusReply<QString> reply, const char *functionname)
@@ -64,7 +64,7 @@ QString handleStringReply(QDBusReply<QString> reply, const char *functionname)
         return reply.value();
     }
     printDBusError(reply.error(), functionname);
-    return "error";
+    throw DBusException(reply.error());
 }
 
 QDBusInterface *Device::deviceIface()
@@ -104,6 +104,27 @@ QDBusInterface *Led::ledIface()
                 qPrintable(TARGET_BUS.lastError().message()));
     }
     return iface;
+}
+
+DBusException::DBusException(const QDBusError &error)
+    : name(error.name()), message(error.message()) {}
+DBusException::DBusException(const QString &name, const QString &message)
+    : name(name), message(message) {}
+void DBusException::raise() const
+{
+    throw *this;
+}
+DBusException *DBusException::clone() const
+{
+    return new DBusException(*this);
+}
+QString DBusException::getName()
+{
+    return name;
+}
+QString DBusException::getMessage()
+{
+    return message;
 }
 
 }
