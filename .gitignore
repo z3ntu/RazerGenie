@@ -1,3 +1,5 @@
 .kdev4/
-build/
-*.qm
+builddir/
+# Ignore meson subproject, but not .wrap files
+subprojects/
+!subprojects/*.wrap

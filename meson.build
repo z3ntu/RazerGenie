@@ -6,7 +6,7 @@ project('razergenie', 'cpp',
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
 
-razer_test_dep = dependency('razer_test')
+razer_test_dep = dependency('razer_test', fallback : ['razer_test', 'razer_test_dep'])
 
 if get_option('include_matrix_discovery')
   add_global_arguments('-DINCLUDE_MATRIX_DISCOVERY', language : 'cpp')
