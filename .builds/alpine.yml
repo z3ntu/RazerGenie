@@ -1,0 +1,14 @@
+image: alpine/edge
+packages:
+- meson
+- qt5-qtbase-dev
+- qt5-qttools-dev
+sources:
+- https://github.com/z3ntu/RazerGenie
+tasks:
+- setup: |
+    cd RazerGenie
+    meson builddir
+- build: |
+    cd RazerGenie
+    ninja -C builddir
