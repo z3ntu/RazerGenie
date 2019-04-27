@@ -21,7 +21,6 @@
 #include <QDBusConnection>
 #include <QDBusMetaType>
 #include <QDebug>
-#include <QDomDocument>
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>

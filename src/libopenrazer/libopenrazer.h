@@ -19,7 +19,6 @@
 #ifndef LIBRAZER_H
 #define LIBRAZER_H
 
-#include <QDomDocument>
 #include <QDBusMessage>
 #include <QDBusObjectPath>
 #include <QDBusInterface>

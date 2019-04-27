@@ -4,7 +4,7 @@ project('razergenie', 'cpp',
         default_options : ['cpp_std=c++11'])
 
 qt5 = import('qt5')
-qt5_dep = dependency('qt5', modules: ['Core', 'Gui', 'Widgets', 'DBus', 'Network', 'Xml'])
+qt5_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
 
 razer_test_dep = dependency('razer_test')
 
