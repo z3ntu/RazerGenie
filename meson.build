@@ -8,13 +8,6 @@ qt5_dep = dependency('qt5', modules: ['Core', 'Gui', 'Widgets', 'DBus', 'Network
 
 razer_test_dep = dependency('razer_test')
 
-if get_option('enable_experimental')
-  add_global_arguments('-DENABLE_EXPERIMENTAL', language : 'cpp')
-  message('razergenie: Experimental features enabled.')
-else
-  message('razergenie: Experimental features disabled.')
-endif
-
 if get_option('include_matrix_discovery')
   add_global_arguments('-DINCLUDE_MATRIX_DISCOVERY', language : 'cpp')
   message('razergenie: Matrix discovery feature included.')
