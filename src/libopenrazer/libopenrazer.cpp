@@ -1796,7 +1796,7 @@ bool Device::setScrollBreathSingle(QColor color)
  */
 bool Device::setScrollBreathDual(QColor color, QColor color2)
 {
-    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathSingle");
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollBreathDual");
     QList<QVariant> args;
     args.append(color.red());
     args.append(color.green());
