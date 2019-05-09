@@ -72,6 +72,7 @@ const static QList<RazerCapability> logoComboBoxCapabilites {
     RazerCapability("lighting_logo_spectrum", "Spectrum", 0),
     RazerCapability("lighting_logo_static", "Static", 1),
     RazerCapability("lighting_logo_none", "None", 0),
+    RazerCapability("lighting_logo_wave", "Wave", true),
     RazerCapability("lighting_logo_reactive", "Reactive", 1),
     RazerCapability("lighting_logo_breath_single", "Breath Single", 1),
     RazerCapability("lighting_logo_breath_dual", "Breath Dual", 2),
@@ -84,6 +85,7 @@ const static QList<RazerCapability> scrollComboBoxCapabilites {
     RazerCapability("lighting_scroll_spectrum", "Spectrum", 0),
     RazerCapability("lighting_scroll_static", "Static", 1),
     RazerCapability("lighting_scroll_none", "None", 0),
+    RazerCapability("lighting_scroll_wave", "Wave", true),
     RazerCapability("lighting_scroll_reactive", "Reactive", 1),
     RazerCapability("lighting_scroll_breath_single", "Breath Single", 1),
     RazerCapability("lighting_scroll_breath_dual", "Breath Dual", 2),
@@ -229,6 +231,7 @@ public:
     bool setLogoPulsate(QColor color);
     bool setLogoSpectrum();
     bool setLogoNone();
+    bool setLogoWave(WaveDirection direction);
     bool setLogoReactive(QColor color, ReactiveSpeed speed);
     bool setLogoBreathSingle(QColor color);
     bool setLogoBreathDual(QColor color, QColor color2);
@@ -246,6 +249,7 @@ public:
     bool setScrollPulsate(QColor color);
     bool setScrollSpectrum();
     bool setScrollNone();
+    bool setScrollWave(WaveDirection direction);
     bool setScrollReactive(QColor color, ReactiveSpeed speed);
     bool setScrollBreathSingle(QColor color);
     bool setScrollBreathDual(QColor color, QColor color2);
