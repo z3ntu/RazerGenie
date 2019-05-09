@@ -1095,6 +1095,8 @@ void RazerGenie::applyEffectLogoLoc(QString identifier, libopenrazer::Device *de
         device->setLogoStatic(c);
     } else if(identifier == "lighting_logo_none") {
         device->setLogoNone();
+    } else if(identifier == "lighting_logo_wave") {
+        device->setLogoWave(getWaveDirection(zone));
     } else if(identifier == "lighting_logo_reactive") {
         QColor c = getColorForButton(1, zone);
         device->setLogoReactive(c, libopenrazer::REACTIVE_500MS); // TODO Configure speed?
@@ -1129,6 +1131,8 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, libopenrazer::Device *
         device->setScrollStatic(c);
     } else if(identifier == "lighting_scroll_none") {
         device->setScrollNone();
+    } else if(identifier == "lighting_scroll_wave") {
+        device->setScrollWave(getWaveDirection(zone));
     } else if(identifier == "lighting_scroll_reactive") {
         QColor c = getColorForButton(1, zone);
         device->setScrollReactive(c, libopenrazer::REACTIVE_500MS); // TODO Configure speed?
