@@ -516,6 +516,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_logo_spectrum", hasCapabilityInternal("razer.device.lighting.logo", "setLogoSpectrum"));
     capabilities.insert("lighting_logo_static", hasCapabilityInternal("razer.device.lighting.logo", "setLogoStatic"));
     capabilities.insert("lighting_logo_none", hasCapabilityInternal("razer.device.lighting.logo", "setLogoNone"));
+    capabilities.insert("lighting_logo_wave", hasCapabilityInternal("razer.device.lighting.logo", "setLogoWave"));
     capabilities.insert("lighting_logo_reactive", hasCapabilityInternal("razer.device.lighting.logo", "setLogoReactive"));
     capabilities.insert("lighting_logo_breath_single", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathSingle"));
     capabilities.insert("lighting_logo_breath_dual", hasCapabilityInternal("razer.device.lighting.logo", "setLogoBreathDual"));
@@ -530,6 +531,7 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_scroll_spectrum", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollSpectrum"));
     capabilities.insert("lighting_scroll_static", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollStatic"));
     capabilities.insert("lighting_scroll_none", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollNone"));
+    capabilities.insert("lighting_scroll_wave", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollWave"));
     capabilities.insert("lighting_scroll_reactive", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollReactive"));
     capabilities.insert("lighting_scroll_breath_single", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathSingle"));
     capabilities.insert("lighting_scroll_breath_dual", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathDual"));
@@ -1535,6 +1537,22 @@ bool Device::setLogoNone()
 }
 
 /*!
+ * \fn bool libopenrazer::Device::setLogoWave(WaveDirection direction)
+ *
+ * Sets the logo to the wave effect, in the direction \a direction.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLogoWave(WaveDirection direction)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.logo", "setLogoWave");
+    QList<QVariant> args;
+    args.append(direction);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
  * \fn bool libopenrazer::Device::setLogoReactive(QColor color, ReactiveSpeed speed)
  *
  * Sets the logo to the reactive effect with the specified \a color and \a speed.
@@ -1747,6 +1765,22 @@ bool Device::setScrollSpectrum()
 bool Device::setScrollNone()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollNone");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setScrollWave(WaveDirection direction)
+ *
+ * Sets the scroll to the wave effect, in the direction \a direction.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setScrollWave(WaveDirection direction)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "setScrollWave");
+    QList<QVariant> args;
+    args.append(direction);
+    m.setArguments(args);
     return QDBusMessageToVoid(m);
 }
 
