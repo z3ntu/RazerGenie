@@ -4,6 +4,10 @@ Qt application for configuring your Razer devices under GNU/Linux.
 
 RazerGenie is using [OpenRazer](https://openrazer.github.io) for providing control over Razer peripherals.
 
+## Note:  This is a forked version of RazerGenie 1.8.1 that has been tweaked to add logo and scroll wheel Wave lighting effect support for compatible mice.
+
+* There is no side LED support.
+
 ![Screenshot of the RazerGenie main window](https://z3ntu.github.io/RazerGenie/screenshots/mainwindow.png)
 ![Screenshot of the RazerGenie custom editor](https://z3ntu.github.io/RazerGenie/screenshots/customeditor.png)
 
