@@ -95,6 +95,10 @@
            The standard location.
     \value LightingLogo
            The logo LED.
+    \value LightingLeft
+           The left side row of LEDs.
+    \value LightingRight
+           The right side row of LEDs.
     \value LightingScroll
            The scroll wheel LED.
     \value LightingBacklight

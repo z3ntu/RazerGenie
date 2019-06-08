@@ -51,6 +51,14 @@ int main()
             qDebug() << "getScrollBrightness";
             qDebug() << device.getScrollBrightness();
         }
+        if(device.hasCapability("get_lighting_left_brightness")) {
+            qDebug() << "getLeftBrightness";
+            qDebug() << device.getLeftBrightness();
+        }
+        if(device.hasCapability("get_lighting_right_brightness")) {
+            qDebug() << "getRightBrightness";
+            qDebug() << device.getRightBrightness();
+        }
         if(device.hasCapability("backlight")) {
             qDebug() << "Backlight:";
             qDebug() << device.getBacklightActive();

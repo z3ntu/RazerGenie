@@ -92,6 +92,28 @@ const static QList<RazerCapability> scrollComboBoxCapabilites {
     RazerCapability("lighting_scroll_breath_random", "Breath random", 0),
 };
 
+const static QList<RazerCapability> leftComboBoxCapabilites {
+    RazerCapability("lighting_left_spectrum", "Spectrum", 0),
+    RazerCapability("lighting_left_static", "Static", 1),
+    RazerCapability("lighting_left_none", "None", 0),
+    RazerCapability("lighting_left_wave", "Wave", true),
+    RazerCapability("lighting_left_reactive", "Reactive", 1),
+    RazerCapability("lighting_left_breath_single", "Breath Single", 1),
+    RazerCapability("lighting_left_breath_dual", "Breath Dual", 2),
+    RazerCapability("lighting_left_breath_random", "Breath random", 0),
+};
+
+const static QList<RazerCapability> rightComboBoxCapabilites {
+    RazerCapability("lighting_right_spectrum", "Spectrum", 0),
+    RazerCapability("lighting_right_static", "Static", 1),
+    RazerCapability("lighting_right_none", "None", 0),
+    RazerCapability("lighting_right_wave", "Wave", true),
+    RazerCapability("lighting_right_reactive", "Reactive", 1),
+    RazerCapability("lighting_right_breath_single", "Breath Single", 1),
+    RazerCapability("lighting_right_breath_dual", "Breath Dual", 2),
+    RazerCapability("lighting_right_breath_random", "Breath random", 0),
+};
+
 const static QList<RazerCapability> backlightComboBoxCapabilites {
     RazerCapability("lighting_backlight_spectrum", "Spectrum", 0),
     RazerCapability("lighting_backlight_static", "Static", 1),
@@ -258,6 +280,38 @@ public:
     bool setScrollBrightness(double brightness);
     double getScrollBrightness();
 
+    // - Left -
+    bool setLeftStatic(QColor color);
+    bool setLeftActive(bool active);
+    bool getLeftActive();
+    uchar getLeftEffect();
+    bool setLeftSpectrum();
+    bool setLeftNone();
+    bool setLeftWave(WaveDirection direction);
+    bool setLeftReactive(QColor color, ReactiveSpeed speed);
+    bool setLeftBreathSingle(QColor color);
+    bool setLeftBreathDual(QColor color, QColor color2);
+    bool setLeftBreathRandom();
+
+    bool setLeftBrightness(double brightness);
+    double getLeftBrightness();
+
+    // - Right -
+    bool setRightStatic(QColor color);
+    bool setRightActive(bool active);
+    bool getRightActive();
+    uchar getRightEffect();
+    bool setRightSpectrum();
+    bool setRightNone();
+    bool setRightWave(WaveDirection direction);
+    bool setRightReactive(QColor color, ReactiveSpeed speed);
+    bool setRightBreathSingle(QColor color);
+    bool setRightBreathDual(QColor color, QColor color2);
+    bool setRightBreathRandom();
+
+    bool setRightBrightness(double brightness);
+    double getRightBrightness();
+
     // - Profile LED -
     bool getBlueLED();
     bool setBlueLED(bool on);
@@ -266,7 +320,7 @@ public:
     bool getRedLED();
     bool setRedLED(bool on);
 
-    enum LightingLocation { Lighting, LightingLogo, LightingScroll, LightingBacklight };
+    enum LightingLocation { Lighting, LightingLogo, LightingScroll, LightingLeft, LightingRight, LightingBacklight };
 };
 
 }

@@ -537,6 +537,32 @@ void Device::setupCapabilities()
     capabilities.insert("lighting_scroll_breath_dual", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathDual"));
     capabilities.insert("lighting_scroll_breath_random", hasCapabilityInternal("razer.device.lighting.scroll", "setScrollBreathRandom"));
 
+    capabilities.insert("lighting_left", hasCapabilityInternal("razer.device.lighting.left"));
+    capabilities.insert("lighting_left_active", hasCapabilityInternal("razer.device.lighting.left", "setLeftActive"));
+    capabilities.insert("lighting_left_brightness", hasCapabilityInternal("razer.device.lighting.left", "setLeftBrightness"));
+    capabilities.insert("get_lighting_left_brightness", hasCapabilityInternal("razer.device.lighting.left", "getLeftBrightness"));
+    capabilities.insert("lighting_left_spectrum", hasCapabilityInternal("razer.device.lighting.left", "setLeftSpectrum"));
+    capabilities.insert("lighting_left_static", hasCapabilityInternal("razer.device.lighting.left", "setLeftStatic"));
+    capabilities.insert("lighting_left_none", hasCapabilityInternal("razer.device.lighting.left", "setLeftNone"));
+    capabilities.insert("lighting_left_wave", hasCapabilityInternal("razer.device.lighting.left", "setLeftWave"));
+    capabilities.insert("lighting_left_reactive", hasCapabilityInternal("razer.device.lighting.left", "setLeftReactive"));
+    capabilities.insert("lighting_left_breath_single", hasCapabilityInternal("razer.device.lighting.left", "setLeftBreathSingle"));
+    capabilities.insert("lighting_left_breath_dual", hasCapabilityInternal("razer.device.lighting.left", "setLeftBreathDual"));
+    capabilities.insert("lighting_left_breath_random", hasCapabilityInternal("razer.device.lighting.left", "setLeftBreathRandom"));
+
+    capabilities.insert("lighting_right", hasCapabilityInternal("razer.device.lighting.right"));
+    capabilities.insert("lighting_right_active", hasCapabilityInternal("razer.device.lighting.right", "setRightActive"));
+    capabilities.insert("lighting_right_brightness", hasCapabilityInternal("razer.device.lighting.right", "setRightBrightness"));
+    capabilities.insert("get_lighting_right_brightness", hasCapabilityInternal("razer.device.lighting.right", "getRightBrightness"));
+    capabilities.insert("lighting_right_spectrum", hasCapabilityInternal("razer.device.lighting.right", "setRightSpectrum"));
+    capabilities.insert("lighting_right_static", hasCapabilityInternal("razer.device.lighting.right", "setRightStatic"));
+    capabilities.insert("lighting_right_none", hasCapabilityInternal("razer.device.lighting.right", "setRightNone"));
+    capabilities.insert("lighting_right_wave", hasCapabilityInternal("razer.device.lighting.right", "setRightWave"));
+    capabilities.insert("lighting_right_reactive", hasCapabilityInternal("razer.device.lighting.right", "setRightReactive"));
+    capabilities.insert("lighting_right_breath_single", hasCapabilityInternal("razer.device.lighting.right", "setRightBreathSingle"));
+    capabilities.insert("lighting_right_breath_dual", hasCapabilityInternal("razer.device.lighting.right", "setRightBreathDual"));
+    capabilities.insert("lighting_right_breath_random", hasCapabilityInternal("razer.device.lighting.right", "setRightBreathRandom"));
+
     capabilities.insert("lighting_backlight", hasCapabilityInternal("razer.device.lighting.backlight"));
     capabilities.insert("lighting_backlight_active", hasCapabilityInternal("razer.device.lighting.backlight", "setBacklightActive"));
     capabilities.insert("get_lighting_backlight_effect", hasCapabilityInternal("razer.device.lighting.backlight", "getBacklightEffect"));
@@ -1879,6 +1905,398 @@ bool Device::setScrollBrightness(double brightness)
 double Device::getScrollBrightness()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.scroll", "getScrollBrightness");
+    return QDBusMessageToDouble(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftStatic(QColor color)
+ *
+ * Sets the left to static lighting in the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftStatic(QColor color)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftStatic");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftActive(bool active)
+ *
+ * Sets the left active i.e. lights on, specified by \a active.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::getLeftActive()
+ *
+ * Returns if the left LED is active.
+ */
+bool Device::getLeftActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "getLeftActive");
+    return QDBusMessageToBool(m);
+}
+
+/*!
+ * \fn uchar libopenrazer::Device::getLeftEffect()
+ *
+ * Returns the current effect on the left LED. Values are defined in LEDEffect.
+ */
+uchar Device::getLeftEffect()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "getLeftEffect");
+    return QDBusMessageToByte(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftSpectrum()
+ *
+ * Sets the left to the spectrum effect.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftNone()
+ *
+ * Sets the left LED to none / off.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftNone()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftNone");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftWave(WaveDirection direction)
+ *
+ * Sets the left to the wave effect, in the direction \a direction.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftWave(WaveDirection direction)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftWave");
+    QList<QVariant> args;
+    args.append(direction);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftReactive(QColor color, ReactiveSpeed speed)
+ *
+ * Sets the left to the reactive effect with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftReactive(QColor color, ReactiveSpeed speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftReactive");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftBreathSingle(QColor color)
+ *
+ * Sets the left to the single breath effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftBreathSingle(QColor color)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftBreathSingle");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftBreathDual(QColor color, QColor color2)
+ *
+ * Sets the left to the dual breath effect with the specified \a color and \a color2.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftBreathDual(QColor color, QColor color2)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftBreathDual");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftBreathRandom()
+ *
+ * Sets the left to the random breath effect.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftBreathRandom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftBreathRandom");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setLeftBrightness(double brightness)
+ *
+ * Sets the left \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setLeftBrightness(double brightness)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "setLeftBrightness");
+    QList<QVariant> args;
+    args.append(brightness);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn double libopenrazer::Device::getLeftBrightness()
+ *
+ * Returns the current left brightness (0-100).
+ */
+double Device::getLeftBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.left", "getLeftBrightness");
+    return QDBusMessageToDouble(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightStatic(QColor color)
+ *
+ * Sets the right to static lighting in the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightStatic(QColor color)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightStatic");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightActive(bool active)
+ *
+ * Sets the right active i.e. lights on, specified by \a active.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightActive(bool active)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightActive");
+    QList<QVariant> args;
+    args.append(active);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::getRightActive()
+ *
+ * Returns if the right LED is active.
+ */
+bool Device::getRightActive()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "getRightActive");
+    return QDBusMessageToBool(m);
+}
+
+/*!
+ * \fn uchar libopenrazer::Device::getRightEffect()
+ *
+ * Returns the current effect on the right LED. Values are defined in LEDEffect.
+ */
+uchar Device::getRightEffect()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "getRightEffect");
+    return QDBusMessageToByte(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightSpectrum()
+ *
+ * Sets the right to the spectrum effect.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightSpectrum()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightSpectrum");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightNone()
+ *
+ * Sets the right LED to none / off.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightNone()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightNone");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightWave(WaveDirection direction)
+ *
+ * Sets the right to the wave effect, in the direction \a direction.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightWave(WaveDirection direction)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightWave");
+    QList<QVariant> args;
+    args.append(direction);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightReactive(QColor color, ReactiveSpeed speed)
+ *
+ * Sets the right to the reactive effect with the specified \a color and \a speed.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightReactive(QColor color, ReactiveSpeed speed)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightReactive");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(speed);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightBreathSingle(QColor color)
+ *
+ * Sets the right to the single breath effect with the specified \a color.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightBreathSingle(QColor color)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightBreathSingle");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightBreathDual(QColor color, QColor color2)
+ *
+ * Sets the right to the dual breath effect with the specified \a color and \a color2.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightBreathDual(QColor color, QColor color2)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightBreathDual");
+    QList<QVariant> args;
+    args.append(color.red());
+    args.append(color.green());
+    args.append(color.blue());
+    args.append(color2.red());
+    args.append(color2.green());
+    args.append(color2.blue());
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightBreathRandom()
+ *
+ * Sets the right to the random breath effect.
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightBreathRandom()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightBreathRandom");
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn bool libopenrazer::Device::setRightBrightness(double brightness)
+ *
+ * Sets the right \a brightness (0-100).
+ *
+ * Returns if the D-Bus call was successful.
+ */
+bool Device::setRightBrightness(double brightness)
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "setRightBrightness");
+    QList<QVariant> args;
+    args.append(brightness);
+    m.setArguments(args);
+    return QDBusMessageToVoid(m);
+}
+
+/*!
+ * \fn double libopenrazer::Device::getRightBrightness()
+ *
+ * Returns the current right brightness (0-100).
+ */
+double Device::getRightBrightness()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.lighting.right", "getRightBrightness");
     return QDBusMessageToDouble(m);
 }
 

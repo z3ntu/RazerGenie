@@ -331,6 +331,10 @@ void RazerGenie::addDeviceToGui(const QString &serial)
         lightingLocationsTodo.append(libopenrazer::Device::LightingLogo);
     if(currentDevice->hasCapability("lighting_scroll"))
         lightingLocationsTodo.append(libopenrazer::Device::LightingScroll);
+    if(currentDevice->hasCapability("lighting_left"))
+        lightingLocationsTodo.append(libopenrazer::Device::LightingLeft);
+    if(currentDevice->hasCapability("lighting_right"))
+        lightingLocationsTodo.append(libopenrazer::Device::LightingRight);
     if(currentDevice->hasCapability("lighting_backlight"))
         lightingLocationsTodo.append(libopenrazer::Device::LightingBacklight);
 
@@ -364,6 +368,10 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             lightingLocationLabel = new QLabel(tr("Lighting Logo"));
         } else if(currentLocation == libopenrazer::Device::LightingScroll) {
             lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
+        } else if(currentLocation == libopenrazer::Device::LightingLeft) {
+            lightingLocationLabel = new QLabel(tr("Lighting Left"));
+        } else if(currentLocation == libopenrazer::Device::LightingRight) {
+            lightingLocationLabel = new QLabel(tr("Lighting Right"));
         } else if(currentLocation == libopenrazer::Device::LightingBacklight) {
             lightingLocationLabel = new QLabel(tr("Lighting Backlight"));
         } else {
@@ -460,6 +468,55 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 }
                 connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::scrollBrightnessChanged);
             }
+
+        } else if(currentLocation == libopenrazer::Device::LightingLeft) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::leftComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::leftComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::leftComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::leftComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::leftCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("lighting_left_brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness Left"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_lighting_left_brightness")) {
+                    brightnessSlider->setValue(currentDevice->getLeftBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::leftBrightnessChanged);
+            }
+
+        } else if(currentLocation == libopenrazer::Device::LightingRight) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::rightComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::rightComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::rightComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::rightComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::rightCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("lighting_right_brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness Right"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_lighting_right_brightness")) {
+                    brightnessSlider->setValue(currentDevice->getRightBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::rightBrightnessChanged);
+            }
+
         } else if(currentLocation == libopenrazer::Device::LightingBacklight) {
             // Add items from capabilities
             for(int i=0; i<libopenrazer::backlightComboBoxCapabilites.size(); i++) {
@@ -526,6 +583,10 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                     connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonStandard);
                 } else if(currentLocation == libopenrazer::Device::LightingLogo) {
                     connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonLogo);
+                } else if(currentLocation == libopenrazer::Device::LightingLeft) {
+                    connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonLeft);
+                } else if(currentLocation == libopenrazer::Device::LightingRight) {
+                    connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonRight);
                 } else if(currentLocation == libopenrazer::Device::LightingScroll) {
                     connect(radio, &QRadioButton::toggled, this, &RazerGenie::waveRadioButtonScroll);
                 } else {
@@ -553,6 +614,28 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 activeCheckbox->setChecked(currentDevice->getScrollActive());
                 verticalLayout->addWidget(activeCheckbox);
                 connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::scrollActiveCheckbox);
+            }
+        }
+
+        /* 'Set Left Active' checkbox */
+        if(currentLocation == libopenrazer::Device::LightingLeft) {
+            // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
+            if(currentDevice->hasCapability("lighting_left_active") && !currentDevice->hasCapability("lighting_left_none")) {
+                QCheckBox *activeCheckbox = new QCheckBox(tr("Set Left Active"), widget);
+                activeCheckbox->setChecked(currentDevice->getLeftActive());
+                verticalLayout->addWidget(activeCheckbox);
+                connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::leftActiveCheckbox);
+            }
+        }
+
+        /* 'Set Right Active' checkbox */
+        if(currentLocation == libopenrazer::Device::LightingRight) {
+            // Show if the device has 'setActive' but not 'setNone' as it would be basically a duplicate action
+            if(currentDevice->hasCapability("lighting_right_active") && !currentDevice->hasCapability("lighting_right_none")) {
+                QCheckBox *activeCheckbox = new QCheckBox(tr("Set Right Active"), widget);
+                activeCheckbox->setChecked(currentDevice->getRightActive());
+                verticalLayout->addWidget(activeCheckbox);
+                connect(activeCheckbox, &QCheckBox::clicked, this, &RazerGenie::rightActiveCheckbox);
             }
         }
 
@@ -928,6 +1011,28 @@ void RazerGenie::logoCombo(int index)
     applyEffectLogoLoc(identifier, dev);
 }
 
+void RazerGenie::leftCombo(int index)
+{
+    QPair<libopenrazer::Device*, QString> tuple = commonCombo(index);
+    libopenrazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
+    qDebug() << tuple;
+
+    applyEffectLeftLoc(identifier, dev);
+}
+
+void RazerGenie::rightCombo(int index)
+{
+    QPair<libopenrazer::Device*, QString> tuple = commonCombo(index);
+    libopenrazer::Device *dev = tuple.first;
+    QString identifier = tuple.second;
+
+    qDebug() << tuple;
+
+    applyEffectRightLoc(identifier, dev);
+}
+
 void RazerGenie::backlightCombo(int index)
 {
     QPair<libopenrazer::Device*, QString> tuple = commonCombo(index);
@@ -978,6 +1083,24 @@ void RazerGenie::logoBrightnessChanged(int value)
     RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
     libopenrazer::Device *dev = devices.value(item->getSerial());
     dev->setLogoBrightness(value);
+}
+
+void RazerGenie::leftBrightnessChanged(int value)
+{
+    qDebug() << value;
+
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+    dev->setLeftBrightness(value);
+}
+
+void RazerGenie::rightBrightnessChanged(int value)
+{
+    qDebug() << value;
+
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+    dev->setRightBrightness(value);
 }
 
 void RazerGenie::backlightBrightnessChanged(int value)
@@ -1150,6 +1273,78 @@ void RazerGenie::applyEffectScrollLoc(QString identifier, libopenrazer::Device *
     }
 }
 
+void RazerGenie::applyEffectLeftLoc(QString identifier, libopenrazer::Device *device)
+{
+    libopenrazer::Device::LightingLocation zone = libopenrazer::Device::LightingLeft;
+
+    if(identifier == "lighting_left_blinking") {
+        QColor c = getColorForButton(1, zone);
+        device->setLeftBlinking(c);
+    } else if(identifier == "lighting_left_pulsate") {
+        QColor c = getColorForButton(1, zone);
+        device->setLeftPulsate(c);
+    } else if(identifier == "lighting_left_spectrum") {
+        device->setLeftSpectrum();
+    } else if(identifier == "lighting_left_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setLeftStatic(c);
+    } else if(identifier == "lighting_left_none") {
+        device->setLeftNone();
+    } else if(identifier == "lighting_left_wave") {
+        device->setLeftWave(getWaveDirection(zone));
+    } else if(identifier == "lighting_left_reactive") {
+        QColor c = getColorForButton(1, zone);
+        device->setLeftReactive(c, libopenrazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_left_breath_single") {
+        QColor c = getColorForButton(1, zone);
+        device->setLeftBreathSingle(c);
+    } else if(identifier == "lighting_left_breath_dual") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        device->setLeftBreathDual(c1, c2);
+    } else if(identifier == "lighting_left_breath_random") {
+        device->setLeftBreathRandom();
+    } else {
+        qWarning() << identifier << " is not implemented yet!";
+    }
+}
+
+void RazerGenie::applyEffectRightLoc(QString identifier, libopenrazer::Device *device)
+{
+    libopenrazer::Device::LightingLocation zone = libopenrazer::Device::LightingRight;
+
+    if(identifier == "lighting_right_blinking") {
+        QColor c = getColorForButton(1, zone);
+        device->setRightBlinking(c);
+    } else if(identifier == "lighting_right_pulsate") {
+        QColor c = getColorForButton(1, zone);
+        device->setRightPulsate(c);
+    } else if(identifier == "lighting_right_spectrum") {
+        device->setRightSpectrum();
+    } else if(identifier == "lighting_right_static") {
+        QColor c = getColorForButton(1, zone);
+        device->setRightStatic(c);
+    } else if(identifier == "lighting_right_none") {
+        device->setRightNone();
+    } else if(identifier == "lighting_right_wave") {
+        device->setRightWave(getWaveDirection(zone));
+    } else if(identifier == "lighting_right_reactive") {
+        QColor c = getColorForButton(1, zone);
+        device->setRightReactive(c, libopenrazer::REACTIVE_500MS); // TODO Configure speed?
+    } else if(identifier == "lighting_right_breath_single") {
+        QColor c = getColorForButton(1, zone);
+        device->setRightBreathSingle(c);
+    } else if(identifier == "lighting_right_breath_dual") {
+        QColor c1 = getColorForButton(1, zone);
+        QColor c2 = getColorForButton(2, zone);
+        device->setRightBreathDual(c1, c2);
+    } else if(identifier == "lighting_right_breath_random") {
+        device->setRightBreathRandom();
+    } else {
+        qWarning() << identifier << " is not implemented yet!";
+    }
+}
+
 void RazerGenie::applyEffectBacklightLoc(QString identifier, libopenrazer::Device *device)
 {
     libopenrazer::Device::LightingLocation zone = libopenrazer::Device::LightingBacklight;
@@ -1182,6 +1377,10 @@ void RazerGenie::applyEffect(libopenrazer::Device::LightingLocation loc)
         applyEffectLogoLoc(identifier, dev);
     } else if(loc == libopenrazer::Device::LightingScroll) {
         applyEffectScrollLoc(identifier, dev);
+    } else if(loc == libopenrazer::Device::LightingLeft) {
+        applyEffectLeftLoc(identifier, dev);
+    } else if(loc == libopenrazer::Device::LightingRight) {
+        applyEffectRightLoc(identifier, dev);
     } else if(loc == libopenrazer::Device::LightingBacklight) {
         applyEffectBacklightLoc(identifier, dev);
     } else {
@@ -1205,6 +1404,18 @@ void RazerGenie::waveRadioButtonScroll(bool enabled)
 {
     if(enabled)
         applyEffect(libopenrazer::Device::LightingScroll);
+}
+
+void RazerGenie::waveRadioButtonLeft(bool enabled)
+{
+    if(enabled)
+        applyEffect(libopenrazer::Device::LightingLeft);
+}
+
+void RazerGenie::waveRadioButtonRight(bool enabled)
+{
+    if(enabled)
+        applyEffect(libopenrazer::Device::LightingRight);
 }
 
 void RazerGenie::dpiSyncCheckbox(bool checked)
@@ -1240,6 +1451,26 @@ void RazerGenie::scrollActiveCheckbox(bool checked)
     libopenrazer::Device *dev = devices.value(item->getSerial());
 
     dev->setScrollActive(checked);
+    qDebug() << checked;
+}
+
+void RazerGenie::leftActiveCheckbox(bool checked)
+{
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+
+    dev->setLeftActive(checked);
+    qDebug() << checked;
+}
+
+void RazerGenie::rightActiveCheckbox(bool checked)
+{
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+
+    dev->setRightActive(checked);
     qDebug() << checked;
 }
 
