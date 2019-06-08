@@ -1277,13 +1277,7 @@ void RazerGenie::applyEffectLeftLoc(QString identifier, libopenrazer::Device *de
 {
     libopenrazer::Device::LightingLocation zone = libopenrazer::Device::LightingLeft;
 
-    if(identifier == "lighting_left_blinking") {
-        QColor c = getColorForButton(1, zone);
-        device->setLeftBlinking(c);
-    } else if(identifier == "lighting_left_pulsate") {
-        QColor c = getColorForButton(1, zone);
-        device->setLeftPulsate(c);
-    } else if(identifier == "lighting_left_spectrum") {
+    if(identifier == "lighting_left_spectrum") {
         device->setLeftSpectrum();
     } else if(identifier == "lighting_left_static") {
         QColor c = getColorForButton(1, zone);
@@ -1313,13 +1307,7 @@ void RazerGenie::applyEffectRightLoc(QString identifier, libopenrazer::Device *d
 {
     libopenrazer::Device::LightingLocation zone = libopenrazer::Device::LightingRight;
 
-    if(identifier == "lighting_right_blinking") {
-        QColor c = getColorForButton(1, zone);
-        device->setRightBlinking(c);
-    } else if(identifier == "lighting_right_pulsate") {
-        QColor c = getColorForButton(1, zone);
-        device->setRightPulsate(c);
-    } else if(identifier == "lighting_right_spectrum") {
+    if(identifier == "lighting_right_spectrum") {
         device->setRightSpectrum();
     } else if(identifier == "lighting_right_static") {
         QColor c = getColorForButton(1, zone);
