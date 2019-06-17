@@ -1911,7 +1911,7 @@ double Device::getScrollBrightness()
 /*!
  * \fn bool libopenrazer::Device::setLeftStatic(QColor color)
  *
- * Sets the left to static lighting in the specified \a color.
+ * Sets the left row LEDs to static lighting in the specified \a color.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -1929,7 +1929,7 @@ bool Device::setLeftStatic(QColor color)
 /*!
  * \fn bool libopenrazer::Device::setLeftActive(bool active)
  *
- * Sets the left active i.e. lights on, specified by \a active.
+ * Sets the left row LEDs active i.e. lights on, specified by \a active.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -1945,7 +1945,7 @@ bool Device::setLeftActive(bool active)
 /*!
  * \fn bool libopenrazer::Device::getLeftActive()
  *
- * Returns if the left LED is active.
+ * Returns if the left row LEDs are active.
  */
 bool Device::getLeftActive()
 {
@@ -1956,7 +1956,7 @@ bool Device::getLeftActive()
 /*!
  * \fn uchar libopenrazer::Device::getLeftEffect()
  *
- * Returns the current effect on the left LED. Values are defined in LEDEffect.
+ * Returns the current effect on the left row LEDs. Values are defined in LEDEffect.
  */
 uchar Device::getLeftEffect()
 {
@@ -1967,7 +1967,7 @@ uchar Device::getLeftEffect()
 /*!
  * \fn bool libopenrazer::Device::setLeftSpectrum()
  *
- * Sets the left to the spectrum effect.
+ * Sets the left row LEDs to the spectrum effect.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -1980,7 +1980,7 @@ bool Device::setLeftSpectrum()
 /*!
  * \fn bool libopenrazer::Device::setLeftNone()
  *
- * Sets the left LED to none / off.
+ * Sets the left row LEDs to none / off.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -1993,7 +1993,7 @@ bool Device::setLeftNone()
 /*!
  * \fn bool libopenrazer::Device::setLeftWave(WaveDirection direction)
  *
- * Sets the left to the wave effect, in the direction \a direction.
+ * Sets the left row LEDs to the wave effect, in the direction \a direction.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2009,7 +2009,7 @@ bool Device::setLeftWave(WaveDirection direction)
 /*!
  * \fn bool libopenrazer::Device::setLeftReactive(QColor color, ReactiveSpeed speed)
  *
- * Sets the left to the reactive effect with the specified \a color and \a speed.
+ * Sets the left row LEDs to the reactive effect with the specified \a color and \a speed.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2028,7 +2028,7 @@ bool Device::setLeftReactive(QColor color, ReactiveSpeed speed)
 /*!
  * \fn bool libopenrazer::Device::setLeftBreathSingle(QColor color)
  *
- * Sets the left to the single breath effect with the specified \a color.
+ * Sets the left row LEDs to the single breath effect with the specified \a color.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2046,7 +2046,7 @@ bool Device::setLeftBreathSingle(QColor color)
 /*!
  * \fn bool libopenrazer::Device::setLeftBreathDual(QColor color, QColor color2)
  *
- * Sets the left to the dual breath effect with the specified \a color and \a color2.
+ * Sets the left row LEDs to the dual breath effect with the specified \a color and \a color2.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2067,7 +2067,7 @@ bool Device::setLeftBreathDual(QColor color, QColor color2)
 /*!
  * \fn bool libopenrazer::Device::setLeftBreathRandom()
  *
- * Sets the left to the random breath effect.
+ * Sets the left row LEDs to the random breath effect.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2080,7 +2080,7 @@ bool Device::setLeftBreathRandom()
 /*!
  * \fn bool libopenrazer::Device::setLeftBrightness(double brightness)
  *
- * Sets the left \a brightness (0-100).
+ * Sets the left row LEDs \a brightness (0-100).
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2096,7 +2096,7 @@ bool Device::setLeftBrightness(double brightness)
 /*!
  * \fn double libopenrazer::Device::getLeftBrightness()
  *
- * Returns the current left brightness (0-100).
+ * Returns the current left row LEDs brightness (0-100).
  */
 double Device::getLeftBrightness()
 {
@@ -2107,7 +2107,7 @@ double Device::getLeftBrightness()
 /*!
  * \fn bool libopenrazer::Device::setRightStatic(QColor color)
  *
- * Sets the right to static lighting in the specified \a color.
+ * Sets the right row LEDs to static lighting in the specified \a color.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2125,7 +2125,7 @@ bool Device::setRightStatic(QColor color)
 /*!
  * \fn bool libopenrazer::Device::setRightActive(bool active)
  *
- * Sets the right active i.e. lights on, specified by \a active.
+ * Sets the right row LEDs active i.e. lights on, specified by \a active.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2141,7 +2141,7 @@ bool Device::setRightActive(bool active)
 /*!
  * \fn bool libopenrazer::Device::getRightActive()
  *
- * Returns if the right LED is active.
+ * Returns if the right row LEDs are active.
  */
 bool Device::getRightActive()
 {
@@ -2152,7 +2152,7 @@ bool Device::getRightActive()
 /*!
  * \fn uchar libopenrazer::Device::getRightEffect()
  *
- * Returns the current effect on the right LED. Values are defined in LEDEffect.
+ * Returns the current effect on the right row LEDs. Values are defined in LEDEffect.
  */
 uchar Device::getRightEffect()
 {
@@ -2163,7 +2163,7 @@ uchar Device::getRightEffect()
 /*!
  * \fn bool libopenrazer::Device::setRightSpectrum()
  *
- * Sets the right to the spectrum effect.
+ * Sets the right row LEDs to the spectrum effect.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2176,7 +2176,7 @@ bool Device::setRightSpectrum()
 /*!
  * \fn bool libopenrazer::Device::setRightNone()
  *
- * Sets the right LED to none / off.
+ * Sets the right row LEDs to none / off.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2189,7 +2189,7 @@ bool Device::setRightNone()
 /*!
  * \fn bool libopenrazer::Device::setRightWave(WaveDirection direction)
  *
- * Sets the right to the wave effect, in the direction \a direction.
+ * Sets the right row LEDs to the wave effect, in the direction \a direction.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2205,7 +2205,7 @@ bool Device::setRightWave(WaveDirection direction)
 /*!
  * \fn bool libopenrazer::Device::setRightReactive(QColor color, ReactiveSpeed speed)
  *
- * Sets the right to the reactive effect with the specified \a color and \a speed.
+ * Sets the right row LEDs to the reactive effect with the specified \a color and \a speed.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2224,7 +2224,7 @@ bool Device::setRightReactive(QColor color, ReactiveSpeed speed)
 /*!
  * \fn bool libopenrazer::Device::setRightBreathSingle(QColor color)
  *
- * Sets the right to the single breath effect with the specified \a color.
+ * Sets the right row LEDs to the single breath effect with the specified \a color.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2242,7 +2242,7 @@ bool Device::setRightBreathSingle(QColor color)
 /*!
  * \fn bool libopenrazer::Device::setRightBreathDual(QColor color, QColor color2)
  *
- * Sets the right to the dual breath effect with the specified \a color and \a color2.
+ * Sets the right row LEDs to the dual breath effect with the specified \a color and \a color2.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2263,7 +2263,7 @@ bool Device::setRightBreathDual(QColor color, QColor color2)
 /*!
  * \fn bool libopenrazer::Device::setRightBreathRandom()
  *
- * Sets the right to the random breath effect.
+ * Sets the right row LEDs to the random breath effect.
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2276,7 +2276,7 @@ bool Device::setRightBreathRandom()
 /*!
  * \fn bool libopenrazer::Device::setRightBrightness(double brightness)
  *
- * Sets the right \a brightness (0-100).
+ * Sets the right row LEDs \a brightness (0-100).
  *
  * Returns if the D-Bus call was successful.
  */
@@ -2292,7 +2292,7 @@ bool Device::setRightBrightness(double brightness)
 /*!
  * \fn double libopenrazer::Device::getRightBrightness()
  *
- * Returns the current right brightness (0-100).
+ * Returns the current right row LEDs brightness (0-100).
  */
 double Device::getRightBrightness()
 {
