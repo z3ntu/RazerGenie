@@ -566,6 +566,12 @@ void RazerGenie::addDeviceToGui(const QString &serial)
             }
 
             /* Wave left/right radio buttons */
+
+            //Button Group
+            QButtonGroup *radioGroup = new QButtonGroup(widget);
+            radioGroup->setObjectName(QString::number(currentLocation) + "_radiogroup");
+
+            //Buttons
             for(int i=1; i<=2; i++) {
                 QString name;
                 if(i==1)
@@ -574,6 +580,8 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                     name = tr("Right");
                 QRadioButton *radio = new QRadioButton(name, widget);
                 radio->setObjectName(QString::number(currentLocation) + "_radiobutton" + QString::number(i));
+                //Add button to group
+                radioGroup->addButton(radio);
                 if(i==1) // set the 'left' checkbox to activated
                     radio->setChecked(true);
                 // hide by default
