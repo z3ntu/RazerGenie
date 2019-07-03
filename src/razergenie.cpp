@@ -37,12 +37,6 @@
 #define troubleshootingUrl "https://github.com/openrazer/openrazer/wiki/Troubleshooting"
 #define websiteUrl "https://openrazer.github.io/"
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
-#define TARGET_BUS QDBusConnection::systemBus()
-#elif defined(Q_OS_DARWIN) || defined(Q_OS_WIN)
-#define TARGET_BUS QDBusConnection::sessionBus()
-#endif
-
 RazerGenie::RazerGenie(QWidget *parent)
     : QWidget(parent)
 {
@@ -127,7 +121,7 @@ RazerGenie::RazerGenie(QWidget *parent)
         }
 
         // Watch for dbus service changes (= daemon ends or gets started)
-        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("io.github.openrazer1", TARGET_BUS);
+        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("io.github.openrazer1", RAZER_TEST_DBUS_BUS);
 
         connect(watcher, &QDBusServiceWatcher::serviceRegistered,
                 this, &RazerGenie::dbusServiceRegistered);
