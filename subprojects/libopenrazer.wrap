@@ -1,0 +1,4 @@
+[wrap-git]
+directory = libopenrazer
+url = https://github.com/z3ntu/libopenrazer.git
+revision = head
