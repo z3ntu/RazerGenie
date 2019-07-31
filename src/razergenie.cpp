@@ -321,11 +321,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     auto *verticalLayout = new QVBoxLayout(widget);
 
     // List of locations to iterate through
-    QList<libopenrazer::Led *> leds;
-    foreach (const QDBusObjectPath &ledPath, currentDevice->getLeds()) {
-        libopenrazer::Led *led = new libopenrazer::Led(ledPath);
-        leds.append(led);
-    }
+    QList<libopenrazer::Led *> leds = currentDevice->getLeds();
 
     // Declare header font
     QFont headerFont("Arial", 15, QFont::Bold);
