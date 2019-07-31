@@ -23,13 +23,13 @@
 #include <QSettings>
 #include <libopenrazer.h>
 
-
 class Preferences : public QDialog
 {
     Q_OBJECT
 public:
-    Preferences(libopenrazer::Manager *manager, QWidget* parent = nullptr);
+    Preferences(libopenrazer::Manager *manager, QWidget *parent = nullptr);
     ~Preferences() override;
+
 private:
     QSettings settings;
 

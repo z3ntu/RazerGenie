@@ -21,8 +21,7 @@
 
 #include <QString>
 
-namespace util
-{
+namespace util {
 void showError(QString error);
 void showInfo(QString info);
 }

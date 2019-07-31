@@ -25,10 +25,11 @@
 class RazerDeviceWidget : public QWidget
 {
 public:
-    RazerDeviceWidget(const QString& name, const QDBusObjectPath& devicePath);
+    RazerDeviceWidget(const QString &name, const QDBusObjectPath &devicePath);
     ~RazerDeviceWidget() override;
 
     QDBusObjectPath getDevicePath();
+
 private:
     QString name;
     QDBusObjectPath devicePath;

@@ -30,7 +30,7 @@ class RazerGenie : public QWidget
 {
     Q_OBJECT
 public:
-    RazerGenie(QWidget* parent = nullptr);
+    RazerGenie(QWidget *parent = nullptr);
     ~RazerGenie() override;
 public slots:
     // General checkboxes
@@ -57,6 +57,7 @@ public slots:
     void openSupportedDevicesUrl();
     void openTroubleshootingUrl();
     void openWebsiteUrl();
+
 private:
     Ui::RazerGenieUi ui_main;
     void setupUi();
@@ -77,9 +78,8 @@ private:
 
     bool syncDpi = true;
 
-    QHash<QDBusObjectPath, libopenrazer::Device*> devices;
+    QHash<QDBusObjectPath, libopenrazer::Device *> devices;
     libopenrazer::Manager *manager;
 };
-
 
 #endif

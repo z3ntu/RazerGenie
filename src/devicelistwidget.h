@@ -33,6 +33,7 @@ public:
 public slots:
     void imageDownloaded(QString &filename);
     void imageDownloadErrored(QString reason, QString longReason);
+
 private:
     QPixmap createPixmapFromFile(QString &filename);
     libopenrazer::Device *mDevice;

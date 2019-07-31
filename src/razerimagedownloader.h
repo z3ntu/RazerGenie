@@ -35,6 +35,7 @@ public:
 signals:
     void downloadFinished(QString &filename);
     void downloadErrored(QString reason, QString longReason);
+
 private:
     QFile *_file;
     QString _filepath;
@@ -42,7 +43,7 @@ private:
     QNetworkAccessManager *manager;
     QSettings settings;
 private slots:
-    void finished(QNetworkReply* reply);
+    void finished(QNetworkReply *reply);
 };
 
 #endif // RAZERIMAGEDOWNLOADER_H

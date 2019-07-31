@@ -25,29 +25,31 @@
 #include "matrixpushbutton.h"
 
 enum DrawStatus {
-    set, clear
+    set,
+    clear
 };
 
 class CustomEditor : public QDialog
 {
     Q_OBJECT
 public:
-    CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscovery=false, QWidget* parent = nullptr);
+    CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery = false, QWidget *parent = nullptr);
     ~CustomEditor() override;
+
 private:
     void closeWindow();
-    QLayout* generateMainControls();
-    QLayout* generateKeyboard();
-    QLayout* generateMousemat();
-    QLayout* generateMouse();
-    QLayout* generateMatrixDiscovery();
+    QLayout *generateMainControls();
+    QLayout *generateKeyboard();
+    QLayout *generateMousemat();
+    QLayout *generateMouse();
+    QLayout *generateMatrixDiscovery();
 
     bool parseKeyboardJSON(QString jsonname);
     bool updateKeyrow(int row);
     void clearAll();
 
     QJsonObject keyboardKeys;
-    QVector<MatrixPushButton*> matrixPushButtons;
+    QVector<MatrixPushButton *> matrixPushButtons;
     libopenrazer::Device *device;
     razer_test::MatrixDimensions dimens;
 

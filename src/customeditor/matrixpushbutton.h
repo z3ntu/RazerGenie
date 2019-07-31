@@ -28,6 +28,7 @@ public:
     QPair<int, int> matrixPos();
     void setButtonColor(QColor color);
     void resetButtonColor();
+
 private:
     QString mLabel;
     QPair<int, int> mMatrixPos;
