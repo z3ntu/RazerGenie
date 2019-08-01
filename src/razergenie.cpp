@@ -17,7 +17,7 @@
  */
 
 #include <iostream>
-#include <QtDBus/QDBusConnection>
+#include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QtWidgets>
 
