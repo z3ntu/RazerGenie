@@ -302,13 +302,13 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     devices.insert(devicePath, currentDevice);
 
     // Download image for device
-    if (!currentDevice->getPngFilename().isEmpty()) {
-        RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getPngUrl()), this);
+    if (!currentDevice->getDeviceImageUrl().isEmpty()) {
+        RazerImageDownloader *dl = new RazerImageDownloader(QUrl(currentDevice->getDeviceImageUrl()), this);
         connect(dl, &RazerImageDownloader::downloadFinished, listItemWidget, &DeviceListWidget::imageDownloaded);
         connect(dl, &RazerImageDownloader::downloadErrored, listItemWidget, &DeviceListWidget::imageDownloadErrored);
         dl->startDownload();
     } else {
-        qWarning() << ".png mapping for device " << currentDevice->getDeviceName() << "missing.";
+        qWarning() << "Device image for" << currentDevice->getDeviceName() << "is missing.";
         listItemWidget->setNoImage();
     }
 

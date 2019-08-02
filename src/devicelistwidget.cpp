@@ -32,7 +32,7 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
     layout->setMargin(2);
 
     // Add icon
-    QString path = RazerImageDownloader::getDownloadPath() + device->getPngFilename();
+    QString path = RazerImageDownloader::getDownloadPath() + device->getDeviceImageUrl().split("/").takeLast();
     if (QFile(path).exists() && QFileInfo(path).isFile()) {
         QPixmap scaled = createPixmapFromFile(path);
         imageLabel = new QLabel(this);
