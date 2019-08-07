@@ -26,7 +26,6 @@
 #include <QDebug>
 
 #include "ledwidget.h"
-#include "razerdevicewidget.h"
 
 LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer::Led *led)
     : QWidget(parent)

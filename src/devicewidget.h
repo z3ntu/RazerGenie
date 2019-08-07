@@ -16,18 +16,23 @@
  *
  */
 
-#include "razerdevicewidget.h"
+#ifndef DEVICEWIDGET_H
+#define DEVICEWIDGET_H
 
-RazerDeviceWidget::RazerDeviceWidget(const QString &name, const QDBusObjectPath &devicePath)
-    : QWidget()
+#include <QWidget>
+#include <QDBusObjectPath>
+
+class DeviceWidget : public QWidget
 {
-    this->name = name;
-    this->devicePath = devicePath;
-}
+public:
+    DeviceWidget(const QString &name, const QDBusObjectPath &devicePath);
+    ~DeviceWidget() override;
 
-QDBusObjectPath RazerDeviceWidget::getDevicePath()
-{
-    return devicePath;
-}
+    QDBusObjectPath getDevicePath();
 
-RazerDeviceWidget::~RazerDeviceWidget() = default;
+private:
+    QString name;
+    QDBusObjectPath devicePath;
+};
+
+#endif // DEVICEWIDGET_H

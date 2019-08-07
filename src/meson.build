@@ -6,7 +6,7 @@ configure_file(input : 'config.h.in',
                output : 'config.h',
                configuration : conf_data)
 
-razergenie_sources = ['main.cpp', 'razergenie.cpp', 'razerimagedownloader.cpp', 'razerdevicewidget.cpp', 'devicelistwidget.cpp', 'ledwidget.cpp', 'util.cpp',
+razergenie_sources = ['main.cpp', 'razergenie.cpp', 'razerimagedownloader.cpp', 'devicewidget.cpp', 'devicelistwidget.cpp', 'ledwidget.cpp', 'util.cpp',
                       'customeditor/customeditor.cpp', 'customeditor/matrixpushbutton.cpp', 'preferences/preferences.cpp']
 
 processed = qt5.preprocess(
