@@ -32,10 +32,10 @@
 #include "util.h"
 #include "ledwidget.h"
 
-#define newIssueUrl "https://github.com/openrazer/openrazer/issues/new"
-#define supportedDevicesUrl "https://github.com/openrazer/openrazer/blob/master/README.md#device-support"
-#define troubleshootingUrl "https://github.com/openrazer/openrazer/wiki/Troubleshooting"
-#define websiteUrl "https://openrazer.github.io/"
+const char *newIssueUrl = "https://github.com/openrazer/openrazer/issues/new";
+const char *supportedDevicesUrl = "https://github.com/openrazer/openrazer/blob/master/README.md#device-support";
+const char *troubleshootingUrl = "https://github.com/openrazer/openrazer/wiki/Troubleshooting";
+const char *websiteUrl = "https://openrazer.github.io/";
 
 RazerGenie::RazerGenie(QWidget *parent)
     : QWidget(parent)
