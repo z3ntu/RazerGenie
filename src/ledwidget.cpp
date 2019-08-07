@@ -20,7 +20,6 @@
 
 #include <QColorDialog>
 #include <QComboBox>
-#include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -45,8 +44,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     QSlider *brightnessSlider = nullptr;
 
     comboBox->setObjectName("combobox");
-    // qDebug() << "CURRENT LED: " << led->getObjectPath().path();
-    //TODO More elegant solution instead of the sizePolicy?
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
     //TODO Battery
@@ -74,7 +71,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         brightnessSlider->setMaximum(255);
-        // qDebug() << "Brightness:" << led->getBrightness();
         brightnessSlider->setValue(led->getBrightness());
         connect(brightnessSlider, &QSlider::valueChanged, this, &LedWidget::brightnessSliderChanged);
     }
@@ -138,8 +134,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
 
 void LedWidget::colorButtonClicked()
 {
-    qDebug() << "color dialog";
-
     auto *sender = qobject_cast<QPushButton *>(QObject::sender());
 
     QPalette pal(sender->palette());
@@ -148,11 +142,10 @@ void LedWidget::colorButtonClicked()
 
     QColor color = QColorDialog::getColor(oldColor);
     if (color.isValid()) {
-        qDebug() << color.name();
         pal.setColor(QPalette::Button, color);
         sender->setPalette(pal);
     } else {
-        qInfo() << "User cancelled the dialog.";
+        qInfo("User cancelled the dialog.");
     }
     applyEffect();
 }
@@ -235,13 +228,12 @@ void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
         mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
     } else {
         // qWarning() << fxStr << " is not implemented yet!"; // FIXME
-        qWarning() << "(insert fxstring here) is not implemented yet!";
+        qWarning("(insert fxstring here) is not implemented yet!");
     }
 }
 
 void LedWidget::applyEffect()
 {
-    qDebug() << "applyEffect()";
     auto *combobox = findChild<QComboBox *>("combobox");
 
     libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();

@@ -35,7 +35,7 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     auto *vbox = new QVBoxLayout(this);
 
     dimens = device->getMatrixDimensions();
-    qDebug() << dimens.x << dimens.y;
+    qDebug() << "Dimensions:" << dimens.x << dimens.y;
 
     // Initialize internal colors list
     for (int i = 0; i < dimens.x; i++) {
