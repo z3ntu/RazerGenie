@@ -16,13 +16,6 @@
  *
  */
 
-#include <iostream>
-
-#include <QString>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QDataStream>
-#include <QFile>
 #include <QDir>
 #include <QStandardPaths>
 #include <QFileInfo>

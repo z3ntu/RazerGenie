@@ -16,21 +16,17 @@
  *
  */
 
-#include <iostream>
-#include <QDBusConnection>
 #include <QDBusServiceWatcher>
 #include <QtWidgets>
 
 #include <config.h>
 
 #include "razergenie.h"
-#include "customeditor/customeditor.h"
 #include "preferences/preferences.h"
 #include "razerimagedownloader.h"
 #include "devicewidget.h"
 #include "devicelistwidget.h"
 #include "util.h"
-#include "ledwidget.h"
 
 const char *newIssueUrl = "https://github.com/openrazer/openrazer/issues/new";
 const char *supportedDevicesUrl = "https://github.com/openrazer/openrazer/blob/master/README.md#device-support";
@@ -311,155 +307,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     scrollArea->setWidgetResizable(true);
 
     /* Create actual DeviceWidget */
-    auto *widget = new DeviceWidget(name, devicePath);
-
-    auto *verticalLayout = new QVBoxLayout(widget);
-
-    // List of locations to iterate through
-    QList<libopenrazer::Led *> leds = currentDevice->getLeds();
-
-    // Declare header font
-    QFont headerFont("Arial", 15, QFont::Bold);
-    QFont titleFont("Arial", 18, QFont::Bold);
-
-    // Add header with the device name
-    QLabel *header = new QLabel(name, widget);
-    header->setFont(titleFont);
-    verticalLayout->addWidget(header);
-
-    // Lighting header
-    if (leds.size() != 0) {
-        QLabel *lightingHeader = new QLabel(tr("Lighting"), widget);
-        lightingHeader->setFont(headerFont);
-        verticalLayout->addWidget(lightingHeader);
-    }
-
-    // Iterate through lighting locations
-    foreach (libopenrazer::Led *led, leds) {
-        verticalLayout->addWidget(new LedWidget(this, currentDevice, led));
-    }
-
-    /* DPI sliders */
-    if (currentDevice->hasFeature("dpi")) {
-        // HBoxes
-        auto *dpiXHBox = new QHBoxLayout();
-        auto *dpiYHBox = new QHBoxLayout();
-        auto *dpiHeaderHBox = new QHBoxLayout();
-
-        // Header
-        QLabel *dpiHeader = new QLabel(tr("DPI"), widget);
-        dpiHeader->setFont(headerFont);
-        dpiHeaderHBox->addWidget(dpiHeader);
-
-        verticalLayout->addLayout(dpiHeaderHBox);
-
-        // Labels
-        QLabel *dpiXLabel = new QLabel(tr("DPI X"));
-        QLabel *dpiYLabel = new QLabel(tr("DPI Y"));
-
-        // Read-only textboxes
-        auto *dpiXText = new QTextEdit(widget);
-        auto *dpiYText = new QTextEdit(widget);
-        dpiXText->setMaximumWidth(60);
-        dpiYText->setMaximumWidth(60);
-        dpiXText->setMaximumHeight(30);
-        dpiYText->setMaximumHeight(30);
-        dpiXText->setObjectName("dpiXText");
-        dpiYText->setObjectName("dpiYText");
-        dpiXText->setEnabled(false);
-        dpiYText->setEnabled(false);
-
-        // Sliders
-        auto *dpiXSlider = new QSlider(Qt::Horizontal, widget);
-        auto *dpiYSlider = new QSlider(Qt::Horizontal, widget);
-        dpiXSlider->setObjectName("dpiX");
-        dpiYSlider->setObjectName("dpiY");
-
-        // Sync checkbox
-        QLabel *dpiSyncLabel = new QLabel(tr("Lock X/Y"), widget);
-        auto *dpiSyncCheckbox = new QCheckBox(widget);
-
-        // Get the current DPI and set the slider&text
-        razer_test::RazerDPI currDPI = currentDevice->getDPI();
-        // qDebug() << "currDPI:" << currDPI.dpi_x << currDPI.dpi_y;
-        dpiXSlider->setValue(currDPI.dpi_x / 100);
-        dpiYSlider->setValue(currDPI.dpi_y / 100);
-        dpiXText->setText(QString::number(currDPI.dpi_x));
-        dpiYText->setText(QString::number(currDPI.dpi_y));
-
-        int maxDPI = currentDevice->maxDPI();
-        // qDebug() << "maxDPI:" << maxDPI;
-        dpiXSlider->setMaximum(maxDPI / 100);
-        dpiYSlider->setMaximum(maxDPI / 100);
-
-        dpiXSlider->setTickInterval(10);
-        dpiYSlider->setTickInterval(10);
-        dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-        dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-
-        dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
-
-        dpiXHBox->addWidget(dpiXLabel);
-        dpiXHBox->addWidget(dpiXText);
-        dpiXHBox->addWidget(dpiXSlider);
-
-        dpiYHBox->addWidget(dpiYLabel);
-        dpiYHBox->addWidget(dpiYText);
-        dpiYHBox->addWidget(dpiYSlider);
-
-        dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-        dpiHeaderHBox->addWidget(dpiSyncLabel);
-        // TODO Better solution/location for 'Sync' checkbox
-        dpiHeaderHBox->addWidget(dpiSyncCheckbox);
-
-        connect(dpiXSlider, &QSlider::valueChanged, this, &RazerGenie::dpiChanged);
-        connect(dpiYSlider, &QSlider::valueChanged, this, &RazerGenie::dpiChanged);
-        connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &RazerGenie::dpiSyncCheckbox);
-
-        verticalLayout->addLayout(dpiXHBox);
-        verticalLayout->addLayout(dpiYHBox);
-    }
-
-    /* Poll rate */
-    if (currentDevice->hasFeature("poll_rate")) {
-        QLabel *pollRateHeader = new QLabel(tr("Polling rate"), widget);
-        pollRateHeader->setFont(headerFont);
-        verticalLayout->addWidget(pollRateHeader);
-
-        auto *pollComboBox = new QComboBox;
-        pollComboBox->addItem("125 Hz", 125);
-        pollComboBox->addItem("500 Hz", 500);
-        pollComboBox->addItem("1000 Hz", 1000);
-        pollComboBox->setCurrentText(QString::number(currentDevice->getPollRate()) + " Hz");
-        verticalLayout->addWidget(pollComboBox);
-
-        connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::pollCombo);
-    }
-
-    /* Custom lighting */
-    if (currentDevice->hasFx("custom_frame")) {
-        auto *button = new QPushButton(widget);
-        button->setText(tr("Open custom editor"));
-        verticalLayout->addWidget(button);
-        connect(button, &QPushButton::clicked, this, &RazerGenie::openCustomEditor);
-#ifdef INCLUDE_MATRIX_DISCOVERY
-        QPushButton *buttonD = new QPushButton(widget);
-        buttonD->setText(tr("Launch matrix discovery"));
-        verticalLayout->addWidget(buttonD);
-        connect(buttonD, &QPushButton::clicked, this, [this] { openCustomEditor(true); });
-#endif
-    }
-
-    /* Spacer to bottom */
-    auto *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    verticalLayout->addItem(spacer);
-
-    /* Serial and firmware version labels */
-    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(currentDevice->getSerial()));
-    verticalLayout->addWidget(serialLabel);
-
-    QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(currentDevice->getFirmwareVersion()));
-    verticalLayout->addWidget(fwVerLabel);
+    auto *widget = new DeviceWidget(name, devicePath, currentDevice);
 
     // Set the main widget as child of the scrollArea
     scrollArea->setWidget(widget);
@@ -577,86 +425,6 @@ void RazerGenie::toggleOffOnScreesaver(bool on)
 {
     if (!manager->setTurnOffOnScreensaver(on))
         util::showError(tr("Error while toggling 'turn off on screensaver'"));
-}
-
-void RazerGenie::dpiChanged(int orig_value)
-{
-    ushort value = orig_value * 100;
-
-    auto *sender = qobject_cast<QSlider *>(QObject::sender());
-
-    qDebug() << value;
-    qDebug() << sender->objectName();
-
-    // get device pointer
-    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
-    auto *item = dynamic_cast<DeviceWidget *>(scrollArea->widget());
-    libopenrazer::Device *dev = devices.value(item->getDevicePath());
-
-    // if DPI should be synced
-    if (syncDpi) {
-        if (sender->objectName() == "dpiX") {
-            // set the other slider
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            slider->setValue(orig_value);
-
-            // set DPI
-            dev->setDPI({ value, value }); // set for both X & Y
-        } else {
-            // just set the slider (as the rest was done already or will be done)
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            slider->setValue(orig_value);
-        }
-    } /* if DPI should NOT be synced */ else {
-        // set DPI (with value from other slider)
-        if (sender->objectName() == "dpiX") {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            dev->setDPI({ value, static_cast<ushort>(slider->value() * 100) });
-        } else {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            dev->setDPI({ static_cast<ushort>(slider->value() * 100), value });
-        }
-    }
-    // Update textbox with new value
-    auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit *>(sender->objectName() + "Text");
-    dpitextbox->setText(QString::number(value));
-}
-
-void RazerGenie::dpiSyncCheckbox(bool checked)
-{
-    // TODO Sync DPI right here? Or just at next change (current behaviour)?
-    syncDpi = checked;
-}
-
-void RazerGenie::pollCombo(int /* index */)
-{
-    // get device pointer
-    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
-    auto *item = dynamic_cast<DeviceWidget *>(scrollArea->widget());
-    libopenrazer::Device *dev = devices.value(item->getDevicePath());
-
-    auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    dev->setPollRate(sender->currentData().value<ushort>());
-}
-
-void RazerGenie::openCustomEditor(bool openMatrixDiscovery)
-{
-    // get device pointer
-    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
-    auto *item = dynamic_cast<DeviceWidget *>(scrollArea->widget());
-    libopenrazer::Device *dev = devices.value(item->getDevicePath());
-
-    // Set combobox(es) to "Custom Effect"
-    auto comboboxes = item->findChildren<QComboBox *>("combobox");
-    for (auto combobox : comboboxes) {
-        if (combobox->findText("Custom Effect") == -1)
-            combobox->addItem("Custom Effect");
-        combobox->setCurrentText("Custom Effect");
-    }
-
-    auto *cust = new CustomEditor(dev, openMatrixDiscovery);
-    cust->setAttribute(Qt::WA_DeleteOnClose);
-    cust->show();
 }
 
 void RazerGenie::openPreferences()

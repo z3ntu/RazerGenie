@@ -23,9 +23,6 @@
 
 #include <libopenrazer.h>
 
-/**
- * @todo write docs
- */
 class LedWidget : public QWidget
 {
     Q_OBJECT

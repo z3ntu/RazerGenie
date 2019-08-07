@@ -20,7 +20,6 @@
 #include "razerimagedownloader.h"
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QIcon>
 #include <QFileInfo>
 
 DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device)

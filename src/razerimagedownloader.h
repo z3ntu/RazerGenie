@@ -21,8 +21,7 @@
 
 #include <QFile>
 #include <QSettings>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkReply>
+#include <QNetworkReply>
 
 class RazerImageDownloader : public QObject
 {

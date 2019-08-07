@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QTranslator>
+#include <QDebug>
 
 #include "razergenie.h"
 

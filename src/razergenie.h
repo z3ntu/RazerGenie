@@ -20,11 +20,8 @@
 #define RAZERGENIE_H
 
 #include "ui_razergenie.h"
-#include "razerimagedownloader.h"
 
 #include <libopenrazer.h>
-
-#include <QComboBox>
 
 class RazerGenie : public QWidget
 {
@@ -37,14 +34,6 @@ public slots:
     void toggleSync(bool);
     void toggleOffOnScreesaver(bool on);
 
-    // DPI checkbox & slider
-    void dpiChanged(int value);
-    void dpiSyncCheckbox(bool checked);
-
-    // Poll combobox
-    void pollCombo(int /* index */);
-
-    void openCustomEditor(bool openMatrixDiscovery = false);
     void openPreferences();
 
     void dbusServiceRegistered(const QString &serviceName);
@@ -75,8 +64,6 @@ private:
     QWidget *getNoDevicePlaceholder();
 
     void getRazerDevices();
-
-    bool syncDpi = true;
 
     QHash<QDBusObjectPath, libopenrazer::Device *> devices;
     libopenrazer::Manager *manager;

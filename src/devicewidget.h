@@ -22,17 +22,32 @@
 #include <QWidget>
 #include <QDBusObjectPath>
 
+#include <libopenrazer.h>
+
 class DeviceWidget : public QWidget
 {
 public:
-    DeviceWidget(const QString &name, const QDBusObjectPath &devicePath);
+    DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device);
     ~DeviceWidget() override;
 
     QDBusObjectPath getDevicePath();
 
+public slots:
+    // DPI checkbox & slider
+    void dpiChanged(int value);
+    void dpiSyncCheckbox(bool checked);
+
+    // Poll combobox
+    void pollCombo(int /* index */);
+
+    void openCustomEditor(bool openMatrixDiscovery = false);
+
 private:
     QString name;
     QDBusObjectPath devicePath;
+    libopenrazer::Device *device;
+
+    bool syncDpi = true;
 };
 
 #endif // DEVICEWIDGET_H
