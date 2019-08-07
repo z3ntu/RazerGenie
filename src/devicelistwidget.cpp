@@ -17,10 +17,12 @@
  */
 
 #include "devicelistwidget.h"
+
 #include "razerimagedownloader.h"
+
+#include <QFileInfo>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QFileInfo>
 
 DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device)
     : QWidget(parent)

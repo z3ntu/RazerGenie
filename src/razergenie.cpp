@@ -16,17 +16,17 @@
  *
  */
 
-#include <QDBusServiceWatcher>
-#include <QtWidgets>
-
-#include <config.h>
-
 #include "razergenie.h"
+
+#include "devicelistwidget.h"
+#include "devicewidget.h"
 #include "preferences/preferences.h"
 #include "razerimagedownloader.h"
-#include "devicewidget.h"
-#include "devicelistwidget.h"
 #include "util.h"
+
+#include <QDBusServiceWatcher>
+#include <QtWidgets>
+#include <config.h>
 
 const char *newIssueUrl = "https://github.com/openrazer/openrazer/issues/new";
 const char *supportedDevicesUrl = "https://github.com/openrazer/openrazer/blob/master/README.md#device-support";

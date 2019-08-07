@@ -19,9 +19,8 @@
 #ifndef DEVICEWIDGET_H
 #define DEVICEWIDGET_H
 
-#include <QWidget>
 #include <QDBusObjectPath>
-
+#include <QWidget>
 #include <libopenrazer.h>
 
 class DeviceWidget : public QWidget

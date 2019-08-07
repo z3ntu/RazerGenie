@@ -18,16 +18,16 @@
 
 #include "devicewidget.h"
 
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QTextEdit>
-#include <QSlider>
+#include "customeditor/customeditor.h"
+#include "ledwidget.h"
+
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
 #include <QPushButton>
-
-#include "ledwidget.h"
-#include "customeditor/customeditor.h"
+#include <QSlider>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device)
     : QWidget()

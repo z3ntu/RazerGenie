@@ -17,12 +17,12 @@
  */
 
 #include "config.h"
+#include "razergenie.h"
+
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QTranslator>
 #include <QDebug>
-
-#include "razergenie.h"
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {

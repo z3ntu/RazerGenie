@@ -17,11 +17,12 @@
  */
 
 #include "preferences.h"
-#include <QVBoxLayout>
-#include <QLabel>
+
 #include <QCheckBox>
-#include <libopenrazer.h>
+#include <QLabel>
+#include <QVBoxLayout>
 #include <config.h>
+#include <libopenrazer.h>
 
 Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     : QDialog(parent), manager(manager)

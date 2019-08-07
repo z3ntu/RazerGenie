@@ -19,9 +19,9 @@
 #ifndef DEVICELISTWIDGET_H
 #define DEVICELISTWIDGET_H
 
-#include <libopenrazer.h>
-#include <QWidget>
 #include <QLabel>
+#include <QWidget>
+#include <libopenrazer.h>
 
 class DeviceListWidget : public QWidget
 {

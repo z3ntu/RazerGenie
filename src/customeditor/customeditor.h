@@ -19,10 +19,11 @@
 #ifndef CUSTOMEDITOR_H
 #define CUSTOMEDITOR_H
 
+#include "matrixpushbutton.h"
+
 #include <QDialog>
 #include <QJsonObject>
 #include <libopenrazer.h>
-#include "matrixpushbutton.h"
 
 enum DrawStatus {
     set,

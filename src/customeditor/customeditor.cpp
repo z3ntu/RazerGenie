@@ -17,12 +17,14 @@
  */
 
 #include "customeditor.h"
+
 #include "config.h"
 #include "util.h"
-#include <QtWidgets>
-#include <QPushButton>
-#include <QHBoxLayout>
+
 #include <QEvent>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QtWidgets>
 
 CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
     : QDialog(parent)

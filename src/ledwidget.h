@@ -20,7 +20,6 @@
 #define LEDWIDGET_H
 
 #include <QWidget>
-
 #include <libopenrazer.h>
 
 class LedWidget : public QWidget

@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ledwidget.h"
+
 #include <QColorDialog>
 #include <QComboBox>
-#include <QLabel>
+#include <QDebug>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
-
-#include <QDebug>
-
-#include "ledwidget.h"
 
 LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer::Led *led)
     : QWidget(parent)

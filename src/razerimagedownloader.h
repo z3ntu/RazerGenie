@@ -20,8 +20,8 @@
 #define RAZERIMAGEDOWNLOADER_H
 
 #include <QFile>
-#include <QSettings>
 #include <QNetworkReply>
+#include <QSettings>
 
 class RazerImageDownloader : public QObject
 {

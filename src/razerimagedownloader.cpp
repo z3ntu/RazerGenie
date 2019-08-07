@@ -16,11 +16,11 @@
  *
  */
 
-#include <QDir>
-#include <QStandardPaths>
-#include <QFileInfo>
-
 #include "razerimagedownloader.h"
+
+#include <QDir>
+#include <QFileInfo>
+#include <QStandardPaths>
 
 RazerImageDownloader::RazerImageDownloader(QUrl url, QObject *parent)
     : QObject(parent)
