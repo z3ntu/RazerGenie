@@ -312,8 +312,9 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
         listItemWidget->setNoImage();
     }
 
-    // Types known for now: headset, mouse, mug, keyboard, tartarus, core, orbweaver
-    // qDebug() << type;
+    // Create a scroll widget for everything to sit in
+    auto scrollArea = new QScrollArea;
+    scrollArea->setWidgetResizable(true);
 
     /* Create actual DeviceWidget */
     auto *widget = new RazerDeviceWidget(name, devicePath);
@@ -466,8 +467,11 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(currentDevice->getFirmwareVersion()));
     verticalLayout->addWidget(fwVerLabel);
 
-    ui_main.stackedWidget->addWidget(widget);
-    // qDebug() << "Stacked widget count:" << ui_main.stackedWidget->count();
+    // Set the main widget as child of the scrollArea
+    scrollArea->setWidget(widget);
+
+    // Add the new widget to the stacked widget
+    ui_main.stackedWidget->addWidget(scrollArea);
 }
 
 bool RazerGenie::removeDeviceFromGui(const QDBusObjectPath &devicePath)
@@ -591,7 +595,8 @@ void RazerGenie::dpiChanged(int orig_value)
     qDebug() << sender->objectName();
 
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
+    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(scrollArea->widget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     // if DPI should be synced
@@ -632,7 +637,8 @@ void RazerGenie::dpiSyncCheckbox(bool checked)
 void RazerGenie::pollCombo(int /* index */)
 {
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
+    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(scrollArea->widget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     auto *sender = qobject_cast<QComboBox *>(QObject::sender());
@@ -642,7 +648,8 @@ void RazerGenie::pollCombo(int /* index */)
 void RazerGenie::openCustomEditor(bool openMatrixDiscovery)
 {
     // get device pointer
-    auto *item = dynamic_cast<RazerDeviceWidget *>(ui_main.stackedWidget->currentWidget());
+    auto *scrollArea = dynamic_cast<QScrollArea *>(ui_main.stackedWidget->currentWidget());
+    auto *item = dynamic_cast<RazerDeviceWidget *>(scrollArea->widget());
     libopenrazer::Device *dev = devices.value(item->getDevicePath());
 
     // Set combobox(es) to "Custom Effect"
