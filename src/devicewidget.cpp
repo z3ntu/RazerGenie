@@ -159,7 +159,7 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     }
 
     /* Custom lighting */
-    if (device->hasFx("custom_frame")) {
+    if (device->hasFeature("custom_frame")) {
         auto *button = new QPushButton(this);
         button->setText(tr("Open custom editor"));
         verticalLayout->addWidget(button);
