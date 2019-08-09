@@ -54,7 +54,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
 
     // Add items from capabilities
     for (auto ledFx : libopenrazer::ledFxList) {
-        if (device->hasFx(ledFx.getIdentifier())) {
+        if (led->hasFx(ledFx.getIdentifier())) {
             comboBox->addItem(ledFx.getDisplayString(), QVariant::fromValue(ledFx));
             // Set selection to current effect
             if (ledFx.getIdentifier() == currentEffect) {
@@ -67,7 +67,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &LedWidget::fxComboboxChanged);
 
     // Brightness slider
-    if (device->hasFx("brightness")) {
+    if (led->hasFx("brightness")) {
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         brightnessSlider->setMaximum(255);
@@ -204,6 +204,8 @@ void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
 {
     if (fxStr == razer_test::RazerEffect::Off) {
         mLed->setOff();
+    } else if (fxStr == razer_test::RazerEffect::On) {
+        mLed->setOn();
     } else if (fxStr == razer_test::RazerEffect::Static) {
         QColor c = getColorForButton(1);
         mLed->setStatic(c);
