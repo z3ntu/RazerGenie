@@ -119,8 +119,8 @@
             {"label": "ctrl", "width": 94, "matrix": [5, 1]},
             {"label": "\ud83d\udc27", "matrix": [5, 2]},
             {"label": "alt", "width": 94, "matrix": [5, 3]},
-            {"label": "space", "width": 388, "matrix": [5, 7]},
-            {"label": "alt", "width": 94, "matrix": [5, 11]},
+            {"label": "space", "width": 388, "matrix": [5, 6]},
+            {"label": "alt", "width": 94, "matrix": [5, 10]},
             {"label": "fn", "matrix": [5, 12]},
             {"label": "\u2630", "matrix": [5, 13]},
             {"label": "ctrl", "width": 92, "matrix": [5, 14]},
@@ -130,6 +130,9 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ".", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
+        ],
+	"row6": [
+            {"label": "logo", "width": 94, "matrix": [5, 11]}
         ]
     },
 
