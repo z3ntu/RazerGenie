@@ -196,6 +196,7 @@ public:
     bool setDPI(int dpi_x, int dpi_y);
     QList<int> getDPI();
     int maxDPI();
+    QList<int> availableDPI();
 
     // --- BATTERY ----
     bool isCharging();

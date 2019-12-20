@@ -71,8 +71,13 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset theme="configure">
-           <normaloff>.</normaloff>.</iconset>
+          <iconset theme="preferences-system"/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
          <property name="flat">
           <bool>true</bool>

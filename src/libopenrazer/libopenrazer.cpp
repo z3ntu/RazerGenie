@@ -467,6 +467,7 @@ void Device::setupCapabilities()
     capabilities.insert("firmware_version", true);
     capabilities.insert("serial", true);
     capabilities.insert("dpi", hasCapabilityInternal("razer.device.dpi", "setDPI"));
+    capabilities.insert("available_dpi", hasCapabilityInternal("razer.device.dpi", "availableDPI"));
     capabilities.insert("brightness", hasCapabilityInternal("razer.device.lighting.brightness"));
     capabilities.insert("get_brightness", hasCapabilityInternal("razer.device.lighting.brightness", "setBrightness"));
     capabilities.insert("battery", hasCapabilityInternal("razer.device.power"));
@@ -920,6 +921,17 @@ int Device::maxDPI()
 {
     QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "maxDPI");
     return QDBusMessageToInt(m);
+}
+
+/*!
+ * \fn QList<int> libopenrazer::Device::availableDPI()
+ *
+ * Returns the DPI values that can be chosen.
+ */
+QList<int> Device::availableDPI()
+{
+    QDBusMessage m = prepareDeviceQDBusMessage("razer.device.dpi", "availableDPI");
+    return QDBusMessageToIntArray(m);
 }
 
 // BATTERY

@@ -688,7 +688,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
     }
 
     /* DPI sliders */
-    if(currentDevice->hasCapability("dpi")) {
+    if(currentDevice->hasCapability("dpi") && !currentDevice->hasCapability("available_dpi")) {
         // HBoxes
         QHBoxLayout *dpiXHBox = new QHBoxLayout();
         QHBoxLayout *dpiYHBox = new QHBoxLayout();
@@ -770,6 +770,23 @@ void RazerGenie::addDeviceToGui(const QString &serial)
 
         verticalLayout->addLayout(dpiXHBox);
         verticalLayout->addLayout(dpiYHBox);
+    }
+
+    /* DPI dropdown */
+    if(currentDevice->hasCapability("dpi") && currentDevice->hasCapability("available_dpi")) {
+        QLabel *dpiHeader = new QLabel(tr("DPI"), widget);
+        dpiHeader->setFont(headerFont);
+        verticalLayout->addWidget(dpiHeader);
+
+        QComboBox *dpiComboBox = new QComboBox;
+        QList<int> availableDPI = currentDevice->availableDPI();
+        foreach(int dpivalue, availableDPI) {
+            dpiComboBox->addItem(QString("%1 DPI").arg(dpivalue), dpivalue);
+        }
+        dpiComboBox->setCurrentText(QString("%1 DPI").arg(currentDevice->getDPI()[0]));
+        verticalLayout->addWidget(dpiComboBox);
+
+        connect(dpiComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::dpiComboChanged);
     }
 
     /* Poll rate */
@@ -1163,6 +1180,17 @@ void RazerGenie::dpiChanged(int orig_value)
     // Update textbox with new value
     QTextEdit *dpitextbox = sender->parentWidget()->findChild<QTextEdit*>(sender->objectName() + "Text");
     dpitextbox->setText(QString::number(value));
+}
+
+void RazerGenie::dpiComboChanged(int /* index */)
+{
+    // get device pointer
+    RazerDeviceWidget *item = dynamic_cast<RazerDeviceWidget*>(ui_main.stackedWidget->currentWidget());
+    libopenrazer::Device *dev = devices.value(item->getSerial());
+
+    QComboBox *sender = qobject_cast<QComboBox*>(QObject::sender());
+    // Indicate that DPI-Y should not be used with -1
+    dev->setDPI(sender->currentData().toInt(), -1);
 }
 
 void RazerGenie::applyEffectStandardLoc(QString identifier, libopenrazer::Device *device)
