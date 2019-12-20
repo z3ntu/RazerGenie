@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de" sourcelanguage="en">
+<TS version="2.1" language="fr" sourcelanguage="en">
 <context>
     <name>CustomEditor</name>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="29"/>
         <source>RazerGenie - Custom Editor</source>
-        <translation>RazerGenie - Custom Editor</translation>
+        <translation>RazerGenie - Éditeur personnalisé</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="75"/>
         <location filename="../../src/customeditor/customeditor.cpp" line="85"/>
         <source>Unknown matrix dimensions</source>
-        <translation>Unbekannte Matrix Maße</translation>
+        <translation>Dimensions de la matrice inconnues</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="75"/>
         <location filename="../../src/customeditor/customeditor.cpp" line="85"/>
         <source>Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3</source>
-        <translation>Bitte öffne ein Issue in der RazerGenie Repository. Gerätname: %1 - Matix Maße: %2 %3</translation>
+        <translation>Veuillez ouvrir un ticket dans le dépôt RazerGenie. Nom du périphérique : %1 - dimensions de la matrice : %2 %3</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
         <source>Device type not implemented!</source>
-        <translation>Gerät Typ nicht implementiert!</translation>
+        <translation>Ce type de périphérique n&apos;est pas implémenté !</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
         <source>Please open an issue in the RazerGenie repository. Device type: %1</source>
-        <translation>Bitte öffne ein Issue in der RazerGenie Repository. Gerätname: %1</translation>
+        <translation>Veuillez ouvrir un ticket dans le dépôt RazerGenie. Type de périphérique : %1</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="123"/>
         <source>Set</source>
-        <translation>Setzen</translation>
+        <translation>Appliquer</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="124"/>
         <source>Clear</source>
-        <translation>Löschen</translation>
+        <translation>Enlever</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="125"/>
         <source>Clear All</source>
-        <translation>Alle löschen</translation>
+        <translation>Tout enlever</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="151"/>
         <source>You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Using a fallback layout for now.</source>
-        <translation>Du benutzt eine Tastatur mit einem Layout, welches nicht vom Daemon erkannt wurde. Bitte helfe uns indem du &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt; besuchst. Ein Rückfalllayout wird einstweilen benutzt.</translation>
+        <translation>Vous utilisez un clavier dont la disposition n&apos;est pas connue du daemon. Aidez-nous en visitant &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Pour l&apos;instant, un dispositif générique sera utilisé.</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="153"/>
         <source>Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.</source>
-        <translation>Dein Tastaturlayout (%1) ist noch nicht von RazerGenie für diese Tastatur unterstützt. Bitte öffne ein Issue in der RazerGenie Repository.</translation>
+        <translation>La disposition du clavier (%1) n&apos;est pas encore supportée par RazerGenie pour ce clavier. Veuillez ouvrir un tricket dans le dépôt RazerGenie.</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="167"/>
         <source>Neither one of these layouts was found in the layout file: %1. Exiting.</source>
-        <translation>Keines der folgenden Layouts wird in der Layout Datei gefunden: %1. Der Editor wird nicht geöffnet.</translation>
+        <translation>Aucune de ces dispositions n&apos;a été trouvée dans le fichier source : %1. L&apos;éditeur va se fermer.</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="273"/>
         <source>Error loading %1.json!</source>
-        <translation>Fehler beim laden von%1.json!</translation>
+        <translation>Erreur lors du chargement de %1.json !</translation>
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="273"/>
         <source>The file %1.json, used for the custom editor failed to load: %2
 The editor won&apos;t open now.</source>
-        <translation>Die Datei %1.json, welche für den Custom Editor benützt wird, wurde nicht geladen: %2
-Der Editor wird nicht geöffnet.</translation>
+        <translation>Le fichier %1.json, utilisé pour l&apos;éditeur personnalisé, n&apos;a pas pu être chargé : %2
+L&apos;éditeur ne s&apos;ouvrira pas pour l&apos;instant.</translation>
     </message>
 </context>
 <context>
@@ -78,12 +78,12 @@ Der Editor wird nicht geöffnet.</translation>
     <message>
         <location filename="../../src/devicelistwidget.cpp" line="39"/>
         <source>Downloading image...</source>
-        <translation>Bild wird heruntegeladen...</translation>
+        <translation>Téléchargement de l&apos;image...</translation>
     </message>
     <message>
         <location filename="../../src/devicelistwidget.cpp" line="79"/>
         <source>No image</source>
-        <translation>Kein Bild</translation>
+        <translation>Pas d&apos;image</translation>
     </message>
 </context>
 <context>
@@ -92,37 +92,37 @@ Der Editor wird nicht geöffnet.</translation>
         <location filename="../../src/preferences/preferences.cpp" line="28"/>
         <location filename="../../src/preferences/preferences.cpp" line="71"/>
         <source>RazerGenie - Preferences</source>
-        <translation>RazerGenie - Einstellungen</translation>
+        <translation>RazerGenie - Préférences</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="35"/>
         <source>About:</source>
-        <translation>Über:</translation>
+        <translation>À propos :</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="39"/>
         <source>RazerGenie Version: %1</source>
-        <translation>RazerGenie Version: %1</translation>
+        <translation>Version de RazerGenie : %1</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="42"/>
         <source>OpenRazer Daemon Version: %1</source>
-        <translation>OpenRazer Daemon Version: %1</translation>
+        <translation>Version du daemon OpenRazer : %1</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="45"/>
         <source>General:</source>
-        <translation>Allgemein:</translation>
+        <translation>Général :</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="49"/>
         <source>For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the Razer Privacy Policy (https://www.razer.com/legal/privacy-policy).</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour afficher les images des préiphériques, RazerGenie télécharge l&apos;image via l&apos;URL spécifiée pour le périphérique dans le code source du daemon OpenRazer. Ceci ne sera fait que pour les périphériques connectés au PC et une fois seuelement, puisque les images sont stockées localement. Pour vérifier quelles informations Razer pourrait collecter avec ces connexions, veuillez consulter la politique de vie privée de Razer (https://www.razer.com/legal/privacy-policy).</translation>
     </message>
     <message>
         <location filename="../../src/preferences/preferences.cpp" line="53"/>
         <source>Download device images</source>
-        <translation>Gerätebilder herunteladen</translation>
+        <translation>Télécharger les images des périphériques</translation>
     </message>
 </context>
 <context>
@@ -130,12 +130,12 @@ Der Editor wird nicht geöffnet.</translation>
     <message>
         <location filename="../../src/util.cpp" line="26"/>
         <source>Error!</source>
-        <translation>Fehler!</translation>
+        <translation>Erreur !</translation>
     </message>
     <message>
         <location filename="../../src/util.cpp" line="33"/>
         <source>Information!</source>
-        <translation>Information!</translation>
+        <translation>Information !</translation>
     </message>
 </context>
 <context>
@@ -146,142 +146,141 @@ Der Editor wird nicht geöffnet.</translation>
 You have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.
 
 Manually starting would be running &quot;openrazer-daemon&quot; in a terminal.</source>
-        <translation>Der OpenRazer Daemon ist nicht gestartet and du benutzt nicht systemd als dein Init-System.
-Du musst entweder den Daemon manuell jedes Mal nach dem einloggen oder du richtest eine andere Methode ein, um den Daemon automatisch zu starten.
+        <translation>Le daemon OpenRazer n&apos;est pas démarré et vous n&apos;utilisez systemd comme système d&apos;initialisation. Vous devez soit démarrer le daemon manuellement à chaque fois que vous vous connectez, ou prévoyez une autre façon de démarrer le daemon automatiquement.
 
-Manuell den Daemon zu starten, wäre, &quot;openrazer-daemon&quot; in einem Terminal auszuführen.</translation>
+Vous pouvez manuellement lancer &quot;openrazer-daemon&quot; depuis un terminal.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="59"/>
         <source>The OpenRazer daemon is not installed</source>
-        <translation>Der OpenRazer Daemon ist nicht installiert</translation>
+        <translation>Le daemon OpenRazer n&apos;est pas installé</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="60"/>
         <source>The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!
 
 If you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package.</source>
-        <translation>Der OpenRazer Daemon ist nicht installiert oder die installierte Version ist zu alt. Bitte folge der Installationsanleitung auf der Webseite!
+        <translation>Le daemon n&apos;est pas installé ou la version installée est trop ancienne. Veuillez suivre les instructions d&apos;installation sur le site web !
 
-Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhalb von flatpak von einem Distributionspackage installieren.</translation>
+Si vous utilisez RazerGenie depuis un flatpak, il faudra tout de même installer OpenRazer depuis un package propre à votre distribution.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="61"/>
         <source>Open OpenRazer website</source>
-        <translation>OpenRazer Webseite öffnen</translation>
+        <translation>Ouvrir le site d&apos;OpenRazer</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="74"/>
         <source>The OpenRazer daemon is not available.</source>
-        <translation>Der OpenRazer Daemon ist nicht verfügbar.</translation>
+        <translation>Le daemon OpenRazer n&apos;est pas disponible.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="86"/>
         <source>The OpenRazer daemon is currently not available. The status output is below.</source>
-        <translation>Der OpenRazer Daemon ist derzeit nicht verfügbar. Die Statusausgabe ist unterhalb.</translation>
+        <translation>Le daemon OpenRazer n&apos;est pas disponible pour l&apos;instant. Le statut est rapporté ci-dessous.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="88"/>
         <source>If you think, there&apos;s a bug, you can report an issue on GitHub:</source>
-        <translation>Wenn du glaubst, dass ein Problem existiert, kannst du dies auf GitHub melden:</translation>
+        <translation>Si vous pensez qu&apos;il y a un bug, vous pouvez ouvrir un ticket sur GitHub :</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="89"/>
         <location filename="../../src/razergenie.cpp" line="823"/>
         <location filename="../../src/razergenie.cpp" line="831"/>
         <source>Report issue</source>
-        <translation>Problem melden</translation>
+        <translation>Rapporter un problème</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="110"/>
         <source>The OpenRazer daemon is not set to auto-start. Click &quot;Enable&quot; to use the full potential of the daemon right after login.</source>
-        <translation>Der OpenRazer Daemon ist nicht gesetzt, dass er automatisch startet. Drück &quot;Aktivieren&quot;, um dass volle Potential des Daemon direkt nach dem Login zu benützen.</translation>
+        <translation>Le daemon OpenRazer ne démarre pour l&apos;instant pas automatiquement. Cliquez sur &quot;Activer&quot; pour utiliser tout le potentiel du daemon dès la connexion à la session.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="111"/>
         <source>Enable</source>
-        <translation>Aktivieren</translation>
+        <translation>Activer</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="144"/>
         <source>Daemon version: %1</source>
-        <translation>Daemon Version: %1</translation>
+        <translation>Version du daemon : %1</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="165"/>
         <source>The D-Bus connection was re-established.</source>
-        <translation>Die D-Bus Verbindung wurde wiederhergestellt.</translation>
+        <translation>La connexion D-Bus a été re-établie.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="173"/>
         <source>The D-Bus connection was lost, which probably means that the daemon has crashed.</source>
-        <translation>Die D-Bus Verbindung wurde unterbrochen, was wahrscheinlich heißt, dass der Daemon abgestürzt ist.</translation>
+        <translation>La connexion D-Bus a été perdue, ce qui signifie probablement que le daemon a rencontré une erreur.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="348"/>
         <location filename="../../src/razergenie.cpp" line="362"/>
         <source>Lighting</source>
-        <translation>Beleuchtung</translation>
+        <translation>Éclairage</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="364"/>
         <source>Lighting Logo</source>
-        <translation>Beleuchtung Logo</translation>
+        <translation>Éclairage du logo</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="366"/>
         <source>Lighting Scroll</source>
-        <translation>Beleuchtung Scroll</translation>
+        <translation>Éclairage de la molette</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="368"/>
         <source>Lighting Backlight</source>
-        <translation>Beleuchtung Hintergrund</translation>
+        <translation>Rétro-éclairage</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="404"/>
         <source>Brightness</source>
-        <translation>Helligkeit</translation>
+        <translation>Luminosité</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="429"/>
         <source>Brightness Logo</source>
-        <translation>Helligkeit Logo</translation>
+        <translation>Luminosité du logo</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="453"/>
         <source>Brightness Scroll</source>
-        <translation>Helligkeit Scroll</translation>
+        <translation>Luminosité de la molette</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="476"/>
         <source>Brightness Backlight</source>
-        <translation>Helligkeit Hintergrund</translation>
+        <translation>Luminosité du rétro-éclairage</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="515"/>
         <source>Left</source>
-        <translation>Links</translation>
+        <translation>Gauche</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="517"/>
         <source>Right</source>
-        <translation>Rechts</translation>
+        <translation>Droit</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="541"/>
         <source>Set Logo Active</source>
-        <translation>Logo aktiv setzen</translation>
+        <translation>Activer le logo</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="552"/>
         <source>Set Scroll Active</source>
-        <translation>Scroll aktiv setzen</translation>
+        <translation>Activer la molette</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="563"/>
         <source>Set Backlight Active</source>
-        <translation>Hintergrund aktiv setzen</translation>
+        <translation>Activer le rétro-éclairage</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="575"/>
@@ -307,74 +306,74 @@ Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhal
     <message>
         <location filename="../../src/razergenie.cpp" line="636"/>
         <source>Lock X/Y</source>
-        <translation>X/Y sperren</translation>
+        <translation>Verrouiller X/Y</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="703"/>
         <source>Polling rate</source>
-        <translation>Abfragerate</translation>
+        <translation>Fréquence des requêtes (polling)</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="720"/>
         <source>Open custom editor</source>
-        <translation>Custom Editor öffnen</translation>
+        <translation>Ouvrir l&apos;éditeur personnalisé</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="725"/>
         <source>Launch matrix discovery</source>
-        <translation>Matrix discovery öffnen</translation>
+        <translation>Lancer la découverte de matrice</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="736"/>
         <source>Serial number: %1</source>
-        <translation>Seriennummer: %1</translation>
+        <translation>Numéro de série : %1</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="739"/>
         <source>Firmware version: %1</source>
-        <translation>Firmware-Version: %1</translation>
+        <translation>Version du firmware : %1</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="819"/>
         <source>No device was detected</source>
-        <translation>Kein Gerät wurde erkannt</translation>
+        <translation>Aucun périphérique détecté</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="820"/>
         <source>The OpenRazer daemon didn&apos;t detect a device that is supported.
 This could also be caused due to a misconfiguration of this PC.</source>
-        <translation>Der OpenRazer Daemon hat kein Gerät erkannt, welches unterstützt ist.
-Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</translation>
+        <translation>Le daemon OpenRazer n&apos;a détecté aucun périphérique supporté.
+Il est aussi possible que ce PC soit mal configuré.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="821"/>
         <source>Open supported devices</source>
-        <translation>Unterstützte Geräte öffnen</translation>
+        <translation>Ouvir les périphériques supportés</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="826"/>
         <source>The daemon didn&apos;t detect a device that is connected</source>
-        <translation>Der Daemon hat kein Geräte erkannt, welches verbunden ist</translation>
+        <translation>Le daemon n&apos;a détecté aucun périphérique connecté</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="827"/>
         <source>Linux detected connected devices but the daemon didn&apos;t. This could be either due to a permission problem or a kernel module problem.</source>
-        <translation>Linux hat ein Gerät erkannt, aber der Daemon nicht. Dies kann entweder durch ein Berechtigungsproblem oder durch ein Kernel-Modul Problem verursacht sein.</translation>
+        <translation>Linux a détecté des périphériques, mais pas le daemon. Il est possible que ce soit lié à un problème de permissions ou un problème dans un module du noyau (kernel).</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="829"/>
         <source>Open troubleshooting page</source>
-        <translation>Problemlösungs-Seite öffnen</translation>
+        <translation>Ouvrir la page de diagnostic</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="848"/>
         <source>Error while syncing devices.</source>
-        <translation>Fehler beim Synchronisieren von Geräten.</translation>
+        <translation>Erreur lors de la synchronisation des périphériques.</translation>
     </message>
     <message>
         <location filename="../../src/razergenie.cpp" line="854"/>
         <source>Error while toggling &apos;turn off on screensaver&apos;</source>
-        <translation>Fehler beim umschalten von &apos;abschalten bei Bildschirmschoner&apos;</translation>
+        <translation>Erreur lors de l&apos;activation de &apos;désactiver l&apos;économiseur d&apos;écran&apos;</translation>
     </message>
 </context>
 <context>
@@ -387,17 +386,17 @@ Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</tran
     <message>
         <location filename="../../ui/razergenie.ui" line="68"/>
         <source>Preferences</source>
-        <translation>Einstellungen</translation>
+        <translation>Préférences</translation>
     </message>
     <message>
         <location filename="../../ui/razergenie.ui" line="97"/>
         <source>Sync devices</source>
-        <translation>Effekte synchronisieren</translation>
+        <translation>Synchroniser les périphériques</translation>
     </message>
     <message>
         <location filename="../../ui/razergenie.ui" line="104"/>
         <source>Turn off on screensaver</source>
-        <translation>Beleuchtung bei Bildschirmschoner abdrehen</translation>
+        <translation>Désactiver l&apos;économiseur d&apos;écran</translation>
     </message>
 </context>
 <context>
@@ -405,17 +404,17 @@ Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</tran
     <message>
         <location filename="../../src/razerimagedownloader.cpp" line="52"/>
         <source>Image download disabled</source>
-        <translation>Gerätebilder-download deaktiviert</translation>
+        <translation>Téléchargement des images désactivé</translation>
     </message>
     <message>
         <location filename="../../src/razerimagedownloader.cpp" line="52"/>
         <source>Image downloading is disabled. Visit the preferences to enable it.</source>
-        <translation>Gerätebilder-download ist deaktiviert. Gehe in die Einstellungen, um es zu aktivieren.</translation>
+        <translation>Le téléchargement des images est désactivé. Vous pouvez l&apos;activer dans les préférences.</translation>
     </message>
     <message>
         <location filename="../../src/razerimagedownloader.cpp" line="77"/>
         <source>Network Error</source>
-        <translation>Netzwerkfehler</translation>
+        <translation>Erreur de réseau</translation>
     </message>
 </context>
 </TS>

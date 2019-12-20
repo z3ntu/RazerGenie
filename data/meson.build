@@ -12,7 +12,7 @@ install_data('xyz.z3ntu.razergenie.appdata.xml', install_dir: metadatadir)
 install_data('xyz.z3ntu.razergenie.desktop', install_dir : join_paths(get_option('datadir'), 'applications'))
 
 # Translations
-languages = ['de']  # add new languages here!
+languages = ['de', 'fr']  # add new languages here!
 translationsdir = join_paths(get_option('datadir'), 'razergenie/translations')
 lrelease = find_program(['lrelease-qt5', 'lrelease'])
 
