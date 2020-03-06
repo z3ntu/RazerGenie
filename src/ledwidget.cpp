@@ -50,7 +50,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
     razer_test::RazerEffect currentEffect = led->getCurrentEffect();
-    QList<razer_test::RGB> currentColors = led->getCurrentColors();
+    QVector<razer_test::RGB> currentColors = led->getCurrentColors();
 
     // Add items from capabilities
     for (auto ledFx : libopenrazer::ledFxList) {
