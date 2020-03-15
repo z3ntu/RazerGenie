@@ -8,6 +8,7 @@ addons:
     packages:
       - meson
       - qt
+    update: true
 
 script:
   - export PATH="/usr/local/opt/qt/bin:$PATH"
