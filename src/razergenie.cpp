@@ -429,7 +429,8 @@ void RazerGenie::toggleOffOnScreesaver(bool on)
 
 void RazerGenie::openPreferences()
 {
-    auto *prefs = new Preferences(manager);
+    auto *prefs = new Preferences(manager, this);
+    prefs->setWindowModality(Qt::WindowModal);
     prefs->setAttribute(Qt::WA_DeleteOnClose);
     prefs->show();
 }
