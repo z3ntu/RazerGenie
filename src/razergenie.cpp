@@ -1319,7 +1319,8 @@ void RazerGenie::openMatrixDiscovery()
 
 void RazerGenie::openPreferences()
 {
-    Preferences *prefs = new Preferences();
+    Preferences *prefs = new Preferences(this);
+    prefs->setWindowModality(Qt::WindowModal);
     prefs->setAttribute(Qt::WA_DeleteOnClose);
     prefs->show();
 }
