@@ -39,7 +39,15 @@ RazerGenie::RazerGenie(QWidget *parent)
     // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 
-    manager = new libopenrazer::Manager();
+    QString backend = settings.value("backend").toString();
+    if (backend == "OpenRazer") {
+        manager = new libopenrazer::openrazer::Manager();
+    } else if (backend == "razer_test") {
+        manager = new libopenrazer::razer_test::Manager();
+    } else {
+        qWarning() << "Invalid backend value. Using openrazer backend.";
+        manager = new libopenrazer::openrazer::Manager();
+    }
 
     // What to do:
     // If disabled, popup to enable : "The daemon service is not auto-started. Press this button to use the full potential of the daemon right after login." => DONE
@@ -278,7 +286,7 @@ void RazerGenie::clearDeviceList()
 void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 {
     // Create device instance with current serial
-    libopenrazer::Device *currentDevice = new libopenrazer::Device(devicePath);
+    libopenrazer::Device *currentDevice = manager->getDevice(devicePath);
 
     // Setup variables for easy access
     QString type = currentDevice->getDeviceType();

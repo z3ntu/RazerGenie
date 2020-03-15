@@ -21,6 +21,7 @@
 
 #include "ui_razergenie.h"
 
+#include <QSettings>
 #include <libopenrazer.h>
 
 class RazerGenie : public QWidget
@@ -67,6 +68,8 @@ private:
 
     QHash<QDBusObjectPath, libopenrazer::Device *> devices;
     libopenrazer::Manager *manager;
+
+    QSettings settings;
 };
 
 #endif

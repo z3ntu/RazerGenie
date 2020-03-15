@@ -19,6 +19,7 @@
 #include "preferences.h"
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <config.h>
@@ -64,6 +65,22 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
         settings.setValue("downloadImages", checked);
     });
 
+    auto backendHbox = new QHBoxLayout();
+
+    auto backendLabel = new QLabel(this);
+    backendLabel->setText(tr("Daemon backend to use:"));
+
+    auto *backendComboBox = new QComboBox(this);
+    backendComboBox->addItem("OpenRazer");
+    backendComboBox->addItem("razer_test");
+    backendComboBox->setCurrentText(settings.value("backend").toString());
+    connect(backendComboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text) {
+        settings.setValue("backend", text);
+    });
+
+    backendHbox->addWidget(backendLabel);
+    backendHbox->addWidget(backendComboBox);
+
     auto *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     vbox->addWidget(aboutLabel);
@@ -72,6 +89,7 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     vbox->addWidget(generalLabel);
     vbox->addWidget(downloadText);
     vbox->addWidget(downloadCheckBox);
+    vbox->addLayout(backendHbox);
     vbox->addItem(spacer);
 
     this->resize(600, 400);
