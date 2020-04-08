@@ -117,6 +117,8 @@ QLayout *CustomEditor::buildKeyboard()
         layout = "razerdefault18";
     } else if (dimens.x == 6 && dimens.y == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
         layout = "razerdefault22";
+    } else if (dimens.x == 9 && dimens.y == 22) { // Razer Huntsman Elite
+        layout = "razerhunt22";
     } else if (dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
         layout = "razerblade25";
     } else {
