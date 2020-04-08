@@ -70,6 +70,10 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
             if (!parseKeyboardJSON("razerdefault22")) {
                 closeWindow();
             }
+        } else if (dimens.x == 9 && dimens.y == 22) { // Razer Huntsman Elite
+            if (!parseKeyboardJSON("razerhunt22")) {
+                closeWindow();
+            }
         } else if (dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
             if (!parseKeyboardJSON("razerblade25")) {
                 closeWindow();
@@ -188,7 +192,8 @@ QLayout *CustomEditor::generateKeyboard()
             if (!obj["label"].isNull()) {
                 MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
                 int width = obj.contains("width") ? obj.value("width").toInt() : 60;
-                int height = /*obj.contains("height") ? obj.value("height").toInt() : */ 63;
+                /*int height = obj.contains("height") ? obj.value("height").toInt() : 63;*/
+                int height = obj.contains("side") ? obj.value("side").toInt() : 63;
                 btn->setFixedSize(width, height);
                 if (obj.contains("matrix")) {
                     QJsonArray arr = obj["matrix"].toArray();
