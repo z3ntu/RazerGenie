@@ -461,7 +461,7 @@ bool CustomEditor::updateKeyrow(int row, bool fromfile)
             if(butn < matrixPushButtons.count())
             {
                 //Avoid the segfault... check this manually
-                qDebug() << " butn index : " << butn << " label " << matrixPushButtons.at(butn)->getLabel();
+                //qDebug() << " butn index : " << butn << " label " << matrixPushButtons.at(butn)->getLabel();
                 if(colors[row][i] == klay->mjsDefColor)
                 {
                     colors[row][i] = QColor(Qt::black);

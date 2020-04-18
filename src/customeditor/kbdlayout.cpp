@@ -3,12 +3,12 @@
 
 KbdLayout::KbdLayout()
 {
-    qDebug() << __PRETTY_FUNCTION__ << " : Constructed()" << endl;
+    //qDebug() << __PRETTY_FUNCTION__ << " : Constructed()" << endl;
 }
 
 KbdLayout::~KbdLayout()
 {
-    qDebug() << __PRETTY_FUNCTION__ << " : Destroyed()" << endl;
+    //qDebug() << __PRETTY_FUNCTION__ << " : Destroyed()" << endl;
 }
 
 
