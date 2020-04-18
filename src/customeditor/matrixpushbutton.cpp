@@ -54,3 +54,8 @@ void MatrixPushButton::resetButtonColor()
 {
     this->setPalette(this->style()->standardPalette());
 }
+
+void saveLayoutButton(QJsonDocument kbdlayout)
+{
+    qDebug() << "JSON Document contents : " << kbdlayout;
+}

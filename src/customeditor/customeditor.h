@@ -22,15 +22,22 @@
 #include "matrixpushbutton.h"
 
 #include <QDialog>
+#include <QFileDialog>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <libopenrazer.h>
+<<<<<<< HEAD
+=======
+#include "matrixpushbutton.h"
+#include "kbdlayout.h"
+>>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
 
 enum DrawStatus {
     set,
     clear
 };
 
-class CustomEditor : public QDialog
+class CustomEditor : public QDialog, public KbdLayout
 {
     Q_OBJECT
 public:
@@ -45,12 +52,24 @@ private:
     QLayout *generateMouse();
     QLayout *generateMatrixDiscovery();
 
+
     bool parseKeyboardJSON(QString jsonname);
-    bool updateKeyrow(int row);
+    bool updateKeyrow(int row, bool fromfile);
     void clearAll();
+    
+    void loadLayout();
+    void saveLayout();
+    QJsonDocument keyboardLayout;
+    KbdLayout *klay = new KbdLayout;
+    QString KbdFileFilter = tr("JSON File (*.json)");
 
     QJsonObject keyboardKeys;
+<<<<<<< HEAD
     QVector<MatrixPushButton *> matrixPushButtons;
+=======
+    QJsonObject keyboardKeysColors;
+    QVector<MatrixPushButton*> matrixPushButtons;
+>>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
     libopenrazer::Device *device;
     razer_test::MatrixDimensions dimens;
 

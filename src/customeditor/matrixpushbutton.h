@@ -19,6 +19,7 @@
 #define MATRIXPUSHBUTTON_H
 
 #include <QPushButton>
+#include <QJsonDocument>
 
 class MatrixPushButton : public QPushButton
 {
