@@ -57,3 +57,8 @@ void saveLayoutButton(QJsonDocument kbdlayout)
 {
     qDebug() << "JSON Document contents : " << kbdlayout;
 }
+
+QString MatrixPushButton::getLabel()
+{
+    return this->mLabel;
+}

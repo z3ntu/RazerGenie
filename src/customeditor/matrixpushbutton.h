@@ -30,6 +30,7 @@ public:
     void setButtonColor(QColor color);
     void resetButtonColor();
     void saveLayoutButton(QJsonDocument kbdlayout);
+    QString getLabel();
 private:
     QString mLabel;
     QPair<int, int> mMatrixPos;
