@@ -278,7 +278,7 @@ QLayout *CustomEditor::generateMatrixDiscovery()
             jsMatrixA.append(i);
             jsMatrixA.append(j);
             
-            jsKeysO.insert(klay->mjsLabelStr, klay->mjsLabelStr + QString::number(i) + "_" + QString::number(j));
+            jsKeysO.insert(klay->mjsLabelStr, QString::number(i) + "_" + QString::number(j));
             jsKeysO.insert(klay->mjsMatrixStr, jsMatrixA);
             jsKeysO.insert(klay->mjsColorsStr, "#000000");
             jsKeysA.append(jsKeysO);
@@ -357,15 +357,17 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
 }
 
 bool CustomEditor::updateKeyrow(int row, bool fromfile)
+<<<<<<< HEAD
 {
 <<<<<<< HEAD
     return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
 =======
+=======
+{ 
+>>>>>>> ed9df82...  Now Restore button colors also after loaded JSON layout file
     QJsonObject rowsO = klay->getKbdLayRows();
     QJsonArray  keysA = QJsonValue(rowsO.take(klay->mjsRowStr+QString::number(row))).toArray();
     QJsonObject keysO;
-    
-    //qDebug() << __PRETTY_FUNCTION__ << " : Grabbed parameters of row[" << row << "] => " << keysA << endl;
     
     for(int i=0; i < dimens[1]; i++)
     {
@@ -374,6 +376,10 @@ bool CustomEditor::updateKeyrow(int row, bool fromfile)
         if(fromfile == true)
         {
             colors[row][i] = QColor(keysO.value(klay->mjsColorsStr).toString());
+            int butn = i+(row * dimens[1]);
+            //qDebug() << " butn index : " << butn << " label " << matrixPushButtons.at(butn)->getLabel();
+            matrixPushButtons.at(butn)->setButtonColor(colors[row][i]);
+            
         }
         else
         {
@@ -387,7 +393,7 @@ bool CustomEditor::updateKeyrow(int row, bool fromfile)
     
     klay->setKbdLayRows(rowsO);
     
-    return device->setKeyRow(row, 0, dimens[1]-1, colors[row]) && device->setCustom();
+    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
 >>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
 }
 

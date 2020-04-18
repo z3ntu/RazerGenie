@@ -29,7 +29,12 @@ public:
     QPair<int, int> matrixPos();
     void setButtonColor(QColor color);
     void resetButtonColor();
+<<<<<<< HEAD
 
+=======
+    void saveLayoutButton(QJsonDocument kbdlayout);
+    QString getLabel();
+>>>>>>> ed9df82...  Now Restore button colors also after loaded JSON layout file
 private:
     QString mLabel;
     QPair<int, int> mMatrixPos;
