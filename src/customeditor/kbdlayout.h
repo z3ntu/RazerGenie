@@ -14,6 +14,9 @@ public:
     QString mjsLabelStr     = "label";
     QString mjsMatrixStr    = "matrix";
     QString mjsColorsStr    = "colors";
+    QString mjsWidth        = "width";
+    QString mjsDisabled     = "disabled";
+    QString mjsDefColor     = "#000000";
     
     KbdLayout();
     ~KbdLayout();

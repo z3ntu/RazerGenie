@@ -3,12 +3,12 @@
 
 KbdLayout::KbdLayout()
 {
-    
+    qDebug() << __PRETTY_FUNCTION__ << " : Constructed()" << endl;
 }
 
 KbdLayout::~KbdLayout()
 {
-    
+    qDebug() << __PRETTY_FUNCTION__ << " : Destroyed()" << endl;
 }
 
 
@@ -33,8 +33,16 @@ void KbdLayout::setKbdLayRows(const QJsonObject &row)
 
 void KbdLayout::initLayout()
 {
-    this->mjsLangs = this->mjsKbdLayoutDoc.object();
-    this->mjsRows = this->mjsLangs.value(this->mjsLangStr).toObject();
+    this->mjsLangs = this->mjsKbdLayoutDoc[this->mjsLangStr].toObject();
+    
+    //qDebug() << __PRETTY_FUNCTION__ << " : Rows => " << this->mjsRows;
+    
+    for(int i = 0; i < 6; i++)
+    {
+        this->mjsRows.insert(this->mjsRowStr+QString::number(i), this->mjsLangs.value(this->mjsRowStr+QString::number(i)) );
+    }
+    //qDebug() << __PRETTY_FUNCTION__ << " : Lang contents => " << this->mjsLangs << endl; 
+    //qDebug() << __PRETTY_FUNCTION__ << " : Rows contents => " << this->mjsRows << endl; 
 }
 
 void KbdLayout::updateLayout()
@@ -48,6 +56,7 @@ void KbdLayout::openKbdLayout(const QString &filename)
     QFile file(filename);
     file.open(QIODevice::ReadOnly);
     this->mjsKbdLayoutDoc = QJsonDocument::fromJson(file.readAll());
+    //qDebug() << __PRETTY_FUNCTION__ << " : File content => " << this->mjsKbdLayoutDoc << endl;
     file.close();
     this->initLayout();
 }
@@ -57,7 +66,7 @@ void KbdLayout::saveKbdLayout(const QString &filename)
     this->updateLayout();
     QFile file(filename);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
-    qDebug() << "JSON to write : " << this->mjsKbdLayoutDoc;
+    //qDebug() << "JSON datas to write : " << this->mjsKbdLayoutDoc;
     file.write(this->mjsKbdLayoutDoc.toJson());
     file.close();
 }
