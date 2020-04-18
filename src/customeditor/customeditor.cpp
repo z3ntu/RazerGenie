@@ -93,7 +93,7 @@ CustomEditor::CustomEditor(libopenrazer::Device* device, bool launchMatrixDiscov
     }
 
     // Set every LED to "off"/black
-    clearAll();
+    // clearAll(); No. Definitively.
 }
 
 CustomEditor::~CustomEditor()
@@ -123,17 +123,22 @@ QLayout* CustomEditor::generateMainControls()
     QPushButton *btnSet = new QPushButton(tr("Set"));
     QPushButton *btnClear = new QPushButton(tr("Clear"));
     QPushButton *btnClearAll = new QPushButton(tr("Clear All"));
+    QPushButton *btnLoadLayout = new QPushButton(tr("Load Keyboad Layout"));
+    QPushButton *btnSaveLayout = new QPushButton(tr("Save Keyboard Layout"));
 
     hbox->addWidget(btnColor);
     hbox->addWidget(btnSet);
     hbox->addWidget(btnClear);
     hbox->addWidget(btnClearAll);
+    hbox->addWidget(btnLoadLayout);
+    hbox->addWidget(btnSaveLayout);
 
     connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
     connect(btnSet, &QPushButton::clicked, this, &CustomEditor::setDrawStatusSet);
     connect(btnClear, &QPushButton::clicked, this, &CustomEditor::setDrawStatusClear);
     connect(btnClearAll, &QPushButton::clicked, this, &CustomEditor::clearAll);
-
+    connect(btnLoadLayout, &QPushButton::clicked, this, &CustomEditor::loadLayout);
+    connect(btnSaveLayout, &QPushButton::clicked, this, &CustomEditor::saveLayout);
     return hbox;
 }
 
@@ -154,7 +159,7 @@ QLayout* CustomEditor::generateKeyboard()
             closeWindow();
         }
         QStringList langs;
-        langs << "de_DE" << "en_US" << "en_GB";
+        langs << "de_DE" << "en_US" << "en_GB" << "fr_FR";
         QString lang;
         foreach(lang, langs) {
             if(keyboardKeys.contains(lang)) {
@@ -209,6 +214,7 @@ QLayout* CustomEditor::generateKeyboard()
         }
         vbox->addLayout(hbox);
     }
+
     return vbox;
 }
 
@@ -236,11 +242,30 @@ QLayout* CustomEditor::generateMouse()
 
 QLayout* CustomEditor::generateMatrixDiscovery()
 {
+    QJsonObject jsLang;
+    QJsonObject jsRow;
+    
     QVBoxLayout *vbox = new QVBoxLayout();
     for(int i=0; i<dimens[0]; i++) {
+        
         QHBoxLayout *hbox = new QHBoxLayout();
+        
+        QJsonArray jsKeysA;
+        
         for(int j=0; j<dimens[1]; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
+            
+            QJsonObject jsKeysO;
+            QJsonArray jsMatrixA;
+            
+            jsMatrixA.append(i);
+            jsMatrixA.append(j);
+            
+            jsKeysO.insert(klay->mjsLabelStr, klay->mjsLabelStr + QString::number(i) + "_" + QString::number(j));
+            jsKeysO.insert(klay->mjsMatrixStr, jsMatrixA);
+            jsKeysO.insert(klay->mjsColorsStr, "#000000");
+            jsKeysA.append(jsKeysO);
+            
             btn->setMatrixPos(i, j);
 
             connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
@@ -248,16 +273,27 @@ QLayout* CustomEditor::generateMatrixDiscovery()
             hbox->addWidget(btn);
             matrixPushButtons.append(btn);
         }
+        
+        jsRow.insert(klay->mjsRowStr + QString::number(i), jsKeysA);
+        
         vbox->addLayout(hbox);
     }
+    
+    klay->setKbdLayRows(jsRow);
+
+    jsLang.insert(klay->mjsLangStr, jsRow);
+    
+    klay->setKbdLayout(jsLang);
+    
     return vbox;
 }
 
 bool CustomEditor::parseKeyboardJSON(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
-    QFile file_devel("../../data/matrix_layouts/"+jsonname+".json"); // File during developemnt
-    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".json"); // File for production
+    QFile file_devel("../../data/matrix_layouts/"+jsonname+".jsn"); // File during developemnt
+    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".jsn"); // File for production
+    QFile file_sel;
 
     // Try to open the dev file (higher priority)
     if(file_devel.open(QIODevice::ReadOnly)) {
@@ -271,7 +307,14 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
             file = &file_prod;
         } else {
             QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
-            return false;
+            QString filename = QFileDialog::getOpenFileName(this, "Select Keyboard Layout file","" , KbdFileFilter, &KbdFileFilter );
+            file_sel.setFileName(filename);
+            if(file_sel.open(QIODevice::ReadOnly))
+            {
+                file = &file_sel;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -286,8 +329,34 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
     return true;
 }
 
-bool CustomEditor::updateKeyrow(int row)
+bool CustomEditor::updateKeyrow(int row, bool fromfile)
 {
+    QJsonObject rowsO = klay->getKbdLayRows();
+    QJsonArray  keysA = QJsonValue(rowsO.take(klay->mjsRowStr+QString::number(row))).toArray();
+    QJsonObject keysO;
+    
+    //qDebug() << __PRETTY_FUNCTION__ << " : Grabbed parameters of row[" << row << "] => " << keysA << endl;
+    
+    for(int i=0; i < dimens[1]; i++)
+    {
+        keysO = QJsonValue(keysA.at(i)).toObject();
+        
+        if(fromfile == true)
+        {
+            colors[row][i] = QColor(keysO.value(klay->mjsColorsStr).toString());
+        }
+        else
+        {
+            keysO.remove(klay->mjsColorsStr);
+            keysO.insert(klay->mjsColorsStr, colors[row][i].name());
+            keysA.replace(i, keysO);
+        }
+    }
+    
+    rowsO.insert(klay->mjsRowStr+QString::number(row), keysA);
+    
+    klay->setKbdLayRows(rowsO);
+    
     return device->setKeyRow(row, 0, dimens[1]-1, colors[row]) && device->setCustom();
 }
 
@@ -317,6 +386,23 @@ void CustomEditor::clearAll()
             colors[i][j] = QColor(Qt::black);
         }
     }
+}
+
+void CustomEditor::loadLayout()
+{
+    QString file = QFileDialog::getOpenFileName(this, "Open Keyboard layout","" , KbdFileFilter, &KbdFileFilter );
+    klay->openKbdLayout(file);
+    //qDebug() << __PRETTY_FUNCTION__ << " : JSON contents => " << klay->getKbdLayout() << endl;
+    for(int i = 0; i < 6; i++)
+    {
+        updateKeyrow(i, true);
+    }
+}
+
+void CustomEditor::saveLayout()
+{ 
+    QString file = QFileDialog::getSaveFileName(this, "Save Keyboard layout","" , KbdFileFilter, &KbdFileFilter );
+    klay->saveKbdLayout(file);
 }
 
 void CustomEditor::colorButtonClicked()
@@ -361,7 +447,7 @@ void CustomEditor::onMatrixPushButtonClicked()
         qDebug() << "RazerGenie: Unhandled DrawStatus: " << drawStatus;
     }
     // Set color on device
-    updateKeyrow(pos.first);
+    updateKeyrow(pos.first, false);
 }
 
 void CustomEditor::setDrawStatusSet()

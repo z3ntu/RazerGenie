@@ -20,15 +20,18 @@
 #define CUSTOMEDITOR_H
 
 #include <QDialog>
+#include <QFileDialog>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <libopenrazer.h>
 #include "matrixpushbutton.h"
+#include "kbdlayout.h"
 
 enum DrawStatus {
     set, clear
 };
 
-class CustomEditor : public QDialog
+class CustomEditor : public QDialog, public KbdLayout
 {
     Q_OBJECT
 public:
@@ -42,11 +45,19 @@ private:
     QLayout* generateMouse();
     QLayout* generateMatrixDiscovery();
 
+
     bool parseKeyboardJSON(QString jsonname);
-    bool updateKeyrow(int row);
+    bool updateKeyrow(int row, bool fromfile);
     void clearAll();
+    
+    void loadLayout();
+    void saveLayout();
+    QJsonDocument keyboardLayout;
+    KbdLayout *klay = new KbdLayout;
+    QString KbdFileFilter = tr("JSON File (*.json)");
 
     QJsonObject keyboardKeys;
+    QJsonObject keyboardKeysColors;
     QVector<MatrixPushButton*> matrixPushButtons;
     libopenrazer::Device *device;
     QList<int> dimens;

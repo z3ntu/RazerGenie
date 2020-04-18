@@ -22,7 +22,8 @@ set(razergenie_SRCS main.cpp
                     util.cpp
                     customeditor/customeditor.cpp
                     customeditor/matrixpushbutton.cpp
-                    preferences/preferences.cpp
+                    customeditor/kbdlayout.cpp
+		    preferences/preferences.cpp
                     )
 
 QT5_WRAP_UI(razergenie_SRCS ../ui/razergenie.ui)
