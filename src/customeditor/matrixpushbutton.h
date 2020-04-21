@@ -19,7 +19,6 @@
 #define MATRIXPUSHBUTTON_H
 
 #include <QPushButton>
-#include <QJsonDocument>
 
 class MatrixPushButton : public QPushButton
 {
@@ -29,7 +28,6 @@ public:
     QPair<int, int> matrixPos();
     void setButtonColor(QColor color);
     void resetButtonColor();
-    void saveLayoutButton(QJsonDocument kbdlayout);
     QString getLabel();
 private:
     QString mLabel;

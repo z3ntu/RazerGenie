@@ -47,7 +47,7 @@ private:
 
 
     bool parseKeyboardJSON(QString jsonname);
-    bool updateKeyrow(int row, bool fromfile);
+    bool updateKeyrow(int row, const bool fromfile);
     void clearAll();
     
     void loadLayout();

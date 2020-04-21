@@ -404,7 +404,7 @@ void RazerGenie::addDeviceToGui(const QString &serial)
                 brightnessLabel = new QLabel(tr("Brightness"));
                 brightnessSlider = new QSlider(Qt::Horizontal, widget);
                 if(currentDevice->hasCapability("get_brightness")) {
-                    qDebug() << "Brightness:" << currentDevice->getBrightness();
+                    //qDebug() << "Brightness:" << currentDevice->getBrightness();
                     brightnessSlider->setValue(currentDevice->getBrightness());
                 } else {
                     // Set the slider to 100 by default as it's more likely it's 100 than 0...
