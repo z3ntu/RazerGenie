@@ -176,6 +176,8 @@ QLayout* CustomEditor::generateKeyboard()
             closeWindow();
         }
     }
+    
+    qDebug() << __FUNCTION__ << ": Selected language is " << klay->mjsLangStr;
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
@@ -384,7 +386,6 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
     for(int i=0; i < dimens[1]; i++)
     {
         keysO = QJsonValue(keysA.at(i)).toObject();
-        
         //qDebug() << __FUNCTION__ << " : KeysO => " << keysO;
         
         if(keysO.isEmpty() == true)
@@ -401,18 +402,11 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
             colors[row][i] = colour;
             
             int j = 0;
-            
-            QStringList discovery = keysO.value(klay->mjsLabelStr).toString().split("_");
-            
+  
             for(; j < matrixPushButtons.count(); j++)
             {
                 if(keysO.value(klay->mjsLabelStr).toString() == matrixPushButtons.at(j)->getLabel() )
                     break;
-            }
-            
-            if(discovery.isEmpty() == true )
-            {
-                j = i+(row * dimens[1]);
             }
             
             /*
@@ -424,7 +418,9 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
             if(j < matrixPushButtons.count() )
             {
                 matrixPushButtons.at(j)->setButtonColor(colors[row][i]);
-                qDebug() << __FUNCTION__ << ": Set color for button n°" << i << " which is labeled " << matrixPushButtons.at(j)->getLabel();
+                qDebug() << __FUNCTION__ << ": Set color " << colors[row][i] 
+                         << " for button n°" << i
+                         << " which is labeled " << matrixPushButtons.at(j)->getLabel();
             }
         }
         else
@@ -436,7 +432,7 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
                     keysO.remove(klay->mjsColorsStr);
                 keysO.insert(klay->mjsColorsStr, colors[row][i].name());
                 keysA.replace(i, keysO);
-                //qDebug() << __FUNCTION__ << " : Prepared row => " << keysO << endl << " Color prepared => " << keysA;
+                //qDebug() << __FUNCTION__ << ": Prepared row => " << keysO << endl << " Color prepared => " << keysA;
             }
             else {
                 qDebug() << __FUNCTION__ << ": Null / Disabled key found ";
@@ -445,7 +441,6 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
     }
     
     rowsO.insert(klay->mjsRowStr+QString::number(row), keysA);
-  
     //qDebug() << __FUNCTION__ << " Built of rowsO => " << rowsO;
     
     klay->setKbdLayRows(rowsO);
@@ -461,13 +456,14 @@ void CustomEditor::clearAll()
         blankColors << QColor(Qt::black);
     }
 
+    /*
     // Send one request per row
     for(int i=0; i<dimens[0]; i++) {
         device->setKeyRow(i, 0, dimens[1]-1, blankColors);
     }
-
     device->setCustom();
-
+    */
+    
     // Reset view
     for(int i=0; i<matrixPushButtons.size(); i++) {
         matrixPushButtons.at(i)->resetButtonColor();
@@ -478,6 +474,11 @@ void CustomEditor::clearAll()
         for(int j=0; j<colors[i].size(); j++) {
             colors[i][j] = QColor(Qt::black);
         }
+    }
+    
+    for(int i=0; i < dimens[0]; i++)
+    {
+        this->updateKeyrow(i, false);
     }
 }
 

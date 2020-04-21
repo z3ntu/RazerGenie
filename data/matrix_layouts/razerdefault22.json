@@ -410,7 +410,6 @@
             {"label": null},
             {"label": "esc", "matrix": [0, 1]},
             {"label": null},
-            {"label": null},
             {"label": "F1", "matrix": [0, 3]},
             {"label": "F2", "matrix": [0, 4]},
             {"label": "F3", "matrix": [0, 5]},
