@@ -9,14 +9,14 @@
 class KbdLayout
 {
 public:
-    QString mjsLangStr      = "fr_FR";
-    QString mjsRowStr       = "row";
-    QString mjsLabelStr     = "label";
-    QString mjsMatrixStr    = "matrix";
-    QString mjsColorsStr    = "colors";
-    QString mjsWidth        = "width";
-    QString mjsDisabled     = "disabled";
-    QString mjsDefColor     = "#000000";
+    QString mjsLangStr      = "en_US";
+    const QString mjsRowStr       = "row";
+    const QString mjsLabelStr     = "label";
+    const QString mjsMatrixStr    = "matrix";
+    const QString mjsColorsStr    = "colors";
+    const QString mjsWidthStr     = "width";
+    const QString mjsDisabledStr  = "disabled";
+    const QString mjsDefColor     = "#000000";
     
     KbdLayout();
     ~KbdLayout();
@@ -24,6 +24,7 @@ public:
     void setKbdLayout(const QJsonObject &langs);
     void setKbdLayLangs(const QJsonObject &rows);
     void setKbdLayRows(const QJsonObject &row);
+    void setParsedKeys(const QJsonObject &keys);
     
     void initLayout();
     void updateLayout();
@@ -39,6 +40,7 @@ private:
     QJsonDocument mjsKbdLayoutDoc;
     QJsonObject   mjsLangs;
     QJsonObject   mjsRows;
+    QJsonObject   mjsKeys;
 };
 
 #endif // KBDLAYOUT_H

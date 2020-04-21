@@ -323,7 +323,163 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     scrollArea->setWidgetResizable(true);
 
     /* Create actual DeviceWidget */
+<<<<<<< HEAD
     auto *widget = new DeviceWidget(name, devicePath, currentDevice);
+=======
+    RazerDeviceWidget *widget = new RazerDeviceWidget(name, serial);
+
+    QVBoxLayout *verticalLayout = new QVBoxLayout(widget);
+
+    // List of locations to iterate through
+    QList<libopenrazer::Device::LightingLocation> lightingLocationsTodo;
+
+    // Check what lighting locations the device has
+    if(currentDevice->hasCapability("lighting") ||
+       currentDevice->hasCapability("lighting_bw2013") ||
+       currentDevice->hasCapability("lighting_profile_leds") ||
+       currentDevice->hasCapability("brightness"))
+        lightingLocationsTodo.append(libopenrazer::Device::Lighting);
+    if(currentDevice->hasCapability("lighting_logo"))
+        lightingLocationsTodo.append(libopenrazer::Device::LightingLogo);
+    if(currentDevice->hasCapability("lighting_scroll"))
+        lightingLocationsTodo.append(libopenrazer::Device::LightingScroll);
+    if(currentDevice->hasCapability("lighting_backlight"))
+        lightingLocationsTodo.append(libopenrazer::Device::LightingBacklight);
+
+    // Declare header font
+    QFont headerFont("Arial", 15, QFont::Bold);
+    QFont titleFont("Arial", 18, QFont::Bold);
+
+    // Add header with the device name
+    QLabel *header = new QLabel(name, widget);
+    header->setFont(titleFont);
+    verticalLayout->addWidget(header);
+
+    // Lighting header
+    if(lightingLocationsTodo.size() != 0) {
+        QLabel *lightingHeader = new QLabel(tr("Lighting"), widget);
+        lightingHeader->setFont(headerFont);
+        verticalLayout->addWidget(lightingHeader);
+    }
+
+    // Iterate through lighting locations
+    while(lightingLocationsTodo.size() != 0) {
+        // Get location we are iterating through
+        libopenrazer::Device::LightingLocation currentLocation = lightingLocationsTodo.takeFirst();
+
+        QLabel *lightingLocationLabel;
+
+        // Set appropriate text
+        if(currentLocation == libopenrazer::Device::Lighting) {
+            lightingLocationLabel = new QLabel(tr("Lighting"));
+        } else if(currentLocation == libopenrazer::Device::LightingLogo) {
+            lightingLocationLabel = new QLabel(tr("Lighting Logo"));
+        } else if(currentLocation == libopenrazer::Device::LightingScroll) {
+            lightingLocationLabel = new QLabel(tr("Lighting Scroll"));
+        } else if(currentLocation == libopenrazer::Device::LightingBacklight) {
+            lightingLocationLabel = new QLabel(tr("Lighting Backlight"));
+        } else {
+            // Houston, we have a problem.
+            util::showError("Unhanded lighting location in fillList()");
+            continue;
+        }
+
+        QHBoxLayout *lightingHBox = new QHBoxLayout();
+        verticalLayout->addWidget(lightingLocationLabel);
+        verticalLayout->addLayout(lightingHBox);
+
+        QComboBox *comboBox = new QComboBox;
+        QLabel *brightnessLabel = NULL;
+        QSlider *brightnessSlider = NULL;
+
+        comboBox->setObjectName(QString::number(currentLocation));
+        qDebug() << "CURRENT LOCATION: " << QString::number(currentLocation);
+        //TODO More elegant solution instead of the sizePolicy?
+        comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+        //TODO Battery
+        //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
+
+        if(currentLocation == libopenrazer::Device::Lighting) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::lightingComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::lightingComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::lightingComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::lightingComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::standardCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_brightness")) {
+                    //qDebug() << "Brightness:" << currentDevice->getBrightness();
+                    brightnessSlider->setValue(currentDevice->getBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::brightnessChanged);
+            }
+
+        } else if(currentLocation == libopenrazer::Device::LightingLogo) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::logoComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::logoComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::logoComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::logoComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::logoCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("lighting_logo_brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness Logo"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_lighting_logo_brightness")) {
+                    brightnessSlider->setValue(currentDevice->getLogoBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::logoBrightnessChanged);
+            }
+
+        } else if(currentLocation == libopenrazer::Device::LightingScroll) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::scrollComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::scrollComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::scrollComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::scrollComboBoxCapabilites[i]));
+                }
+            }
+
+            // Connect signal from combobox
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RazerGenie::scrollCombo);
+
+            // Brightness slider
+            if(currentDevice->hasCapability("lighting_scroll_brightness")) {
+                brightnessLabel = new QLabel(tr("Brightness Scroll"));
+                brightnessSlider = new QSlider(Qt::Horizontal, widget);
+                if(currentDevice->hasCapability("get_lighting_scroll_brightness")) {
+                    brightnessSlider->setValue(currentDevice->getScrollBrightness());
+                } else {
+                    // Set the slider to 100 by default as it's more likely it's 100 than 0...
+                    brightnessSlider->setValue(100);
+                }
+                connect(brightnessSlider, &QSlider::valueChanged, this, &RazerGenie::scrollBrightnessChanged);
+            }
+        } else if(currentLocation == libopenrazer::Device::LightingBacklight) {
+            // Add items from capabilities
+            for(int i=0; i<libopenrazer::backlightComboBoxCapabilites.size(); i++) {
+                if(currentDevice->hasCapability(libopenrazer::backlightComboBoxCapabilites[i].getIdentifier())) {
+                    comboBox->addItem(libopenrazer::backlightComboBoxCapabilites[i].getDisplayString(), QVariant::fromValue(libopenrazer::backlightComboBoxCapabilites[i]));
+                }
+            }
+>>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
 
     // Set the main widget as child of the scrollArea
     scrollArea->setWidget(widget);

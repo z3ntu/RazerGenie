@@ -39,25 +39,34 @@ QPair<int, int> MatrixPushButton::matrixPos()
 
 void MatrixPushButton::setButtonColor(QColor color)
 {
+<<<<<<< HEAD
     // Calculate "the perfect font color" - from https://24ways.org/2010/calculating-color-contrast/
     double yiq = ((color.red() * 299) + (color.green() * 587) + (color.blue() * 114)) / 1000;
     QString fontcolor = (yiq >= 128) ? "black" : "white";
+=======
+    // Do not handle black color...
+    if(color == QColor(Qt::black))
+    {
+        this->resetButtonColor();
+    }
+    else
+    {
+        // Calculate "the perfect font color" - from https://24ways.org/2010/calculating-color-contrast/
+        double yiq = ((color.red()*299)+(color.green()*587)+(color.blue()*114))/1000;
+        QString fontcolor = (yiq >= 128) ? "black" : "white";
+>>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
 
-    // Construct QPalette with the wanted color
-    QPalette p = QPalette(color);
-    // Set the font color to the previously calculated value
-    p.setColor(QPalette::ButtonText, fontcolor);
-    this->setPalette(p);
+        // Construct QPalette with the wanted color
+        QPalette p = QPalette(color);
+        // Set the font color to the previously calculated value
+        p.setColor(QPalette::ButtonText, fontcolor);
+        this->setPalette(p);
+    }
 }
 
 void MatrixPushButton::resetButtonColor()
 {
     this->setPalette(this->style()->standardPalette());
-}
-
-void saveLayoutButton(QJsonDocument kbdlayout)
-{
-    qDebug() << "JSON Document contents : " << kbdlayout;
 }
 
 QString MatrixPushButton::getLabel()
