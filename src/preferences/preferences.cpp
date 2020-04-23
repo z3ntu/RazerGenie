@@ -41,7 +41,13 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     razergenieVersionLabel->setText(tr("RazerGenie Version: %1").arg(RAZERGENIE_VERSION));
 
     QLabel *openrazerVersionLabel = new QLabel(this);
-    openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(manager->getDaemonVersion()));
+    QString daemonVersion = "unknown";
+    try {
+        daemonVersion = manager->getDaemonVersion();
+    } catch(const libopenrazer::DBusException& e) {
+        qDebug() << "Failed to get daemon version:" << e.name() << e.message();
+    }
+    openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(daemonVersion));
 
     QLabel *generalLabel = new QLabel(this);
     generalLabel->setText(tr("General:"));
