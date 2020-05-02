@@ -294,13 +294,13 @@ QLayout *CustomEditor::generateMatrixDiscovery()
     QJsonObject jsRow;
     
     auto *vbox = new QVBoxLayout();
-    for(int i=0; i<dimens[0]; i++) {
+    for(int i=0; i<dimens.x; i++) {
         
         QHBoxLayout *hbox = new QHBoxLayout();
         
         QJsonArray jsKeysA;
         
-        for(int j=0; j<dimens[1]; j++) {
+        for(int j=0; j<dimens.y; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
             
             QJsonObject jsKeysO;
@@ -386,7 +386,7 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
     //qDebug() << __FUNCTION__ << " : KeyA => " << keysA;
     QJsonObject keysO;
     
-    for(int i=0; i < dimens.x; i++)
+    for(int i=0; i < dimens.y; i++)
     {
         keysO = QJsonValue(keysA.at(i)).toObject();
         //qDebug() << __FUNCTION__ << " : KeysO => " << keysO;
@@ -478,7 +478,7 @@ void CustomEditor::clearAll()
         }
     }
     
-    for(int i=0; i < dimens.y; i++)
+    for(int i=0; i < dimens.x; i++)
     {
         this->updateKeyrow(i, false);
     }
