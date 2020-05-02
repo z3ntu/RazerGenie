@@ -52,7 +52,7 @@
     </message>
     <message>
         <location filename="../../src/customeditor/customeditor.cpp" line="130"/>
-        <source>Save Keyboad Layout</source>
+        <source>Save Keyboard Layout</source>
         <translation>Sauvegarder la configuration</translation>
     </message>
     <message>
