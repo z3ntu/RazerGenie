@@ -22,13 +22,10 @@
 #include "util.h"
 
 #include <QEvent>
-<<<<<<< HEAD
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QtWidgets>
-=======
 #include <QDebug>
->>>>>>> 14ba358... .git/msg
 
 CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
     : QDialog(parent)
@@ -166,31 +163,19 @@ QLayout *CustomEditor::generateKeyboard()
             closeWindow();
         }
         QStringList langs;
-<<<<<<< HEAD
         langs << "de_DE"
               << "en_US"
               << "en_GB";
         for (const QString &lang : qAsConst(langs)) {
             if (keyboardKeys.contains(lang)) {
-=======
-        langs << "de_DE" << "en_US" << "en_GB" << "fr_FR";
-        QString lang;
-        foreach(lang, langs) {
-            if(keyboardKeys.contains(lang)) {
->>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
                 keyboardLayout = keyboardKeys[lang].toObject();
                 klay->mjsLangStr = lang;
                 found = true;
                 break;
             }
         }
-<<<<<<< HEAD
-        if (!found) {
-            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
-=======
         if(!found) {
             util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB, fr_FR"));
->>>>>>> 14ba358... .git/msg
             closeWindow();
         }
     }
@@ -199,19 +184,10 @@ QLayout *CustomEditor::generateKeyboard()
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    for (it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
-=======
-    for(it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
-        int i = 0;
->>>>>>> 14ba358... .git/msg
-=======
     QJsonObject clonelay;
     int i = 0;
     int j = 0;
     for(it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
->>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
         QJsonArray row = (*it).toArray();
         QJsonArray clonerow;
 
@@ -220,21 +196,6 @@ QLayout *CustomEditor::generateKeyboard()
 
         // Iterate over keys in row
         QJsonArray::const_iterator jt;
-<<<<<<< HEAD
-        for (jt = row.constBegin(); jt != row.constEnd(); ++jt) {
-            QJsonObject obj = (*jt).toObject();
-
-            if (!obj["label"].isNull()) {
-                MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
-                int width = obj.contains("width") ? obj.value("width").toInt() : 60;
-                int height = /*obj.contains("height") ? obj.value("height").toInt() : */ 63;
-                btn->setFixedSize(width, height);
-                if (obj.contains("matrix")) {
-                    QJsonArray arr = obj["matrix"].toArray();
-                    btn->setMatrixPos(arr[0].toInt(), arr[1].toInt());
-                }
-                if (obj.contains("disabled")) {
-=======
         QJsonObject obj;
         for(jt = row.constBegin(); jt != row.constEnd(); ++jt)
         {
@@ -257,12 +218,7 @@ QLayout *CustomEditor::generateKeyboard()
                     btn->setMatrixPos(arr[0].toInt(), arr[1].toInt());
                 }
                 
-<<<<<<< HEAD
-                if(obj.contains(klay->mjsDisabled)) {
->>>>>>> 14ba358... .git/msg
-=======
                 if(obj.contains(klay->mjsDisabledStr)) {
->>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
                     btn->setEnabled(false);
                     color = false;
                 }
@@ -334,16 +290,10 @@ QLayout *CustomEditor::generateMouse()
 
 QLayout *CustomEditor::generateMatrixDiscovery()
 {
-<<<<<<< HEAD
-    auto *vbox = new QVBoxLayout();
-    for (int i = 0; i < dimens.x; i++) {
-        auto *hbox = new QHBoxLayout();
-        for (int j = 0; j < dimens.y; j++) {
-=======
     QJsonObject jsLang;
     QJsonObject jsRow;
     
-    QVBoxLayout *vbox = new QVBoxLayout();
+    auto *vbox = new QVBoxLayout();
     for(int i=0; i<dimens[0]; i++) {
         
         QHBoxLayout *hbox = new QHBoxLayout();
@@ -351,7 +301,6 @@ QLayout *CustomEditor::generateMatrixDiscovery()
         QJsonArray jsKeysA;
         
         for(int j=0; j<dimens[1]; j++) {
->>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
             
             QJsonObject jsKeysO;
@@ -390,19 +339,9 @@ QLayout *CustomEditor::generateMatrixDiscovery()
 bool CustomEditor::parseKeyboardJSON(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
-<<<<<<< HEAD
-<<<<<<< HEAD
     QFile file_devel("../../data/matrix_layouts/" + jsonname + ".json"); // File during developemnt
     QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/" + jsonname + ".json"); // File for production
-=======
-    QFile file_devel("../../data/matrix_layouts/"+jsonname+".jsn"); // File during developemnt
-    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".jsn"); // File for production
-=======
-    QFile file_devel("../../data/matrix_layouts/"+jsonname+".json"); // File during developemnt
-    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/"+jsonname+".json"); // File for production
->>>>>>> 14ba358... .git/msg
     QFile file_sel;
->>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
 
     // Try to open the dev file (higher priority)
     if (file_devel.open(QIODevice::ReadOnly)) {
@@ -415,10 +354,6 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
         if (file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-<<<<<<< HEAD
-            QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname, file_prod.errorString()));
-            return false;
-=======
             QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
             QString filename = QFileDialog::getOpenFileName(this, "Select Keyboard Layout file","" , KbdFileFilter, &KbdFileFilter );
             file_sel.setFileName(filename);
@@ -428,7 +363,6 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
             } else {
                 return false;
             }
->>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
         }
     }
 
@@ -443,19 +377,8 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
     return true;
 }
 
-<<<<<<< HEAD
-bool CustomEditor::updateKeyrow(int row, bool fromfile)
-<<<<<<< HEAD
-{
-<<<<<<< HEAD
-    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
-=======
-=======
-=======
 bool CustomEditor::updateKeyrow(int row, const bool fromfile)
->>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
 { 
->>>>>>> ed9df82...  Now Restore button colors also after loaded JSON layout file
     QJsonObject rowsO = klay->getKbdLayRows();
     //qDebug() << __FUNCTION__ << " : rowsO => " << rowsO;
     QJsonArray  keysA = QJsonValue(rowsO.take(klay->mjsRowStr+QString::number(row))).toArray();
@@ -463,7 +386,7 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
     //qDebug() << __FUNCTION__ << " : KeyA => " << keysA;
     QJsonObject keysO;
     
-    for(int i=0; i < dimens[1]; i++)
+    for(int i=0; i < dimens.x; i++)
     {
         keysO = QJsonValue(keysA.at(i)).toObject();
         //qDebug() << __FUNCTION__ << " : KeysO => " << keysO;
@@ -523,18 +446,9 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
     rowsO.insert(klay->mjsRowStr+QString::number(row), keysA);
     //qDebug() << __FUNCTION__ << " Built of rowsO => " << rowsO;
     
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
->>>>>>> 68af1e8... 	- RazerGenie can now save keyboard layout at least from the
-=======
-    //qDebug() << __PRETTY_FUNCTION__ << " : Colors => " << colors[row] << endl;
-=======
     klay->setKbdLayRows(rowsO);
->>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
     
-    return device->setKeyRow(row, 0, dimens[1]-1, colors[row]) && device->setCustom();
->>>>>>> 14ba358... .git/msg
+    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
 }
 
 void CustomEditor::clearAll()
@@ -545,20 +459,13 @@ void CustomEditor::clearAll()
         blankColors << QColor(Qt::black);
     }
 
-    /*
     // Send one request per row
     for (int i = 0; i < dimens.x; i++) {
         device->defineCustomFrame(i, 0, dimens.y - 1, blankColors);
     }
-<<<<<<< HEAD
 
     device->displayCustomFrame();
 
-=======
-    device->setCustom();
-    */
-    
->>>>>>> de3e62c... Removed unused stuff, removed the null label which leads in improper layout values.. this wasted my time btw.
     // Reset view
     for (auto matrixPushButton : qAsConst(matrixPushButtons)) {
         matrixPushButton->resetButtonColor();
@@ -571,7 +478,7 @@ void CustomEditor::clearAll()
         }
     }
     
-    for(int i=0; i < dimens[0]; i++)
+    for(int i=0; i < dimens.y; i++)
     {
         this->updateKeyrow(i, false);
     }
@@ -589,7 +496,7 @@ void CustomEditor::loadLayout()
     
     //qDebug() << __FUNCTION__ << " : JSON contents => " << klay->getKbdLayout() << endl;
     
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < dimens.x; i++)
     {
         updateKeyrow(i, true);
     }
@@ -635,12 +542,7 @@ void CustomEditor::onMatrixPushButtonClicked()
         colors[pos.first][pos.second] = selectedColor;
         // Set color in view
         sender->setButtonColor(selectedColor);
-<<<<<<< HEAD
-    } else if (drawStatus == DrawStatus::clear) {
-        qDebug() << "Clearing color.";
-=======
     } else if(drawStatus == DrawStatus::clear) {
->>>>>>> 6cb5d0b... Good going on, last thing to fix before the big cleaning is to render correctly from the standart custom editor, for some reason it looks to be a shift somewhere
         // Set color in model
         colors[pos.first][pos.second] = QColor(Qt::black);
         // Set color in view

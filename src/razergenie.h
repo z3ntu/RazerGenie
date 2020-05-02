@@ -35,47 +35,6 @@ public slots:
     void toggleSync(bool);
     void toggleOffOnScreesaver(bool on);
 
-<<<<<<< HEAD
-=======
-    // Color buttons
-    void colorButtonClicked();
-
-    // Effect comboboxes
-    void standardCombo(int index);
-    void scrollCombo(int index);
-    void logoCombo(int index);
-    void backlightCombo(int index);
-
-    // Brightness sliders
-    void brightnessChanged(int value);
-    void scrollBrightnessChanged(int value);
-    void logoBrightnessChanged(int value);
-    void backlightBrightnessChanged(int value);
-
-    void waveRadioButtonStandard(bool enabled);
-    void waveRadioButtonLogo(bool enabled);
-    void waveRadioButtonScroll(bool enabled);
-
-    // DPI checkbox & slider
-    void dpiChanged(int value);
-    void dpiComboChanged(int /* index */);
-    void dpiSyncCheckbox(bool checked);
-
-    // Poll combobox
-    void pollCombo(int /* index */);
-
-    // 'Set active' checkbox
-    void logoActiveCheckbox(bool checked);
-    void scrollActiveCheckbox(bool checked);
-    void backlightActiveCheckbox(bool checked);
-
-    void profileLedCheckbox(bool checked);
-
-    void openCustomEditor();
-#ifdef INCLUDE_MATRIX_DISCOVERY
-    void openMatrixDiscovery();
-#endif
->>>>>>> 0b0ce04... Use a combobox for DeathAdder 3.5G
     void openPreferences();
 
     void dbusServiceRegistered(const QString &serviceName);

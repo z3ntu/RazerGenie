@@ -208,15 +208,9 @@ Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhal
         <translation>Wenn du glaubst, dass ein Problem existiert, kannst du dies auf GitHub melden:</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="92"/>
         <location filename="../../src/razergenie.cpp" line="555"/>
         <location filename="../../src/razergenie.cpp" line="563"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="89"/>
-        <location filename="../../src/razergenie.cpp" line="823"/>
-        <location filename="../../src/razergenie.cpp" line="831"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Report issue</source>
         <translation>Problem melden</translation>
     </message>
@@ -231,260 +225,109 @@ Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhal
         <translation>Aktivieren</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="147"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="144"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Daemon version: %1</source>
         <translation>Daemon Version: %1</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="168"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="165"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>The D-Bus connection was re-established.</source>
         <translation>Die D-Bus Verbindung wurde wiederhergestellt.</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="176"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="173"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>The D-Bus connection was lost, which probably means that the daemon has crashed.</source>
         <translation>Die D-Bus Verbindung wurde unterbrochen, was wahrscheinlich heißt, dass der Daemon abgestürzt ist.</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="342"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="348"/>
-        <location filename="../../src/razergenie.cpp" line="362"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Lighting</source>
         <translation>Beleuchtung</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="360"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="364"/>
-        <source>Lighting Logo</source>
-        <translation>Beleuchtung Logo</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="366"/>
-        <source>Lighting Scroll</source>
-        <translation>Beleuchtung Scroll</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="368"/>
-        <source>Lighting Backlight</source>
-        <translation>Beleuchtung Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="404"/>
-        <source>Brightness</source>
-        <translation>Helligkeit</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="429"/>
-        <source>Brightness Logo</source>
-        <translation>Helligkeit Logo</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="453"/>
-        <source>Brightness Scroll</source>
-        <translation>Helligkeit Scroll</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="476"/>
-        <source>Brightness Backlight</source>
-        <translation>Helligkeit Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="515"/>
-        <source>Left</source>
-        <translation>Links</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="517"/>
-        <source>Right</source>
-        <translation>Rechts</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="541"/>
-        <source>Set Logo Active</source>
-        <translation>Logo aktiv setzen</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="552"/>
-        <source>Set Scroll Active</source>
-        <translation>Scroll aktiv setzen</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="563"/>
-        <source>Set Backlight Active</source>
-        <translation>Hintergrund aktiv setzen</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="575"/>
-        <source>Profile LED %1</source>
-        <translation>Profil LED %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/razergenie.cpp" line="607"/>
-        <location filename="../../src/razergenie.cpp" line="686"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="367"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="614"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>DPI X</source>
         <translation>DPI X</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="368"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="615"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>DPI Y</source>
         <translation>DPI Y</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="389"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="636"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Lock X/Y</source>
         <translation>X/Y sperren</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="435"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="703"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Polling rate</source>
         <translation>Abfragerate</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="452"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="720"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Open custom editor</source>
         <translation>Custom Editor öffnen</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="457"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="725"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Launch matrix discovery</source>
         <translation>Matrix discovery öffnen</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="468"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="736"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Serial number: %1</source>
         <translation>Seriennummer: %1</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="471"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="739"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Firmware version: %1</source>
         <translation>Firmware-Version: %1</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="551"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="819"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>No device was detected</source>
         <translation>Kein Gerät wurde erkannt</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="552"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="820"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>The OpenRazer daemon didn&apos;t detect a device that is supported.
 This could also be caused due to a misconfiguration of this PC.</source>
         <translation>Der OpenRazer Daemon hat kein Gerät erkannt, welches unterstützt ist.
 Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="553"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="821"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Open supported devices</source>
         <translation>Unterstützte Geräte öffnen</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="558"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="826"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>The daemon didn&apos;t detect a device that is connected</source>
         <translation>Der Daemon hat kein Geräte erkannt, welches verbunden ist</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="559"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="827"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Linux detected connected devices but the daemon didn&apos;t. This could be either due to a permission problem or a kernel module problem.</source>
         <translation>Linux hat ein Gerät erkannt, aber der Daemon nicht. Dies kann entweder durch ein Berechtigungsproblem oder durch ein Kernel-Modul Problem verursacht sein.</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="561"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="829"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Open troubleshooting page</source>
         <translation>Problemlösungs-Seite öffnen</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="580"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="848"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Error while syncing devices.</source>
         <translation>Fehler beim Synchronisieren von Geräten.</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location filename="../../src/razergenie.cpp" line="586"/>
-=======
-        <location filename="../../src/razergenie.cpp" line="854"/>
->>>>>>> 082908c... translations/de: update line numbers
         <source>Error while toggling &apos;turn off on screensaver&apos;</source>
         <translation>Fehler beim umschalten von &apos;abschalten bei Bildschirmschoner&apos;</translation>
     </message>
@@ -502,12 +345,12 @@ Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</tran
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="97"/>
+        <location filename="../../ui/razergenie.ui" line="92"/>
         <source>Sync devices</source>
         <translation>Effekte synchronisieren</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="104"/>
+        <location filename="../../ui/razergenie.ui" line="99"/>
         <source>Turn off on screensaver</source>
         <translation>Beleuchtung bei Bildschirmschoner abdrehen</translation>
     </message>

@@ -191,11 +191,7 @@
         ]
     },
 
-<<<<<<< HEAD
     "French": {
-=======
-    "fr_FR": {
->>>>>>> afe40ac... Add fr_FR layout for Razer Blade Stealth (Late 2017)
         "row0": [
             {"label": "esc", "matrix": [0, 1]},
             {"label": "F1", "matrix": [0, 2]},
