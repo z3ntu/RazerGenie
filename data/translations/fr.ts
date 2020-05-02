@@ -4,73 +4,91 @@
 <context>
     <name>CustomEditor</name>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="29"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="33"/>
         <source>RazerGenie - Custom Editor</source>
         <translation>RazerGenie - Éditeur personnalisé</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="75"/>
-        <location filename="../../src/customeditor/customeditor.cpp" line="85"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="79"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="90"/>
         <source>Unknown matrix dimensions</source>
         <translation>Dimensions de la matrice inconnues</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="75"/>
-        <location filename="../../src/customeditor/customeditor.cpp" line="85"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="79"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="90"/>
         <source>Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3</source>
         <translation>Veuillez ouvrir un ticket dans le dépôt RazerGenie. Nom du périphérique : %1 - dimensions de la matrice : %2 %3</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="97"/>
         <source>Device type not implemented!</source>
         <translation>Ce type de périphérique n&apos;est pas implémenté !</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="97"/>
         <source>Please open an issue in the RazerGenie repository. Device type: %1</source>
         <translation>Veuillez ouvrir un ticket dans le dépôt RazerGenie. Type de périphérique : %1</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="123"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="126"/>
         <source>Set</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="124"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="127"/>
         <source>Clear</source>
         <translation>Enlever</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="125"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="128"/>
         <source>Clear All</source>
         <translation>Tout enlever</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="151"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="129"/>
+        <source>Load Keyboad Layout</source>
+        <translation>Charger une configuration</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor/customeditor.cpp" line="130"/>
+        <source>Save Keyboad Layout</source>
+        <translation>Sauvegarder la configuration</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor/customeditor.cpp" line="160"/>
         <source>You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Using a fallback layout for now.</source>
         <translation>Vous utilisez un clavier dont la disposition n&apos;est pas connue du daemon. Aidez-nous en visitant &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Pour l&apos;instant, un dispositif générique sera utilisé.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="153"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="162"/>
         <source>Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.</source>
         <translation>La disposition du clavier (%1) n&apos;est pas encore supportée par RazerGenie pour ce clavier. Veuillez ouvrir un tricket dans le dépôt RazerGenie.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="167"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="178"/>
         <source>Neither one of these layouts was found in the layout file: %1. Exiting.</source>
         <translation>Aucune de ces dispositions n&apos;a été trouvée dans le fichier source : %1. L&apos;éditeur va se fermer.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="273"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="357"/>
         <source>Error loading %1.json!</source>
         <translation>Erreur lors du chargement de %1.json !</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="273"/>
-        <source>The file %1.json, used for the custom editor failed to load: %2
-The editor won&apos;t open now.</source>
-        <translation>Le fichier %1.json, utilisé pour l&apos;éditeur personnalisé, n&apos;a pas pu être chargé : %2
-L&apos;éditeur ne s&apos;ouvrira pas pour l&apos;instant.</translation>
+        <location filename="../../src/customeditor/customeditor.cpp" line="358"/>
+        <source>Select Keyboard Layout</source>
+        <translation>Selectionnez une configuration</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor/customeditor.cpp" line="489"/>
+        <source>Open Keyboard layout</source>
+        <translation>Ouvrir un fichier de configuration</translation>
+    </message>
+    <message>
+        <location filename="../../src/customeditor/customeditor.cpp" line="507"/>
+        <source>Save Keyboard layout</source>
+        <translation>Sauvegarder la configuration</translation>
     </message>
 </context>
 <context>

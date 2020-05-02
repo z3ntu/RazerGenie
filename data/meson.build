@@ -2,6 +2,7 @@
 install_data('matrix_layouts/razerblade16.json',
              'matrix_layouts/razerdefault22.json',
              'matrix_layouts/razerblade25.json',
+	     'matrix_layouts/discoverysave.example.22.json',
              install_dir : join_paths(get_option('datadir'), 'razergenie/matrix_layouts'))
 
 # Appstream XML

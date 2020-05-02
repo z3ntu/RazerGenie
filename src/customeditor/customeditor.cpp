@@ -165,7 +165,8 @@ QLayout *CustomEditor::generateKeyboard()
         QStringList langs;
         langs << "de_DE"
               << "en_US"
-              << "en_GB";
+              << "en_GB"
+              << "fr_FR";
         for (const QString &lang : qAsConst(langs)) {
             if (keyboardKeys.contains(lang)) {
                 keyboardLayout = keyboardKeys[lang].toObject();
@@ -355,7 +356,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
             file = &file_prod;
         } else {
             QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
-            QString filename = QFileDialog::getOpenFileName(this, "Select Keyboard Layout file","" , KbdFileFilter, &KbdFileFilter );
+            QString filename = QFileDialog::getOpenFileName(this, tr("Select Keyboard Layout file"),"" , KbdFileFilter, &KbdFileFilter );
             file_sel.setFileName(filename);
             if(file_sel.open(QIODevice::ReadOnly))
             {
@@ -421,9 +422,9 @@ bool CustomEditor::updateKeyrow(int row, const bool fromfile)
             if(j < matrixPushButtons.count() )
             {
                 matrixPushButtons.at(j)->setButtonColor(colors[row][i]);
-                qDebug() << __FUNCTION__ << ": Set color " << colors[row][i] 
-                         << " for button n°" << i
-                         << " which is labeled " << matrixPushButtons.at(j)->getLabel();
+                //qDebug() << __FUNCTION__ << ": Set color " << colors[row][i] 
+                //         << " for button n°" << i
+                //         << " which is labeled " << matrixPushButtons.at(j)->getLabel();
             }
         }
         else
@@ -486,7 +487,7 @@ void CustomEditor::clearAll()
 
 void CustomEditor::loadLayout()
 {
-    QString file = QFileDialog::getOpenFileName(this, "Open Keyboard layout","" , KbdFileFilter, &KbdFileFilter );
+    QString file = QFileDialog::getOpenFileName(this, tr("Open Keyboard layout"),"" , KbdFileFilter, &KbdFileFilter );
     if( ! QFile::exists(file) )
         return;
     
@@ -504,7 +505,7 @@ void CustomEditor::loadLayout()
 
 void CustomEditor::saveLayout()
 { 
-    QString file = QFileDialog::getSaveFileName(this, "Save Keyboard layout","" , KbdFileFilter, &KbdFileFilter );
+    QString file = QFileDialog::getSaveFileName(this, tr("Save Keyboard layout"),"" , KbdFileFilter, &KbdFileFilter );
     
     qDebug() << __FUNCTION__ << " : Created new layout file : " << file;
     
