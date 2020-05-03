@@ -210,9 +210,7 @@ QLayout *CustomEditor::generateKeyboard()
                 int height = /*obj.contains("height") ? obj.value("height").toInt() : */63;
                 btn->setFixedSize(width, height);
                 
-                bool color = false;
-                
-                color = true;
+                bool color = true;
                 
                 if(obj.contains(klay->mjsMatrixStr)) {
                     QJsonArray arr = obj[klay->mjsMatrixStr].toArray();
@@ -231,7 +229,7 @@ QLayout *CustomEditor::generateKeyboard()
    
                 if( ! obj.contains(klay->mjsColorsStr) && color == true )
                 {
-                    obj.insert(klay->mjsColorsStr, klay->mjsDefColor);;
+                    obj.insert(klay->mjsColorsStr, klay->mjsDefColor);
                 }
                 
                 //qDebug() << __FUNCTION__ << " : obj => " << obj;

@@ -9,7 +9,7 @@
 class KbdLayout
 {
 public:
-    QString mjsLangStr            = "en_US";
+    QString mjsLangStr            = "US";
     const QString mjsRowStr       = "row";
     const QString mjsLabelStr     = "label";
     const QString mjsMatrixStr    = "matrix";

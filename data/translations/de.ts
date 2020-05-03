@@ -66,27 +66,27 @@
         <translation>Dein Tastaturlayout (%1) ist noch nicht von RazerGenie für diese Tastatur unterstützt. Bitte öffne ein Issue in der RazerGenie Repository.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="178"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="179"/>
         <source>Neither one of these layouts was found in the layout file: %1. Exiting.</source>
         <translation>Keines der folgenden Layouts wird in der Layout Datei gefunden: %1. Der Editor wird nicht geöffnet.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="357"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="356"/>
         <source>Error loading %1.json!</source>
         <translation>Fehler beim laden von%1.json!</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="358"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="357"/>
         <source>Select Keyboard Layout file</source>
         <translation>Wählen Sie Layoutdatei</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="489"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="488"/>
         <source>Open Keyboard layout</source>
         <translation>Öffnen Sie das Tastaturlayout</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="507"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="506"/>
         <source>Save Keyboard layout</source>
         <translation>Tastaturlayout speichern</translation>
     </message>

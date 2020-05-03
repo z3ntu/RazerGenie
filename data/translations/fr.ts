@@ -66,27 +66,27 @@
         <translation>La disposition du clavier (%1) n&apos;est pas encore supportée par RazerGenie pour ce clavier. Veuillez ouvrir un tricket dans le dépôt RazerGenie.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="178"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="179"/>
         <source>Neither one of these layouts was found in the layout file: %1. Exiting.</source>
         <translation>Aucune de ces dispositions n&apos;a été trouvée dans le fichier source : %1. L&apos;éditeur va se fermer.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="357"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="356"/>
         <source>Error loading %1.json!</source>
         <translation>Erreur lors du chargement de %1.json !</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="358"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="357"/>
         <source>Select Keyboard Layout</source>
         <translation>Selectionnez une configuration</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="489"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="488"/>
         <source>Open Keyboard layout</source>
         <translation>Ouvrir un fichier de configuration</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="507"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="506"/>
         <source>Save Keyboard layout</source>
         <translation>Sauvegarder la configuration</translation>
     </message>
