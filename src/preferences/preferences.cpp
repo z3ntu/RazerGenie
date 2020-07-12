@@ -21,7 +21,9 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
+#include <QMessageBox>
 #include <QVBoxLayout>
+
 #include <config.h>
 #include <libopenrazer.h>
 
@@ -76,6 +78,11 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     backendComboBox->setCurrentText(settings.value("backend").toString());
     connect(backendComboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text) {
         settings.setValue("backend", text);
+        // Show popup to restart program
+        QMessageBox msgBox;
+        msgBox.setText(tr("Please restart the application for the switch to take effect."));
+        msgBox.addButton(QMessageBox::Ok);
+        msgBox.exec();
     });
 
     backendHbox->addWidget(backendLabel);
