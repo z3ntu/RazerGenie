@@ -299,9 +299,9 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
     // Add new device to the list
     auto *listItem = new QListWidgetItem();
-    listItem->setSizeHint(QSize(listItem->sizeHint().width(), 120));
     ui_main.listWidget->addItem(listItem);
     auto *listItemWidget = new DeviceListWidget(ui_main.listWidget, currentDevice);
+    listItem->setSizeHint(QSize(listItemWidget->sizeHint().width(), 120));
     ui_main.listWidget->setItemWidget(listItem, listItemWidget);
 
     // Insert current device pointer with serial lookup into a QHash
