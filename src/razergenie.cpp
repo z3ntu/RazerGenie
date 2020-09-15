@@ -182,7 +182,11 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
     QProcess process;
     process.start("bash", QStringList() << "-c" << "lsusb | grep '1532:' | cut -d' ' -f6");
     process.waitForFinished();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList outputList = QString(process.readAllStandardOutput()).split("\n", Qt::SkipEmptyParts);
+#else
     QStringList outputList = QString(process.readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
+#endif
 
     QList<QPair<int, int>> returnList;
 
