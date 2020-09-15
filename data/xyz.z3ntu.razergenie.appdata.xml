@@ -19,6 +19,18 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="0.9.0" date="2020-09-15">
+      <description>
+        <ul>
+          <li>Several additions to the matrix layout (razerdefault22): Nordic, French &amp; Portuguese layout</li>
+          <li>Support DeathAdder 3.5G</li>
+          <li>Add French translations</li>
+          <li>Preferences window is now modal</li>
+          <li>Fix UI bug in device list with Qt 5.15</li>
+          <li>Fix setScrollBreathDual method</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.8.1" date="2018-10-21">
       <description>
         <p>libopenrazer:</p>
