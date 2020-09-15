@@ -2,7 +2,7 @@
 <component type="desktop-application">
   <id>xyz.z3ntu.razergenie</id>
   <launchable type="desktop-id">xyz.z3ntu.razergenie.desktop</launchable>
-  <translation type="qt" />
+  <translation type="qt">razergenie</translation>
   <name>RazerGenie</name>
   <summary>Manage your Razer devices</summary>
   <metadata_license>CC0-1.0</metadata_license>
