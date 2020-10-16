@@ -76,8 +76,8 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     backendComboBox->addItem("OpenRazer");
     backendComboBox->addItem("razer_test");
     backendComboBox->setCurrentText(settings.value("backend").toString());
-    connect(backendComboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString &text) {
-        settings.setValue("backend", text);
+    connect(backendComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) {
+        settings.setValue("backend", backendComboBox->itemText(index));
         // Show popup to restart program
         QMessageBox msgBox;
         msgBox.setText(tr("Please restart the application for the switch to take effect."));
