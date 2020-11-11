@@ -133,8 +133,10 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
             radio->setObjectName("radiobutton" + QString::number(i));
             if (i == 1) // set the 'left' checkbox to activated
                 radio->setChecked(true);
-            // hide by default
-            radio->hide();
+            // Hide radio button when we don't need it
+            if (currentEffect != razer_test::RazerEffect::Wave) {
+                radio->hide();
+            }
             lightingHBox->addWidget(radio);
             connect(radio, &QRadioButton::toggled, this, &LedWidget::waveRadioButtonChanged);
         }
