@@ -18,6 +18,8 @@
 
 #include "ledwidget.h"
 
+#include "util.h"
+
 #include <QColorDialog>
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -49,8 +51,18 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     //TODO Battery
     //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
-    razer_test::RazerEffect currentEffect = led->getCurrentEffect();
-    QVector<razer_test::RGB> currentColors = led->getCurrentColors();
+    razer_test::RazerEffect currentEffect = razer_test::RazerEffect::Static;
+    try {
+        currentEffect = led->getCurrentEffect();
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to get current effect");
+    }
+    QVector<razer_test::RGB> currentColors;
+    try {
+        currentColors = led->getCurrentColors();
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to get current colors");
+    }
 
     // Add items from capabilities
     for (auto ledFx : libopenrazer::ledFxList) {
@@ -71,7 +83,14 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         brightnessSlider->setMaximum(255);
-        brightnessSlider->setValue(led->getBrightness());
+        uchar brightness;
+        try {
+            brightness = led->getBrightness();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get brightness");
+            brightness = 100;
+        }
+        brightnessSlider->setValue(brightness);
         connect(brightnessSlider, &QSlider::valueChanged, this, &LedWidget::brightnessSliderChanged);
     }
 
@@ -197,40 +216,50 @@ razer_test::WaveDirection LedWidget::getWaveDirection()
 
 void LedWidget::brightnessSliderChanged(int value)
 {
-    mLed->setBrightness(value);
+    try {
+        mLed->setBrightness(value);
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to change brightness");
+        util::showError(tr("Failed to change brightness"));
+    }
 }
 
 void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
 {
-    if (fxStr == razer_test::RazerEffect::Off) {
-        mLed->setOff();
-    } else if (fxStr == razer_test::RazerEffect::On) {
-        mLed->setOn();
-    } else if (fxStr == razer_test::RazerEffect::Static) {
-        QColor c = getColorForButton(1);
-        mLed->setStatic(c);
-    } else if (fxStr == razer_test::RazerEffect::Breathing) {
-        QColor c = getColorForButton(1);
-        mLed->setBreathing(c);
-    } else if (fxStr == razer_test::RazerEffect::BreathingDual) {
-        QColor c1 = getColorForButton(1);
-        QColor c2 = getColorForButton(2);
-        mLed->setBreathingDual(c1, c2);
-    } else if (fxStr == razer_test::RazerEffect::BreathingRandom) {
-        mLed->setBreathingRandom();
-    } else if (fxStr == razer_test::RazerEffect::Blinking) {
-        QColor c = getColorForButton(1);
-        mLed->setBlinking(c);
-    } else if (fxStr == razer_test::RazerEffect::Spectrum) {
-        mLed->setSpectrum();
-    } else if (fxStr == razer_test::RazerEffect::Wave) {
-        mLed->setWave(getWaveDirection());
-    } else if (fxStr == razer_test::RazerEffect::Reactive) {
-        QColor c = getColorForButton(1);
-        mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
-    } else {
-        // qWarning() << fxStr << " is not implemented yet!"; // FIXME
-        qWarning("(insert fxstring here) is not implemented yet!");
+    try {
+        if (fxStr == razer_test::RazerEffect::Off) {
+            mLed->setOff();
+        } else if (fxStr == razer_test::RazerEffect::On) {
+            mLed->setOn();
+        } else if (fxStr == razer_test::RazerEffect::Static) {
+            QColor c = getColorForButton(1);
+            mLed->setStatic(c);
+        } else if (fxStr == razer_test::RazerEffect::Breathing) {
+            QColor c = getColorForButton(1);
+            mLed->setBreathing(c);
+        } else if (fxStr == razer_test::RazerEffect::BreathingDual) {
+            QColor c1 = getColorForButton(1);
+            QColor c2 = getColorForButton(2);
+            mLed->setBreathingDual(c1, c2);
+        } else if (fxStr == razer_test::RazerEffect::BreathingRandom) {
+            mLed->setBreathingRandom();
+        } else if (fxStr == razer_test::RazerEffect::Blinking) {
+            QColor c = getColorForButton(1);
+            mLed->setBlinking(c);
+        } else if (fxStr == razer_test::RazerEffect::Spectrum) {
+            mLed->setSpectrum();
+        } else if (fxStr == razer_test::RazerEffect::Wave) {
+            mLed->setWave(getWaveDirection());
+        } else if (fxStr == razer_test::RazerEffect::Reactive) {
+            QColor c = getColorForButton(1);
+            mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
+        } else {
+            // qWarning() << fxStr << " is not implemented yet!"; // FIXME
+            qWarning("(insert fxstring here) is not implemented yet!");
+        }
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to change effect");
+        util::showError(tr("Failed to change effect"));
     }
 }
 

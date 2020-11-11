@@ -23,7 +23,6 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QVBoxLayout>
-
 #include <config.h>
 #include <libopenrazer.h>
 
@@ -47,7 +46,7 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     QString daemonVersion = "unknown";
     try {
         daemonVersion = manager->getDaemonVersion();
-    } catch(const libopenrazer::DBusException& e) {
+    } catch (const libopenrazer::DBusException &e) {
         qDebug() << "Failed to get daemon version:" << e.name() << e.message();
     }
     openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(daemonVersion));

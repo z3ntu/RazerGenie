@@ -20,6 +20,7 @@
 
 #include "customeditor/customeditor.h"
 #include "ledwidget.h"
+#include "util.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -103,14 +104,24 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
         auto *dpiSyncCheckbox = new QCheckBox(this);
 
         // Get the current DPI and set the slider&text
-        razer_test::RazerDPI currDPI = device->getDPI();
+        razer_test::RazerDPI currDPI = { 0, 0 };
+        try {
+            currDPI = device->getDPI();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get dpi");
+        }
 
         dpiXSlider->setValue(currDPI.dpi_x / 100);
         dpiYSlider->setValue(currDPI.dpi_y / 100);
         dpiXText->setText(QString::number(currDPI.dpi_x));
         dpiYText->setText(QString::number(currDPI.dpi_y));
 
-        int maxDPI = device->maxDPI();
+        int maxDPI = 0;
+        try {
+            maxDPI = device->maxDPI();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get max dpi");
+        }
         dpiXSlider->setMaximum(maxDPI / 100);
         dpiYSlider->setMaximum(maxDPI / 100);
 
@@ -148,11 +159,18 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
         pollRateHeader->setFont(headerFont);
         verticalLayout->addWidget(pollRateHeader);
 
+        ushort pollRate = 0;
+        try {
+            pollRate = device->getPollRate();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get poll rate");
+        }
+
         auto *pollComboBox = new QComboBox;
         pollComboBox->addItem("125 Hz", 125);
         pollComboBox->addItem("500 Hz", 500);
         pollComboBox->addItem("1000 Hz", 1000);
-        pollComboBox->setCurrentText(QString::number(device->getPollRate()) + " Hz");
+        pollComboBox->setCurrentText(QString::number(pollRate) + " Hz");
         verticalLayout->addWidget(pollComboBox);
 
         connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DeviceWidget::pollCombo);
@@ -177,10 +195,23 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     verticalLayout->addItem(spacer);
 
     /* Serial and firmware version labels */
-    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(device->getSerial()));
+    QString serial = "error";
+    try {
+        serial = device->getSerial();
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to get serial");
+    }
+    QString firmwareVersion = "error";
+    try {
+        firmwareVersion = device->getFirmwareVersion();
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to get firmware version");
+    }
+
+    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(serial));
     verticalLayout->addWidget(serialLabel);
 
-    QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(device->getFirmwareVersion()));
+    QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(firmwareVersion));
     verticalLayout->addWidget(fwVerLabel);
 }
 
@@ -197,6 +228,8 @@ void DeviceWidget::dpiChanged(int orig_value)
 
     auto *sender = qobject_cast<QSlider *>(QObject::sender());
 
+    razer_test::RazerDPI dpi = { 0, 0 };
+
     // if DPI should be synced
     if (syncDpi) {
         if (sender->objectName() == "dpiX") {
@@ -205,7 +238,7 @@ void DeviceWidget::dpiChanged(int orig_value)
             slider->setValue(orig_value);
 
             // set DPI
-            device->setDPI({ value, value }); // set for both X & Y
+            dpi = { value, value }; // set for both X & Y
         } else {
             // just set the slider (as the rest was done already or will be done)
             auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
@@ -215,15 +248,28 @@ void DeviceWidget::dpiChanged(int orig_value)
         // set DPI (with value from other slider)
         if (sender->objectName() == "dpiX") {
             auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            device->setDPI({ value, static_cast<ushort>(slider->value() * 100) });
+            dpi = { value, static_cast<ushort>(slider->value() * 100) };
         } else {
             auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            device->setDPI({ static_cast<ushort>(slider->value() * 100), value });
+            dpi = { static_cast<ushort>(slider->value() * 100), value };
         }
     }
+
     // Update textbox with new value
     auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit *>(sender->objectName() + "Text");
     dpitextbox->setText(QString::number(value));
+
+    // Check if we need to actually set the DPI
+    if (dpi.dpi_x == 0 && dpi.dpi_y == 0) {
+        return;
+    }
+
+    try {
+        device->setDPI(dpi);
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to set dpi");
+        util::showError(tr("Failed to set dpi"));
+    }
 }
 
 void DeviceWidget::dpiSyncCheckbox(bool checked)
@@ -235,7 +281,12 @@ void DeviceWidget::dpiSyncCheckbox(bool checked)
 void DeviceWidget::pollCombo(int /* index */)
 {
     auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    device->setPollRate(sender->currentData().value<ushort>());
+    try {
+        device->setPollRate(sender->currentData().value<ushort>());
+    } catch (const libopenrazer::DBusException &e) {
+        qWarning("Failed to set polling rate");
+        util::showError(tr("Failed to set polling rate"));
+    }
 }
 
 void DeviceWidget::openCustomEditor(bool openMatrixDiscovery)
