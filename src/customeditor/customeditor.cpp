@@ -25,6 +25,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QtWidgets>
+#include <QFileDialog>
 
 CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
     : QDialog(parent)
@@ -42,7 +43,7 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
         colors << QVector<QColor>(dimens.y);
 
         for (int j = 0; j < dimens.y; j++) {
-            colors[i][j] = QColor(Qt::black);
+            colors[i][j] = QColor(Qt::white);
         }
     }
 
@@ -129,16 +130,22 @@ QLayout *CustomEditor::generateMainControls()
     QPushButton *btnSet = new QPushButton(tr("Set"));
     QPushButton *btnClear = new QPushButton(tr("Clear"));
     QPushButton *btnClearAll = new QPushButton(tr("Clear All"));
+    QPushButton *btnLoadProfile = new QPushButton(tr("Load profile"));
+    QPushButton *btnSaveProfile = new QPushButton(tr("Save profile"));
 
     hbox->addWidget(btnColor);
     hbox->addWidget(btnSet);
     hbox->addWidget(btnClear);
     hbox->addWidget(btnClearAll);
+    hbox->addWidget(btnLoadProfile);
+    hbox->addWidget(btnSaveProfile);
 
     connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
     connect(btnSet, &QPushButton::clicked, this, &CustomEditor::setDrawStatusSet);
     connect(btnClear, &QPushButton::clicked, this, &CustomEditor::setDrawStatusClear);
     connect(btnClearAll, &QPushButton::clicked, this, &CustomEditor::clearAll);
+    connect(btnLoadProfile, &QPushButton::clicked, this, &CustomEditor::loadProfile);
+    connect(btnSaveProfile, &QPushButton::clicked, this, &CustomEditor::saveProfile);
 
     return hbox;
 }
@@ -177,16 +184,15 @@ QLayout *CustomEditor::generateKeyboard()
     }
 
     // Iterate over rows in the object
-    QJsonObject::const_iterator it;
-    for (it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
+    for (auto it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
         QJsonArray row = (*it).toArray();
 
         auto *hbox = new QHBoxLayout();
         hbox->setAlignment(Qt::AlignLeft);
 
         // Iterate over keys in row
-        QJsonArray::const_iterator jt;
-        for (jt = row.constBegin(); jt != row.constEnd(); ++jt) {
+
+        for (auto jt = row.constBegin(); jt != row.constEnd(); ++jt) {
             QJsonObject obj = (*jt).toObject();
 
             if (!obj["label"].isNull()) {
@@ -380,3 +386,86 @@ void CustomEditor::setDrawStatusClear()
 {
     drawStatus = DrawStatus::clear;
 }
+
+void CustomEditor::loadProfile()
+{
+   auto data_loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+   auto fileName = QFileDialog::getOpenFileName(this, tr("Open keyboard profile"),
+                                                data_loc,
+                                                tr("Profiles (*.rgkeys)"));
+   if (fileName.isNull())
+      return;
+
+   QString val;
+   QFile file;
+   file.setFileName(fileName);
+   file.open(QIODevice::ReadOnly | QIODevice::Text);
+   val = file.readAll();
+   file.close();
+
+   QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+
+   auto rows = d["mapping"].toArray();
+
+   auto btn = matrixPushButtons.begin();
+   QVector<QVector<QColor>> new_colors(rows.size());
+   for (int row  = 0; row < rows.size(); ++row) {
+         auto col = rows[row].toArray();
+         QVector<QColor> col_row(col.size());
+         for (int c = 0; c < col.size(); ++c, ++btn) {
+            QRgb color = col[c].toInt();
+            col_row[c] = QColor(color);
+         }
+         new_colors[row] = col_row;
+   }
+   colors = new_colors;
+
+   for(auto&& btn : matrixPushButtons) {
+      auto pos = btn->matrixPos();
+      btn->setButtonColor(colors[pos.first][pos.second]);
+   }
+
+   for (int i = 0; i < rows.size(); ++i) {
+      updateKeyrow(i);
+   }
+
+}
+
+void CustomEditor::saveProfile()
+{
+   QJsonObject recordObject;
+
+   auto data_loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+   QJsonArray rows;
+   for (int i = 0; i < colors.size(); ++i) {
+      QJsonArray cols;
+      auto& crow = colors[i];
+      for (int c = 0; c < crow.size(); ++c) {
+         cols.insert(c, (int)crow[c].rgb());
+      }
+      rows.insert(i, cols);
+   }
+   recordObject.insert("mapping", rows);
+   QJsonDocument doc(recordObject);
+
+   auto fileName = QFileDialog::getSaveFileName(this,
+                                                tr("Save profile to "), data_loc,
+                                                tr("Profiles (*.rgkeys)"));
+   if (!fileName.contains(".rgkeys"))
+      fileName.append(".rgkeys");
+
+   if (fileName.isNull())
+      return;
+   QFile out_file(fileName);
+   if (!out_file.open(QIODevice::WriteOnly | QIODevice::Text))  {
+      qDebug() << "Error writing config to " << fileName << "\n";
+      return;
+   }
+
+   QTextStream out(&out_file);
+   out << doc.toJson();
+
+}
+
