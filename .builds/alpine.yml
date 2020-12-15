@@ -1,8 +1,8 @@
 image: alpine/edge
 packages:
   - meson
-  - qt5-qtbase-dev
-  - qt5-qttools-dev
+  - qt6-qtbase-dev
+  - qt6-qttools-dev
 sources:
   - https://github.com/z3ntu/RazerGenie
 tasks:

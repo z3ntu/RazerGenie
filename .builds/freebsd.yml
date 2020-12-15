@@ -2,20 +2,14 @@ image: freebsd/latest
 packages:
   - meson
   - pkgconf
-  - qt5-buildtools
-  - qt5-dbus
-  - qt5-gui
-  - qt5-linguisttools
-  - qt5-network
-  - qt5-testlib
-  - qt5-widgets
-  - qt5-xml
+  - qt6-base
+  - qt6-tools
 sources:
   - https://github.com/z3ntu/RazerGenie
 tasks:
-  # Qt5Gui depends on GL/gl.h but it isn't present in the pkgconfig file
+  # Qt6Gui depends on GL/gl.h but it isn't present in the pkgconfig file
   - prepare: |
-      sudo sed -i '' 's|Cflags:|Cflags: -I${prefix}/include|' /usr/local/libdata/pkgconfig/Qt5Gui.pc
+      sudo sed -i '' 's|Cflags:|Cflags: -I${prefix}/include|' /usr/local/libdata/pkgconfig/Qt6Gui.pc
   - setup: |
       cd RazerGenie
       meson setup builddir
