@@ -8,7 +8,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - run: brew install qt@5 meson svg2png
-      - run: echo "/opt/homebrew/opt/qt@5/bin" >> $GITHUB_PATH
+      - run: brew install qt@6 meson svg2png
+      - run: echo "/opt/homebrew/opt/qt@6/bin" >> $GITHUB_PATH
       - run: meson setup builddir
       - run: meson compile -C builddir

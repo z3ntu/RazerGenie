@@ -1,13 +1,13 @@
 project('razergenie', 'cpp',
         version : '1.2.0',
-        meson_version : '>=0.49.0',
-        default_options : ['cpp_std=c++11'])
+        meson_version : '>=0.57.0',
+        default_options : ['cpp_std=c++17'])
 
 # Disable any API deprecated in 5.15 or older Qt versions
 add_project_arguments('-DQT_DISABLE_DEPRECATED_BEFORE=0x050F00', language : 'cpp')
 
-qt = import('qt5')
-qt_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
+qt = import('qt6')
+qt_dep = dependency('qt6', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
 
 libopenrazer_dep = dependency('libopenrazer', version : '>=0.3.0', fallback : ['libopenrazer', 'libopenrazer_dep'])
 
