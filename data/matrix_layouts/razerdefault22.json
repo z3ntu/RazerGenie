@@ -130,6 +130,20 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ".", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
+        ],
+        "row6": [
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": "[logo]", "matrix": [0, 20], "width": 60}
         ]
     },
 
@@ -266,6 +280,20 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ",", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
+        ],
+        "row6": [
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": "[logo]", "matrix": [0, 20], "width": 60}
         ]
     },
 
@@ -402,6 +430,20 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ",", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
+        ],
+        "row6": [
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": "[logo]", "matrix": [0, 20], "width": 60}
         ]
     },
 
@@ -538,6 +580,20 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ".", "matrix": [5, 20]},
             {"label": "entrée", "disabled": true}
+        ],
+        "row6": [
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": "[logo]", "matrix": [0, 20], "width": 60}
         ]
     },
 
@@ -675,6 +731,20 @@
             {"label": "0", "width": 126, "matrix": [5, 19]},
             {"label": ".", "matrix": [5, 20]},
             {"label": "enter", "disabled": true}
+        ],
+        "row6": [
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": null},
+            {"label": "[logo]", "matrix": [0, 20], "width": 60}
         ]
     }
 }
