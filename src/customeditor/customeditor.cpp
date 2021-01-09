@@ -25,6 +25,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QtWidgets>
+#include <QDebug>
 
 CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
     : QDialog(parent)
@@ -98,7 +99,7 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     }
 
     // Set every LED to "off"/black
-    clearAll();
+    // clearAll(); // No. Definitively.
 }
 
 CustomEditor::~CustomEditor() = default;
@@ -125,17 +126,22 @@ QLayout *CustomEditor::generateMainControls()
     QPushButton *btnSet = new QPushButton(tr("Set"));
     QPushButton *btnClear = new QPushButton(tr("Clear"));
     QPushButton *btnClearAll = new QPushButton(tr("Clear All"));
+    QPushButton *btnLoadLayout = new QPushButton(tr("Load Keyboad Layout"));
+    QPushButton *btnSaveLayout = new QPushButton(tr("Save Keyboard Layout"));
 
     hbox->addWidget(btnColor);
     hbox->addWidget(btnSet);
     hbox->addWidget(btnClear);
     hbox->addWidget(btnClearAll);
+    hbox->addWidget(btnLoadLayout);
+    hbox->addWidget(btnSaveLayout);
 
     connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
     connect(btnSet, &QPushButton::clicked, this, &CustomEditor::setDrawStatusSet);
     connect(btnClear, &QPushButton::clicked, this, &CustomEditor::setDrawStatusClear);
     connect(btnClearAll, &QPushButton::clicked, this, &CustomEditor::clearAll);
-
+    connect(btnLoadLayout, &QPushButton::clicked, this, &CustomEditor::loadLayout);
+    connect(btnSaveLayout, &QPushButton::clicked, this, &CustomEditor::saveLayout);
     return hbox;
 }
 
@@ -144,9 +150,10 @@ QLayout *CustomEditor::generateKeyboard()
     //TODO: Add missing logo button
     auto *vbox = new QVBoxLayout();
     QJsonObject keyboardLayout;
+    QJsonObject cloneobj;
     bool found = false;
     QString kbdLayout = device->getKeyboardLayout();
-    if (kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
+    if(kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
         keyboardLayout = keyboardKeys[kbdLayout].toObject();
     } else {
         if (kbdLayout == "unknown") {
@@ -158,49 +165,78 @@ QLayout *CustomEditor::generateKeyboard()
         QStringList langs;
         langs << "de_DE"
               << "en_US"
-              << "en_GB";
+              << "en_GB"
+              << "fr_FR";
         for (const QString &lang : qAsConst(langs)) {
             if (keyboardKeys.contains(lang)) {
                 keyboardLayout = keyboardKeys[lang].toObject();
+                klay->mjsLangStr = lang;
                 found = true;
                 break;
             }
         }
-        if (!found) {
-            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
+        if(!found) {
+            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB, fr_FR"));
             closeWindow();
         }
     }
+    
+    qDebug() << __FUNCTION__ << ": Selected language is " << klay->mjsLangStr;
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
-    for (it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
+    QJsonObject clonelay;
+    int i = 0;
+    int j = 0;
+    for(it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
         QJsonArray row = (*it).toArray();
+        QJsonArray clonerow;
 
         auto *hbox = new QHBoxLayout();
         hbox->setAlignment(Qt::AlignLeft);
 
         // Iterate over keys in row
         QJsonArray::const_iterator jt;
-        for (jt = row.constBegin(); jt != row.constEnd(); ++jt) {
-            QJsonObject obj = (*jt).toObject();
+        QJsonObject obj;
+        for(jt = row.constBegin(); jt != row.constEnd(); ++jt)
+        {
+            obj = (*jt).toObject();
 
-            if (!obj["label"].isNull()) {
-                MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
-                int width = obj.contains("width") ? obj.value("width").toInt() : 60;
-                int height = /*obj.contains("height") ? obj.value("height").toInt() : */ 63;
+            if(!obj[klay->mjsLabelStr].isNull())
+            {
+                MatrixPushButton *btn = new MatrixPushButton(obj[klay->mjsLabelStr].toString());
+                
+                int width = obj.contains(klay->mjsWidthStr) ? obj.value(klay->mjsWidthStr).toInt() : 60;
+                int height = /*obj.contains("height") ? obj.value("height").toInt() : */63;
                 btn->setFixedSize(width, height);
-                if (obj.contains("matrix")) {
-                    QJsonArray arr = obj["matrix"].toArray();
+                
+                bool color = true;
+                
+                if(obj.contains(klay->mjsMatrixStr)) {
+                    QJsonArray arr = obj[klay->mjsMatrixStr].toArray();
                     btn->setMatrixPos(arr[0].toInt(), arr[1].toInt());
                 }
-                if (obj.contains("disabled")) {
+                
+                if(obj.contains(klay->mjsDisabledStr)) {
                     btn->setEnabled(false);
+                    color = false;
                 }
+                
                 /*if(obj["cut"] == "enter") {
                     QPixmap pixmap("../../data/de_DE_mask.png");
                     btn->setMask(pixmap.mask());
                 }*/
+   
+                if( ! obj.contains(klay->mjsColorsStr) && color == true )
+                {
+                    obj.insert(klay->mjsColorsStr, klay->mjsDefColor);
+                }
+                
+                //qDebug() << __FUNCTION__ << " : obj => " << obj;
+                
+                if(color == true)
+                    btn->setButtonColor(obj[klay->mjsColorsStr].toString() );
+                
                 connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
 
                 hbox->addWidget(btn);
@@ -208,10 +244,24 @@ QLayout *CustomEditor::generateKeyboard()
             } else {
                 auto *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
                 hbox->addItem(spacer);
+                obj.insert(klay->mjsLabelStr, QJsonValue::Null);
             }
+            clonerow.append(obj);
+            i++;
         }
+        
+        //qDebug() << __FUNCTION__ << " : clonerow => " << clonerow;
+        
+        clonelay.insert(klay->mjsRowStr+QString::number(j), clonerow);
+        j++;
+        
         vbox->addLayout(hbox);
     }
+    
+    //qDebug() << __FUNCTION__ << " : clonelay => " << clonelay;
+    
+    klay->setKbdLayRows(clonelay);
+    
     return vbox;
 }
 
@@ -239,11 +289,30 @@ QLayout *CustomEditor::generateMouse()
 
 QLayout *CustomEditor::generateMatrixDiscovery()
 {
+    QJsonObject jsLang;
+    QJsonObject jsRow;
+    
     auto *vbox = new QVBoxLayout();
-    for (int i = 0; i < dimens.x; i++) {
-        auto *hbox = new QHBoxLayout();
-        for (int j = 0; j < dimens.y; j++) {
+    for(int i=0; i<dimens.x; i++) {
+        
+        QHBoxLayout *hbox = new QHBoxLayout();
+        
+        QJsonArray jsKeysA;
+        
+        for(int j=0; j<dimens.y; j++) {
             MatrixPushButton *btn = new MatrixPushButton(QString::number(i) + "_" + QString::number(j));
+            
+            QJsonObject jsKeysO;
+            QJsonArray jsMatrixA;
+            
+            jsMatrixA.append(i);
+            jsMatrixA.append(j);
+            
+            jsKeysO.insert(klay->mjsLabelStr, QString::number(i) + "_" + QString::number(j));
+            jsKeysO.insert(klay->mjsMatrixStr, jsMatrixA);
+            jsKeysO.insert(klay->mjsColorsStr, klay->mjsDefColor);
+            jsKeysA.append(jsKeysO);
+            
             btn->setMatrixPos(i, j);
 
             connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
@@ -251,8 +320,18 @@ QLayout *CustomEditor::generateMatrixDiscovery()
             hbox->addWidget(btn);
             matrixPushButtons.append(btn);
         }
+        
+        jsRow.insert(klay->mjsRowStr + QString::number(i), jsKeysA);
+        
         vbox->addLayout(hbox);
     }
+    
+    klay->setKbdLayRows(jsRow);
+
+    jsLang.insert(klay->mjsLangStr, jsRow);
+    
+    klay->setKbdLayout(jsLang);
+    
     return vbox;
 }
 
@@ -261,6 +340,7 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
     QFile *file; // Pointer to file object to use
     QFile file_devel("../../data/matrix_layouts/" + jsonname + ".json"); // File during developemnt
     QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/" + jsonname + ".json"); // File for production
+    QFile file_sel;
 
     // Try to open the dev file (higher priority)
     if (file_devel.open(QIODevice::ReadOnly)) {
@@ -273,8 +353,15 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
         if (file_prod.open(QIODevice::ReadOnly)) {
             file = &file_prod;
         } else {
-            QMessageBox::information(nullptr, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname, file_prod.errorString()));
-            return false;
+            QMessageBox::information(0, tr("Error loading %1.json!").arg(jsonname), tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname).arg(file_prod.errorString()));
+            QString filename = QFileDialog::getOpenFileName(this, tr("Select Keyboard Layout file"),"" , KbdFileFilter, &KbdFileFilter );
+            file_sel.setFileName(filename);
+            if(file_sel.open(QIODevice::ReadOnly))
+            {
+                file = &file_sel;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -289,8 +376,77 @@ bool CustomEditor::parseKeyboardJSON(QString jsonname)
     return true;
 }
 
-bool CustomEditor::updateKeyrow(int row)
-{
+bool CustomEditor::updateKeyrow(int row, const bool fromfile)
+{ 
+    QJsonObject rowsO = klay->getKbdLayRows();
+    //qDebug() << __FUNCTION__ << " : rowsO => " << rowsO;
+    QJsonArray  keysA = QJsonValue(rowsO.take(klay->mjsRowStr+QString::number(row))).toArray();
+    //qDebug() << __FUNCTION__ << " : rowsO => " << rowsO;
+    //qDebug() << __FUNCTION__ << " : KeyA => " << keysA;
+    QJsonObject keysO;
+    
+    for(int i=0; i < dimens.y; i++)
+    {
+        keysO = QJsonValue(keysA.at(i)).toObject();
+        //qDebug() << __FUNCTION__ << " : KeysO => " << keysO;
+        
+        if(keysO.isEmpty() == true)
+            break;
+        
+        QColor colour = keysO.value(klay->mjsColorsStr).toString();
+        
+        if(fromfile == true &&
+            colour.isValid() == true &&
+            keysO.value(klay->mjsLabelStr).isNull() == false &&
+            keysO.value(klay->mjsDisabledStr).isBool() == false )
+        {
+            //qDebug () << __FUNCTION__ << " : Color => " << colour;
+            colors[row][i] = colour;
+            
+            int j = 0;
+  
+            for(; j < matrixPushButtons.count(); j++)
+            {
+                if(keysO.value(klay->mjsLabelStr).toString() == matrixPushButtons.at(j)->getLabel() )
+                    break;
+            }
+            
+            /*
+            qDebug() << __FUNCTION__ << ": JSon Label => " << keysO.value(klay->mjsLabelStr).toString() 
+                                     << ": JSon Color => " << colour
+                                     << ": Butn index => " << j;
+            */
+            // Threat the out of range if matrix discovery file loaded from the standart matrix layout files
+            if(j < matrixPushButtons.count() )
+            {
+                matrixPushButtons.at(j)->setButtonColor(colors[row][i]);
+                //qDebug() << __FUNCTION__ << ": Set color " << colors[row][i] 
+                //         << " for button n°" << i
+                //         << " which is labeled " << matrixPushButtons.at(j)->getLabel();
+            }
+        }
+        else
+        {
+            if(keysO.value(klay->mjsLabelStr).isNull() == false &&
+                keysO.value(klay->mjsDisabledStr).isBool() == false)
+            {
+                if(keysO.contains(klay->mjsColorsStr))
+                    keysO.remove(klay->mjsColorsStr);
+                keysO.insert(klay->mjsColorsStr, colors[row][i].name());
+                keysA.replace(i, keysO);
+                //qDebug() << __FUNCTION__ << ": Prepared row => " << keysO << endl << " Color prepared => " << keysA;
+            }
+            else {
+                qDebug() << __FUNCTION__ << ": Null / Disabled key found ";
+            }
+        }
+    }
+    
+    rowsO.insert(klay->mjsRowStr+QString::number(row), keysA);
+    //qDebug() << __FUNCTION__ << " Built of rowsO => " << rowsO;
+    
+    klay->setKbdLayRows(rowsO);
+    
     return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
 }
 
@@ -320,6 +476,38 @@ void CustomEditor::clearAll()
             j = QColor(Qt::black);
         }
     }
+    
+    for(int i=0; i < dimens.x; i++)
+    {
+        this->updateKeyrow(i, false);
+    }
+}
+
+void CustomEditor::loadLayout()
+{
+    QString file = QFileDialog::getOpenFileName(this, tr("Open Keyboard layout"),"" , KbdFileFilter, &KbdFileFilter );
+    if( ! QFile::exists(file) )
+        return;
+    
+    qDebug() << __FUNCTION__ << " : Opened layout file : " << file << " successfully";
+    
+    klay->openKbdLayout(file);
+    
+    //qDebug() << __FUNCTION__ << " : JSON contents => " << klay->getKbdLayout() << endl;
+    
+    for(int i = 0; i < dimens.x; i++)
+    {
+        updateKeyrow(i, true);
+    }
+}
+
+void CustomEditor::saveLayout()
+{ 
+    QString file = QFileDialog::getSaveFileName(this, tr("Save Keyboard layout"),"" , KbdFileFilter, &KbdFileFilter );
+    
+    qDebug() << __FUNCTION__ << " : Created new layout file : " << file;
+    
+    klay->saveKbdLayout(file);
 }
 
 void CustomEditor::colorButtonClicked()
@@ -353,8 +541,7 @@ void CustomEditor::onMatrixPushButtonClicked()
         colors[pos.first][pos.second] = selectedColor;
         // Set color in view
         sender->setButtonColor(selectedColor);
-    } else if (drawStatus == DrawStatus::clear) {
-        qDebug() << "Clearing color.";
+    } else if(drawStatus == DrawStatus::clear) {
         // Set color in model
         colors[pos.first][pos.second] = QColor(Qt::black);
         // Set color in view
@@ -363,7 +550,7 @@ void CustomEditor::onMatrixPushButtonClicked()
         qDebug() << "RazerGenie: Unhandled DrawStatus: " << drawStatus;
     }
     // Set color on device
-    updateKeyrow(pos.first);
+    updateKeyrow(pos.first, false);
 }
 
 void CustomEditor::setDrawStatusSet()

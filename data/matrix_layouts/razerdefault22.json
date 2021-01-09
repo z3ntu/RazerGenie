@@ -452,7 +452,6 @@
             {"label": null},
             {"label": "esc", "matrix": [0, 1]},
             {"label": null},
-            {"label": null},
             {"label": "F1", "matrix": [0, 3]},
             {"label": "F2", "matrix": [0, 4]},
             {"label": "F3", "matrix": [0, 5]},
@@ -467,7 +466,9 @@
             {"label": "F12", "matrix": [0, 14]},
             {"label": "impr.", "matrix": [0, 15]},
             {"label": "arrêt", "matrix": [0, 16]},
-            {"label": "pause", "matrix": [0, 17]}
+            {"label": "pause", "matrix": [0, 17]},
+            {"label": null},
+            {"label": "Triskel", "width": 180, "matrix": [0, 20]}
         ],
         "row1": [
             {"label": "M1", "matrix": [1, 0]},

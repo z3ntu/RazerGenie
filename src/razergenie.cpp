@@ -331,7 +331,7 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
     // Set the main widget as child of the scrollArea
     scrollArea->setWidget(widget);
-
+    
     // Add the new widget to the stacked widget
     ui_main.stackedWidget->addWidget(scrollArea);
 }
