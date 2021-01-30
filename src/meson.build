@@ -1,9 +1,8 @@
 conf_data = configuration_data()
-conf_data.set('version', meson.project_version())
-conf_data.set('datadir', join_paths(get_option('prefix'), get_option('datadir'), 'razergenie'))
+conf_data.set('RAZERGENIE_VERSION', '"' + meson.project_version() + '"')
+conf_data.set('RAZERGENIE_DATADIR', '"' + join_paths(get_option('prefix'), get_option('datadir'), 'razergenie') + '"')
 
-configure_file(input : 'config.h.in',
-               output : 'config.h',
+configure_file(output : 'config.h',
                configuration : conf_data)
 
 razergenie_sources = ['main.cpp', 'razergenie.cpp', 'razerimagedownloader.cpp', 'devicewidget.cpp', 'devicelistwidget.cpp', 'ledwidget.cpp', 'util.cpp',
