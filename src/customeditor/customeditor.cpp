@@ -156,9 +156,8 @@ QLayout *CustomEditor::generateKeyboard()
             closeWindow();
         }
         QStringList langs;
-        langs << "de_DE"
-              << "en_US"
-              << "en_GB";
+        langs << "US"
+              << "German";
         for (const QString &lang : qAsConst(langs)) {
             if (keyboardKeys.contains(lang)) {
                 keyboardLayout = keyboardKeys[lang].toObject();
@@ -167,7 +166,7 @@ QLayout *CustomEditor::generateKeyboard()
             }
         }
         if (!found) {
-            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("de_DE, en_US, en_GB"));
+            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("US, German"));
             closeWindow();
         }
     }
