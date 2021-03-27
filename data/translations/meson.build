@@ -1,6 +1,7 @@
 # Translations
 ts_files = [
-    'de.ts'
+    'de.ts',
+    'nl.ts',
 ]
 qt5.compile_translations(ts_files : ts_files,
                          install : true,
