@@ -62,6 +62,9 @@ private slots:
     void onMatrixPushButtonClicked();
     void setDrawStatusSet();
     void setDrawStatusClear();
+    void loadProfile();
+    void saveProfile();
+
 };
 
 #endif // CUSTOMEDITOR_H
