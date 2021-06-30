@@ -113,6 +113,8 @@ QLayout *CustomEditor::buildKeyboard()
     QString layout;
     if (dimens.x == 6 && dimens.y == 16) { // Razer Blade Stealth (Late 2017)
         layout = "razerblade16";
+    } else if (dimens.x == 6 && dimens.y == 18) { // Tenkeyless Razer keyboad (e.g. BlackWidow V3 Tenkeyless)
+        layout = "razerdefault18";
     } else if (dimens.x == 6 && dimens.y == 22) { // "Normal" Razer keyboad (e.g. BlackWidow Chroma)
         layout = "razerdefault22";
     } else if (dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017

@@ -14,6 +14,7 @@ endif
 
 install_data('matrix_layouts/razerblade16.json',
              'matrix_layouts/razerblade25.json',
+             'matrix_layouts/razerdefault18.json',
              'matrix_layouts/razerdefault22.json',
              'matrix_layouts/razermouse20.json',
              'matrix_layouts/razermousepad15.json',
