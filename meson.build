@@ -10,6 +10,9 @@ else
   message('razergenie: Matrix discovery feature not included.')
 endif
 
+# Disable any API deprecated in 5.15 or older Qt versions
+add_global_arguments('-DQT_DISABLE_DEPRECATED_BEFORE=0x050F00', language : 'cpp')
+
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
 

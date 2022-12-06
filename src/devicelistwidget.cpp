@@ -30,7 +30,7 @@ DeviceListWidget::DeviceListWidget(QWidget *parent, libopenrazer::Device *device
     this->mDevice = device;
 
     auto *layout = new QVBoxLayout(this);
-    layout->setMargin(2);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     // Add icon
     QString path = RazerImageDownloader::getDownloadPath() + device->getDeviceImageUrl().split("/").takeLast();
