@@ -226,38 +226,58 @@ void LedWidget::brightnessSliderChanged(int value)
     }
 }
 
-void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect fxStr)
+void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
 {
     try {
-        if (fxStr == openrazer::RazerEffect::Off) {
+        switch (effect) {
+        case openrazer::RazerEffect::Off: {
             mLed->setOff();
-        } else if (fxStr == openrazer::RazerEffect::On) {
+            break;
+        }
+        case openrazer::RazerEffect::On: {
             mLed->setOn();
-        } else if (fxStr == openrazer::RazerEffect::Static) {
+            break;
+        }
+        case openrazer::RazerEffect::Static: {
             QColor c = getColorForButton(1);
             mLed->setStatic(c);
-        } else if (fxStr == openrazer::RazerEffect::Breathing) {
+            break;
+        }
+        case openrazer::RazerEffect::Breathing: {
             QColor c = getColorForButton(1);
             mLed->setBreathing(c);
-        } else if (fxStr == openrazer::RazerEffect::BreathingDual) {
+            break;
+        }
+        case openrazer::RazerEffect::BreathingDual: {
             QColor c1 = getColorForButton(1);
             QColor c2 = getColorForButton(2);
             mLed->setBreathingDual(c1, c2);
-        } else if (fxStr == openrazer::RazerEffect::BreathingRandom) {
+            break;
+        }
+        case openrazer::RazerEffect::BreathingRandom: {
             mLed->setBreathingRandom();
-        } else if (fxStr == openrazer::RazerEffect::Blinking) {
+            break;
+        }
+        case openrazer::RazerEffect::Blinking: {
             QColor c = getColorForButton(1);
             mLed->setBlinking(c);
-        } else if (fxStr == openrazer::RazerEffect::Spectrum) {
+            break;
+        }
+        case openrazer::RazerEffect::Spectrum: {
             mLed->setSpectrum();
-        } else if (fxStr == openrazer::RazerEffect::Wave) {
+            break;
+        }
+        case openrazer::RazerEffect::Wave: {
             mLed->setWave(getWaveDirection());
-        } else if (fxStr == openrazer::RazerEffect::Reactive) {
+            break;
+        }
+        case openrazer::RazerEffect::Reactive: {
             QColor c = getColorForButton(1);
             mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
-        } else {
-            // qWarning() << fxStr << " is not implemented yet!"; // FIXME
-            qWarning("(insert fxstring here) is not implemented yet!");
+            break;
+        }
+        default:
+            throw new std::invalid_argument("Effect not handled: " + QVariant::fromValue(effect).toString().toStdString());
         }
     } catch (const libopenrazer::DBusException &e) {
         qWarning("Failed to change effect");
