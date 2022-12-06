@@ -133,8 +133,7 @@ RazerGenie::RazerGenie(QWidget *parent)
         }
 
         // Watch for dbus service changes (= daemon ends or gets started)
-        // TODO: Use correct DBus bus, based on information from libopenrazer
-        QDBusServiceWatcher *watcher = new QDBusServiceWatcher("io.github.openrazer1", QDBusConnection::sessionBus());
+        QDBusServiceWatcher *watcher = manager->getServiceWatcher();
 
         connect(watcher, &QDBusServiceWatcher::serviceRegistered,
                 this, &RazerGenie::dbusServiceRegistered);
