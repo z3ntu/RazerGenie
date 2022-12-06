@@ -13,7 +13,6 @@ endif
 qt5 = import('qt5')
 qt5_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'])
 
-razer_test_dep = dependency('razer_test', fallback : ['razer_test', 'razer_test_dep'])
 libopenrazer_dep = dependency('libopenrazer', fallback : ['libopenrazer', 'libopenrazer_dep'])
 
 install_data('logo/xyz.z3ntu.razergenie.svg', install_dir : join_paths(get_option('datadir'), 'icons/hicolor/scalable/apps'))

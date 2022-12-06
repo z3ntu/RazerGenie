@@ -40,10 +40,10 @@ public:
     void waveRadioButtonChanged(bool enabled);
 
     QColor getColorForButton(int num);
-    razer_test::WaveDirection getWaveDirection();
+    openrazer::WaveDirection getWaveDirection();
 
     void applyEffect();
-    void applyEffectStandardLoc(razer_test::RazerEffect identifier);
+    void applyEffectStandardLoc(openrazer::RazerEffect identifier);
 };
 
 #endif // LEDWIDGET_H

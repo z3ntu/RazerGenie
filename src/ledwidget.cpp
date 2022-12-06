@@ -51,13 +51,13 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     //TODO Battery
     //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
-    razer_test::RazerEffect currentEffect = razer_test::RazerEffect::Static;
+    openrazer::RazerEffect currentEffect = openrazer::RazerEffect::Static;
     try {
         currentEffect = led->getCurrentEffect();
     } catch (const libopenrazer::DBusException &e) {
         qWarning("Failed to get current effect");
     }
-    QVector<razer_test::RGB> currentColors;
+    QVector<openrazer::RGB> currentColors;
     try {
         currentColors = led->getCurrentColors();
     } catch (const libopenrazer::DBusException &e) {
@@ -103,7 +103,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
             auto *colorButton = new QPushButton(this);
             QPalette pal = colorButton->palette();
             if (i - 1 < currentColors.count()) {
-                razer_test::RGB color = currentColors.at(i - 1);
+                openrazer::RGB color = currentColors.at(i - 1);
                 pal.setColor(QPalette::Button, { color.r, color.g, color.b });
             } else {
                 pal.setColor(QPalette::Button, QColor(Qt::green));
@@ -134,7 +134,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
             if (i == 1) // set the 'left' checkbox to activated
                 radio->setChecked(true);
             // Hide radio button when we don't need it
-            if (currentEffect != razer_test::RazerEffect::Wave) {
+            if (currentEffect != openrazer::RazerEffect::Wave) {
                 radio->hide();
             }
             lightingHBox->addWidget(radio);
@@ -211,9 +211,9 @@ QColor LedWidget::getColorForButton(int num)
     return pal.color(QPalette::Button);
 }
 
-razer_test::WaveDirection LedWidget::getWaveDirection()
+openrazer::WaveDirection LedWidget::getWaveDirection()
 {
-    return findChild<QRadioButton *>("radiobutton1")->isChecked() ? razer_test::WaveDirection::RIGHT_TO_LEFT : razer_test::WaveDirection::LEFT_TO_RIGHT;
+    return findChild<QRadioButton *>("radiobutton1")->isChecked() ? openrazer::WaveDirection::RIGHT_TO_LEFT : openrazer::WaveDirection::LEFT_TO_RIGHT;
 }
 
 void LedWidget::brightnessSliderChanged(int value)
@@ -226,35 +226,35 @@ void LedWidget::brightnessSliderChanged(int value)
     }
 }
 
-void LedWidget::applyEffectStandardLoc(razer_test::RazerEffect fxStr)
+void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect fxStr)
 {
     try {
-        if (fxStr == razer_test::RazerEffect::Off) {
+        if (fxStr == openrazer::RazerEffect::Off) {
             mLed->setOff();
-        } else if (fxStr == razer_test::RazerEffect::On) {
+        } else if (fxStr == openrazer::RazerEffect::On) {
             mLed->setOn();
-        } else if (fxStr == razer_test::RazerEffect::Static) {
+        } else if (fxStr == openrazer::RazerEffect::Static) {
             QColor c = getColorForButton(1);
             mLed->setStatic(c);
-        } else if (fxStr == razer_test::RazerEffect::Breathing) {
+        } else if (fxStr == openrazer::RazerEffect::Breathing) {
             QColor c = getColorForButton(1);
             mLed->setBreathing(c);
-        } else if (fxStr == razer_test::RazerEffect::BreathingDual) {
+        } else if (fxStr == openrazer::RazerEffect::BreathingDual) {
             QColor c1 = getColorForButton(1);
             QColor c2 = getColorForButton(2);
             mLed->setBreathingDual(c1, c2);
-        } else if (fxStr == razer_test::RazerEffect::BreathingRandom) {
+        } else if (fxStr == openrazer::RazerEffect::BreathingRandom) {
             mLed->setBreathingRandom();
-        } else if (fxStr == razer_test::RazerEffect::Blinking) {
+        } else if (fxStr == openrazer::RazerEffect::Blinking) {
             QColor c = getColorForButton(1);
             mLed->setBlinking(c);
-        } else if (fxStr == razer_test::RazerEffect::Spectrum) {
+        } else if (fxStr == openrazer::RazerEffect::Spectrum) {
             mLed->setSpectrum();
-        } else if (fxStr == razer_test::RazerEffect::Wave) {
+        } else if (fxStr == openrazer::RazerEffect::Wave) {
             mLed->setWave(getWaveDirection());
-        } else if (fxStr == razer_test::RazerEffect::Reactive) {
+        } else if (fxStr == openrazer::RazerEffect::Reactive) {
             QColor c = getColorForButton(1);
-            mLed->setReactive(c, razer_test::ReactiveSpeed::_500MS); // TODO Configure speed?
+            mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
         } else {
             // qWarning() << fxStr << " is not implemented yet!"; // FIXME
             qWarning("(insert fxstring here) is not implemented yet!");

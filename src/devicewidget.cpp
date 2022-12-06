@@ -104,7 +104,7 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
         auto *dpiSyncCheckbox = new QCheckBox(this);
 
         // Get the current DPI and set the slider&text
-        razer_test::RazerDPI currDPI = { 0, 0 };
+        openrazer::RazerDPI currDPI = { 0, 0 };
         try {
             currDPI = device->getDPI();
         } catch (const libopenrazer::DBusException &e) {
@@ -228,7 +228,7 @@ void DeviceWidget::dpiChanged(int orig_value)
 
     auto *sender = qobject_cast<QSlider *>(QObject::sender());
 
-    razer_test::RazerDPI dpi = { 0, 0 };
+    openrazer::RazerDPI dpi = { 0, 0 };
 
     // if DPI should be synced
     if (syncDpi) {

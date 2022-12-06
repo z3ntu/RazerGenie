@@ -52,7 +52,7 @@ private:
     QJsonObject keyboardKeys;
     QVector<MatrixPushButton *> matrixPushButtons;
     libopenrazer::Device *device;
-    razer_test::MatrixDimensions dimens;
+    openrazer::MatrixDimensions dimens;
 
     QVector<QVector<QColor>> colors;
     QColor selectedColor;

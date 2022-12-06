@@ -15,5 +15,5 @@ processed = qt5.preprocess(
 
 razergenie = executable('razergenie',
                         [razergenie_sources, processed],
-                        dependencies : [qt5_dep, razer_test_dep, libopenrazer_dep],
+                        dependencies : [qt5_dep, libopenrazer_dep],
                         install : true)
