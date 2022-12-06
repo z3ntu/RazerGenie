@@ -28,7 +28,7 @@
 #include <QtWidgets>
 #include <config.h>
 
-const char *newIssueUrl = "https://github.com/openrazer/openrazer/issues/new";
+const char *newIssueUrl = "https://github.com/openrazer/openrazer/issues/new/choose";
 const char *supportedDevicesUrl = "https://github.com/openrazer/openrazer/blob/master/README.md#device-support";
 const char *troubleshootingUrl = "https://github.com/openrazer/openrazer/wiki/Troubleshooting";
 const char *websiteUrl = "https://openrazer.github.io/";
