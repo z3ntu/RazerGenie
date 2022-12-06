@@ -141,7 +141,7 @@ QLayout *CustomEditor::generateMainControls()
 
 QLayout *CustomEditor::generateKeyboard()
 {
-    //TODO: Add missing logo button
+    // TODO: Add missing logo button
     auto *vbox = new QVBoxLayout();
     QJsonObject keyboardLayout;
     bool found = false;

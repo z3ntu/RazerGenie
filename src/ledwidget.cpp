@@ -48,8 +48,8 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     comboBox->setObjectName("combobox");
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-    //TODO Battery
-    //TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
+    // TODO Battery
+    // TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
     openrazer::RazerEffect currentEffect = openrazer::RazerEffect::Static;
     try {

@@ -23,7 +23,7 @@
 MatrixPushButton::MatrixPushButton(QString label)
     : QPushButton(label)
 {
-    //TODO: Get rid of light blue "selected" color - can get rid of with setFlat(true) or using a qlineargradient in the stylesheet
+    // TODO: Get rid of light blue "selected" color - can get rid of with setFlat(true) or using a qlineargradient in the stylesheet
     mLabel = label;
 }
 

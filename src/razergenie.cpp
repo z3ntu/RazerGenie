@@ -160,7 +160,7 @@ void RazerGenie::setupUi()
 
     fillDeviceList();
 
-    //Connect signals
+    // Connect signals
     connect(ui_main.preferencesButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
     ui_main.syncCheckBox->setChecked(manager->getSyncEffects());
@@ -183,7 +183,7 @@ void RazerGenie::dbusServiceUnregistered(const QString &serviceName)
 {
     qInfo() << "Unregistered! " << serviceName;
     clearDeviceList();
-    //TODO: Show another placeholder screen with information that the daemon has been stopped?
+    // TODO: Show another placeholder screen with information that the daemon has been stopped?
     util::showError(tr("The D-Bus connection was lost, which probably means that the daemon has crashed."));
 }
 
@@ -210,7 +210,7 @@ QList<QPair<int, int>> RazerGenie::getConnectedDevices_lsusb()
     while (i.hasNext()) {
         QStringList split = i.next().split(":");
         bool ok;
-        //TODO: Check if count is 2? Otherwise SIGSEGV probably
+        // TODO: Check if count is 2? Otherwise SIGSEGV probably
         int vid = split[0].toInt(&ok, 16);
         int pid = split[1].toInt(&ok, 16);
         if (!ok) {
