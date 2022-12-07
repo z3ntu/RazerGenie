@@ -52,25 +52,24 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     drawStatus = DrawStatus::set;
 
     // Add the main controls to the layout
-    vbox->addLayout(generateMainControls());
+    vbox->addLayout(buildMainControls());
 
-    // Generate other buttons depending on the device type
     QString type = device->getDeviceType();
 
     QLayout *deviceLayout = nullptr;
-    // Generate matrix discovery if requested - ignore device type
+    // Build matrix discovery if requested - ignore device type
     if (launchMatrixDiscovery) {
-        deviceLayout = generateMatrixDiscovery();
+        deviceLayout = buildFallback();
     } else if (type == "keyboard") {
-        deviceLayout = generateKeyboard();
+        deviceLayout = buildKeyboard();
     } else if (type == "mousepad") {
-        deviceLayout = generateMousemat();
+        deviceLayout = buildMousemat();
     }
 
     if (deviceLayout == nullptr) {
         qWarning("Unsupported custom layout for %s with type %s and dimensions %d x %d. Using fallback layout.",
                  qUtf8Printable(device->getDeviceName()), qUtf8Printable(type), dimens.x, dimens.y);
-        deviceLayout = generateMatrixDiscovery();
+        deviceLayout = buildFallback();
     }
 
     vbox->addLayout(deviceLayout);
@@ -87,7 +86,7 @@ void CustomEditor::closeWindow()
     this->close();
 }
 
-QLayout *CustomEditor::generateMainControls()
+QLayout *CustomEditor::buildMainControls()
 {
     auto *hbox = new QHBoxLayout();
 
@@ -117,7 +116,10 @@ QLayout *CustomEditor::generateMainControls()
     return hbox;
 }
 
-QLayout *CustomEditor::generateKeyboard()
+/*
+ * Build layout specific to keyboards, incl. checking physical keyboard layout language.
+ */
+QLayout *CustomEditor::buildKeyboard()
 {
     // Get the matching layout file name for the dimensions
     QString layout;
@@ -135,7 +137,6 @@ QLayout *CustomEditor::generateKeyboard()
     if (keyboardKeysDoc.isNull()) {
         return nullptr;
     }
-    QJsonObject keyboardKeys = keyboardKeysDoc.object();
 
     QString kbdLayout = device->getKeyboardLayout();
 
@@ -143,6 +144,8 @@ QLayout *CustomEditor::generateKeyboard()
     if (kbdLayout == "unknown") {
         util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
     }
+
+    QJsonObject keyboardKeys = keyboardKeysDoc.object();
 
     // Check if we have an exact layout match
     if (keyboardKeys.contains(kbdLayout)) {
@@ -160,6 +163,14 @@ QLayout *CustomEditor::generateKeyboard()
     return nullptr;
 }
 
+/*
+ * Build a layout from the provided json.
+ *
+ * This operates on the object containing the different rows, the keybaord
+ * layout needs to be unpacked already.
+ *
+ * See https://github.com/z3ntu/RazerGenie/wiki/Keyboard-layout-files
+ */
 QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
 {
     auto *vbox = new QVBoxLayout();
@@ -207,7 +218,10 @@ QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
     return vbox;
 }
 
-QLayout *CustomEditor::generateMousemat()
+/*
+ * Build layout specific to mousemats (e.g. Firefly)
+ */
+QLayout *CustomEditor::buildMousemat()
 {
     if (dimens.x != 1 || dimens.y != 15) {
         return nullptr;
@@ -227,7 +241,10 @@ QLayout *CustomEditor::generateMousemat()
     return hbox;
 }
 
-QLayout *CustomEditor::generateMatrixDiscovery()
+/*
+ * Build a generic layout that has a button for each index
+ */
+QLayout *CustomEditor::buildFallback()
 {
     auto *vbox = new QVBoxLayout();
     for (int i = 0; i < dimens.x; i++) {
@@ -246,6 +263,10 @@ QLayout *CustomEditor::generateMatrixDiscovery()
     return vbox;
 }
 
+/*
+ * Load the requested json file from the correct location.
+ * On error returns a null QJsonDocument.
+ */
 QJsonDocument CustomEditor::loadMatrixLayoutJson(QString jsonname)
 {
     QFile *file; // Pointer to file object to use

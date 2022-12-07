@@ -39,13 +39,13 @@ public:
 
 private:
     void closeWindow();
-    QLayout *generateMainControls();
-    QLayout *generateKeyboard();
-    QLayout *generateMousemat();
-    QLayout *generateMatrixDiscovery();
+    QLayout *buildMainControls();
+    QLayout *buildKeyboard();
+    QLayout *buildMousemat();
+    QLayout *buildFallback();
+    QLayout *buildLayoutFromJson(QJsonObject layout);
 
     QJsonDocument loadMatrixLayoutJson(QString jsonname);
-    QLayout *buildLayoutFromJson(QJsonObject layout);
     bool updateKeyrow(int row);
     void clearAll();
 
