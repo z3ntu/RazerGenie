@@ -59,8 +59,6 @@ private:
 private slots:
     void colorButtonClicked();
     void onMatrixPushButtonClicked();
-    void setDrawStatusSet();
-    void setDrawStatusClear();
 };
 
 #endif // CUSTOMEDITOR_H

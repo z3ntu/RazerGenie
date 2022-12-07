@@ -109,8 +109,8 @@ QLayout *CustomEditor::buildMainControls()
     hbox->addWidget(btnClearAll);
 
     connect(btnColor, &QPushButton::clicked, this, &CustomEditor::colorButtonClicked);
-    connect(btnSet, &QPushButton::clicked, this, &CustomEditor::setDrawStatusSet);
-    connect(btnClear, &QPushButton::clicked, this, &CustomEditor::setDrawStatusClear);
+    connect(btnSet, &QPushButton::clicked, [=]() { drawStatus = DrawStatus::set; });
+    connect(btnClear, &QPushButton::clicked, [=]() { drawStatus = DrawStatus::clear; });
     connect(btnClearAll, &QPushButton::clicked, this, &CustomEditor::clearAll);
 
     return hbox;
@@ -373,14 +373,4 @@ void CustomEditor::onMatrixPushButtonClicked()
     }
     // Set color on device
     updateKeyrow(pos.first);
-}
-
-void CustomEditor::setDrawStatusSet()
-{
-    drawStatus = DrawStatus::set;
-}
-
-void CustomEditor::setDrawStatusClear()
-{
-    drawStatus = DrawStatus::clear;
 }
