@@ -45,6 +45,7 @@ private:
     QLayout *generateMatrixDiscovery();
 
     QJsonDocument loadMatrixLayoutJson(QString jsonname);
+    QLayout *buildLayoutFromJson(QJsonObject layout);
     bool updateKeyrow(int row);
     void clearAll();
 

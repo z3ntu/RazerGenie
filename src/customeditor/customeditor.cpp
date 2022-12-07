@@ -68,7 +68,7 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     }
 
     if (deviceLayout == nullptr) {
-        qWarning("Unsupported custom layout for %s with type %s and dimensions %d x %d.",
+        qWarning("Unsupported custom layout for %s with type %s and dimensions %d x %d. Using fallback layout.",
                  qUtf8Printable(device->getDeviceName()), qUtf8Printable(type), dimens.x, dimens.y);
         deviceLayout = generateMatrixDiscovery();
     }
@@ -119,6 +119,7 @@ QLayout *CustomEditor::generateMainControls()
 
 QLayout *CustomEditor::generateKeyboard()
 {
+    // Get the matching layout file name for the dimensions
     QString layout;
     if (dimens.x == 6 && dimens.y == 16) { // Razer Blade Stealth (Late 2017)
         layout = "razerblade16";
@@ -127,7 +128,6 @@ QLayout *CustomEditor::generateKeyboard()
     } else if (dimens.x == 6 && dimens.y == 25) { // Razer Blade Pro 2017
         layout = "razerblade25";
     } else {
-        util::showInfo(tr("Please open an issue in the RazerGenie repository. Device name: %1 - matrix dimens: %2 %3").arg(device->getDeviceName(), QString::number(dimens.x), QString::number(dimens.y)));
         return nullptr;
     }
 
@@ -137,39 +137,36 @@ QLayout *CustomEditor::generateKeyboard()
     }
     QJsonObject keyboardKeys = keyboardKeysDoc.object();
 
-    QJsonObject keyboardLayout;
     QString kbdLayout = device->getKeyboardLayout();
-    if (kbdLayout != "unknown" && keyboardKeys.contains(kbdLayout)) {
-        keyboardLayout = keyboardKeys[kbdLayout].toObject();
-    } else {
-        if (kbdLayout == "unknown") {
-            util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
-        } else {
-            util::showInfo(tr("Your keyboard layout (%1) is not yet supported by RazerGenie for this keyboard. Please open an issue in the RazerGenie repository.").arg(kbdLayout));
-            return nullptr;
-        }
-        bool found = false;
-        QStringList langs;
-        langs << "US"
-              << "German";
-        for (const QString &lang : qAsConst(langs)) {
-            if (keyboardKeys.contains(lang)) {
-                keyboardLayout = keyboardKeys[lang].toObject();
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            util::showInfo(tr("Neither one of these layouts was found in the layout file: %1. Exiting.").arg("US, German"));
-            return nullptr;
+
+    // Show a message when a completely unknown keyboard layout has been detected
+    if (kbdLayout == "unknown") {
+        util::showInfo(tr("You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting <a href='https://github.com/openrazer/openrazer/wiki/Keyboard-layouts'>https://github.com/openrazer/openrazer/wiki/Keyboard-layouts</a>. Using a fallback layout for now."));
+    }
+
+    // Check if we have an exact layout match
+    if (keyboardKeys.contains(kbdLayout)) {
+        return buildLayoutFromJson(keyboardKeys[kbdLayout].toObject());
+    }
+
+    // Otherwise try to get a sane fallback
+    QStringList langs({ "US", "German" });
+    for (const QString &lang : qAsConst(langs)) {
+        if (keyboardKeys.contains(lang)) {
+            return buildLayoutFromJson(keyboardKeys[lang].toObject());
         }
     }
 
+    return nullptr;
+}
+
+QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
+{
     auto *vbox = new QVBoxLayout();
 
     // Iterate over rows in the object
     QJsonObject::const_iterator it;
-    for (it = keyboardLayout.constBegin(); it != keyboardLayout.constEnd(); ++it) {
+    for (it = layout.constBegin(); it != layout.constEnd(); ++it) {
         QJsonArray row = (*it).toArray();
 
         auto *hbox = new QHBoxLayout();
