@@ -42,14 +42,12 @@ private:
     QLayout *generateMainControls();
     QLayout *generateKeyboard();
     QLayout *generateMousemat();
-    QLayout *generateMouse();
     QLayout *generateMatrixDiscovery();
 
-    bool parseKeyboardJSON(QString jsonname);
+    QJsonDocument loadMatrixLayoutJson(QString jsonname);
     bool updateKeyrow(int row);
     void clearAll();
 
-    QJsonObject keyboardKeys;
     QVector<MatrixPushButton *> matrixPushButtons;
     libopenrazer::Device *device;
     openrazer::MatrixDimensions dimens;
