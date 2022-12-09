@@ -79,7 +79,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &LedWidget::fxComboboxChanged);
 
     // Brightness slider
-    if (led->hasFx("brightness")) {
+    if (led->hasBrightness()) {
         brightnessLabel = new QLabel(tr("Brightness"));
         brightnessSlider = new QSlider(Qt::Horizontal, this);
         brightnessSlider->setMaximum(255);
