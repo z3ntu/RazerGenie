@@ -59,7 +59,7 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     }
 
     // Iterate through lighting locations
-    foreach (libopenrazer::Led *led, leds) {
+    for (libopenrazer::Led *led : leds) {
         verticalLayout->addWidget(new LedWidget(this, device, led));
     }
 

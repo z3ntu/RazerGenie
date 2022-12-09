@@ -227,7 +227,7 @@ void RazerGenie::fillDeviceList()
     QList<QDBusObjectPath> devicePaths = manager->getDevices();
 
     // Iterate through all devices
-    foreach (const QDBusObjectPath &devicePath, devicePaths) {
+    for (const QDBusObjectPath &devicePath : devicePaths) {
         addDeviceToGui(devicePath);
     }
 
