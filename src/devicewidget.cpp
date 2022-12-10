@@ -166,10 +166,17 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
             qWarning("Failed to get poll rate");
         }
 
+        QVector<ushort> supportedPollRates;
+        try {
+            supportedPollRates = device->getSupportedPollRates();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get supported poll rates");
+        }
+
         auto *pollComboBox = new QComboBox;
-        pollComboBox->addItem("125 Hz", 125);
-        pollComboBox->addItem("500 Hz", 500);
-        pollComboBox->addItem("1000 Hz", 1000);
+        for (ushort poll : supportedPollRates) {
+            pollComboBox->addItem(QString::number(poll) + " Hz", poll);
+        }
         pollComboBox->setCurrentText(QString::number(pollRate) + " Hz");
         verticalLayout->addWidget(pollComboBox);
 
