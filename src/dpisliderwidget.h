@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2017-2018  Luca Weiss <luca (at) z3ntu (dot) xyz>
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2018  Luca Weiss <luca@z3ntu.xyz>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,34 +14,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef DEVICEWIDGET_H
-#define DEVICEWIDGET_H
+#ifndef DPISLIDERWIDGET_H
+#define DPISLIDERWIDGET_H
 
-#include <QDBusObjectPath>
 #include <QWidget>
 #include <libopenrazer.h>
 
-class DeviceWidget : public QWidget
+class DpiSliderWidget : public QWidget
 {
 public:
-    DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device);
-    ~DeviceWidget() override;
-
-    QDBusObjectPath getDevicePath();
+    DpiSliderWidget(QWidget *parent, libopenrazer::Device *device);
 
 public slots:
-    // Poll combobox
-    void pollCombo(int /* index */);
-
-    void openCustomEditor(bool openMatrixDiscovery = false);
+    // DPI checkbox & slider
+    void dpiChanged(int value);
 
 private:
-    QString name;
-    QDBusObjectPath devicePath;
+    bool syncDpi = true;
     libopenrazer::Device *device;
 };
 
-#endif // DEVICEWIDGET_H
+#endif // DPISLIDERWIDGET_H

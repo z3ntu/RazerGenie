@@ -19,6 +19,7 @@
 #include "devicewidget.h"
 
 #include "customeditor/customeditor.h"
+#include "dpisliderwidget.h"
 #include "ledwidget.h"
 #include "util.h"
 
@@ -65,92 +66,12 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
 
     /* DPI sliders */
     if (device->hasFeature("dpi")) {
-        // HBoxes
-        auto *dpiXHBox = new QHBoxLayout();
-        auto *dpiYHBox = new QHBoxLayout();
-        auto *dpiHeaderHBox = new QHBoxLayout();
-
-        // Header
-        QLabel *dpiHeader = new QLabel(tr("DPI"), this);
-        dpiHeader->setFont(headerFont);
-        dpiHeaderHBox->addWidget(dpiHeader);
-
-        verticalLayout->addLayout(dpiHeaderHBox);
-
-        // Labels
-        QLabel *dpiXLabel = new QLabel(tr("DPI X"));
-        QLabel *dpiYLabel = new QLabel(tr("DPI Y"));
-
-        // Read-only textboxes
-        auto *dpiXText = new QTextEdit(this);
-        auto *dpiYText = new QTextEdit(this);
-        dpiXText->setMaximumWidth(60);
-        dpiYText->setMaximumWidth(60);
-        dpiXText->setMaximumHeight(30);
-        dpiYText->setMaximumHeight(30);
-        dpiXText->setObjectName("dpiXText");
-        dpiYText->setObjectName("dpiYText");
-        dpiXText->setEnabled(false);
-        dpiYText->setEnabled(false);
-
-        // Sliders
-        auto *dpiXSlider = new QSlider(Qt::Horizontal, this);
-        auto *dpiYSlider = new QSlider(Qt::Horizontal, this);
-        dpiXSlider->setObjectName("dpiX");
-        dpiYSlider->setObjectName("dpiY");
-
-        // Sync checkbox
-        QLabel *dpiSyncLabel = new QLabel(tr("Lock X/Y"), this);
-        auto *dpiSyncCheckbox = new QCheckBox(this);
-
-        // Get the current DPI and set the slider&text
-        openrazer::RazerDPI currDPI = { 0, 0 };
-        try {
-            currDPI = device->getDPI();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get dpi");
+        if (device->hasFeature("restricted_dpi")) {
+            // FIXME
+            // verticalLayout->addWidget(new DPIComboWidget(this, device));
+        } else {
+            verticalLayout->addWidget(new DpiSliderWidget(this, device));
         }
-
-        dpiXSlider->setValue(currDPI.dpi_x / 100);
-        dpiYSlider->setValue(currDPI.dpi_y / 100);
-        dpiXText->setText(QString::number(currDPI.dpi_x));
-        dpiYText->setText(QString::number(currDPI.dpi_y));
-
-        int maxDPI = 0;
-        try {
-            maxDPI = device->maxDPI();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get max dpi");
-        }
-        dpiXSlider->setMaximum(maxDPI / 100);
-        dpiYSlider->setMaximum(maxDPI / 100);
-
-        dpiXSlider->setTickInterval(10);
-        dpiYSlider->setTickInterval(10);
-        dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-        dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-
-        dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
-
-        dpiXHBox->addWidget(dpiXLabel);
-        dpiXHBox->addWidget(dpiXText);
-        dpiXHBox->addWidget(dpiXSlider);
-
-        dpiYHBox->addWidget(dpiYLabel);
-        dpiYHBox->addWidget(dpiYText);
-        dpiYHBox->addWidget(dpiYSlider);
-
-        dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-        dpiHeaderHBox->addWidget(dpiSyncLabel);
-        // TODO Better solution/location for 'Sync' checkbox
-        dpiHeaderHBox->addWidget(dpiSyncCheckbox);
-
-        connect(dpiXSlider, &QSlider::valueChanged, this, &DeviceWidget::dpiChanged);
-        connect(dpiYSlider, &QSlider::valueChanged, this, &DeviceWidget::dpiChanged);
-        connect(dpiSyncCheckbox, &QCheckBox::clicked, this, &DeviceWidget::dpiSyncCheckbox);
-
-        verticalLayout->addLayout(dpiXHBox);
-        verticalLayout->addLayout(dpiYHBox);
     }
 
     /* Poll rate */
@@ -228,62 +149,6 @@ QDBusObjectPath DeviceWidget::getDevicePath()
 }
 
 DeviceWidget::~DeviceWidget() = default;
-
-void DeviceWidget::dpiChanged(int orig_value)
-{
-    ushort value = orig_value * 100;
-
-    auto *sender = qobject_cast<QSlider *>(QObject::sender());
-
-    openrazer::RazerDPI dpi = { 0, 0 };
-
-    // if DPI should be synced
-    if (syncDpi) {
-        if (sender->objectName() == "dpiX") {
-            // set the other slider
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            slider->setValue(orig_value);
-
-            // set DPI
-            dpi = { value, value }; // set for both X & Y
-        } else {
-            // just set the slider (as the rest was done already or will be done)
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            slider->setValue(orig_value);
-        }
-    } else { /* if DPI should NOT be synced */
-        // set DPI (with value from other slider)
-        if (sender->objectName() == "dpiX") {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            dpi = { value, static_cast<ushort>(slider->value() * 100) };
-        } else {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            dpi = { static_cast<ushort>(slider->value() * 100), value };
-        }
-    }
-
-    // Update textbox with new value
-    auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit *>(sender->objectName() + "Text");
-    dpitextbox->setText(QString::number(value));
-
-    // Check if we need to actually set the DPI
-    if (dpi.dpi_x == 0 && dpi.dpi_y == 0) {
-        return;
-    }
-
-    try {
-        device->setDPI(dpi);
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to set dpi");
-        util::showError(tr("Failed to set dpi"));
-    }
-}
-
-void DeviceWidget::dpiSyncCheckbox(bool checked)
-{
-    // TODO Sync DPI right here? Or just at next change (current behaviour)?
-    syncDpi = checked;
-}
 
 void DeviceWidget::pollCombo(int /* index */)
 {
