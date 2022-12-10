@@ -140,6 +140,10 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
             lightingHBox->addWidget(radio);
             connect(radio, &QRadioButton::toggled, this, &LedWidget::waveRadioButtonChanged);
         }
+    } else {
+        // Otherwise delete comboBox again
+        delete comboBox;
+        comboBox = nullptr;
     }
 
     /* Brightness sliders */
