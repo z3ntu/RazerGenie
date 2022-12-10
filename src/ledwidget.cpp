@@ -276,6 +276,15 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
             mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
             break;
         }
+        case openrazer::RazerEffect::Ripple: {
+            QColor c = getColorForButton(1);
+            mLed->setRipple(c);
+            break;
+        }
+        case openrazer::RazerEffect::RippleRandom: {
+            mLed->setRippleRandom();
+            break;
+        }
         default:
             throw new std::invalid_argument("Effect not handled: " + QVariant::fromValue(effect).toString().toStdString());
         }
