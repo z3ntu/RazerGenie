@@ -5,6 +5,7 @@
 #include "devicewidget.h"
 
 #include "customeditor/customeditor.h"
+#include "dpicomboboxwidget.h"
 #include "dpisliderwidget.h"
 #include "ledwidget.h"
 #include "util.h"
@@ -53,8 +54,7 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     /* DPI sliders */
     if (device->hasFeature("dpi")) {
         if (device->hasFeature("restricted_dpi")) {
-            // FIXME
-            // verticalLayout->addWidget(new DPIComboWidget(this, device));
+            verticalLayout->addWidget(new DpiComboBoxWidget(this, device));
         } else {
             verticalLayout->addWidget(new DpiSliderWidget(this, device));
         }

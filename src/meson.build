@@ -12,6 +12,7 @@ razergenie_sources = files([
   'preferences/preferences.cpp',
   'devicelistwidget.cpp',
   'devicewidget.cpp',
+  'dpicomboboxwidget.cpp',
   'dpisliderwidget.cpp',
   'ledwidget.cpp',
   'main.cpp',
