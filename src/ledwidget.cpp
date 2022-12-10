@@ -195,10 +195,11 @@ void LedWidget::fxComboboxChanged(int index)
     applyEffectStandardLoc(capability.getIdentifier());
 }
 
-QColor LedWidget::getColorForButton(int num)
+openrazer::RGB LedWidget::getColorForButton(int num)
 {
     QPalette pal = findChild<QPushButton *>("colorbutton" + QString::number(num))->palette();
-    return pal.color(QPalette::Button);
+    QColor color = pal.color(QPalette::Button);
+    return QCOLOR_TO_RGB(color);
 }
 
 openrazer::WaveDirection LedWidget::getWaveDirection()
@@ -229,18 +230,18 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
             break;
         }
         case openrazer::RazerEffect::Static: {
-            QColor c = getColorForButton(1);
+            openrazer::RGB c = getColorForButton(1);
             mLed->setStatic(c);
             break;
         }
         case openrazer::RazerEffect::Breathing: {
-            QColor c = getColorForButton(1);
+            openrazer::RGB c = getColorForButton(1);
             mLed->setBreathing(c);
             break;
         }
         case openrazer::RazerEffect::BreathingDual: {
-            QColor c1 = getColorForButton(1);
-            QColor c2 = getColorForButton(2);
+            openrazer::RGB c1 = getColorForButton(1);
+            openrazer::RGB c2 = getColorForButton(2);
             mLed->setBreathingDual(c1, c2);
             break;
         }
@@ -249,7 +250,7 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
             break;
         }
         case openrazer::RazerEffect::Blinking: {
-            QColor c = getColorForButton(1);
+            openrazer::RGB c = getColorForButton(1);
             mLed->setBlinking(c);
             break;
         }
@@ -262,12 +263,12 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
             break;
         }
         case openrazer::RazerEffect::Reactive: {
-            QColor c = getColorForButton(1);
+            openrazer::RGB c = getColorForButton(1);
             mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
             break;
         }
         case openrazer::RazerEffect::Ripple: {
-            QColor c = getColorForButton(1);
+            openrazer::RGB c = getColorForButton(1);
             mLed->setRipple(c);
             break;
         }

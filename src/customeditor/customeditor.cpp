@@ -24,10 +24,10 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
 
     // Initialize internal colors list
     for (int i = 0; i < dimens.x; i++) {
-        colors << QVector<QColor>(dimens.y);
+        colors << QVector<openrazer::RGB>(dimens.y);
 
         for (int j = 0; j < dimens.y; j++) {
-            colors[i][j] = QColor(Qt::black);
+            colors[i][j] = openrazer::RGB { 0, 0, 0 };
         }
     }
 
@@ -291,10 +291,10 @@ bool CustomEditor::updateKeyrow(int row)
 
 void CustomEditor::clearAll()
 {
-    QVector<QColor> blankColors;
+    QVector<openrazer::RGB> blankColors;
     // Initialize the array with the width of the matrix with black = off
     for (int i = 0; i < dimens.y; i++) {
-        blankColors << QColor(Qt::black);
+        blankColors << openrazer::RGB { 0, 0, 0 };
     }
 
     // Send one request per row
@@ -312,7 +312,7 @@ void CustomEditor::clearAll()
     // Reset model
     for (auto &color : colors) {
         for (auto &j : color) {
-            j = QColor(Qt::black);
+            j = openrazer::RGB { 0, 0, 0 };
         }
     }
 }
@@ -345,13 +345,13 @@ void CustomEditor::onMatrixPushButtonClicked()
     QPair<int, int> pos = sender->matrixPos();
     if (drawStatus == DrawStatus::set) {
         // Set color in model
-        colors[pos.first][pos.second] = selectedColor;
+        colors[pos.first][pos.second] = QCOLOR_TO_RGB(selectedColor);
         // Set color in view
         sender->setButtonColor(selectedColor);
     } else if (drawStatus == DrawStatus::clear) {
         qDebug() << "Clearing color.";
         // Set color in model
-        colors[pos.first][pos.second] = QColor(Qt::black);
+        colors[pos.first][pos.second] = openrazer::RGB { 0, 0, 0 };
         // Set color in view
         sender->resetButtonColor();
     } else {

@@ -25,7 +25,7 @@ public:
     // Wave buttons
     void waveRadioButtonChanged(bool enabled);
 
-    QColor getColorForButton(int num);
+    openrazer::RGB getColorForButton(int num);
     openrazer::WaveDirection getWaveDirection();
 
     void applyEffect();

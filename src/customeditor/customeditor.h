@@ -39,7 +39,7 @@ private:
     libopenrazer::Device *device;
     openrazer::MatrixDimensions dimens;
 
-    QVector<QVector<QColor>> colors;
+    QVector<QVector<openrazer::RGB>> colors;
     QColor selectedColor;
     DrawStatus drawStatus;
 private slots:

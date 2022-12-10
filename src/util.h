@@ -7,6 +7,14 @@
 
 #include <QString>
 
+#define QCOLOR_TO_RGB(c)                       \
+    openrazer::RGB                             \
+    {                                          \
+        static_cast<uchar>(c.red()),           \
+                static_cast<uchar>(c.green()), \
+                static_cast<uchar>(c.blue())   \
+    }
+
 namespace util {
 void showError(QString error);
 void showInfo(QString info);
