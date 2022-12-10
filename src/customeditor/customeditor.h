@@ -32,7 +32,7 @@ private:
     QLayout *buildLayoutFromJson(QJsonObject layout);
 
     QJsonDocument loadMatrixLayoutJson(QString jsonname);
-    bool updateKeyrow(int row);
+    void updateKeyrow(int row);
     void clearAll();
 
     QVector<MatrixPushButton *> matrixPushButtons;

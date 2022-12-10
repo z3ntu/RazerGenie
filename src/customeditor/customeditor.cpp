@@ -284,9 +284,14 @@ QJsonDocument CustomEditor::loadMatrixLayoutJson(QString jsonname)
     return QJsonDocument::fromJson(data.toUtf8());
 }
 
-bool CustomEditor::updateKeyrow(int row)
+void CustomEditor::updateKeyrow(int row)
 {
-    return device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]) && device->displayCustomFrame();
+    try {
+        device->defineCustomFrame(row, 0, dimens.y - 1, colors[row]);
+        device->displayCustomFrame();
+    } catch (const libopenrazer::DBusException &e) {
+        util::showError(tr("Error updating the lighting data."));
+    }
 }
 
 void CustomEditor::clearAll()

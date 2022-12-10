@@ -425,14 +425,20 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
 
 void RazerGenie::toggleSync(bool sync)
 {
-    if (!manager->syncEffects(sync))
+    try {
+        manager->syncEffects(sync);
+    } catch (const libopenrazer::DBusException &e) {
         util::showError(tr("Error while syncing devices."));
+    }
 }
 
 void RazerGenie::toggleOffOnScreesaver(bool on)
 {
-    if (!manager->setTurnOffOnScreensaver(on))
+    try {
+        manager->setTurnOffOnScreensaver(on);
+    } catch (const libopenrazer::DBusException &e) {
         util::showError(tr("Error while toggling 'turn off on screensaver'"));
+    }
 }
 
 void RazerGenie::openPreferences()
