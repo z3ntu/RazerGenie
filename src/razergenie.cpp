@@ -298,7 +298,9 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
 
     if (devices.isEmpty()) {
         // Remove placeholder widget if inserted.
-        ui_main.stackedWidget->removeWidget(ui_main.stackedWidget->widget(0));
+        QWidget *widget = ui_main.stackedWidget->widget(0);
+        if (widget != nullptr)
+            ui_main.stackedWidget->removeWidget(widget);
     }
 
     // Add new device to the list
