@@ -1,0 +1,14 @@
+name: macOS
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - run: brew install qt@5 meson
+      - run: echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+      - run: meson setup builddir/
+      - run: meson compile -C builddir/ -v
