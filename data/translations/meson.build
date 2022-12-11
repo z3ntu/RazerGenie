@@ -5,6 +5,6 @@ ts_files = [
 ]
 qt.compile_translations(ts_files : ts_files,
                         install : true,
-                        install_dir : get_option('datadir') / 'razergenie' / 'translations',
+                        install_dir : razergenie_data_dir / 'translations',
                         build_by_default : true)
 

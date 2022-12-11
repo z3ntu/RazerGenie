@@ -276,7 +276,13 @@ QJsonDocument CustomEditor::loadMatrixLayoutJson(QString jsonname)
 {
     QFile *file; // Pointer to file object to use
     QFile file_devel("../../data/matrix_layouts/" + jsonname + ".json"); // File during developemnt
-    QFile file_prod(QString(RAZERGENIE_DATADIR) + "/matrix_layouts/" + jsonname + ".json"); // File for production
+
+#if defined(Q_OS_MACOS)
+    QString layoutDirectory = QApplication::applicationDirPath() + "/../Resources/matrix_layouts/";
+#else
+    QString layoutDirectory = QString(RAZERGENIE_DATADIR) + "/matrix_layouts/";
+#endif
+    QFile file_prod(layoutDirectory + jsonname + ".json");
 
     // Try to open the dev file (higher priority)
     if (file_devel.open(QIODevice::ReadOnly)) {

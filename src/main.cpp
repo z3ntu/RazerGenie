@@ -24,7 +24,12 @@ int main(int argc, char *argv[])
     parser.process(app);
 
     QTranslator translator;
-    bool ret = translator.load(QLocale::system(), QString(), QString(), QString(RAZERGENIE_DATADIR) + "/translations/");
+#if defined(Q_OS_MACOS)
+    QString translationsDirectory = QApplication::applicationDirPath() + "/../Resources/translations/";
+#else
+    QString translationsDirectory = QString(RAZERGENIE_DATADIR) + "/translations/";
+#endif
+    bool ret = translator.load(QLocale::system(), QString(), QString(), translationsDirectory);
     qDebug() << "Translation loaded:" << ret;
     app.installTranslator(&translator);
 

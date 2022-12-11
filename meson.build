@@ -11,8 +11,11 @@ qt_dep = dependency('qt5', modules: ['Core', 'DBus', 'Gui', 'Network', 'Widgets'
 
 libopenrazer_dep = dependency('libopenrazer', fallback : ['libopenrazer', 'libopenrazer_dep'])
 
-install_data('logo/xyz.z3ntu.razergenie.svg',
-             install_dir : get_option('datadir') / 'icons/hicolor/scalable/apps')
+if build_machine.system() == 'darwin'
+  razergenie_data_dir = 'Contents/Resources'
+else
+  razergenie_data_dir = get_option('datadir') / 'razergenie'
+endif
 
 subdir('data')
 subdir('src')
