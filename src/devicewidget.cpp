@@ -49,7 +49,7 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
 
     // Iterate through lighting locations
     for (libopenrazer::Led *led : leds) {
-        verticalLayout->addWidget(new LedWidget(this, device, led));
+        verticalLayout->addWidget(new LedWidget(this, led));
     }
 
     /* DPI sliders */

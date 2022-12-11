@@ -13,7 +13,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer::Led *led)
+LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     : QWidget(parent)
 {
     this->mLed = led;
@@ -34,7 +34,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer
     comboBox->setObjectName("combobox");
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-    // TODO Battery
     // TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
     openrazer::RazerEffect currentEffect = openrazer::RazerEffect::Static;

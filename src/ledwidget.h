@@ -12,7 +12,7 @@ class LedWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LedWidget(QWidget *parent, libopenrazer::Device *device, libopenrazer::Led *led);
+    LedWidget(QWidget *parent, libopenrazer::Led *led);
     libopenrazer::Led *mLed;
     libopenrazer::Led *led();
 
