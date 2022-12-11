@@ -203,7 +203,7 @@ QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
             if (!obj["label"].isNull()) {
                 MatrixPushButton *btn = new MatrixPushButton(obj["label"].toString());
                 int width = obj.contains("width") ? obj.value("width").toInt() : 60;
-                int height = /*obj.contains("height") ? obj.value("height").toInt() : */ 63;
+                int height = obj.contains("height") ? obj.value("height").toInt() : 63;
                 btn->setFixedSize(width, height);
                 if (obj.contains("matrix")) {
                     QJsonArray arr = obj["matrix"].toArray();
