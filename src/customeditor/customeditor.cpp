@@ -146,11 +146,13 @@ QLayout *CustomEditor::buildKeyboard()
     QStringList langs({ "US", "German" });
     for (const QString &lang : qAsConst(langs)) {
         if (keyboardKeys.contains(lang)) {
+            qWarning("Failed to find a compatible layout for keyboard layout %s, using %s as fallback.", qUtf8Printable(kbdLayout), qUtf8Printable(lang));
             return buildLayoutFromJson(keyboardKeys[lang].toObject());
         }
     }
 
-    return nullptr;
+    qWarning("Failed to find a compatible layout for keyboard layout %s, using any.", qUtf8Printable(kbdLayout));
+    return buildLayoutFromJson(keyboardKeys.begin().value().toObject());;
 }
 
 /*
