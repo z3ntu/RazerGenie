@@ -20,7 +20,7 @@ class CustomEditor : public QDialog
 {
     Q_OBJECT
 public:
-    CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery = false, QWidget *parent = nullptr);
+    CustomEditor(libopenrazer::Device *device, bool forceFallback = false, QWidget *parent = nullptr);
     ~CustomEditor() override;
 
 private:

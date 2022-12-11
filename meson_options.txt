@@ -1,1 +1,0 @@
-option('include_matrix_discovery', type : 'boolean', value : false, description : 'Includes the matrix discovery feature.')

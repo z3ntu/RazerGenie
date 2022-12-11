@@ -21,12 +21,12 @@ public slots:
     // Poll combobox
     void pollCombo(int /* index */);
 
-    void openCustomEditor(bool openMatrixDiscovery = false);
-
 private:
     QString name;
     QDBusObjectPath devicePath;
     libopenrazer::Device *device;
+
+    void openCustomEditor(bool forceFallback);
 };
 
 #endif // DEVICEWIDGET_H

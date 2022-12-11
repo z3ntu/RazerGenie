@@ -10,6 +10,7 @@ razergenie_sources = files([
   'customeditor/customeditor.cpp',
   'customeditor/matrixpushbutton.cpp',
   'preferences/preferences.cpp',
+  'clickeventfilter.cpp',
   'devicelistwidget.cpp',
   'devicewidget.cpp',
   'dpicomboboxwidget.cpp',
@@ -25,6 +26,7 @@ processed = qt.preprocess(
   moc_headers : files([
     'customeditor/customeditor.h',
     'preferences/preferences.h',
+    'clickeventfilter.h',
     'devicelistwidget.h',
     'ledwidget.h',
     'razergenie.h',

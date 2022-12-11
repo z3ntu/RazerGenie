@@ -3,13 +3,6 @@ project('razergenie', 'cpp',
         meson_version : '>=0.49.0',
         default_options : ['cpp_std=c++11'])
 
-if get_option('include_matrix_discovery')
-  add_project_arguments('-DINCLUDE_MATRIX_DISCOVERY', language : 'cpp')
-  message('razergenie: Matrix discovery feature included.')
-else
-  message('razergenie: Matrix discovery feature not included.')
-endif
-
 # Disable any API deprecated in 5.15 or older Qt versions
 add_project_arguments('-DQT_DISABLE_DEPRECATED_BEFORE=0x050F00', language : 'cpp')
 

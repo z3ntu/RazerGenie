@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include <QtWidgets>
 
-CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscovery, QWidget *parent)
+CustomEditor::CustomEditor(libopenrazer::Device *device, bool forceFallback, QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle(tr("RazerGenie - Custom Editor"));
@@ -43,8 +43,8 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     QString type = device->getDeviceType();
 
     QLayout *deviceLayout = nullptr;
-    // Build matrix discovery if requested - ignore device type
-    if (launchMatrixDiscovery) {
+    // Build fallback layout if requested - ignore device type
+    if (forceFallback) {
         deviceLayout = buildFallback();
     } else if (type == "keyboard") {
         deviceLayout = buildKeyboard();

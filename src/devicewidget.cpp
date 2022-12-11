@@ -4,6 +4,7 @@
 
 #include "devicewidget.h"
 
+#include "clickeventfilter.h"
 #include "customeditor/customeditor.h"
 #include "dpicomboboxwidget.h"
 #include "dpisliderwidget.h"
@@ -94,14 +95,17 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     if (device->hasFeature("custom_frame")) {
         auto *button = new QPushButton(this);
         button->setText(tr("Open custom editor"));
+
+        // Make Shift-Click open the custom editor with fallback layout
+        ClickEventFilter *filter = new ClickEventFilter();
+        button->installEventFilter(filter);
+
         verticalLayout->addWidget(button);
-        connect(button, &QPushButton::clicked, this, &DeviceWidget::openCustomEditor);
-#ifdef INCLUDE_MATRIX_DISCOVERY
-        QPushButton *buttonD = new QPushButton(this);
-        buttonD->setText(tr("Launch matrix discovery"));
-        verticalLayout->addWidget(buttonD);
-        connect(buttonD, &QPushButton::clicked, this, [this] { openCustomEditor(true); });
-#endif
+
+        connect(filter, &ClickEventFilter::shiftClicked,
+                [=]() { openCustomEditor(true); });
+        connect(button, &QPushButton::clicked,
+                [=]() { openCustomEditor(false); });
     }
 
     /* Spacer to bottom */
@@ -147,7 +151,7 @@ void DeviceWidget::pollCombo(int /* index */)
     }
 }
 
-void DeviceWidget::openCustomEditor(bool openMatrixDiscovery)
+void DeviceWidget::openCustomEditor(bool forceFallback)
 {
     // Set combobox(es) to "Custom Effect"
     auto comboboxes = this->findChildren<QComboBox *>("combobox");
@@ -157,7 +161,7 @@ void DeviceWidget::openCustomEditor(bool openMatrixDiscovery)
         combobox->setCurrentText("Custom Effect");
     }
 
-    auto *cust = new CustomEditor(device, openMatrixDiscovery);
+    auto *cust = new CustomEditor(device, forceFallback);
     cust->setAttribute(Qt::WA_DeleteOnClose);
     cust->show();
 }
