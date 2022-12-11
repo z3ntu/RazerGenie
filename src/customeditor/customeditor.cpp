@@ -141,6 +141,7 @@ QLayout *CustomEditor::buildKeyboard()
 
     // Check if we have an exact layout match
     if (keyboardKeys.contains(kbdLayout)) {
+        qInfo("Loaded matching layout for keyboard layout %s.", qUtf8Printable(kbdLayout));
         return buildLayoutFromJson(keyboardKeys[kbdLayout].toObject());
     }
 
@@ -292,16 +293,15 @@ QJsonDocument CustomEditor::loadMatrixLayoutJson(QString jsonname)
 
     // Try to open the dev file (higher priority)
     if (file_devel.open(QIODevice::ReadOnly)) {
-        qDebug() << "RazerGenie: Using the development " + jsonname + ".json file.";
+        qInfo("RazerGenie: Using the development %s.json file.", qUtf8Printable(jsonname));
         file = &file_devel;
     } else {
-        qDebug() << "RazerGenie: Development " + jsonname + ".json failed to open. Trying the production location. Error: " << file_devel.errorString();
-
         // Try to open the production file
         if (file_prod.open(QIODevice::ReadOnly)) {
+            qInfo("RazerGenie: Using the production %s.json file.", qUtf8Printable(jsonname));
             file = &file_prod;
         } else {
-            util::showInfo(tr("The file %1.json, used for the custom editor failed to load: %2\nThe editor won't open now.").arg(jsonname, file_prod.errorString()));
+            util::showInfo(tr("The file %1.json, used for the custom editor failed to load: %2").arg(jsonname, file_prod.errorString()));
             return QJsonDocument();
         }
     }
@@ -370,8 +370,6 @@ void CustomEditor::colorButtonClicked()
 
         // Set the color for other methods to use
         selectedColor = color;
-    } else {
-        qDebug() << "User cancelled the dialog.";
     }
 }
 
@@ -385,13 +383,12 @@ void CustomEditor::onMatrixPushButtonClicked()
         // Set color in view
         sender->setButtonColor(selectedColor);
     } else if (drawStatus == DrawStatus::clear) {
-        qDebug() << "Clearing color.";
         // Set color in model
         colors[pos.first][pos.second] = openrazer::RGB { 0, 0, 0 };
         // Set color in view
         sender->resetButtonColor();
     } else {
-        qDebug() << "RazerGenie: Unhandled DrawStatus: " << drawStatus;
+        throw new std::invalid_argument("Unhandled DrawStatus");
     }
     // Set color on device
     updateKeyrow(pos.first);
