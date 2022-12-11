@@ -27,6 +27,7 @@ private:
     void closeWindow();
     QLayout *buildMainControls();
     QLayout *buildKeyboard();
+    QLayout *buildMouse();
     QLayout *buildMousemat();
     QLayout *buildFallback();
     QLayout *buildLayoutFromJson(QJsonObject layout);

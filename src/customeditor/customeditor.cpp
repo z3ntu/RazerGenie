@@ -48,6 +48,8 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
         deviceLayout = buildFallback();
     } else if (type == "keyboard") {
         deviceLayout = buildKeyboard();
+    } else if (type == "mouse") {
+        deviceLayout = buildMouse();
     } else if (type == "mousepad") {
         deviceLayout = buildMousemat();
     }
@@ -147,6 +149,26 @@ QLayout *CustomEditor::buildKeyboard()
     }
 
     return nullptr;
+}
+
+/*
+ * Build layout specific to mice (e.g. Mamba Elite)
+ */
+QLayout *CustomEditor::buildMouse()
+{
+    QString layout;
+    if (dimens.x == 1 && dimens.y == 20) {
+        layout = "razermouse20";
+    } else {
+        return nullptr;
+    }
+
+    QJsonDocument layoutDoc = loadMatrixLayoutJson(layout);
+    if (layoutDoc.isNull()) {
+        return nullptr;
+    }
+
+    return buildLayoutFromJson(layoutDoc.object());
 }
 
 /*

@@ -1,0 +1,65 @@
+{
+    "row0": [
+        {"label": "", "matrix": [0, 2]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 11]}
+    ],
+    "row1": [
+        {"label": "", "matrix": [0, 3]},
+        {"label": null},
+        {"label": "", "matrix": [0, 0]},
+        {"label": null},
+        {"label": "", "matrix": [0, 12]}
+    ],
+    "row2": [
+        {"label": "", "matrix": [0, 4]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 13]}
+    ],
+    "row3": [
+        {"label": "", "matrix": [0, 5]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 14]}
+    ],
+    "row4": [
+        {"label": "", "matrix": [0, 6]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 15]}
+    ],
+    "row5": [
+        {"label": "", "matrix": [0, 7]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 16]}
+    ],
+    "row6": [
+        {"label": "", "matrix": [0, 8]},
+        {"label": null},
+        {"label": "", "matrix": [0, 1]},
+        {"label": null},
+        {"label": "", "matrix": [0, 17]}
+    ],
+    "row7": [
+        {"label": "", "matrix": [0, 9]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 18]}
+    ],
+    "row8": [
+        {"label": "", "matrix": [0, 10]},
+        {"label": null},
+        {"label": null},
+        {"label": null},
+        {"label": "", "matrix": [0, 19]}
+    ]
+}
