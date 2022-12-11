@@ -155,7 +155,7 @@ QLayout *CustomEditor::buildKeyboard()
     }
 
     qWarning("Failed to find a compatible layout for keyboard layout %s, using any.", qUtf8Printable(kbdLayout));
-    return buildLayoutFromJson(keyboardKeys.begin().value().toObject());;
+    return buildLayoutFromJson(keyboardKeys.begin().value().toObject());
 }
 
 /*
