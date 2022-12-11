@@ -10,6 +10,7 @@
 
 class DpiComboBoxWidget : public QWidget
 {
+    Q_OBJECT
 public:
     DpiComboBoxWidget(QWidget *parent, libopenrazer::Device *device);
 

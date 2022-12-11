@@ -11,6 +11,7 @@
 
 class DeviceWidget : public QWidget
 {
+    Q_OBJECT
 public:
     DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device);
     ~DeviceWidget() override;

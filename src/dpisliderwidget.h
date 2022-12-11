@@ -10,6 +10,7 @@
 
 class DpiSliderWidget : public QWidget
 {
+    Q_OBJECT
 public:
     DpiSliderWidget(QWidget *parent, libopenrazer::Device *device);
 
