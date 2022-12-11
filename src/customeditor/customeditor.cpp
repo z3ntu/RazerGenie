@@ -51,7 +51,7 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool launchMatrixDiscov
     } else if (type == "mouse") {
         deviceLayout = buildMouse();
     } else if (type == "mousepad") {
-        deviceLayout = buildMousemat();
+        deviceLayout = buildMousepad();
     }
 
     if (deviceLayout == nullptr) {
@@ -229,24 +229,21 @@ QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
 /*
  * Build layout specific to mousemats (e.g. Firefly)
  */
-QLayout *CustomEditor::buildMousemat()
+QLayout *CustomEditor::buildMousepad()
 {
-    if (dimens.x != 1 || dimens.y != 15) {
+    QString layout;
+    if (dimens.x == 1 && dimens.y == 15) {
+        layout = "razermousepad15";
+    } else {
         return nullptr;
     }
 
-    auto *hbox = new QHBoxLayout();
-    // TODO: Improve visual style of the mousemat grid (make it look like the mousepad!)
-    for (int i = 0; i < dimens.y; i++) {
-        MatrixPushButton *btn = new MatrixPushButton(QString::number(i));
-        btn->setMatrixPos(0, i);
-
-        connect(btn, &QPushButton::clicked, this, &CustomEditor::onMatrixPushButtonClicked);
-
-        hbox->addWidget(btn);
-        matrixPushButtons.append(btn);
+    QJsonDocument layoutDoc = loadMatrixLayoutJson(layout);
+    if (layoutDoc.isNull()) {
+        return nullptr;
     }
-    return hbox;
+
+    return buildLayoutFromJson(layoutDoc.object());
 }
 
 /*

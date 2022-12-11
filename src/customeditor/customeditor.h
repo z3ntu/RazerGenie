@@ -28,7 +28,7 @@ private:
     QLayout *buildMainControls();
     QLayout *buildKeyboard();
     QLayout *buildMouse();
-    QLayout *buildMousemat();
+    QLayout *buildMousepad();
     QLayout *buildFallback();
     QLayout *buildLayoutFromJson(QJsonObject layout);
 
