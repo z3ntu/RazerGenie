@@ -3,6 +3,7 @@ ts_files = [
   'de.ts',
   'fr.ts',
   'nl.ts',
+  'ru.ts',
 ]
 qt.compile_translations(ts_files : ts_files,
                         install : true,
