@@ -7,6 +7,7 @@
 #include "razerimagedownloader.h"
 
 #include <QFileInfo>
+#include <QIcon>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -55,7 +56,11 @@ void DeviceListWidget::imageDownloadErrored(QString reason, QString longReason)
     qDebug() << "DeviceListWidget: Received errored signal!";
     qDebug() << "DeviceListWidget: Reason:" << reason;
     qDebug() << "DeviceListWidget: Long reason:" << longReason;
-    imageLabel->setText(reason);
+
+    setToolTip(longReason);
+
+    QPixmap placeholder = QIcon::fromTheme("folder-pictures-symbolic").pixmap(40);
+    imageLabel->setPixmap(placeholder);
 }
 
 libopenrazer::Device *DeviceListWidget::device()
