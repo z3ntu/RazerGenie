@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("RazerGenie");
     QApplication::setApplicationVersion(RAZERGENIE_VERSION);
     QApplication::setOrganizationName("razergenie"); // for QSettings
+    QApplication::setDesktopFileName("xyz.z3ntu.razergenie");
 
     QCommandLineParser parser;
     parser.addHelpOption();
