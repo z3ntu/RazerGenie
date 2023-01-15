@@ -27,6 +27,7 @@ private:
     void closeWindow();
     QLayout *buildMainControls();
     QLayout *buildKeyboard();
+    QLayout *buildKeypad();
     QLayout *buildMouse();
     QLayout *buildMousepad();
     QLayout *buildFallback();

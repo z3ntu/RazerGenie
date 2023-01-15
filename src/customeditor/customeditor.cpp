@@ -48,6 +48,8 @@ CustomEditor::CustomEditor(libopenrazer::Device *device, bool forceFallback, QWi
         deviceLayout = buildFallback();
     } else if (type == "keyboard") {
         deviceLayout = buildKeyboard();
+    } else if (type == "keypad") {
+        deviceLayout = buildKeypad();
     } else if (type == "mouse") {
         deviceLayout = buildMouse();
     } else if (type == "mousepad") {
@@ -156,6 +158,26 @@ QLayout *CustomEditor::buildKeyboard()
 
     qWarning("Failed to find a compatible layout for keyboard layout %s, using any.", qUtf8Printable(kbdLayout));
     return buildLayoutFromJson(keyboardKeys.begin().value().toObject());
+}
+
+/*
+ * Build layout specific to keypads (e.g. Tartarus V2)
+ */
+QLayout *CustomEditor::buildKeypad()
+{
+    QString layout;
+    if (dimens.x == 4 && dimens.y == 6) {
+        layout = "razerkeypad6";
+    } else {
+        return nullptr;
+    }
+
+    QJsonDocument layoutDoc = loadMatrixLayoutJson(layout);
+    if (layoutDoc.isNull()) {
+        return nullptr;
+    }
+
+    return buildLayoutFromJson(layoutDoc.object());
 }
 
 /*
