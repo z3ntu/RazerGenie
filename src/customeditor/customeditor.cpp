@@ -241,6 +241,8 @@ QLayout *CustomEditor::buildMousepad()
     QString layout;
     if (dimens.x == 1 && dimens.y == 15) {
         layout = "razermousepad15";
+    } else if (dimens.x == 1 && dimens.y == 19) {
+        layout = "razermousepad19";
     } else {
         return nullptr;
     }

@@ -19,6 +19,7 @@ install_data('matrix_layouts/razerblade16.json',
              'matrix_layouts/razerhunt22.json',
              'matrix_layouts/razermouse20.json',
              'matrix_layouts/razermousepad15.json',
+             'matrix_layouts/razermousepad19.json',
              install_dir : razergenie_data_dir / 'matrix_layouts')
 
 # Logo
