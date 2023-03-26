@@ -246,7 +246,8 @@ QLayout *CustomEditor::buildLayoutFromJson(QJsonObject layout)
                 hbox->addWidget(btn);
                 matrixPushButtons.append(btn);
             } else {
-                auto *spacer = new QSpacerItem(66, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
+                int width = obj.contains("width") ? obj.value("width").toInt() : 66;
+                auto *spacer = new QSpacerItem(width, 69, QSizePolicy::Fixed, QSizePolicy::Fixed);
                 hbox->addItem(spacer);
             }
         }
