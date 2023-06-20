@@ -6,8 +6,10 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFormLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QScrollArea>
 #include <QVBoxLayout>
 #include <config.h>
 #include <libopenrazer.h>
@@ -16,17 +18,43 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     : QDialog(parent), manager(manager)
 {
     setWindowTitle(tr("RazerGenie - Preferences"));
+    resize(600, 400);
+    setMinimumSize(QSize(400, 300));
 
-    QFont titleFont("Arial", 18, QFont::Bold);
+    QFont titleFont("Arial", 16, QFont::Bold);
 
-    auto *vbox = new QVBoxLayout(this);
+    // Layout setup:
+    // QDialog -> QVBoxLayout mainLayout -> QScrollArea scrollArea -> QWidget contentWidget -> QFormLayout formLayout
 
-    QLabel *aboutLabel = new QLabel(this);
-    aboutLabel->setText(tr("About:"));
+    QWidget *contentWidget = new QWidget(this);
+    contentWidget->setMaximumWidth(550);
+
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setWidget(contentWidget);
+    scrollArea->setAlignment(Qt::AlignHCenter);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(scrollArea);
+
+    QFormLayout *formLayout = new QFormLayout(contentWidget);
+
+    QLabel *aboutLabel = new QLabel(contentWidget);
+    aboutLabel->setText(tr("About"));
     aboutLabel->setFont(titleFont);
+    aboutLabel->setAlignment(Qt::AlignHCenter);
+    formLayout->addRow(aboutLabel);
+
+    QFrame *aboutSeparator = new QFrame(this);
+    aboutSeparator->setFrameShape(QFrame::HLine);
+    aboutSeparator->setFrameShadow(QFrame::Sunken);
+    formLayout->addRow(aboutSeparator);
 
     QLabel *razergenieVersionLabel = new QLabel(this);
-    razergenieVersionLabel->setText(tr("RazerGenie Version: %1").arg(RAZERGENIE_VERSION));
+    razergenieVersionLabel->setText(RAZERGENIE_VERSION);
+    formLayout->addRow(tr("RazerGenie Version:"), razergenieVersionLabel);
 
     QLabel *openrazerVersionLabel = new QLabel(this);
     QString daemonVersion = "unknown";
@@ -35,29 +63,41 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     } catch (const libopenrazer::DBusException &e) {
         qDebug() << "Failed to get daemon version:" << e.name() << e.message();
     }
-    openrazerVersionLabel->setText(tr("OpenRazer Daemon Version: %1").arg(daemonVersion));
+    openrazerVersionLabel->setText(daemonVersion);
+    formLayout->addRow(tr("OpenRazer Daemon Version:"), openrazerVersionLabel);
 
     QLabel *generalLabel = new QLabel(this);
-    generalLabel->setText(tr("General:"));
+    generalLabel->setText(tr("General"));
     generalLabel->setFont(titleFont);
+    generalLabel->setAlignment(Qt::AlignHCenter);
+    formLayout->addRow(generalLabel);
 
-    QLabel *downloadText = new QLabel(this);
-    downloadText->setText(tr("For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the Razer Privacy Policy (https://www.razer.com/legal/privacy-policy)."));
-    downloadText->setWordWrap(true);
+    QFrame *generalSeparator = new QFrame(this);
+    generalSeparator->setFrameShape(QFrame::HLine);
+    generalSeparator->setFrameShadow(QFrame::Sunken);
+    formLayout->addRow(generalSeparator);
 
-    auto *downloadCheckBox = new QCheckBox(this);
+    QCheckBox *downloadCheckBox = new QCheckBox(this);
     downloadCheckBox->setText(tr("Download device images"));
     downloadCheckBox->setChecked(settings.value("downloadImages").toBool());
     connect(downloadCheckBox, &QCheckBox::clicked, this, [=](bool checked) {
         settings.setValue("downloadImages", checked);
     });
+    formLayout->addRow(tr("Device images:"), downloadCheckBox);
 
-    auto backendHbox = new QHBoxLayout();
+    QLabel *downloadText = new QLabel(this);
+    downloadText->setText(tr("For displaying device images, RazerGenie downloads the image behind "
+                             "the URL specified for a device in the OpenRazer daemon source code. "
+                             "This will only be done for devices that are connected to the PC and "
+                             "only once, as the images are cached locally. For reviewing, what "
+                             "information Razer might collect with these connections, please "
+                             "consult the <a href=\"https://www.razer.com/legal/privacy-policy\">"
+                             "Razer Privacy Policy</a>."));
+    downloadText->setOpenExternalLinks(true);
+    downloadText->setWordWrap(true);
+    formLayout->addRow(nullptr, downloadText);
 
-    auto backendLabel = new QLabel(this);
-    backendLabel->setText(tr("Daemon backend to use:"));
-
-    auto *backendComboBox = new QComboBox(this);
+    QComboBox *backendComboBox = new QComboBox(this);
     backendComboBox->addItem("OpenRazer");
     backendComboBox->addItem("razer_test");
     backendComboBox->setCurrentText(settings.value("backend").toString());
@@ -69,24 +109,7 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
         msgBox.addButton(QMessageBox::Ok);
         msgBox.exec();
     });
-
-    backendHbox->addWidget(backendLabel);
-    backendHbox->addWidget(backendComboBox);
-
-    auto *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    vbox->addWidget(aboutLabel);
-    vbox->addWidget(razergenieVersionLabel);
-    vbox->addWidget(openrazerVersionLabel);
-    vbox->addWidget(generalLabel);
-    vbox->addWidget(downloadText);
-    vbox->addWidget(downloadCheckBox);
-    vbox->addLayout(backendHbox);
-    vbox->addItem(spacer);
-
-    this->resize(600, 400);
-    this->setMinimumSize(QSize(400, 300));
-    this->setWindowTitle(tr("RazerGenie - Preferences"));
+    formLayout->addRow(tr("Daemon backend:"), backendComboBox);
 }
 
 Preferences::~Preferences() = default;
