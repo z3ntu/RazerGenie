@@ -9,32 +9,32 @@
         <translation>RazerGenie - Éditeur personnalisé</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="90"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="92"/>
         <source>Set</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="93"/>
         <source>Clear</source>
         <translation>Enlever</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="92"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="94"/>
         <source>Clear All</source>
         <translation>Tout enlever</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="137"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="139"/>
         <source>You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Using a fallback layout for now.</source>
         <translation>Vous utilisez un clavier dont la disposition n&apos;est pas connue du daemon. Aidez-nous en visitant &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Pour l&apos;instant, un dispositif générique sera utilisé.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="304"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="329"/>
         <source>The file %1.json, used for the custom editor failed to load: %2</source>
         <translation>Le fichier %1.json, utilisé pour l&apos;éditeur personnalisé, n&apos;a pas pu être chargé : %2</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="324"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="349"/>
         <source>Error updating the lighting data.</source>
         <translation>Erreur de mise à jour des données d&apos;éclairage.</translation>
     </message>
@@ -42,12 +42,12 @@
 <context>
     <name>DeviceListWidget</name>
     <message>
-        <location filename="../../src/devicelistwidget.cpp" line="28"/>
+        <location filename="../../src/devicelistwidget.cpp" line="29"/>
         <source>Downloading image...</source>
         <translation>Téléchargement de l&apos;image...</translation>
     </message>
     <message>
-        <location filename="../../src/devicelistwidget.cpp" line="68"/>
+        <location filename="../../src/devicelistwidget.cpp" line="73"/>
         <source>No image</source>
         <translation>Pas d&apos;image</translation>
     </message>
@@ -162,48 +162,52 @@
 <context>
     <name>Preferences</name>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="18"/>
-        <location filename="../../src/preferences/preferences.cpp" line="89"/>
+        <location filename="../../src/preferences/preferences.cpp" line="20"/>
         <source>RazerGenie - Preferences</source>
         <translation>RazerGenie - Préférences</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="25"/>
-        <source>About:</source>
-        <translation>À propos :</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="29"/>
-        <source>RazerGenie Version: %1</source>
-        <translation>Version de RazerGenie : %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="38"/>
-        <source>OpenRazer Daemon Version: %1</source>
-        <translation>Version du daemon OpenRazer : %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="41"/>
-        <source>General:</source>
-        <translation>Général :</translation>
-    </message>
-    <message>
         <location filename="../../src/preferences/preferences.cpp" line="45"/>
-        <source>For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the Razer Privacy Policy (https://www.razer.com/legal/privacy-policy).</source>
-        <translation>Pour afficher les images des préiphériques, RazerGenie télécharge l&apos;image via l&apos;URL spécifiée pour le périphérique dans le code source du daemon OpenRazer. Ceci ne sera fait que pour les périphériques connectés au PC et une fois seuelement, puisque les images sont stockées localement. Pour vérifier quelles informations Razer pourrait collecter avec ces connexions, veuillez consulter la politique de vie privée de Razer (https://www.razer.com/legal/privacy-policy).</translation>
+        <source>About</source>
+        <translation>À propos</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="49"/>
+        <location filename="../../src/preferences/preferences.cpp" line="57"/>
+        <source>RazerGenie Version:</source>
+        <translation>Version de RazerGenie :</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="67"/>
+        <source>OpenRazer Daemon Version:</source>
+        <translation>Version du daemon OpenRazer :</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="70"/>
+        <source>General</source>
+        <translation>Général</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="86"/>
+        <source>Device images:</source>
+        <translation>Images des périphériques:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="89"/>
+        <source>For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;Razer Privacy Policy&lt;/a&gt;.</source>
+        <translation>Pour afficher les images des préiphériques, RazerGenie télécharge l&apos;image via l&apos;URL spécifiée pour le périphérique dans le code source du daemon OpenRazer. Ceci ne sera fait que pour les périphériques connectés au PC et une fois seuelement, puisque les images sont stockées localement. Pour vérifier quelles informations Razer pourrait collecter avec ces connexions, veuillez consulter la &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;politique de vie privée de Razer&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="112"/>
+        <source>Daemon backend:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="81"/>
         <source>Download device images</source>
         <translation>Télécharger les images des périphériques</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="58"/>
-        <source>Daemon backend to use:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="68"/>
+        <location filename="../../src/preferences/preferences.cpp" line="108"/>
         <source>Please restart the application for the switch to take effect.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -358,17 +362,17 @@ Il est aussi possible que ce PC soit mal configuré.</translation>
         <translation>RazerGenie</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="68"/>
+        <location filename="../../ui/razergenie.ui" line="83"/>
         <source>Preferences</source>
         <translation>Préférences</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="97"/>
+        <location filename="../../ui/razergenie.ui" line="125"/>
         <source>Sync devices</source>
         <translation>Synchroniser les périphériques</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="104"/>
+        <location filename="../../ui/razergenie.ui" line="132"/>
         <source>Turn off on screensaver</source>
         <translation>Désactiver l&apos;économiseur d&apos;écran</translation>
     </message>

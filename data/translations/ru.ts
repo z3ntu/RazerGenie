@@ -9,32 +9,32 @@
         <translation>RazerGenie - Редактор</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="90"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="92"/>
         <source>Set</source>
         <translation>Задать</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="91"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="93"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="92"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="94"/>
         <source>Clear All</source>
         <translation>Очистить все</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="137"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="139"/>
         <source>You are using a keyboard with a layout which is not known to the daemon. Please help us by visiting &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Using a fallback layout for now.</source>
         <translation>Вы используете клавиатуру с раскладкой, неизвестной сервису OpenRazer. Пожалуйста, помогите нам это исправить, посетив &lt;a href=&apos;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&apos;&gt;https://github.com/openrazer/openrazer/wiki/Keyboard-layouts&lt;/a&gt;. Будет использованна резервная раскладка.</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="304"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="329"/>
         <source>The file %1.json, used for the custom editor failed to load: %2</source>
         <translation>Файл %1.json, нужный редактору, не удалось загрузить: %2</translation>
     </message>
     <message>
-        <location filename="../../src/customeditor/customeditor.cpp" line="324"/>
+        <location filename="../../src/customeditor/customeditor.cpp" line="349"/>
         <source>Error updating the lighting data.</source>
         <translation>Ошибка при обновлении подсветки.</translation>
     </message>
@@ -42,12 +42,12 @@
 <context>
     <name>DeviceListWidget</name>
     <message>
-        <location filename="../../src/devicelistwidget.cpp" line="28"/>
+        <location filename="../../src/devicelistwidget.cpp" line="29"/>
         <source>Downloading image...</source>
         <translation>Загрузка изображения...</translation>
     </message>
     <message>
-        <location filename="../../src/devicelistwidget.cpp" line="68"/>
+        <location filename="../../src/devicelistwidget.cpp" line="73"/>
         <source>No image</source>
         <translation>Нет изображения</translation>
     </message>
@@ -162,48 +162,52 @@
 <context>
     <name>Preferences</name>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="18"/>
-        <location filename="../../src/preferences/preferences.cpp" line="89"/>
+        <location filename="../../src/preferences/preferences.cpp" line="20"/>
         <source>RazerGenie - Preferences</source>
         <translation>RazerGenie - Настройки</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="25"/>
-        <source>About:</source>
-        <translation>О программе:</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="29"/>
-        <source>RazerGenie Version: %1</source>
-        <translation>Версия RazerGenie: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="38"/>
-        <source>OpenRazer Daemon Version: %1</source>
-        <translation>Версия демона OpenRazer: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="41"/>
-        <source>General:</source>
-        <translation>Основные:</translation>
-    </message>
-    <message>
         <location filename="../../src/preferences/preferences.cpp" line="45"/>
-        <source>For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the Razer Privacy Policy (https://www.razer.com/legal/privacy-policy).</source>
-        <translation>Для показа изображений устройств, RazerGenie загрузит изображение по ссылке, указанной в коде демона OpenRazer. Это будет сделано только для подключенных к ПК устройств и только один раз (картинки будут сохранены на локальном диске). Компания Razer может собирать информацию об этих соединениях. Для точной информации посетите страницу https://www.razer.com/legal/privacy-policy.</translation>
+        <source>About</source>
+        <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="49"/>
+        <location filename="../../src/preferences/preferences.cpp" line="57"/>
+        <source>RazerGenie Version:</source>
+        <translation>Версия RazerGenie:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="67"/>
+        <source>OpenRazer Daemon Version:</source>
+        <translation>Версия демона OpenRazer:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="70"/>
+        <source>General</source>
+        <translation>Основные</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="86"/>
+        <source>Device images:</source>
+        <translation>Изображения устройств:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="89"/>
+        <source>For displaying device images, RazerGenie downloads the image behind the URL specified for a device in the OpenRazer daemon source code. This will only be done for devices that are connected to the PC and only once, as the images are cached locally. For reviewing, what information Razer might collect with these connections, please consult the &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;Razer Privacy Policy&lt;/a&gt;.</source>
+        <translation>Для показа изображений устройств, RazerGenie загрузит изображение по ссылке, указанной в коде демона OpenRazer. Это будет сделано только для подключенных к ПК устройств и только один раз (картинки будут сохранены на локальном диске). Компания Razer может собирать информацию об этих соединениях. Для точной информации посетите страницу &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;Razer Privacy Policy&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="112"/>
+        <source>Daemon backend:</source>
+        <translation>Бэкенд демона:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="81"/>
         <source>Download device images</source>
         <translation>Загружать изображения устройств</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="58"/>
-        <source>Daemon backend to use:</source>
-        <translation>Бэкенд демона:</translation>
-    </message>
-    <message>
-        <location filename="../../src/preferences/preferences.cpp" line="68"/>
+        <location filename="../../src/preferences/preferences.cpp" line="108"/>
         <source>Please restart the application for the switch to take effect.</source>
         <translation>Пжалуйста, перезапустите приложение для того, чтобы изменения вступили в силу.</translation>
     </message>
@@ -358,17 +362,17 @@ This could also be caused due to a misconfiguration of this PC.</source>
         <translation>RazerGenie</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="68"/>
+        <location filename="../../ui/razergenie.ui" line="83"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="97"/>
+        <location filename="../../ui/razergenie.ui" line="125"/>
         <source>Sync devices</source>
         <translation>Синхронизация устройств</translation>
     </message>
     <message>
-        <location filename="../../ui/razergenie.ui" line="104"/>
+        <location filename="../../ui/razergenie.ui" line="132"/>
         <source>Turn off on screensaver</source>
         <translation>Отключить хранитель экрана</translation>
     </message>
