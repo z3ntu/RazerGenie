@@ -8,7 +8,7 @@ sources:
 tasks:
 - setup: |
     cd RazerGenie
-    meson builddir
+    meson setup builddir
 - build: |
     cd RazerGenie
-    ninja -C builddir
+    meson compile -C builddir
