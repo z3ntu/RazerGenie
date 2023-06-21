@@ -105,7 +105,8 @@ RazerGenie::RazerGenie(QWidget *parent)
         // Set up the normal UI
         setupUi();
 
-        if (daemonStatus == libopenrazer::DaemonStatus::Disabled) {
+        if (daemonStatus == libopenrazer::DaemonStatus::Disabled
+            && !settings.value("noAutostartDaemon").toBool()) {
             QMessageBox msgBox;
             msgBox.setText(tr("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login."));
             QPushButton *enableButton = msgBox.addButton(tr("Enable"), QMessageBox::ActionRole);

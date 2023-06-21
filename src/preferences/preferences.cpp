@@ -18,7 +18,7 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     : QDialog(parent), manager(manager)
 {
     setWindowTitle(tr("RazerGenie - Preferences"));
-    resize(600, 400);
+    resize(600, 500);
     setMinimumSize(QSize(400, 300));
 
     QFont titleFont("Arial", 16, QFont::Bold);
@@ -96,6 +96,14 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     downloadText->setOpenExternalLinks(true);
     downloadText->setWordWrap(true);
     formLayout->addRow(nullptr, downloadText);
+
+    QCheckBox *noAutostartCheckBox = new QCheckBox(this);
+    noAutostartCheckBox->setText(tr("Don't ask to auto-start daemon on startup"));
+    noAutostartCheckBox->setChecked(settings.value("noAutostartDaemon").toBool());
+    connect(noAutostartCheckBox, &QCheckBox::clicked, this, [=](bool checked) {
+        settings.setValue("noAutostartDaemon", checked);
+    });
+    formLayout->addRow(tr("Daemon auto-start:"), noAutostartCheckBox);
 
     QComboBox *backendComboBox = new QComboBox(this);
     backendComboBox->addItem("OpenRazer");
