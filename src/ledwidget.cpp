@@ -248,6 +248,10 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
             mLed->setBreathingRandom();
             break;
         }
+        case openrazer::RazerEffect::BreathingMono: {
+            mLed->setBreathingMono();
+            break;
+        }
         case openrazer::RazerEffect::Blinking: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setBlinking(c);
