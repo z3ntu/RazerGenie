@@ -163,10 +163,26 @@ void LedWidget::colorButtonClicked()
 void LedWidget::fxComboboxChanged(int index)
 {
     auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    libopenrazer::RazerCapability capability = sender->itemData(index).value<libopenrazer::RazerCapability>();
+    libopenrazer::RazerCapability capability;
+
+    /* In theory we could remove half of this special handling because
+     * .value<>() will give us a default RazerCapability anyways if it's
+     * missing. But to be explicit let's do it like this. */
+    bool isCustomEffect = sender->itemText(index) == "Custom Effect";
+    if (!isCustomEffect) {
+        QVariant itemData = sender->itemData(index);
+        if (!itemData.canConvert<libopenrazer::RazerCapability>())
+            throw new std::runtime_error("Expected to be able to convert itemData into RazerCapability");
+        capability = itemData.value<libopenrazer::RazerCapability>();
+    } else {
+        /* We're fine with getting an empty RazerCapability as we do want to
+         * reset all the extra buttons etc. We just don't want to actually do
+         * more than UI work with this though. */
+        capability = libopenrazer::RazerCapability();
+    }
 
     // Remove "Custom Effect" entry when you switch away from it - only gets added by the Custom Editor button
-    if (sender->itemText(index) != "Custom Effect")
+    if (!isCustomEffect)
         sender->removeItem(sender->findText("Custom Effect"));
 
     // Show/hide the color buttons
@@ -191,7 +207,10 @@ void LedWidget::fxComboboxChanged(int index)
         findChild<QRadioButton *>("radiobutton2")->show();
     }
 
-    applyEffectStandardLoc(capability.getIdentifier());
+    /* Actually go apply the effect in all cases, except for Custom Effect
+     * because there we handle this in the CustomEditor class */
+    if (!isCustomEffect)
+        applyEffectStandardLoc(capability.getIdentifier());
 }
 
 openrazer::RGB LedWidget::getColorForButton(int num)
