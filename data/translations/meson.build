@@ -2,6 +2,7 @@
 ts_files = [
   'de.ts',
   'fr.ts',
+  'ka.ts',
   'nl.ts',
   'ru.ts',
 ]
