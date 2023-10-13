@@ -20,6 +20,21 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="1.1.0" date="2023-10-13">
+      <description>
+        <ul>
+          <li>Redesign preferences window</li>
+          <li>Add option to not ask to auto-start daemon on startup</li>
+          <li>Add support for Breathing Mono effect</li>
+          <li>Add Georgian translation</li>
+          <li>Don't call applyEffect with bogus parameter for Custom Effect</li>
+          <li>Add Nordic layout for razerdefault18</li>
+          <li>Add French layout for razerdefault18</li>
+          <li>Add custom editor layout for keypads</li>
+          <li>Add custom editor layout for Razer Firefly V2</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.0" date="2022-12-15">
       <description>
         <p>Major backend rewrite with vastly improved support for devices.</p>

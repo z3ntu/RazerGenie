@@ -1,5 +1,5 @@
 project('razergenie', 'cpp',
-        version : '1.0.0',
+        version : '1.1.0',
         meson_version : '>=0.49.0',
         default_options : ['cpp_std=c++11'])
 
