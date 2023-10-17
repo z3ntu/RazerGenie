@@ -27,6 +27,7 @@ public:
 
     openrazer::RGB getColorForButton(int num);
     openrazer::WaveDirection getWaveDirection();
+    openrazer::WheelDirection getWheelDirection();
 
     void applyEffect();
     void applyEffectStandardLoc(openrazer::RazerEffect identifier);

@@ -107,9 +107,11 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             connect(colorButton, &QPushButton::clicked, this, &LedWidget::colorButtonClicked);
         }
 
-        /* Wave left/right radio buttons */
+        /* Wave & wheel radio buttons */
         for (int i = 1; i <= 2; i++) {
             QString name;
+            // TODO: Use Clockwise & Counterclockwise labels for Wheel
+            // TODO: Also use Clockwise & Counterclockwise for mousepads
             if (i == 1)
                 name = tr("Left");
             else
@@ -119,7 +121,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             if (i == 1) // set the 'left' checkbox to activated
                 radio->setChecked(true);
             // Hide radio button when we don't need it
-            if (currentEffect != openrazer::RazerEffect::Wave) {
+            if (currentEffect != openrazer::RazerEffect::Wave && currentEffect != openrazer::RazerEffect::Wheel) {
                 radio->hide();
             }
             lightingHBox->addWidget(radio);
@@ -199,7 +201,7 @@ void LedWidget::fxComboboxChanged(int index)
     }
 
     // Show/hide the wave radiobuttons
-    if (capability.getIdentifier() != openrazer::RazerEffect::Wave) {
+    if (capability.getIdentifier() != openrazer::RazerEffect::Wave && capability.getIdentifier() != openrazer::RazerEffect::Wheel) {
         findChild<QRadioButton *>("radiobutton1")->hide();
         findChild<QRadioButton *>("radiobutton2")->hide();
     } else {
@@ -223,6 +225,13 @@ openrazer::RGB LedWidget::getColorForButton(int num)
 openrazer::WaveDirection LedWidget::getWaveDirection()
 {
     return findChild<QRadioButton *>("radiobutton1")->isChecked() ? openrazer::WaveDirection::RIGHT_TO_LEFT : openrazer::WaveDirection::LEFT_TO_RIGHT;
+}
+
+openrazer::WheelDirection LedWidget::getWheelDirection()
+{
+    return findChild<QRadioButton *>("radiobutton1")->isChecked()
+            ? openrazer::WheelDirection::CLOCKWISE
+            : openrazer::WheelDirection::COUNTER_CLOCKWISE;
 }
 
 void LedWidget::brightnessSliderChanged(int value)
@@ -282,6 +291,10 @@ void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
         }
         case openrazer::RazerEffect::Wave: {
             mLed->setWave(getWaveDirection());
+            break;
+        }
+        case openrazer::RazerEffect::Wheel: {
+            mLed->setWheel(getWheelDirection());
             break;
         }
         case openrazer::RazerEffect::Reactive: {
