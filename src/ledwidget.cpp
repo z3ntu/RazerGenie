@@ -199,7 +199,7 @@ void LedWidget::fxComboboxChanged(int index)
     }
 
     // Show/hide the wave radiobuttons
-    if (capability.isWave() == 0) {
+    if (capability.getIdentifier() != openrazer::RazerEffect::Wave) {
         findChild<QRadioButton *>("radiobutton1")->hide();
         findChild<QRadioButton *>("radiobutton2")->hide();
     } else {
