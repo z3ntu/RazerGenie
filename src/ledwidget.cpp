@@ -13,6 +13,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 
+#include <stdexcept>
+
 LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     : QWidget(parent)
 {

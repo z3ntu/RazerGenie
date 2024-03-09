@@ -1,32 +1,28 @@
-os: Visual Studio 2017
+os: Visual Studio 2022
 
 environment:
   matrix:
     - arch: x86
-      compiler: msvc2017
+      compiler: msvc2019
     - arch: x64
-      compiler: msvc2017
+      compiler: msvc2019
 
 platform:
   - x64
 
 install:
-  # Download ninja
-  - cmd: mkdir C:\ninja-build
-  - ps: (new-object net.webclient).DownloadFile('https://github.com/mesonbuild/cidata/raw/master/ninja.exe', 'C:\ninja-build\ninja.exe')
   # Set paths to dependencies (based on architecture)
-  - cmd: if %arch%==x86 (set PYTHON_ROOT=C:\python37) else (set PYTHON_ROOT=C:\python37-x64)
-  - cmd: if %arch%==x86 (set QT_ROOT=C:\Qt\5.12\%compiler%) else (set QT_ROOT=C:\Qt\5.12\%compiler%_64)
+  - cmd: if %arch%==x86 (set PYTHON_ROOT=C:\python312) else (set PYTHON_ROOT=C:\python312-x64)
+  - cmd: if %arch%==x86 (set QT_ROOT=C:\Qt\5.15\%compiler%) else (set QT_ROOT=C:\Qt\5.15\%compiler%_64)
   # Print out dependency paths
   - cmd: echo Using Python at %PYTHON_ROOT%
   - cmd: echo Using Qt at %QT_ROOT%
   # Add necessary paths to PATH variable
-  - cmd: set PATH=%cd%;C:\ninja-build;%QT_ROOT%\bin;%PYTHON_ROOT%;%PYTHON_ROOT%\Scripts;%PATH%
-  # Install meson
-  - cmd: pip install meson
+  - cmd: set PATH=%cd%;%QT_ROOT%\bin;%PYTHON_ROOT%;%PYTHON_ROOT%\Scripts;%PATH%
+  # Install ninja and meson
+  - cmd: pip install ninja meson
   # Set up the build environment
-  - cmd: if %compiler%==msvc2015 ( call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %arch% )
-  - cmd: if %compiler%==msvc2017 ( call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch% )
+  - cmd: if %compiler%==msvc2019 ( call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch% )
 
 build_script:
   - cmd: echo Building on %arch% with %compiler%
