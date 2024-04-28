@@ -14,6 +14,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QSlider>
 #include <QTextEdit>
@@ -39,6 +40,46 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     QLabel *header = new QLabel(name, this);
     header->setFont(titleFont);
     verticalLayout->addWidget(header);
+
+    /* Battery */
+    if (device->hasFeature("battery")) {
+        auto *batteryHeaderHBox = new QHBoxLayout();
+
+        QLabel *batterHeader = new QLabel(tr("Battery"), this);
+        batterHeader->setFont(headerFont);
+
+        bool charging = false;
+        try {
+            charging = device->isCharging();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get charging status");
+        }
+
+        QLabel *chargingLabel = new QLabel(this);
+        if (charging) {
+            chargingLabel->setText(tr("Charging"));
+        } else {
+            chargingLabel->setText(tr("Not Charging"));
+        }
+
+        batteryHeaderHBox->addWidget(batterHeader);
+        batteryHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+        batteryHeaderHBox->addWidget(chargingLabel);
+
+        verticalLayout->addLayout(batteryHeaderHBox);
+
+        double percent = 0.0;
+        try {
+            percent = device->getBatteryPercent();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get battery charge percentage");
+        }
+
+        auto *progressBar = new QProgressBar;
+        progressBar->setValue(percent);
+
+        verticalLayout->addWidget(progressBar);
+    }
 
     // Lighting header
     if (leds.size() != 0) {
