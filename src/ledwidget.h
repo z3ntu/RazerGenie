@@ -20,10 +20,6 @@ public:
     void colorButtonClicked();
     // Effect comboboxes
     void fxComboboxChanged(int index);
-    // Brightness sliders
-    void brightnessSliderChanged(int value);
-    // Wave buttons
-    void waveRadioButtonChanged(bool enabled);
 
     openrazer::RGB getColorForButton(int num);
     openrazer::WaveDirection getWaveDirection();

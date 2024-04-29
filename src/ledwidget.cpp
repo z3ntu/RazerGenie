@@ -12,7 +12,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
-
 #include <stdexcept>
 
 LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
@@ -78,7 +77,14 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             brightness = 100;
         }
         brightnessSlider->setValue(brightness);
-        connect(brightnessSlider, &QSlider::valueChanged, this, &LedWidget::brightnessSliderChanged);
+        connect(brightnessSlider, &QSlider::valueChanged, this, [=](int value) {
+            try {
+                mLed->setBrightness(value);
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to change brightness");
+                util::showError(tr("Failed to change brightness"));
+            }
+        });
     }
 
     // Only add combobox if a capability was actually added
@@ -127,7 +133,10 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
                 radio->hide();
             }
             lightingHBox->addWidget(radio);
-            connect(radio, &QRadioButton::toggled, this, &LedWidget::waveRadioButtonChanged);
+            connect(radio, &QRadioButton::toggled, this, [=](bool enabled) {
+                if (enabled)
+                    applyEffect();
+            });
         }
     } else {
         // Otherwise delete comboBox again
@@ -236,16 +245,6 @@ openrazer::WheelDirection LedWidget::getWheelDirection()
             : openrazer::WheelDirection::COUNTER_CLOCKWISE;
 }
 
-void LedWidget::brightnessSliderChanged(int value)
-{
-    try {
-        mLed->setBrightness(value);
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to change brightness");
-        util::showError(tr("Failed to change brightness"));
-    }
-}
-
 void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
 {
     try {
@@ -329,12 +328,6 @@ void LedWidget::applyEffect()
     libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();
 
     applyEffectStandardLoc(capability.getIdentifier());
-}
-
-void LedWidget::waveRadioButtonChanged(bool enabled)
-{
-    if (enabled)
-        applyEffect();
 }
 
 libopenrazer::Led *LedWidget::led()
