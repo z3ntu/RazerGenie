@@ -123,6 +123,45 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
         verticalLayout->addLayout(idleTimeHBox);
     }
 
+    /* Low battery threshold / Enter low power at */
+    if (device->hasFeature("low_battery_threshold")) {
+        QLabel *lowBatteryThresholdHeader = new QLabel(tr("Enter lower power at"), this);
+        lowBatteryThresholdHeader->setFont(headerFont);
+        verticalLayout->addWidget(lowBatteryThresholdHeader);
+
+        ushort threshold = 0;
+        try {
+            threshold = device->getLowBatteryThreshold();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get low battery threshold");
+        }
+
+        auto *lowBatteryThresholdHBox = new QHBoxLayout();
+
+        auto *lowBatteryThresholdSlider = new QSlider(Qt::Horizontal, this);
+        lowBatteryThresholdSlider->setMinimum(1);
+        lowBatteryThresholdSlider->setMaximum(100);
+        lowBatteryThresholdSlider->setValue(threshold);
+
+        auto *lowBatteryThresholdLabel = new QLabel(this);
+        lowBatteryThresholdLabel->setText(QString("%1%").arg(threshold));
+
+        connect(lowBatteryThresholdSlider, &QSlider::valueChanged, this, [=](int threshold) {
+            lowBatteryThresholdLabel->setText(QString("%1%").arg(threshold));
+
+            try {
+                device->setLowBatteryThreshold(threshold);
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to set low battery threshold");
+                util::showError(tr("Failed to set low battery threshold"));
+            }
+        });
+
+        lowBatteryThresholdHBox->addWidget(lowBatteryThresholdSlider);
+        lowBatteryThresholdHBox->addWidget(lowBatteryThresholdLabel);
+        verticalLayout->addLayout(lowBatteryThresholdHBox);
+    }
+
     // Lighting header
     if (leds.size() != 0) {
         QLabel *lightingHeader = new QLabel(tr("Lighting"), this);
