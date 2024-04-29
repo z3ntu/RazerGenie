@@ -81,6 +81,48 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
         verticalLayout->addWidget(progressBar);
     }
 
+    /* Idle time / Sleep mode after */
+    if (device->hasFeature("idle_time")) {
+        QLabel *idleTimeHeader = new QLabel(tr("Sleep mode after"), this);
+        idleTimeHeader->setFont(headerFont);
+        verticalLayout->addWidget(idleTimeHeader);
+
+        ushort idleTimeSec = 0;
+        try {
+            idleTimeSec = device->getIdleTime();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get idle time");
+        }
+
+        auto *idleTimeHBox = new QHBoxLayout();
+
+        auto *idleTimeSlider = new QSlider(Qt::Horizontal, this);
+        idleTimeSlider->setTickInterval(1);
+        idleTimeSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
+        idleTimeSlider->setMinimum(1);
+        idleTimeSlider->setMaximum(15);
+        idleTimeSlider->setPageStep(1);
+        idleTimeSlider->setValue(idleTimeSec / 60);
+
+        auto *idleTimeLabel = new QLabel(this);
+        idleTimeLabel->setText(tr("%1 minutes").arg(idleTimeSec / 60));
+
+        connect(idleTimeSlider, &QSlider::valueChanged, this, [=](int idleTimeMin) {
+            idleTimeLabel->setText(tr("%1 minutes").arg(idleTimeMin));
+
+            try {
+                device->setIdleTime(idleTimeMin * 60);
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to set idle time");
+                util::showError(tr("Failed to set idle time"));
+            }
+        });
+
+        idleTimeHBox->addWidget(idleTimeSlider);
+        idleTimeHBox->addWidget(idleTimeLabel);
+        verticalLayout->addLayout(idleTimeHBox);
+    }
+
     // Lighting header
     if (leds.size() != 0) {
         QLabel *lightingHeader = new QLabel(tr("Lighting"), this);
