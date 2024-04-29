@@ -29,9 +29,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     verticalLayout->addLayout(lightingHBox);
 
     auto *comboBox = new QComboBox;
-    QLabel *brightnessLabel = nullptr;
-    QSlider *brightnessSlider = nullptr;
-    QLabel *brightnessSliderValue = nullptr;
 
     comboBox->setObjectName("combobox");
     comboBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -64,36 +61,6 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
 
     // Connect signal from combobox
     connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &LedWidget::fxComboboxChanged);
-
-    // Brightness slider
-    if (led->hasBrightness()) {
-        brightnessLabel = new QLabel(tr("Brightness"));
-
-        brightnessSlider = new QSlider(Qt::Horizontal, this);
-        brightnessSlider->setMaximum(255);
-
-        brightnessSliderValue = new QLabel;
-
-        uchar brightness;
-        try {
-            brightness = led->getBrightness();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get brightness");
-            brightness = 100;
-        }
-        brightnessSlider->setValue(brightness);
-        brightnessSliderValue->setText(QString("%1%").arg(brightness * 100 / 255));
-        connect(brightnessSlider, &QSlider::valueChanged, this, [=](int value) {
-            brightnessSliderValue->setText(QString("%1%").arg(value * 100 / 255));
-
-            try {
-                mLed->setBrightness(value);
-            } catch (const libopenrazer::DBusException &e) {
-                qWarning("Failed to change brightness");
-                util::showError(tr("Failed to change brightness"));
-            }
-        });
-    }
 
     // Only add combobox if a capability was actually added
     if (comboBox->count() != 0) {
@@ -152,8 +119,37 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
         comboBox = nullptr;
     }
 
-    /* Brightness sliders */
-    if (brightnessLabel != nullptr && brightnessSlider != nullptr) { // only if brightness capability exists
+    /* Brightness slider */
+    if (led->hasBrightness()) {
+        auto *brightnessLabel = new QLabel(tr("Brightness"));
+
+        auto *brightnessSlider = new QSlider(Qt::Horizontal, this);
+        brightnessSlider->setMaximum(255);
+
+        auto *brightnessSliderValue = new QLabel;
+
+        uchar brightness;
+        try {
+            brightness = led->getBrightness();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get brightness");
+            brightness = 100;
+        }
+
+        brightnessSlider->setValue(brightness);
+        brightnessSliderValue->setText(QString("%1%").arg(brightness * 100 / 255));
+
+        connect(brightnessSlider, &QSlider::valueChanged, this, [=](int value) {
+            brightnessSliderValue->setText(QString("%1%").arg(value * 100 / 255));
+
+            try {
+                mLed->setBrightness(value);
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to change brightness");
+                util::showError(tr("Failed to change brightness"));
+            }
+        });
+
         verticalLayout->addWidget(brightnessLabel);
 
         auto *hboxSlider = new QHBoxLayout();
