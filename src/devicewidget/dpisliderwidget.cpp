@@ -68,6 +68,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
         qWarning("Failed to get dpi");
     }
 
+    const int minimumDPI = 100;
+    dpiXSpinBox->setMinimum(minimumDPI);
+    dpiYSpinBox->setMinimum(minimumDPI);
+    dpiXSlider->setMinimum(minimumDPI / 100);
+    dpiYSlider->setMinimum(minimumDPI / 100);
+
     int maxDPI = 0;
     try {
         maxDPI = device->maxDPI();
