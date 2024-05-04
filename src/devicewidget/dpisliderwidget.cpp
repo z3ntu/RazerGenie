@@ -43,12 +43,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiHeaderHBox->addWidget(dpiSyncCheckbox);
 
     // Labels
-    QLabel *dpiXLabel = new QLabel("X");
-    QLabel *dpiYLabel = new QLabel("Y");
+    dpiXLabel = new QLabel("X");
+    dpiYLabel = new QLabel("Y");
 
     // Read-only spinboxes
     auto *dpiXSpinBox = new QSpinBox(this);
-    auto *dpiYSpinBox = new QSpinBox(this);
+    dpiYSpinBox = new QSpinBox(this);
     dpiXSpinBox->setObjectName("dpiXSpinBox");
     dpiYSpinBox->setObjectName("dpiYSpinBox");
     dpiXSpinBox->setEnabled(false);
@@ -56,7 +56,7 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
 
     // Sliders
     auto *dpiXSlider = new QSlider(Qt::Horizontal, this);
-    auto *dpiYSlider = new QSlider(Qt::Horizontal, this);
+    dpiYSlider = new QSlider(Qt::Horizontal, this);
     dpiXSlider->setObjectName("dpiX");
     dpiYSlider->setObjectName("dpiY");
 
@@ -95,7 +95,8 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiXSlider->setValue(currDPI.dpi_x / 100);
     dpiYSlider->setValue(currDPI.dpi_y / 100);
 
-    dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
+    dpiSyncCheckbox->setChecked(syncDpi);
+    updateXYVisibility();
 
     dpiXHBox->addWidget(dpiXLabel);
     dpiXHBox->addWidget(dpiXSpinBox);
@@ -107,8 +108,10 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
 
     connect(dpiXSlider, &QSlider::valueChanged, this, &DpiSliderWidget::dpiChanged);
     connect(dpiYSlider, &QSlider::valueChanged, this, &DpiSliderWidget::dpiChanged);
-    connect(dpiSyncCheckbox, &QCheckBox::clicked, this,
-            [=](bool checked) { syncDpi = checked; });
+    connect(dpiSyncCheckbox, &QCheckBox::clicked, this, [=](bool checked) {
+        syncDpi = checked;
+        updateXYVisibility();
+    });
 
     verticalLayout->addLayout(dpiHeaderHBox);
     verticalLayout->addLayout(dpiXHBox);
@@ -162,5 +165,22 @@ void DpiSliderWidget::dpiChanged(int orig_value)
     } catch (const libopenrazer::DBusException &e) {
         qWarning("Failed to set dpi");
         util::showError(tr("Failed to set dpi"));
+    }
+}
+
+void DpiSliderWidget::updateXYVisibility()
+{
+    if (syncDpi) {
+        dpiXLabel->hide();
+
+        dpiYLabel->hide();
+        dpiYSpinBox->hide();
+        dpiYSlider->hide();
+    } else {
+        dpiXLabel->show();
+
+        dpiYLabel->show();
+        dpiYSpinBox->show();
+        dpiYSlider->show();
     }
 }

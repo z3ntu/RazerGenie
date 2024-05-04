@@ -5,6 +5,9 @@
 #ifndef DPISLIDERWIDGET_H
 #define DPISLIDERWIDGET_H
 
+#include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
 #include <QWidget>
 #include <libopenrazer.h>
 
@@ -21,6 +24,13 @@ public slots:
 private:
     bool syncDpi = true;
     libopenrazer::Device *device;
+
+    QLabel *dpiXLabel;
+    QLabel *dpiYLabel;
+    QSpinBox *dpiYSpinBox;
+    QSlider *dpiYSlider;
+
+    void updateXYVisibility();
 };
 
 #endif // DPISLIDERWIDGET_H
