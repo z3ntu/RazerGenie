@@ -25,6 +25,13 @@ RazerGenie::RazerGenie(QWidget *parent)
     // Set the directory of the application to where the application is located. Needed for the custom editor and relative paths.
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 
+    /* Migrate setting values */
+    if (settings.contains("noAutostartDaemon")) {
+        qInfo() << "Migrating setting key noAutostartDaemon...";
+        settings.setValue("askAutostartDaemon", !settings.value("noAutostartDaemon").toBool());
+        settings.remove("noAutostartDaemon");
+    }
+
     QString backend = settings.value("backend").toString();
     if (backend == "OpenRazer") {
         manager = new libopenrazer::openrazer::Manager();
@@ -106,7 +113,7 @@ RazerGenie::RazerGenie(QWidget *parent)
         setupUi();
 
         if (daemonStatus == libopenrazer::DaemonStatus::Disabled
-            && !settings.value("noAutostartDaemon").toBool()) {
+            && settings.value("askAutostartDaemon", true).toBool()) {
             QMessageBox msgBox;
             msgBox.setText(tr("The OpenRazer daemon is not set to auto-start. Click \"Enable\" to use the full potential of the daemon right after login."));
             QPushButton *enableButton = msgBox.addButton(tr("Enable"), QMessageBox::ActionRole);

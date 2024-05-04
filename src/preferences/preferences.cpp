@@ -98,10 +98,10 @@ Preferences::Preferences(libopenrazer::Manager *manager, QWidget *parent)
     formLayout->addRow(nullptr, downloadText);
 
     QCheckBox *noAutostartCheckBox = new QCheckBox(this);
-    noAutostartCheckBox->setText(tr("Don't ask to auto-start daemon on startup"));
-    noAutostartCheckBox->setChecked(settings.value("noAutostartDaemon").toBool());
+    noAutostartCheckBox->setText(tr("Ask to auto-start daemon on startup"));
+    noAutostartCheckBox->setChecked(settings.value("askAutostartDaemon", true).toBool());
     connect(noAutostartCheckBox, &QCheckBox::clicked, this, [=](bool checked) {
-        settings.setValue("noAutostartDaemon", checked);
+        settings.setValue("askAutostartDaemon", checked);
     });
     formLayout->addRow(tr("Daemon auto-start:"), noAutostartCheckBox);
 
