@@ -57,7 +57,14 @@ PerformanceWidget::PerformanceWidget(libopenrazer::Device *device)
         pollComboBox->setCurrentText(QString::number(pollRate) + " Hz");
         verticalLayout->addWidget(pollComboBox);
 
-        connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &PerformanceWidget::pollCombo);
+        connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int) {
+            try {
+                device->setPollRate(pollComboBox->currentData().value<ushort>());
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to set polling rate");
+                util::showError(tr("Failed to set polling rate"));
+            }
+        });
     }
 
     /* Spacer to bottom */
@@ -70,15 +77,4 @@ PerformanceWidget::~PerformanceWidget() = default;
 bool PerformanceWidget::isAvailable(libopenrazer::Device *device)
 {
     return device->hasFeature("dpi") || device->hasFeature("poll_rate");
-}
-
-void PerformanceWidget::pollCombo(int /* index */)
-{
-    auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    try {
-        device->setPollRate(sender->currentData().value<ushort>());
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to set polling rate");
-        util::showError(tr("Failed to set polling rate"));
-    }
 }

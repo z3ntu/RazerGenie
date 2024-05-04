@@ -17,9 +17,6 @@ public:
 
     static bool isAvailable(libopenrazer::Device *device);
 
-public slots:
-    void pollCombo(int /* index */);
-
 private:
     libopenrazer::Device *device;
 };
