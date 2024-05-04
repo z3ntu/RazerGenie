@@ -5,7 +5,7 @@
 #include "razergenie.h"
 
 #include "devicelistwidget.h"
-#include "devicewidget.h"
+#include "devicewidget/devicewidget.h"
 #include "preferences/preferences.h"
 #include "razerimagedownloader.h"
 #include "util.h"
