@@ -35,12 +35,11 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiHeader->setFont(headerFont);
 
     // Sync checkbox
-    QLabel *dpiSyncLabel = new QLabel(tr("Lock X/Y"), this);
     auto *dpiSyncCheckbox = new QCheckBox(this);
+    dpiSyncCheckbox->setText(tr("Lock X/Y"));
 
     dpiHeaderHBox->addWidget(dpiHeader);
     dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-    dpiHeaderHBox->addWidget(dpiSyncLabel);
     dpiHeaderHBox->addWidget(dpiSyncCheckbox);
 
     // Labels
