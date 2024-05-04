@@ -4,235 +4,63 @@
 
 #include "devicewidget.h"
 
-#include "clickeventfilter.h"
-#include "customeditor/customeditor.h"
-#include "dpicomboboxwidget.h"
-#include "dpisliderwidget.h"
-#include "ledwidget.h"
-#include "util.h"
+#include "lightingwidget.h"
+#include "performancewidget.h"
+#include "powerwidget.h"
 
-#include <QCheckBox>
-#include <QComboBox>
 #include <QLabel>
-#include <QProgressBar>
-#include <QPushButton>
-#include <QSlider>
-#include <QTextEdit>
+#include <QScrollArea>
+#include <QTabWidget>
 #include <QVBoxLayout>
 
-DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device)
+DeviceWidget::DeviceWidget(libopenrazer::Device *device)
     : QWidget()
 {
-    this->name = name;
-    this->devicePath = devicePath;
-    this->device = device;
-
     auto *verticalLayout = new QVBoxLayout(this);
 
-    // List of locations to iterate through
-    QList<libopenrazer::Led *> leds = device->getLeds();
-
-    // Declare header font
-    QFont headerFont("Arial", 15, QFont::Bold);
     QFont titleFont("Arial", 18, QFont::Bold);
 
     // Add header with the device name
-    QLabel *header = new QLabel(name, this);
+    QLabel *header = new QLabel(device->getDeviceName(), this);
     header->setFont(titleFont);
     verticalLayout->addWidget(header);
 
-    /* Battery */
-    if (device->hasFeature("battery")) {
-        auto *batteryHeaderHBox = new QHBoxLayout();
+    QTabWidget *tabWidget = new QTabWidget(this);
 
-        QLabel *batterHeader = new QLabel(tr("Battery"), this);
-        batterHeader->setFont(headerFont);
+    /* Lighting tab */
+    if (LightingWidget::isAvailable(device)) {
+        auto widget = new LightingWidget(device);
 
-        bool charging = false;
-        try {
-            charging = device->isCharging();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get charging status");
-        }
+        auto scrollArea = new QScrollArea;
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(widget);
 
-        QLabel *chargingLabel = new QLabel(this);
-        if (charging) {
-            chargingLabel->setText(tr("Charging"));
-        } else {
-            chargingLabel->setText(tr("Not Charging"));
-        }
-
-        batteryHeaderHBox->addWidget(batterHeader);
-        batteryHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-        batteryHeaderHBox->addWidget(chargingLabel);
-
-        verticalLayout->addLayout(batteryHeaderHBox);
-
-        double percent = 0.0;
-        try {
-            percent = device->getBatteryPercent();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get battery charge percentage");
-        }
-
-        auto *progressBar = new QProgressBar;
-        progressBar->setValue(percent);
-
-        verticalLayout->addWidget(progressBar);
+        tabWidget->addTab(scrollArea, tr("Lighting"));
     }
 
-    /* Idle time / Sleep mode after */
-    if (device->hasFeature("idle_time")) {
-        QLabel *idleTimeHeader = new QLabel(tr("Sleep mode after"), this);
-        idleTimeHeader->setFont(headerFont);
-        verticalLayout->addWidget(idleTimeHeader);
+    /* Performance tab */
+    if (PerformanceWidget::isAvailable(device)) {
+        auto widget = new PerformanceWidget(device);
 
-        ushort idleTimeSec = 0;
-        try {
-            idleTimeSec = device->getIdleTime();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get idle time");
-        }
+        auto scrollArea = new QScrollArea;
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(widget);
 
-        auto *idleTimeHBox = new QHBoxLayout();
-
-        auto *idleTimeSlider = new QSlider(Qt::Horizontal, this);
-        idleTimeSlider->setTickInterval(1);
-        idleTimeSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-        idleTimeSlider->setMinimum(1);
-        idleTimeSlider->setMaximum(15);
-        idleTimeSlider->setPageStep(1);
-        idleTimeSlider->setValue(idleTimeSec / 60);
-
-        auto *idleTimeLabel = new QLabel(this);
-        idleTimeLabel->setText(tr("%1 minutes").arg(idleTimeSec / 60));
-
-        connect(idleTimeSlider, &QSlider::valueChanged, this, [=](int idleTimeMin) {
-            idleTimeLabel->setText(tr("%1 minutes").arg(idleTimeMin));
-
-            try {
-                device->setIdleTime(idleTimeMin * 60);
-            } catch (const libopenrazer::DBusException &e) {
-                qWarning("Failed to set idle time");
-                util::showError(tr("Failed to set idle time"));
-            }
-        });
-
-        idleTimeHBox->addWidget(idleTimeSlider);
-        idleTimeHBox->addWidget(idleTimeLabel);
-        verticalLayout->addLayout(idleTimeHBox);
+        tabWidget->addTab(scrollArea, tr("Performance"));
     }
 
-    /* Low battery threshold / Enter low power at */
-    if (device->hasFeature("low_battery_threshold")) {
-        QLabel *lowBatteryThresholdHeader = new QLabel(tr("Enter lower power at"), this);
-        lowBatteryThresholdHeader->setFont(headerFont);
-        verticalLayout->addWidget(lowBatteryThresholdHeader);
+    /* Power tab */
+    if (PowerWidget::isAvailable(device)) {
+        auto widget = new PowerWidget(device);
 
-        ushort threshold = 0;
-        try {
-            threshold = device->getLowBatteryThreshold();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get low battery threshold");
-        }
+        auto scrollArea = new QScrollArea;
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(widget);
 
-        auto *lowBatteryThresholdHBox = new QHBoxLayout();
-
-        auto *lowBatteryThresholdSlider = new QSlider(Qt::Horizontal, this);
-        lowBatteryThresholdSlider->setMinimum(1);
-        lowBatteryThresholdSlider->setMaximum(100);
-        lowBatteryThresholdSlider->setValue(threshold);
-
-        auto *lowBatteryThresholdLabel = new QLabel(this);
-        lowBatteryThresholdLabel->setText(QString("%1%").arg(threshold));
-
-        connect(lowBatteryThresholdSlider, &QSlider::valueChanged, this, [=](int threshold) {
-            lowBatteryThresholdLabel->setText(QString("%1%").arg(threshold));
-
-            try {
-                device->setLowBatteryThreshold(threshold);
-            } catch (const libopenrazer::DBusException &e) {
-                qWarning("Failed to set low battery threshold");
-                util::showError(tr("Failed to set low battery threshold"));
-            }
-        });
-
-        lowBatteryThresholdHBox->addWidget(lowBatteryThresholdSlider);
-        lowBatteryThresholdHBox->addWidget(lowBatteryThresholdLabel);
-        verticalLayout->addLayout(lowBatteryThresholdHBox);
+        tabWidget->addTab(scrollArea, tr("Power"));
     }
 
-    // Lighting header
-    if (leds.size() != 0) {
-        QLabel *lightingHeader = new QLabel(tr("Lighting"), this);
-        lightingHeader->setFont(headerFont);
-        verticalLayout->addWidget(lightingHeader);
-    }
-
-    // Iterate through lighting locations
-    for (libopenrazer::Led *led : leds) {
-        verticalLayout->addWidget(new LedWidget(this, led));
-    }
-
-    /* DPI sliders */
-    if (device->hasFeature("dpi")) {
-        if (device->hasFeature("restricted_dpi")) {
-            verticalLayout->addWidget(new DpiComboBoxWidget(this, device));
-        } else {
-            verticalLayout->addWidget(new DpiSliderWidget(this, device));
-        }
-    }
-
-    /* Poll rate */
-    if (device->hasFeature("poll_rate")) {
-        QLabel *pollRateHeader = new QLabel(tr("Polling rate"), this);
-        pollRateHeader->setFont(headerFont);
-        verticalLayout->addWidget(pollRateHeader);
-
-        ushort pollRate = 0;
-        try {
-            pollRate = device->getPollRate();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get poll rate");
-        }
-
-        QVector<ushort> supportedPollRates;
-        try {
-            supportedPollRates = device->getSupportedPollRates();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get supported poll rates");
-        }
-
-        auto *pollComboBox = new QComboBox;
-        for (ushort poll : supportedPollRates) {
-            pollComboBox->addItem(QString::number(poll) + " Hz", poll);
-        }
-        pollComboBox->setCurrentText(QString::number(pollRate) + " Hz");
-        verticalLayout->addWidget(pollComboBox);
-
-        connect(pollComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DeviceWidget::pollCombo);
-    }
-
-    /* Custom lighting */
-    if (device->hasFeature("custom_frame")) {
-        auto *button = new QPushButton(this);
-        button->setText(tr("Open custom editor"));
-
-        // Make Shift-Click open the custom editor with fallback layout
-        ClickEventFilter *filter = new ClickEventFilter();
-        button->installEventFilter(filter);
-
-        verticalLayout->addWidget(button);
-
-        connect(filter, &ClickEventFilter::shiftClicked,
-                [=]() { openCustomEditor(true); });
-        connect(button, &QPushButton::clicked,
-                [=]() { openCustomEditor(false); });
-    }
-
-    /* Spacer to bottom */
-    auto *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    verticalLayout->addItem(spacer);
+    verticalLayout->addWidget(tabWidget);
 
     /* Serial and firmware version labels */
     QString serial = "error";
@@ -255,35 +83,4 @@ DeviceWidget::DeviceWidget(const QString &name, const QDBusObjectPath &devicePat
     verticalLayout->addWidget(fwVerLabel);
 }
 
-QDBusObjectPath DeviceWidget::getDevicePath()
-{
-    return devicePath;
-}
-
 DeviceWidget::~DeviceWidget() = default;
-
-void DeviceWidget::pollCombo(int /* index */)
-{
-    auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    try {
-        device->setPollRate(sender->currentData().value<ushort>());
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to set polling rate");
-        util::showError(tr("Failed to set polling rate"));
-    }
-}
-
-void DeviceWidget::openCustomEditor(bool forceFallback)
-{
-    // Set combobox(es) to "Custom Effect"
-    auto comboboxes = this->findChildren<QComboBox *>("combobox");
-    for (auto combobox : comboboxes) {
-        if (combobox->findText("Custom Effect") == -1)
-            combobox->addItem("Custom Effect");
-        combobox->setCurrentText("Custom Effect");
-    }
-
-    auto *cust = new CustomEditor(device, forceFallback);
-    cust->setAttribute(Qt::WA_DeleteOnClose);
-    cust->show();
-}

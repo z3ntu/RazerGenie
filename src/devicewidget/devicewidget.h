@@ -13,21 +13,8 @@ class DeviceWidget : public QWidget
 {
     Q_OBJECT
 public:
-    DeviceWidget(const QString &name, const QDBusObjectPath &devicePath, libopenrazer::Device *device);
+    DeviceWidget(libopenrazer::Device *device);
     ~DeviceWidget() override;
-
-    QDBusObjectPath getDevicePath();
-
-public slots:
-    // Poll combobox
-    void pollCombo(int /* index */);
-
-private:
-    QString name;
-    QDBusObjectPath devicePath;
-    libopenrazer::Device *device;
-
-    void openCustomEditor(bool forceFallback);
 };
 
 #endif // DEVICEWIDGET_H

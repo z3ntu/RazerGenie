@@ -279,10 +279,6 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
     // Create device instance with current serial
     libopenrazer::Device *currentDevice = manager->getDevice(devicePath);
 
-    // Setup variables for easy access
-    QString type = currentDevice->getDeviceType();
-    QString name = currentDevice->getDeviceName();
-
     if (devices.isEmpty()) {
         // Remove placeholder widget if inserted.
         QWidget *widget = ui_main.stackedWidget->widget(0);
@@ -311,18 +307,11 @@ void RazerGenie::addDeviceToGui(const QDBusObjectPath &devicePath)
         listItemWidget->setNoImage();
     }
 
-    // Create a scroll widget for everything to sit in
-    auto scrollArea = new QScrollArea;
-    scrollArea->setWidgetResizable(true);
-
     /* Create actual DeviceWidget */
-    auto *widget = new DeviceWidget(name, devicePath, currentDevice);
-
-    // Set the main widget as child of the scrollArea
-    scrollArea->setWidget(widget);
+    auto *widget = new DeviceWidget(currentDevice);
 
     // Add the new widget to the stacked widget
-    ui_main.stackedWidget->addWidget(scrollArea);
+    ui_main.stackedWidget->addWidget(widget);
 }
 
 bool RazerGenie::removeDeviceFromGui(const QDBusObjectPath &devicePath)
