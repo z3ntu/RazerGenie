@@ -111,6 +111,15 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     connect(dpiSyncCheckbox, &QCheckBox::clicked, this, [=](bool checked) {
         syncDpi = checked;
         updateXYVisibility();
+
+        /* Snap the Y value to the current X value when the box is checked */
+        if (checked) {
+            dpiYSlider->setValue(dpiXSlider->value());
+            /* Set DPI on the device manually, the dpiChanged function doesn't
+             * do that for just setting Y with syncDpi=true */
+            ushort dpi = dpiXSlider->value() * 100;
+            device->setDPI({ dpi, dpi });
+        }
     });
 
     verticalLayout->addLayout(dpiHeaderHBox);
