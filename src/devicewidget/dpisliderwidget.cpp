@@ -43,8 +43,8 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiHeaderHBox->addWidget(dpiSyncCheckbox);
 
     // Labels
-    QLabel *dpiXLabel = new QLabel(tr("DPI X"));
-    QLabel *dpiYLabel = new QLabel(tr("DPI Y"));
+    QLabel *dpiXLabel = new QLabel("X");
+    QLabel *dpiYLabel = new QLabel("Y");
 
     // Read-only textboxes
     auto *dpiXText = new QTextEdit(this);
