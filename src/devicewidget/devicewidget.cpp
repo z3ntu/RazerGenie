@@ -4,11 +4,13 @@
 
 #include "devicewidget.h"
 
+#include "deviceinfodialog.h"
 #include "lightingwidget.h"
 #include "performancewidget.h"
 #include "powerwidget.h"
 
 #include <QLabel>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QTabWidget>
 #include <QVBoxLayout>
@@ -20,11 +22,30 @@ DeviceWidget::DeviceWidget(libopenrazer::Device *device)
 
     QFont titleFont("Arial", 18, QFont::Bold);
 
-    // Add header with the device name
+    /* Header items */
+    auto *headerHBox = new QHBoxLayout();
+
     QLabel *header = new QLabel(device->getDeviceName(), this);
     header->setFont(titleFont);
-    verticalLayout->addWidget(header);
+    headerHBox->addWidget(header);
 
+    QPushButton *infoButton = new QPushButton();
+    infoButton->setText(tr("Device Info"));
+    infoButton->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed));
+
+    QIcon infoIcon = QIcon::fromTheme("help-about-symbolic");
+    infoButton->setIcon(infoIcon);
+    connect(infoButton, &QPushButton::pressed, this, [=]() {
+        auto *info = new DeviceInfoDialog(device, this);
+        info->setWindowModality(Qt::WindowModal);
+        info->setAttribute(Qt::WA_DeleteOnClose);
+        info->show();
+    });
+    headerHBox->addWidget(infoButton);
+
+    verticalLayout->addLayout(headerHBox);
+
+    /* Tabs */
     QTabWidget *tabWidget = new QTabWidget(this);
 
     /* Lighting tab */
@@ -61,26 +82,6 @@ DeviceWidget::DeviceWidget(libopenrazer::Device *device)
     }
 
     verticalLayout->addWidget(tabWidget);
-
-    /* Serial and firmware version labels */
-    QString serial = "error";
-    try {
-        serial = device->getSerial();
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to get serial");
-    }
-    QString firmwareVersion = "error";
-    try {
-        firmwareVersion = device->getFirmwareVersion();
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to get firmware version");
-    }
-
-    QLabel *serialLabel = new QLabel(tr("Serial number: %1").arg(serial));
-    verticalLayout->addWidget(serialLabel);
-
-    QLabel *fwVerLabel = new QLabel(tr("Firmware version: %1").arg(firmwareVersion));
-    verticalLayout->addWidget(fwVerLabel);
 }
 
 DeviceWidget::~DeviceWidget() = default;
