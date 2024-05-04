@@ -10,7 +10,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
-#include <QTextEdit>
+#include <QSpinBox>
 
 DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     : QWidget(parent)
@@ -46,17 +46,13 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     QLabel *dpiXLabel = new QLabel("X");
     QLabel *dpiYLabel = new QLabel("Y");
 
-    // Read-only textboxes
-    auto *dpiXText = new QTextEdit(this);
-    auto *dpiYText = new QTextEdit(this);
-    dpiXText->setMaximumWidth(60);
-    dpiYText->setMaximumWidth(60);
-    dpiXText->setMaximumHeight(30);
-    dpiYText->setMaximumHeight(30);
-    dpiXText->setObjectName("dpiXText");
-    dpiYText->setObjectName("dpiYText");
-    dpiXText->setEnabled(false);
-    dpiYText->setEnabled(false);
+    // Read-only spinboxes
+    auto *dpiXSpinBox = new QSpinBox(this);
+    auto *dpiYSpinBox = new QSpinBox(this);
+    dpiXSpinBox->setObjectName("dpiXSpinBox");
+    dpiYSpinBox->setObjectName("dpiYSpinBox");
+    dpiXSpinBox->setEnabled(false);
+    dpiYSpinBox->setEnabled(false);
 
     // Sliders
     auto *dpiXSlider = new QSlider(Qt::Horizontal, this);
@@ -72,17 +68,14 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
         qWarning("Failed to get dpi");
     }
 
-    dpiXSlider->setValue(currDPI.dpi_x / 100);
-    dpiYSlider->setValue(currDPI.dpi_y / 100);
-    dpiXText->setText(QString::number(currDPI.dpi_x));
-    dpiYText->setText(QString::number(currDPI.dpi_y));
-
     int maxDPI = 0;
     try {
         maxDPI = device->maxDPI();
     } catch (const libopenrazer::DBusException &e) {
         qWarning("Failed to get max dpi");
     }
+    dpiXSpinBox->setMaximum(maxDPI);
+    dpiYSpinBox->setMaximum(maxDPI);
     dpiXSlider->setMaximum(maxDPI / 100);
     dpiYSlider->setMaximum(maxDPI / 100);
 
@@ -91,14 +84,19 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
     dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
 
+    dpiXSpinBox->setValue(currDPI.dpi_x);
+    dpiYSpinBox->setValue(currDPI.dpi_y);
+    dpiXSlider->setValue(currDPI.dpi_x / 100);
+    dpiYSlider->setValue(currDPI.dpi_y / 100);
+
     dpiSyncCheckbox->setChecked(syncDpi); // set enabled by default
 
     dpiXHBox->addWidget(dpiXLabel);
-    dpiXHBox->addWidget(dpiXText);
+    dpiXHBox->addWidget(dpiXSpinBox);
     dpiXHBox->addWidget(dpiXSlider);
 
     dpiYHBox->addWidget(dpiYLabel);
-    dpiYHBox->addWidget(dpiYText);
+    dpiYHBox->addWidget(dpiYSpinBox);
     dpiYHBox->addWidget(dpiYSlider);
 
     connect(dpiXSlider, &QSlider::valueChanged, this, &DpiSliderWidget::dpiChanged);
@@ -144,9 +142,9 @@ void DpiSliderWidget::dpiChanged(int orig_value)
         }
     }
 
-    // Update textbox with new value
-    auto *dpitextbox = sender->parentWidget()->findChild<QTextEdit *>(sender->objectName() + "Text");
-    dpitextbox->setText(QString::number(value));
+    // Update spinbox with new value
+    auto *dpiSpinBox = sender->parentWidget()->findChild<QSpinBox *>(sender->objectName() + "SpinBox");
+    dpiSpinBox->setValue(value);
 
     // Check if we need to actually set the DPI
     if (dpi.dpi_x == 0 && dpi.dpi_y == 0) {
