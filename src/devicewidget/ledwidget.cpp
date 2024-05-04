@@ -22,7 +22,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     auto *verticalLayout = new QVBoxLayout(this);
 
     // Set appropriate text
-    QLabel *lightingLocationLabel = new QLabel(tr("Lighting %1").arg(libopenrazer::ledIdToStringTable.value(led->getLedId(), "error")));
+    QLabel *lightingLocationLabel = new QLabel(tr("Effect %1").arg(libopenrazer::ledIdToStringTable.value(led->getLedId(), "error")));
 
     auto *lightingHBox = new QHBoxLayout();
     verticalLayout->addWidget(lightingLocationLabel);
