@@ -47,7 +47,7 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiYLabel = new QLabel("Y");
 
     // Read-only spinboxes
-    auto *dpiXSpinBox = new QSpinBox(this);
+    dpiXSpinBox = new QSpinBox(this);
     dpiYSpinBox = new QSpinBox(this);
     dpiXSpinBox->setObjectName("dpiXSpinBox");
     dpiYSpinBox->setObjectName("dpiYSpinBox");
@@ -55,7 +55,7 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
     dpiYSpinBox->setEnabled(false);
 
     // Sliders
-    auto *dpiXSlider = new QSlider(Qt::Horizontal, this);
+    dpiXSlider = new QSlider(Qt::Horizontal, this);
     dpiYSlider = new QSlider(Qt::Horizontal, this);
     dpiXSlider->setObjectName("dpiX");
     dpiYSlider->setObjectName("dpiY");
@@ -130,30 +130,29 @@ void DpiSliderWidget::dpiChanged(int orig_value)
     if (syncDpi) {
         if (sender->objectName() == "dpiX") {
             // set the other slider
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            slider->setValue(orig_value);
+            dpiYSlider->setValue(orig_value);
 
             // set DPI
             dpi = { value, value }; // set for both X & Y
         } else {
             // just set the slider (as the rest was done already or will be done)
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            slider->setValue(orig_value);
+            dpiXSlider->setValue(orig_value);
         }
     } else { /* if DPI should NOT be synced */
         // set DPI (with value from other slider)
         if (sender->objectName() == "dpiX") {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiY");
-            dpi = { value, static_cast<ushort>(slider->value() * 100) };
+            dpi = { value, static_cast<ushort>(dpiYSlider->value() * 100) };
         } else {
-            auto *slider = sender->parentWidget()->findChild<QSlider *>("dpiX");
-            dpi = { static_cast<ushort>(slider->value() * 100), value };
+            dpi = { static_cast<ushort>(dpiXSlider->value() * 100), value };
         }
     }
 
     // Update spinbox with new value
-    auto *dpiSpinBox = sender->parentWidget()->findChild<QSpinBox *>(sender->objectName() + "SpinBox");
-    dpiSpinBox->setValue(value);
+    if (sender->objectName() == "dpiX") {
+        dpiXSpinBox->setValue(value);
+    } else {
+        dpiYSpinBox->setValue(value);
+    }
 
     // Check if we need to actually set the DPI
     if (dpi.dpi_x == 0 && dpi.dpi_y == 0) {

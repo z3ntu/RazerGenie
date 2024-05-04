@@ -27,7 +27,9 @@ private:
 
     QLabel *dpiXLabel;
     QLabel *dpiYLabel;
+    QSpinBox *dpiXSpinBox;
     QSpinBox *dpiYSpinBox;
+    QSlider *dpiXSlider;
     QSlider *dpiYSlider;
 
     void updateXYVisibility();
