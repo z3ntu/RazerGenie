@@ -5,6 +5,8 @@
 #ifndef DPISLIDERWIDGET_H
 #define DPISLIDERWIDGET_H
 
+#include "dpistagewidget.h"
+
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
@@ -17,22 +19,17 @@ class DpiSliderWidget : public QWidget
 public:
     DpiSliderWidget(QWidget *parent, libopenrazer::Device *device);
 
-public slots:
-    // DPI checkbox & slider
-    void dpiChanged(int value);
-
 private:
-    bool syncDpi = true;
     libopenrazer::Device *device;
 
-    QLabel *dpiXLabel;
-    QLabel *dpiYLabel;
-    QSpinBox *dpiXSpinBox;
-    QSpinBox *dpiYSpinBox;
-    QSlider *dpiXSlider;
-    QSlider *dpiYSlider;
+    bool singleStage;
 
-    void updateXYVisibility();
+    uchar activeStage;
+    QVector<openrazer::RazerDPI> dpiStages;
+
+    QVector<DpiStageWidget *> dpiStageWidgets;
+
+    void handleStageUpdates();
 };
 
 #endif // DPISLIDERWIDGET_H

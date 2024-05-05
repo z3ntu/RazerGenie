@@ -7,8 +7,10 @@
 #include "util.h"
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
 
@@ -22,173 +24,177 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
 
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
 
-    // Declare header font
     QFont headerFont("Arial", 15, QFont::Bold);
 
-    // HBoxes
-    auto *dpiXHBox = new QHBoxLayout();
-    auto *dpiYHBox = new QHBoxLayout();
     auto *dpiHeaderHBox = new QHBoxLayout();
 
     // Header
-    QLabel *dpiHeader = new QLabel(tr("DPI"), this);
+    QLabel *dpiHeader = new QLabel(tr("DPI"));
     dpiHeader->setFont(headerFont);
+    dpiHeaderHBox->addWidget(dpiHeader);
+
+    dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+    if (device->hasFeature("dpi_stages")) {
+        auto *dpiStagesCheckbox = new QCheckBox();
+        dpiStagesCheckbox->setText(tr("Enable stages"));
+        dpiStagesCheckbox->setChecked(true); // TODO: determine based on something
+        singleStage = false; // TODO: set from checkbox value above
+        dpiHeaderHBox->addWidget(dpiStagesCheckbox);
+
+        connect(dpiStagesCheckbox, &QCheckBox::clicked, this, [=](bool checked) {
+            /* Show/hide stage 2-5 */
+            for (int i = 1; i < dpiStageWidgets.size(); i++) {
+                if (checked) {
+                    dpiStageWidgets[i]->show();
+                } else {
+                    dpiStageWidgets[i]->hide();
+                }
+            }
+
+            dpiStageWidgets[0]->setSingleStage(!checked);
+            singleStage = !checked;
+        });
+    }
 
     // Sync checkbox
-    auto *dpiSyncCheckbox = new QCheckBox(this);
+    auto *dpiSyncCheckbox = new QCheckBox();
     dpiSyncCheckbox->setText(tr("Lock X/Y"));
-
-    dpiHeaderHBox->addWidget(dpiHeader);
-    dpiHeaderHBox->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
     dpiHeaderHBox->addWidget(dpiSyncCheckbox);
+    verticalLayout->addLayout(dpiHeaderHBox);
 
-    // Labels
-    dpiXLabel = new QLabel("X");
-    dpiYLabel = new QLabel("Y");
-
-    // Read-only spinboxes
-    dpiXSpinBox = new QSpinBox(this);
-    dpiYSpinBox = new QSpinBox(this);
-    dpiXSpinBox->setObjectName("dpiXSpinBox");
-    dpiYSpinBox->setObjectName("dpiYSpinBox");
-    dpiXSpinBox->setEnabled(false);
-    dpiYSpinBox->setEnabled(false);
-
-    // Sliders
-    dpiXSlider = new QSlider(Qt::Horizontal, this);
-    dpiYSlider = new QSlider(Qt::Horizontal, this);
-    dpiXSlider->setObjectName("dpiX");
-    dpiYSlider->setObjectName("dpiY");
-
-    // Get the current DPI and set the slider&text
-    openrazer::RazerDPI currDPI = { 0, 0 };
-    try {
-        currDPI = device->getDPI();
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to get dpi");
-    }
-
-    const int minimumDPI = 100;
-    dpiXSpinBox->setMinimum(minimumDPI);
-    dpiYSpinBox->setMinimum(minimumDPI);
-    dpiXSlider->setMinimum(minimumDPI / 100);
-    dpiYSlider->setMinimum(minimumDPI / 100);
-
-    int maxDPI = 0;
-    try {
-        maxDPI = device->maxDPI();
-    } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to get max dpi");
-    }
-    dpiXSpinBox->setMaximum(maxDPI);
-    dpiYSpinBox->setMaximum(maxDPI);
-    dpiXSlider->setMaximum(maxDPI / 100);
-    dpiYSlider->setMaximum(maxDPI / 100);
-
-    dpiXSlider->setTickInterval(10);
-    dpiYSlider->setTickInterval(10);
-    dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-    dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
-
-    dpiXSpinBox->setValue(currDPI.dpi_x);
-    dpiYSpinBox->setValue(currDPI.dpi_y);
-    dpiXSlider->setValue(currDPI.dpi_x / 100);
-    dpiYSlider->setValue(currDPI.dpi_y / 100);
-
-    dpiSyncCheckbox->setChecked(syncDpi);
-    updateXYVisibility();
-
-    dpiXHBox->addWidget(dpiXLabel);
-    dpiXHBox->addWidget(dpiXSpinBox);
-    dpiXHBox->addWidget(dpiXSlider);
-
-    dpiYHBox->addWidget(dpiYLabel);
-    dpiYHBox->addWidget(dpiYSpinBox);
-    dpiYHBox->addWidget(dpiYSlider);
-
-    connect(dpiXSlider, &QSlider::valueChanged, this, &DpiSliderWidget::dpiChanged);
-    connect(dpiYSlider, &QSlider::valueChanged, this, &DpiSliderWidget::dpiChanged);
     connect(dpiSyncCheckbox, &QCheckBox::clicked, this, [=](bool checked) {
-        syncDpi = checked;
-        updateXYVisibility();
-
-        /* Snap the Y value to the current X value when the box is checked */
-        if (checked) {
-            dpiYSlider->setValue(dpiXSlider->value());
-            /* Set DPI on the device manually, the dpiChanged function doesn't
-             * do that for just setting Y with syncDpi=true */
-            ushort dpi = dpiXSlider->value() * 100;
-            device->setDPI({ dpi, dpi });
+        for (DpiStageWidget *stageWidget : dpiStageWidgets) {
+            stageWidget->setSyncDpi(checked);
         }
     });
 
-    verticalLayout->addLayout(dpiHeaderHBox);
-    verticalLayout->addLayout(dpiXHBox);
-    verticalLayout->addLayout(dpiYHBox);
-}
+    // DPI stages
+    const int minimumDpi = 100;
 
-void DpiSliderWidget::dpiChanged(int orig_value)
-{
-    ushort value = orig_value * 100;
-
-    auto *sender = qobject_cast<QSlider *>(QObject::sender());
-
-    openrazer::RazerDPI dpi = { 0, 0 };
-
-    // if DPI should be synced
-    if (syncDpi) {
-        if (sender->objectName() == "dpiX") {
-            // set the other slider
-            dpiYSlider->setValue(orig_value);
-
-            // set DPI
-            dpi = { value, value }; // set for both X & Y
-        } else {
-            // just set the slider (as the rest was done already or will be done)
-            dpiXSlider->setValue(orig_value);
-        }
-    } else { /* if DPI should NOT be synced */
-        // set DPI (with value from other slider)
-        if (sender->objectName() == "dpiX") {
-            dpi = { value, static_cast<ushort>(dpiYSlider->value() * 100) };
-        } else {
-            dpi = { static_cast<ushort>(dpiXSlider->value() * 100), value };
-        }
-    }
-
-    // Update spinbox with new value
-    if (sender->objectName() == "dpiX") {
-        dpiXSpinBox->setValue(value);
-    } else {
-        dpiYSpinBox->setValue(value);
-    }
-
-    // Check if we need to actually set the DPI
-    if (dpi.dpi_x == 0 && dpi.dpi_y == 0) {
-        return;
-    }
-
+    int maximumDpi = 0;
     try {
-        device->setDPI(dpi);
+        maximumDpi = device->maxDPI();
     } catch (const libopenrazer::DBusException &e) {
-        qWarning("Failed to set dpi");
-        util::showError(tr("Failed to set dpi"));
+        qWarning("Failed to get max dpi");
+    }
+
+    if (device->hasFeature("dpi_stages")) {
+        QPair<uchar, QVector<openrazer::RazerDPI>> stagesPair = { 1, {} };
+        try {
+            stagesPair = device->getDPIStages();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get dpi stages");
+        }
+        activeStage = stagesPair.first;
+        dpiStages = stagesPair.second;
+
+        // Assume user wants DPI synced if all values are currently equal
+        bool isSynced = true;
+        for (openrazer::RazerDPI dpi : dpiStages) {
+            isSynced &= dpi.dpi_x == dpi.dpi_y;
+        }
+        dpiSyncCheckbox->setChecked(isSynced);
+
+        /* Create widgets for the 5 possible DPI stages */
+        for (int stageNumber = 1; stageNumber <= 5; stageNumber++) {
+            /* Makes sure we have a DPI stage for every value - 0/0 if not provided */
+            if (dpiStages.size() < stageNumber) {
+                dpiStages.append({ 0, 0 });
+            }
+            /* Get DPI for current stage */
+            openrazer::RazerDPI dpi = dpiStages[stageNumber - 1];
+
+            auto *stageWidget = new DpiStageWidget(stageNumber, minimumDpi, maximumDpi, dpi, activeStage == stageNumber);
+            stageWidget->setSyncDpi(isSynced);
+
+            connect(stageWidget, &DpiStageWidget::stageActivated, this, [=](int stageNumber) {
+                activeStage = stageNumber;
+                for (DpiStageWidget *widget : dpiStageWidgets) {
+                    widget->informStageActive(activeStage);
+                }
+
+                device->setDPIStages(activeStage, dpiStages);
+            });
+
+            connect(stageWidget, &DpiStageWidget::dpiChanged, this, [=](int stageNumber, openrazer::RazerDPI dpi) {
+                handleStageUpdates();
+
+                /* Apply to device */
+                if (singleStage) {
+                    device->setDPI(dpi);
+                } else {
+                    /* If the currently active stage was disabled, we need to
+                     * find a new one to enable */
+                    if (dpi.dpi_x == 0 && dpi.dpi_y == 0 && stageNumber == activeStage) {
+                        activeStage = 1;
+                        for (DpiStageWidget *widget : dpiStageWidgets) {
+                            widget->informStageActive(activeStage);
+                        }
+                    }
+
+                    device->setDPIStages(activeStage, dpiStages);
+                }
+            });
+
+            verticalLayout->addWidget(stageWidget);
+
+            dpiStageWidgets.append(stageWidget);
+        }
+
+        handleStageUpdates();
+    } else {
+        openrazer::RazerDPI currentDpi = { 0, 0 };
+        try {
+            currentDpi = device->getDPI();
+        } catch (const libopenrazer::DBusException &e) {
+            qWarning("Failed to get dpi");
+        }
+
+        // Assume user wants DPI synced if both values are currently equal
+        bool isSynced = currentDpi.dpi_x == currentDpi.dpi_y;
+        dpiSyncCheckbox->setChecked(isSynced);
+
+        auto *stageWidget = new DpiStageWidget(0, minimumDpi, maximumDpi, currentDpi, false);
+        stageWidget->setSingleStage(true);
+        stageWidget->setSyncDpi(isSynced);
+        connect(stageWidget, &DpiStageWidget::dpiChanged, this, [=](int /*stageNumber*/, openrazer::RazerDPI dpi) {
+            device->setDPI(dpi);
+        });
+
+        verticalLayout->addWidget(stageWidget);
+
+        dpiStageWidgets.append(stageWidget);
     }
 }
 
-void DpiSliderWidget::updateXYVisibility()
+void DpiSliderWidget::handleStageUpdates()
 {
-    if (syncDpi) {
-        dpiXLabel->hide();
+    /* Re-number the stages to account for disabled stages, re-init dpiStages
+     * array based on new values */
+    int stageNumber = 1;
+    dpiStages.clear();
+    for (DpiStageWidget *stageWidget : dpiStageWidgets) {
+        openrazer::RazerDPI dpi = stageWidget->getDpi();
+        if (dpi.dpi_x != 0 && dpi.dpi_y != 0)
+            dpiStages.insert(stageNumber - 1, dpi);
 
-        dpiYLabel->hide();
-        dpiYSpinBox->hide();
-        dpiYSlider->hide();
-    } else {
-        dpiXLabel->show();
+        /* Set the stage number, if it returns false the stage is currently
+         * disabled and we'll try the same number on the next stage */
+        if (stageWidget->setStageNumber(stageNumber)) {
+            stageNumber++;
+        }
+    }
 
-        dpiYLabel->show();
-        dpiYSpinBox->show();
-        dpiYSlider->show();
+    /* Disable "Enable" button if last stage active */
+    int nrDisabledStages = 0;
+    for (openrazer::RazerDPI dpiStage : dpiStages) {
+        if (dpiStage.dpi_x == 0 && dpiStage.dpi_y == 0) {
+            nrDisabledStages++;
+        }
+    }
+    bool lastStage = nrDisabledStages == dpiStages.size() - 1;
+    for (DpiStageWidget *stageWidget : dpiStageWidgets) {
+        stageWidget->informLastStage(lastStage);
     }
 }
