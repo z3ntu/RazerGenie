@@ -1,5 +1,6 @@
 # Translations
 ts_files = [
+  'bg.ts',
   'de.ts',
   'eo.ts',
   'fr.ts',
