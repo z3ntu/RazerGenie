@@ -40,6 +40,29 @@
     </message>
 </context>
 <context>
+    <name>DeviceInfoDialog</name>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="15"/>
+        <source>RazerGenie - Device info</source>
+        <translation>RazerGenie - Apparaatinformatie</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="40"/>
+        <source>About</source>
+        <translation>Over</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="60"/>
+        <source>Serial number:</source>
+        <translation>Serienummer:</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="72"/>
+        <source>Firmware version:</source>
+        <translation>Firmware-versie:</translation>
+    </message>
+</context>
+<context>
     <name>DeviceListWidget</name>
     <message>
         <location filename="../../src/devicelistwidget.cpp" line="29"/>
@@ -55,45 +78,35 @@
 <context>
     <name>DeviceWidget</name>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="45"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="33"/>
+        <source>Device Info</source>
+        <translation>Apparaatinformatie</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="59"/>
         <source>Lighting</source>
         <translation>Verlichting</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="66"/>
-        <source>Polling rate</source>
-        <translation>Peilfrequentie</translation>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="70"/>
+        <source>Performance</source>
+        <translation>Prestatie</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="97"/>
-        <source>Open custom editor</source>
-        <translation>Aangepaste bewerker openen</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="129"/>
-        <source>Serial number: %1</source>
-        <translation>Serienummer: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="132"/>
-        <source>Firmware version: %1</source>
-        <translation>Firmware-versie: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="150"/>
-        <source>Failed to set polling rate</source>
-        <translation>De peilfrequentie kan niet worden ingesteld</translation>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="81"/>
+        <source>Power</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>DpiComboBoxWidget</name>
     <message>
-        <location filename="../../src/dpicomboboxwidget.cpp" line="23"/>
+        <location filename="../../src/devicewidget/dpicomboboxwidget.cpp" line="23"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../../src/dpicomboboxwidget.cpp" line="53"/>
+        <location filename="../../src/devicewidget/dpicomboboxwidget.cpp" line="53"/>
         <source>Failed to set DPI</source>
         <translation>De DPI kan niet worden ingesteld</translation>
     </message>
@@ -101,62 +114,130 @@
 <context>
     <name>DpiSliderWidget</name>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="34"/>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="32"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="38"/>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="40"/>
+        <source>Enable stages</source>
+        <translation>Fasen activeren</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="62"/>
         <source>Lock X/Y</source>
         <translation>X/Y vergrendelen</translation>
     </message>
+</context>
+<context>
+    <name>DpiStageWidget</name>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="47"/>
-        <source>DPI X</source>
-        <translation>DPI X</translation>
-    </message>
-    <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="48"/>
-        <source>DPI Y</source>
-        <translation>DPI Y</translation>
-    </message>
-    <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="161"/>
-        <source>Failed to set dpi</source>
-        <translation>De DPI kan niet worden ingesteld</translation>
+        <location filename="../../src/devicewidget/dpistagewidget.cpp" line="78"/>
+        <source>Enable</source>
+        <translation>Inschakelen</translation>
     </message>
 </context>
 <context>
     <name>LedWidget</name>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="24"/>
-        <source>Lighting %1</source>
-        <translation>Verlichting %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/ledwidget.cpp" line="68"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="124"/>
         <source>Brightness</source>
         <translation>Helderheid</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="114"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="99"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="116"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="25"/>
+        <source>Effect %1</source>
+        <translation>Effect %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="101"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="215"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="149"/>
         <source>Failed to change brightness</source>
         <translation>De helderheid kan niet worden aangepast</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="283"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="325"/>
         <source>Failed to change effect</source>
         <translation>Het effect kan niet worden aangepast</translation>
+    </message>
+</context>
+<context>
+    <name>LightingWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/lightingwidget.cpp" line="25"/>
+        <source>Lighting</source>
+        <translation>Verlichting</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/lightingwidget.cpp" line="37"/>
+        <source>Open custom editor</source>
+        <translation>Aangepaste bewerker openen</translation>
+    </message>
+</context>
+<context>
+    <name>PerformanceWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/performancewidget.cpp" line="35"/>
+        <source>Polling rate</source>
+        <translation>Peilfrequentie</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/performancewidget.cpp" line="65"/>
+        <source>Failed to set polling rate</source>
+        <translation>De peilfrequentie kan niet worden ingesteld</translation>
+    </message>
+</context>
+<context>
+    <name>PowerWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="27"/>
+        <source>Battery</source>
+        <translation>Batterij</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="39"/>
+        <source>Charging</source>
+        <translation>Opladen</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="41"/>
+        <source>Not Charging</source>
+        <translation>Niet opladen</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="65"/>
+        <source>Sleep mode after</source>
+        <translation>Slaapstand naar</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="87"/>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="90"/>
+        <source>%1 minutes</source>
+        <translation>%1 minuten</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="96"/>
+        <source>Failed to set idle time</source>
+        <translation>De inactiefe tijd kan niet worden ingesteld</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="107"/>
+        <source>Enter lower power at</source>
+        <translation>Ga naar de lage stroommodus op</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="135"/>
+        <source>Failed to set low battery threshold</source>
+        <translation>De lage batterijdrempel kan niet worden ingesteld</translation>
     </message>
 </context>
 <context>
@@ -197,7 +278,17 @@
         <translation>Om apparaatafbeeldingen te kunnen tonen, haalt RazerGenie de afbeelding achter de url op van het in de broncode van de OpenRazer-achtergronddienst opgegeven apparaat. Dit wordt alleen gedaan voor met de pc verbonden apparaten en slechts eenmaal - daarna worden de afbeeldingen lokaal gecachet. Als je wilt weten wat Razer mogelijk verzamelt met deze verbindingen, neem dan het &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;Razer-privacybeleid&lt;/a&gt; door.</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="112"/>
+        <location filename="../../src/preferences/preferences.cpp" line="101"/>
+        <source>Ask to auto-start daemon on startup</source>
+        <translation>Vragen om de achtergronddienst automatisch te starten bij het opstarten</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="106"/>
+        <source>Daemon auto-start:</source>
+        <translation>Achtergronddienst automatisch starten:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="120"/>
         <source>Daemon backend:</source>
         <translation>Achtergronddienst:</translation>
     </message>
@@ -207,7 +298,7 @@
         <translation>Apparaatafbeeldingen ophalen</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="108"/>
+        <location filename="../../src/preferences/preferences.cpp" line="116"/>
         <source>Please restart the application for the switch to take effect.</source>
         <translation>Herstart het programma om de wijziging toe te passen.</translation>
     </message>
@@ -228,12 +319,12 @@
 <context>
     <name>RazerGenie</name>
     <message>
-        <location filename="../../src/razergenie.cpp" line="51"/>
+        <location filename="../../src/razergenie.cpp" line="58"/>
         <source>The OpenRazer daemon is not installed</source>
         <translation>De OpenRazer-achtergronddienst is niet geïnstalleerd</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="52"/>
+        <location filename="../../src/razergenie.cpp" line="59"/>
         <source>The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!
 
 If you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package.</source>
@@ -242,24 +333,24 @@ If you are running RazerGenie as a flatpak, you will still have to install OpenR
 Als je RazerGenie uitvoert als flatpak, dan dien je OpenRazer buiten Flatpak te installeren via de pakketbronnen van je distributie.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="53"/>
+        <location filename="../../src/razergenie.cpp" line="60"/>
         <source>Open OpenRazer website</source>
         <translation>OpenRazer-website openen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="55"/>
-        <location filename="../../src/razergenie.cpp" line="71"/>
-        <location filename="../../src/razergenie.cpp" line="89"/>
+        <location filename="../../src/razergenie.cpp" line="62"/>
+        <location filename="../../src/razergenie.cpp" line="78"/>
+        <location filename="../../src/razergenie.cpp" line="96"/>
         <source>Open settings</source>
         <translation>Instellingen openen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="69"/>
+        <location filename="../../src/razergenie.cpp" line="76"/>
         <source>The OpenRazer daemon is not available.</source>
         <translation>De OpenRazer-achtergronddienst is niet beschikbaar.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="70"/>
+        <location filename="../../src/razergenie.cpp" line="77"/>
         <source>The OpenRazer daemon is not started and you are not using systemd as your init system.
 You have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.
 
@@ -270,86 +361,86 @@ Start de dienst handmatig telkens als je je aanmeldt of zoek een andere manier o
 Meer informatie hierover is te vinden in de documentatie.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="84"/>
+        <location filename="../../src/razergenie.cpp" line="91"/>
         <source>The OpenRazer daemon is currently not available. The status output is below.</source>
         <translation>De OpenRazer-achtergronddienst is momenteel niet beschikbaar. Hieronder vind je de statusuitvoer.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="86"/>
+        <location filename="../../src/razergenie.cpp" line="93"/>
         <source>If you think, there&apos;s a bug, you can report an issue on GitHub:</source>
         <translation>Als je vermoedt dat dit een bug is, meld dit voorval dan op GitHub:</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="87"/>
-        <location filename="../../src/razergenie.cpp" line="404"/>
-        <location filename="../../src/razergenie.cpp" line="412"/>
+        <location filename="../../src/razergenie.cpp" line="94"/>
+        <location filename="../../src/razergenie.cpp" line="401"/>
+        <location filename="../../src/razergenie.cpp" line="409"/>
         <source>Report issue</source>
         <translation>Bug melden</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="110"/>
+        <location filename="../../src/razergenie.cpp" line="118"/>
         <source>The OpenRazer daemon is not set to auto-start. Click &quot;Enable&quot; to use the full potential of the daemon right after login.</source>
         <translation>De OpenRazer-achtergronddienst wordt niet automatisch opgestart. Klik op &apos;Inschakelen&apos; om de dienst automatisch op te starten.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="111"/>
+        <location filename="../../src/razergenie.cpp" line="119"/>
         <source>Enable</source>
         <translation>Inschakelen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="144"/>
+        <location filename="../../src/razergenie.cpp" line="152"/>
         <source>Daemon version: %1</source>
         <translation>Achtergronddienstversie: %1</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="164"/>
+        <location filename="../../src/razergenie.cpp" line="172"/>
         <source>The D-Bus connection was re-established.</source>
         <translation>De verbinding met D-Bus is opnieuw opgezet.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="172"/>
+        <location filename="../../src/razergenie.cpp" line="180"/>
         <source>The D-Bus connection was lost, which probably means that the daemon has crashed.</source>
         <translation>De verbinding met D-Bus is verbroken - mogelijk is de achtergronddienst gecrasht.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="400"/>
+        <location filename="../../src/razergenie.cpp" line="397"/>
         <source>No device was detected</source>
         <translation>Geen apparaat aangetroffen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="401"/>
+        <location filename="../../src/razergenie.cpp" line="398"/>
         <source>The OpenRazer daemon didn&apos;t detect a device that is supported.
 This could also be caused due to a misconfiguration of this PC.</source>
         <translation>De OpenRazer-achtergronddienst heeft geen ondersteund apparaat aangetroffen.
 Mogelijk is je pc niet goed ingesteld.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="402"/>
+        <location filename="../../src/razergenie.cpp" line="399"/>
         <source>Open supported devices</source>
         <translation>Ondersteunde apparaten tonen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="407"/>
+        <location filename="../../src/razergenie.cpp" line="404"/>
         <source>The daemon didn&apos;t detect a device that is connected</source>
         <translation>De achtergronddienst heeft geen verbonden apparaat aangetroffen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="408"/>
+        <location filename="../../src/razergenie.cpp" line="405"/>
         <source>Linux detected connected devices but the daemon didn&apos;t. This could be either due to a permission problem or a kernel module problem.</source>
         <translation>Linux heeft verbonden apparaten aangetroffen, maar de achtergronddienst niet. Dit kan duiden op een rechten- of kernelmoduleprobleem.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="410"/>
+        <location filename="../../src/razergenie.cpp" line="407"/>
         <source>Open troubleshooting page</source>
         <translation>Probleemoplossing tonen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="431"/>
+        <location filename="../../src/razergenie.cpp" line="428"/>
         <source>Error while syncing devices.</source>
         <translation>Fout tijdens synchroniseren van apparaten.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="440"/>
+        <location filename="../../src/razergenie.cpp" line="437"/>
         <source>Error while toggling &apos;turn off on screensaver&apos;</source>
         <translation>Fout tijdens in-/uitschakelen van &apos;Schermbeveiliging uitschakelen&apos;</translation>
     </message>
