@@ -49,6 +49,29 @@
     </message>
 </context>
 <context>
+    <name>DeviceInfoDialog</name>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="+15"/>
+        <source>RazerGenie - Device info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>About</source>
+        <translation>შესახებ</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Serial number:</source>
+        <translation>სერიული ნომერი:</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Firmware version:</source>
+        <translation>მიკროკოდის ვერსია:</translation>
+    </message>
+</context>
+<context>
     <name>DeviceListWidget</name>
     <message>
         <location filename="../../src/devicelistwidget.cpp" line="+29"/>
@@ -64,40 +87,30 @@
 <context>
     <name>DeviceWidget</name>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="+45"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="+33"/>
+        <source>Device Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>Lighting</source>
         <translation>გამოკვეთა</translation>
     </message>
     <message>
-        <location line="+21"/>
-        <source>Polling rate</source>
-        <translation>გამოკითხვის სიხშირე</translation>
+        <location line="+11"/>
+        <source>Performance</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+31"/>
-        <source>Open custom editor</source>
-        <translation>მომხმარებლის რედაქტორის გახსნა</translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Serial number: %1</source>
-        <translation>სერიული ნომერი: %1</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Firmware version: %1</source>
-        <translation>მიკროკოდის ვერსია: %1</translation>
-    </message>
-    <message>
-        <location line="+18"/>
-        <source>Failed to set polling rate</source>
-        <translation>გამოკითხვის ის დაყენება ჩავარდა</translation>
+        <location line="+11"/>
+        <source>Power</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DpiComboBoxWidget</name>
     <message>
-        <location filename="../../src/dpicomboboxwidget.cpp" line="+23"/>
+        <location filename="../../src/devicewidget/dpicomboboxwidget.cpp" line="+23"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
@@ -110,62 +123,130 @@
 <context>
     <name>DpiSliderWidget</name>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="+34"/>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="+32"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+8"/>
+        <source>Enable stages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>Lock X/Y</source>
         <translation>X/Y-ის დაბლოკვა</translation>
     </message>
+</context>
+<context>
+    <name>DpiStageWidget</name>
     <message>
-        <location line="+9"/>
-        <source>DPI X</source>
-        <translation>DPI X</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>DPI Y</source>
-        <translation>DPI Y</translation>
-    </message>
-    <message>
-        <location line="+113"/>
-        <source>Failed to set dpi</source>
-        <translation>DPI-ის დაყენება ჩავარდა</translation>
+        <location filename="../../src/devicewidget/dpistagewidget.cpp" line="+78"/>
+        <source>Enable</source>
+        <translation>ჩართვა</translation>
     </message>
 </context>
 <context>
     <name>LedWidget</name>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="+24"/>
-        <source>Lighting %1</source>
-        <translation>გამოკვეთა %1</translation>
-    </message>
-    <message>
-        <location line="+44"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="+124"/>
         <source>Brightness</source>
         <translation>სიკაშკაშე</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="-25"/>
         <source>Left</source>
         <translation>მარცხენა</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-74"/>
+        <source>Effect %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+76"/>
         <source>Right</source>
         <translation>მარჯვენა</translation>
     </message>
     <message>
-        <location line="+118"/>
+        <location line="+48"/>
         <source>Failed to change brightness</source>
         <translation>სიკაშკაშის შეცვლა ჩავარდა</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+176"/>
         <source>Failed to change effect</source>
         <translation>ეფექტის შეცვლა ჩავარდა</translation>
+    </message>
+</context>
+<context>
+    <name>LightingWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/lightingwidget.cpp" line="+25"/>
+        <source>Lighting</source>
+        <translation>გამოკვეთა</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Open custom editor</source>
+        <translation>მომხმარებლის რედაქტორის გახსნა</translation>
+    </message>
+</context>
+<context>
+    <name>PerformanceWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/performancewidget.cpp" line="+35"/>
+        <source>Polling rate</source>
+        <translation>გამოკითხვის სიხშირე</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Failed to set polling rate</source>
+        <translation>გამოკითხვის ის დაყენება ჩავარდა</translation>
+    </message>
+</context>
+<context>
+    <name>PowerWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="+27"/>
+        <source>Battery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Charging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Not Charging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Sleep mode after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <location line="+3"/>
+        <source>%1 minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Failed to set idle time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Enter lower power at</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Failed to set low battery threshold</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -212,8 +293,8 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Don&apos;t ask to auto-start daemon on startup</source>
-        <translation>დემონი ჩატვირთვისას ავტომატურად არ გაეშვას</translation>
+        <source>Ask to auto-start daemon on startup</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -247,7 +328,7 @@
 <context>
     <name>RazerGenie</name>
     <message>
-        <location filename="../../src/razergenie.cpp" line="+51"/>
+        <location filename="../../src/razergenie.cpp" line="+58"/>
         <source>The OpenRazer daemon is not installed</source>
         <translation>OpenRazer-ის დემონი დაყენებული არაა</translation>
     </message>
@@ -300,13 +381,13 @@ Please consult the documentation for details.</source>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+318"/>
+        <location line="+307"/>
         <location line="+8"/>
         <source>Report issue</source>
         <translation>პრობლემის შეტყობინება</translation>
     </message>
     <message>
-        <location line="-302"/>
+        <location line="-291"/>
         <source>The OpenRazer daemon is not set to auto-start. Click &quot;Enable&quot; to use the full potential of the daemon right after login.</source>
         <translation>OpenRazer-ის დემონ ავტომატურად არ ეშვება. დააწკაპუნეთ &apos;ჩართვაზე&apos;, რათა დემონის სრული ძალა სისტემაში შესვლის შემდეგვე იგრძნოთ.</translation>
     </message>
@@ -331,7 +412,7 @@ Please consult the documentation for details.</source>
         <translation>D-Bus-თან მიერთება დაიკარგა, რაც, ალბათ ნიშნავს, რომ დემონი ავარიულად დასრულდა.</translation>
     </message>
     <message>
-        <location line="+228"/>
+        <location line="+217"/>
         <source>No device was detected</source>
         <translation>მოწყობილობა ვერ ვიპოვე</translation>
     </message>
