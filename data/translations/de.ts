@@ -40,6 +40,29 @@
     </message>
 </context>
 <context>
+    <name>DeviceInfoDialog</name>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="15"/>
+        <source>RazerGenie - Device info</source>
+        <translation>RazerGenie - Geräteinformation</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="40"/>
+        <source>About</source>
+        <translation>Über</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="60"/>
+        <source>Serial number:</source>
+        <translation>Seriennummer:</translation>
+    </message>
+    <message>
+        <location filename="../../src/deviceinfodialog.cpp" line="72"/>
+        <source>Firmware version:</source>
+        <translation>Firmware-Version:</translation>
+    </message>
+</context>
+<context>
     <name>DeviceListWidget</name>
     <message>
         <location filename="../../src/devicelistwidget.cpp" line="29"/>
@@ -55,45 +78,35 @@
 <context>
     <name>DeviceWidget</name>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="45"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="33"/>
+        <source>Device Info</source>
+        <translation>Geräteinformation</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="59"/>
         <source>Lighting</source>
         <translation>Beleuchtung</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="66"/>
-        <source>Polling rate</source>
-        <translation>Abfragerate</translation>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="70"/>
+        <source>Performance</source>
+        <translation>Leistung</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget.cpp" line="97"/>
-        <source>Open custom editor</source>
-        <translation>Custom Editor öffnen</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="129"/>
-        <source>Serial number: %1</source>
-        <translation>Seriennummer: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="132"/>
-        <source>Firmware version: %1</source>
-        <translation>Firmware-Version: %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/devicewidget.cpp" line="150"/>
-        <source>Failed to set polling rate</source>
-        <translation>Abfragerate konnte nicht gesetzt werden</translation>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="81"/>
+        <source>Power</source>
+        <translation>Energie</translation>
     </message>
 </context>
 <context>
     <name>DpiComboBoxWidget</name>
     <message>
-        <location filename="../../src/dpicomboboxwidget.cpp" line="23"/>
+        <location filename="../../src/devicewidget/dpicomboboxwidget.cpp" line="23"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../../src/dpicomboboxwidget.cpp" line="53"/>
+        <location filename="../../src/devicewidget/dpicomboboxwidget.cpp" line="53"/>
         <source>Failed to set DPI</source>
         <translation>DPI konnte nicht gesetzt werden</translation>
     </message>
@@ -101,62 +114,130 @@
 <context>
     <name>DpiSliderWidget</name>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="34"/>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="32"/>
         <source>DPI</source>
         <translation>DPI</translation>
     </message>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="38"/>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="40"/>
+        <source>Enable stages</source>
+        <translation>Stufen aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/dpisliderwidget.cpp" line="62"/>
         <source>Lock X/Y</source>
         <translation>X/Y sperren</translation>
     </message>
+</context>
+<context>
+    <name>DpiStageWidget</name>
     <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="47"/>
-        <source>DPI X</source>
-        <translation>DPI X</translation>
-    </message>
-    <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="48"/>
-        <source>DPI Y</source>
-        <translation>DPI Y</translation>
-    </message>
-    <message>
-        <location filename="../../src/dpisliderwidget.cpp" line="161"/>
-        <source>Failed to set dpi</source>
-        <translation>DPI konnte nicht gesetzt werden</translation>
+        <location filename="../../src/devicewidget/dpistagewidget.cpp" line="78"/>
+        <source>Enable</source>
+        <translation>Aktivieren</translation>
     </message>
 </context>
 <context>
     <name>LedWidget</name>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="24"/>
-        <source>Lighting %1</source>
-        <translation>Beleuchtung %1</translation>
-    </message>
-    <message>
-        <location filename="../../src/ledwidget.cpp" line="68"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="124"/>
         <source>Brightness</source>
         <translation>Helligkeit</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="114"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="99"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="116"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="25"/>
+        <source>Effect %1</source>
+        <translation>Effekt %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="101"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="215"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="149"/>
         <source>Failed to change brightness</source>
         <translation>Helligkeit konnte nicht gesetzt werden</translation>
     </message>
     <message>
-        <location filename="../../src/ledwidget.cpp" line="283"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="325"/>
         <source>Failed to change effect</source>
         <translation>Effekt konnte nicht gesetzt werden</translation>
+    </message>
+</context>
+<context>
+    <name>LightingWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/lightingwidget.cpp" line="25"/>
+        <source>Lighting</source>
+        <translation>Beleuchtung</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/lightingwidget.cpp" line="37"/>
+        <source>Open custom editor</source>
+        <translation>Custom Editor öffnen</translation>
+    </message>
+</context>
+<context>
+    <name>PerformanceWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/performancewidget.cpp" line="35"/>
+        <source>Polling rate</source>
+        <translation>Abfragerate</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/performancewidget.cpp" line="65"/>
+        <source>Failed to set polling rate</source>
+        <translation>Abfragerate konnte nicht gesetzt werden</translation>
+    </message>
+</context>
+<context>
+    <name>PowerWidget</name>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="27"/>
+        <source>Battery</source>
+        <translation>Batterie</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="39"/>
+        <source>Charging</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="41"/>
+        <source>Not Charging</source>
+        <translation>Nicht laden</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="65"/>
+        <source>Sleep mode after</source>
+        <translation>Schlafmodus nach</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="87"/>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="90"/>
+        <source>%1 minutes</source>
+        <translation>%1 Minuten</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="96"/>
+        <source>Failed to set idle time</source>
+        <translation>Stillstandszeit konnte nicht gesetzt werden</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="107"/>
+        <source>Enter lower power at</source>
+        <translation>Energiesparmodus aktivieren nach</translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/powerwidget.cpp" line="135"/>
+        <source>Failed to set low battery threshold</source>
+        <translation>Energiesparmodus konnte nicht gesetzt werden</translation>
     </message>
 </context>
 <context>
@@ -197,7 +278,17 @@
         <translation>Um Gerätebilder anzeigen zu können ladet RazerGenie das Bild hinter der URL für das Gerät herunter, welche im OpenRazer daemon Quellcode definiert ist. Das passiert nur für Geräte die am PC angeschlossen sind und nur einmal, weil die Bilder lokal zwischengespeichert werden. Um zu erfahren welche Informationen Razer mit diesen Verbindungen sammeln könnte, lies bitte die &lt;a href=&quot;https://www.razer.com/legal/privacy-policy&quot;&gt;Razer Privacy Policy&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="112"/>
+        <location filename="../../src/preferences/preferences.cpp" line="101"/>
+        <source>Ask to auto-start daemon on startup</source>
+        <translation>Fragen um die Daemon Autostart-Funktion zu aktivieren</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="106"/>
+        <source>Daemon auto-start:</source>
+        <translation>Daemon Autostart:</translation>
+    </message>
+    <message>
+        <location filename="../../src/preferences/preferences.cpp" line="120"/>
         <source>Daemon backend:</source>
         <translation>Daemon-Backend:</translation>
     </message>
@@ -207,7 +298,7 @@
         <translation>Gerätebilder herunteladen</translation>
     </message>
     <message>
-        <location filename="../../src/preferences/preferences.cpp" line="108"/>
+        <location filename="../../src/preferences/preferences.cpp" line="116"/>
         <source>Please restart the application for the switch to take effect.</source>
         <translation>Bitte die Anwendung neustarten, damit die Umstellung wirksam wird.</translation>
     </message>
@@ -228,12 +319,12 @@
 <context>
     <name>RazerGenie</name>
     <message>
-        <location filename="../../src/razergenie.cpp" line="51"/>
+        <location filename="../../src/razergenie.cpp" line="58"/>
         <source>The OpenRazer daemon is not installed</source>
         <translation>Der OpenRazer Daemon ist nicht installiert</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="52"/>
+        <location filename="../../src/razergenie.cpp" line="59"/>
         <source>The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!
 
 If you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package.</source>
@@ -242,24 +333,24 @@ If you are running RazerGenie as a flatpak, you will still have to install OpenR
 Wenn du RazerGenie als flatpak ausführst, musst du trotzdem OpenRazer außerhalb von flatpak von einem Distributionspackage installieren.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="53"/>
+        <location filename="../../src/razergenie.cpp" line="60"/>
         <source>Open OpenRazer website</source>
         <translation>OpenRazer Webseite öffnen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="55"/>
-        <location filename="../../src/razergenie.cpp" line="71"/>
-        <location filename="../../src/razergenie.cpp" line="89"/>
+        <location filename="../../src/razergenie.cpp" line="62"/>
+        <location filename="../../src/razergenie.cpp" line="78"/>
+        <location filename="../../src/razergenie.cpp" line="96"/>
         <source>Open settings</source>
         <translation>Einstellungen öffnen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="69"/>
+        <location filename="../../src/razergenie.cpp" line="76"/>
         <source>The OpenRazer daemon is not available.</source>
         <translation>Der OpenRazer Daemon ist nicht verfügbar.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="70"/>
+        <location filename="../../src/razergenie.cpp" line="77"/>
         <source>The OpenRazer daemon is not started and you are not using systemd as your init system.
 You have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.
 
@@ -270,86 +361,86 @@ Du musst den Daemon entweder manuell starten, wenn du dich anmeldest, oder eine 
 Bitte lies die Dokumentation für Details.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="84"/>
+        <location filename="../../src/razergenie.cpp" line="91"/>
         <source>The OpenRazer daemon is currently not available. The status output is below.</source>
         <translation>Der OpenRazer Daemon ist derzeit nicht verfügbar. Die Statusausgabe ist unterhalb.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="86"/>
+        <location filename="../../src/razergenie.cpp" line="93"/>
         <source>If you think, there&apos;s a bug, you can report an issue on GitHub:</source>
         <translation>Wenn du glaubst, dass ein Problem existiert, kannst du dies auf GitHub melden:</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="87"/>
-        <location filename="../../src/razergenie.cpp" line="404"/>
-        <location filename="../../src/razergenie.cpp" line="412"/>
+        <location filename="../../src/razergenie.cpp" line="94"/>
+        <location filename="../../src/razergenie.cpp" line="401"/>
+        <location filename="../../src/razergenie.cpp" line="409"/>
         <source>Report issue</source>
         <translation>Problem melden</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="110"/>
+        <location filename="../../src/razergenie.cpp" line="118"/>
         <source>The OpenRazer daemon is not set to auto-start. Click &quot;Enable&quot; to use the full potential of the daemon right after login.</source>
         <translation>Der OpenRazer Daemon ist nicht gesetzt, dass er automatisch startet. Drück &quot;Aktivieren&quot;, um dass volle Potential des Daemon direkt nach dem Login zu benützen.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="111"/>
+        <location filename="../../src/razergenie.cpp" line="119"/>
         <source>Enable</source>
         <translation>Aktivieren</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="144"/>
+        <location filename="../../src/razergenie.cpp" line="152"/>
         <source>Daemon version: %1</source>
         <translation>Daemon Version: %1</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="164"/>
+        <location filename="../../src/razergenie.cpp" line="172"/>
         <source>The D-Bus connection was re-established.</source>
         <translation>Die D-Bus Verbindung wurde wiederhergestellt.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="172"/>
+        <location filename="../../src/razergenie.cpp" line="180"/>
         <source>The D-Bus connection was lost, which probably means that the daemon has crashed.</source>
         <translation>Die D-Bus Verbindung wurde unterbrochen, was wahrscheinlich heißt, dass der Daemon abgestürzt ist.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="400"/>
+        <location filename="../../src/razergenie.cpp" line="397"/>
         <source>No device was detected</source>
         <translation>Kein Gerät wurde erkannt</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="401"/>
+        <location filename="../../src/razergenie.cpp" line="398"/>
         <source>The OpenRazer daemon didn&apos;t detect a device that is supported.
 This could also be caused due to a misconfiguration of this PC.</source>
         <translation>Der OpenRazer Daemon hat kein Gerät erkannt, welches unterstützt ist.
 Dies kann auch durch eine Fehlkonfiguration von diesem PC verursacht sein.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="402"/>
+        <location filename="../../src/razergenie.cpp" line="399"/>
         <source>Open supported devices</source>
         <translation>Unterstützte Geräte öffnen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="407"/>
+        <location filename="../../src/razergenie.cpp" line="404"/>
         <source>The daemon didn&apos;t detect a device that is connected</source>
         <translation>Der Daemon hat kein Geräte erkannt, welches verbunden ist</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="408"/>
+        <location filename="../../src/razergenie.cpp" line="405"/>
         <source>Linux detected connected devices but the daemon didn&apos;t. This could be either due to a permission problem or a kernel module problem.</source>
         <translation>Linux hat ein Gerät erkannt, aber der Daemon nicht. Dies kann entweder durch ein Berechtigungsproblem oder durch ein Kernel-Modul Problem verursacht sein.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="410"/>
+        <location filename="../../src/razergenie.cpp" line="407"/>
         <source>Open troubleshooting page</source>
         <translation>Problemlösungs-Seite öffnen</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="431"/>
+        <location filename="../../src/razergenie.cpp" line="428"/>
         <source>Error while syncing devices.</source>
         <translation>Fehler beim Synchronisieren von Geräten.</translation>
     </message>
     <message>
-        <location filename="../../src/razergenie.cpp" line="440"/>
+        <location filename="../../src/razergenie.cpp" line="437"/>
         <source>Error while toggling &apos;turn off on screensaver&apos;</source>
         <translation>Fehler beim umschalten von &apos;abschalten bei Bildschirmschoner&apos;</translation>
     </message>
