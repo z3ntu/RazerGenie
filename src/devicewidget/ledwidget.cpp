@@ -35,7 +35,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
 
     // TODO Sync effects in comboboxes & colorStuff when the sync checkbox is active
 
-    openrazer::RazerEffect currentEffect = openrazer::RazerEffect::Static;
+    openrazer::Effect currentEffect = openrazer::Effect::Static;
     try {
         currentEffect = led->getCurrentEffect();
     } catch (const libopenrazer::DBusException &e) {
@@ -84,7 +84,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             colorButton->setObjectName("colorbutton" + QString::number(i));
             lightingHBox->addWidget(colorButton);
 
-            libopenrazer::RazerCapability capability = comboBox->currentData().value<libopenrazer::RazerCapability>();
+            libopenrazer::Capability capability = comboBox->currentData().value<libopenrazer::Capability>();
             if (capability.getNumColors() < i)
                 colorButton->hide();
             connect(colorButton, &QPushButton::clicked, this, &LedWidget::colorButtonClicked);
@@ -104,7 +104,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             if (i == 1) // set the 'left' checkbox to activated
                 radio->setChecked(true);
             // Hide radio button when we don't need it
-            if (currentEffect != openrazer::RazerEffect::Wave && currentEffect != openrazer::RazerEffect::Wheel) {
+            if (currentEffect != openrazer::Effect::Wave && currentEffect != openrazer::Effect::Wheel) {
                 radio->hide();
             }
             lightingHBox->addWidget(radio);
@@ -181,22 +181,22 @@ void LedWidget::colorButtonClicked()
 void LedWidget::fxComboboxChanged(int index)
 {
     auto *sender = qobject_cast<QComboBox *>(QObject::sender());
-    libopenrazer::RazerCapability capability;
+    libopenrazer::Capability capability;
 
     /* In theory we could remove half of this special handling because
-     * .value<>() will give us a default RazerCapability anyways if it's
+     * .value<>() will give us a default Capability anyways if it's
      * missing. But to be explicit let's do it like this. */
     bool isCustomEffect = sender->itemText(index) == "Custom Effect";
     if (!isCustomEffect) {
         QVariant itemData = sender->itemData(index);
-        if (!itemData.canConvert<libopenrazer::RazerCapability>())
-            throw new std::runtime_error("Expected to be able to convert itemData into RazerCapability");
-        capability = itemData.value<libopenrazer::RazerCapability>();
+        if (!itemData.canConvert<libopenrazer::Capability>())
+            throw new std::runtime_error("Expected to be able to convert itemData into Capability");
+        capability = itemData.value<libopenrazer::Capability>();
     } else {
-        /* We're fine with getting an empty RazerCapability as we do want to
+        /* We're fine with getting an empty Capability as we do want to
          * reset all the extra buttons etc. We just don't want to actually do
          * more than UI work with this though. */
-        capability = libopenrazer::RazerCapability();
+        capability = libopenrazer::Capability();
     }
 
     // Remove "Custom Effect" entry when you switch away from it - only gets added by the Custom Editor button
@@ -217,7 +217,7 @@ void LedWidget::fxComboboxChanged(int index)
     }
 
     // Show/hide the wave radiobuttons
-    if (capability.getIdentifier() != openrazer::RazerEffect::Wave && capability.getIdentifier() != openrazer::RazerEffect::Wheel) {
+    if (capability.getIdentifier() != openrazer::Effect::Wave && capability.getIdentifier() != openrazer::Effect::Wheel) {
         findChild<QRadioButton *>("radiobutton1")->hide();
         findChild<QRadioButton *>("radiobutton2")->hide();
     } else {
@@ -250,70 +250,70 @@ openrazer::WheelDirection LedWidget::getWheelDirection()
             : openrazer::WheelDirection::COUNTER_CLOCKWISE;
 }
 
-void LedWidget::applyEffectStandardLoc(openrazer::RazerEffect effect)
+void LedWidget::applyEffectStandardLoc(openrazer::Effect effect)
 {
     try {
         switch (effect) {
-        case openrazer::RazerEffect::Off: {
+        case openrazer::Effect::Off: {
             mLed->setOff();
             break;
         }
-        case openrazer::RazerEffect::On: {
+        case openrazer::Effect::On: {
             mLed->setOn();
             break;
         }
-        case openrazer::RazerEffect::Static: {
+        case openrazer::Effect::Static: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setStatic(c);
             break;
         }
-        case openrazer::RazerEffect::Breathing: {
+        case openrazer::Effect::Breathing: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setBreathing(c);
             break;
         }
-        case openrazer::RazerEffect::BreathingDual: {
+        case openrazer::Effect::BreathingDual: {
             openrazer::RGB c1 = getColorForButton(1);
             openrazer::RGB c2 = getColorForButton(2);
             mLed->setBreathingDual(c1, c2);
             break;
         }
-        case openrazer::RazerEffect::BreathingRandom: {
+        case openrazer::Effect::BreathingRandom: {
             mLed->setBreathingRandom();
             break;
         }
-        case openrazer::RazerEffect::BreathingMono: {
+        case openrazer::Effect::BreathingMono: {
             mLed->setBreathingMono();
             break;
         }
-        case openrazer::RazerEffect::Blinking: {
+        case openrazer::Effect::Blinking: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setBlinking(c);
             break;
         }
-        case openrazer::RazerEffect::Spectrum: {
+        case openrazer::Effect::Spectrum: {
             mLed->setSpectrum();
             break;
         }
-        case openrazer::RazerEffect::Wave: {
+        case openrazer::Effect::Wave: {
             mLed->setWave(getWaveDirection());
             break;
         }
-        case openrazer::RazerEffect::Wheel: {
+        case openrazer::Effect::Wheel: {
             mLed->setWheel(getWheelDirection());
             break;
         }
-        case openrazer::RazerEffect::Reactive: {
+        case openrazer::Effect::Reactive: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
             break;
         }
-        case openrazer::RazerEffect::Ripple: {
+        case openrazer::Effect::Ripple: {
             openrazer::RGB c = getColorForButton(1);
             mLed->setRipple(c);
             break;
         }
-        case openrazer::RazerEffect::RippleRandom: {
+        case openrazer::Effect::RippleRandom: {
             mLed->setRippleRandom();
             break;
         }
@@ -330,7 +330,7 @@ void LedWidget::applyEffect()
 {
     auto *combobox = findChild<QComboBox *>("combobox");
 
-    libopenrazer::RazerCapability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::RazerCapability>();
+    libopenrazer::Capability capability = combobox->itemData(combobox->currentIndex()).value<libopenrazer::Capability>();
 
     applyEffectStandardLoc(capability.getIdentifier());
 }

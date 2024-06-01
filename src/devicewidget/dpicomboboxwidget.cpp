@@ -30,7 +30,7 @@ DpiComboBoxWidget::DpiComboBoxWidget(QWidget *parent, libopenrazer::Device *devi
         dpiComboBox->addItem(QString("%1 DPI").arg(dpi), dpi);
     }
 
-    openrazer::RazerDPI currDPI = { 0, 0 };
+    openrazer::DPI currDPI = { 0, 0 };
     try {
         currDPI = device->getDPI();
     } catch (const libopenrazer::DBusException &e) {

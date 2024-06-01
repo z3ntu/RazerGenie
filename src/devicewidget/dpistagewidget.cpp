@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maximumDpi, openrazer::RazerDPI currentDpi, bool activeStage, QWidget *parent)
+DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maximumDpi, openrazer::DPI currentDpi, bool activeStage, QWidget *parent)
     : QWidget(parent)
 {
     this->stageNumber = initialStageNumber;
@@ -182,9 +182,9 @@ bool DpiStageWidget::setStageNumber(int stageNumber)
     return true;
 }
 
-openrazer::RazerDPI DpiStageWidget::getDpi()
+openrazer::DPI DpiStageWidget::getDpi()
 {
-    openrazer::RazerDPI dpi = { 0, 0 };
+    openrazer::DPI dpi = { 0, 0 };
 
     /* Only provide the value if the stage is enabled */
     if (enableCheckBox->isChecked())
@@ -196,7 +196,7 @@ openrazer::RazerDPI DpiStageWidget::getDpi()
 
 void DpiStageWidget::emitDpiChanged()
 {
-    openrazer::RazerDPI dpi = getDpi();
+    openrazer::DPI dpi = getDpi();
     emit dpiChanged(stageNumber, dpi);
 }
 

@@ -17,7 +17,7 @@ class DpiStageWidget : public QWidget
 {
     Q_OBJECT
 public:
-    DpiStageWidget(int initialStageNumber, int minimumDpi, int maximumDpi, openrazer::RazerDPI currentDpi, bool activeStage, QWidget *parent = nullptr);
+    DpiStageWidget(int initialStageNumber, int minimumDpi, int maximumDpi, openrazer::DPI currentDpi, bool activeStage, QWidget *parent = nullptr);
 
     /* Tell the stage that syncing DPI is active - so the Y axis can get hidden */
     void setSyncDpi(bool syncDpi);
@@ -33,12 +33,12 @@ public:
     bool setStageNumber(int stageNumber);
     /* Return the currently selected DPI - if the stage is disabled then pass
      * the DPI {0,0} */
-    openrazer::RazerDPI getDpi();
+    openrazer::DPI getDpi();
 
 signals:
     /* The DPI of this stage have changed - if the stage is disabled then
      * pass the DPI {0,0} */
-    void dpiChanged(int stageNumber, openrazer::RazerDPI dpi);
+    void dpiChanged(int stageNumber, openrazer::DPI dpi);
     /* This stage has been activated */
     void stageActivated(int stageNumber);
 

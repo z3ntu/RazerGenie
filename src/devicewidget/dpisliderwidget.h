@@ -25,7 +25,7 @@ private:
     bool singleStage;
 
     uchar activeStage;
-    QVector<openrazer::RazerDPI> dpiStages;
+    QVector<openrazer::DPI> dpiStages;
 
     QVector<DpiStageWidget *> dpiStageWidgets;
 

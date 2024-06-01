@@ -26,7 +26,7 @@ public:
     openrazer::WheelDirection getWheelDirection();
 
     void applyEffect();
-    void applyEffectStandardLoc(openrazer::RazerEffect identifier);
+    void applyEffectStandardLoc(openrazer::Effect identifier);
 };
 
 #endif // LEDWIDGET_H
