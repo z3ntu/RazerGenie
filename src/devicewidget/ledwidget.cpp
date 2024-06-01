@@ -6,6 +6,7 @@
 
 #include "util.h"
 
+#include <QApplication>
 #include <QColorDialog>
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -22,7 +23,8 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     auto *verticalLayout = new QVBoxLayout(this);
 
     // Set appropriate text
-    QLabel *lightingLocationLabel = new QLabel(tr("Effect %1").arg(libopenrazer::ledIdToStringTable.value(led->getLedId(), "error")));
+    QString lightingLocation = qApp->translate("libopenrazer", libopenrazer::ledIdToStringTable.value(led->getLedId(), "error"));
+    QLabel *lightingLocationLabel = new QLabel(tr("Effect %1").arg(lightingLocation));
 
     auto *lightingHBox = new QHBoxLayout();
     verticalLayout->addWidget(lightingLocationLabel);
@@ -51,7 +53,7 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
     // Add items from capabilities
     for (auto ledFx : libopenrazer::ledFxList) {
         if (led->hasFx(ledFx.getIdentifier())) {
-            comboBox->addItem(ledFx.getDisplayString(), QVariant::fromValue(ledFx));
+            comboBox->addItem(qApp->translate("libopenrazer", ledFx.getDisplayString()), QVariant::fromValue(ledFx));
             // Set selection to current effect
             if (ledFx.getIdentifier() == currentEffect) {
                 comboBox->setCurrentIndex(comboBox->count() - 1);

@@ -31,8 +31,13 @@ int main(int argc, char *argv[])
     QString translationsDirectory = QString(RAZERGENIE_DATADIR) + "/translations/";
 #endif
     bool ret = translator.load(QLocale::system(), QString(), QString(), translationsDirectory);
-    qDebug() << "Translation loaded:" << ret;
+    qDebug() << "RazerGenie translation loaded:" << ret;
     app.installTranslator(&translator);
+
+    QTranslator libopenrazerTranslator;
+    ret = libopenrazer::loadTranslations(&libopenrazerTranslator);
+    qDebug() << "libopenrazer translations loaded:" << ret;
+    app.installTranslator(&libopenrazerTranslator);
 
     RazerGenie w;
     w.show();
