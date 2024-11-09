@@ -58,9 +58,9 @@ RazerGenie::RazerGenie(QWidget *parent)
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not installed"));
             QLabel *textLabel = new QLabel(tr("The daemon is not installed or the version installed is too old. Please follow the installation instructions on the website!\n\nIf you are running RazerGenie as a flatpak, you will still have to install OpenRazer outside of flatpak from a distribution package."));
             QPushButton *button = new QPushButton(tr("Open OpenRazer website"));
-            connect(button, &QPushButton::pressed, this, &RazerGenie::openWebsiteUrl);
+            connect(button, &QPushButton::clicked, this, &RazerGenie::openWebsiteUrl);
             QPushButton *settingsButton = new QPushButton(tr("Open settings"));
-            connect(settingsButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
+            connect(settingsButton, &QPushButton::clicked, this, &RazerGenie::openPreferences);
 
             boxLayout->setAlignment(Qt::AlignTop);
 
@@ -76,7 +76,7 @@ RazerGenie::RazerGenie(QWidget *parent)
             QLabel *titleLabel = new QLabel(tr("The OpenRazer daemon is not available."));
             QLabel *textLabel = new QLabel(tr("The OpenRazer daemon is not started and you are not using systemd as your init system.\nYou have to either start the daemon manually every time you log in or set up another method of autostarting the daemon.\n\nPlease consult the documentation for details."));
             QPushButton *settingsButton = new QPushButton(tr("Open settings"));
-            connect(settingsButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
+            connect(settingsButton, &QPushButton::clicked, this, &RazerGenie::openPreferences);
 
             boxLayout->setAlignment(Qt::AlignTop);
 
@@ -92,9 +92,9 @@ RazerGenie::RazerGenie(QWidget *parent)
             auto *textEdit = new QTextEdit();
             QLabel *issueLabel = new QLabel(tr("If you think, there's a bug, you can report an issue on GitHub:"));
             QPushButton *issueButton = new QPushButton(tr("Report issue"));
-            connect(issueButton, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
+            connect(issueButton, &QPushButton::clicked, this, &RazerGenie::openIssueUrl);
             QPushButton *settingsButton = new QPushButton(tr("Open settings"));
-            connect(settingsButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
+            connect(settingsButton, &QPushButton::clicked, this, &RazerGenie::openPreferences);
 
             textEdit->setReadOnly(true);
             textEdit->setText(manager->getDaemonStatusOutput());
@@ -154,7 +154,7 @@ void RazerGenie::setupUi()
     fillDeviceList();
 
     // Connect signals
-    connect(ui_main.preferencesButton, &QPushButton::pressed, this, &RazerGenie::openPreferences);
+    connect(ui_main.preferencesButton, &QPushButton::clicked, this, &RazerGenie::openPreferences);
     connect(ui_main.syncCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleSync);
     ui_main.syncCheckBox->setChecked(manager->getSyncEffects());
     connect(ui_main.screensaverCheckBox, &QCheckBox::clicked, this, &RazerGenie::toggleOffOnScreesaver);
@@ -397,17 +397,17 @@ QWidget *RazerGenie::getNoDevicePlaceholder()
         headerLabel = new QLabel(tr("No device was detected"));
         textLabel = new QLabel(tr("The OpenRazer daemon didn't detect a device that is supported.\nThis could also be caused due to a misconfiguration of this PC."));
         button1 = new QPushButton(tr("Open supported devices"));
-        connect(button1, &QPushButton::pressed, this, &RazerGenie::openSupportedDevicesUrl);
+        connect(button1, &QPushButton::clicked, this, &RazerGenie::openSupportedDevicesUrl);
         button2 = new QPushButton(tr("Report issue"));
-        connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
+        connect(button2, &QPushButton::clicked, this, &RazerGenie::openIssueUrl);
     } else {
         headerLabel = new QLabel(tr("The daemon didn't detect a device that is connected"));
         textLabel = new QLabel(tr("Linux detected connected devices but the daemon didn't. This could be either due to a permission problem or a kernel module problem."));
         qDebug() << matches;
         button1 = new QPushButton(tr("Open troubleshooting page"));
-        connect(button1, &QPushButton::pressed, this, &RazerGenie::openTroubleshootingUrl);
+        connect(button1, &QPushButton::clicked, this, &RazerGenie::openTroubleshootingUrl);
         button2 = new QPushButton(tr("Report issue"));
-        connect(button2, &QPushButton::pressed, this, &RazerGenie::openIssueUrl);
+        connect(button2, &QPushButton::clicked, this, &RazerGenie::openIssueUrl);
     }
     headerLabel->setFont(headerFont);
 

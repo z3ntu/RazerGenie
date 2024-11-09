@@ -35,7 +35,7 @@ DeviceWidget::DeviceWidget(libopenrazer::Device *device)
 
     QIcon infoIcon = QIcon::fromTheme("help-about-symbolic");
     infoButton->setIcon(infoIcon);
-    connect(infoButton, &QPushButton::pressed, this, [=]() {
+    connect(infoButton, &QPushButton::clicked, this, [=]() {
         auto *info = new DeviceInfoDialog(device, this);
         info->setWindowModality(Qt::WindowModal);
         info->setAttribute(Qt::WA_DeleteOnClose);
