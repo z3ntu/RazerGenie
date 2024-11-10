@@ -7,7 +7,9 @@
   <summary>Configure and control your Razer devices</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <developer_name>Luca Weiss</developer_name>
+  <developer id="eu.lucaweiss">
+    <name>Luca Weiss</name>
+  </developer>
   <description>
     <p>Adjust RGB lighting, brightness, DPI, polling rate and more on all of your Razer devices! Supports keyboards, mice, mousemats, headsets, keypads, mug holders, speakers, various docks, etc.</p>
     <p>Create your own custom lighting with per-key editor!</p>
@@ -208,8 +210,6 @@
     <category>Settings</category>
     <category>HardwareSettings</category>
   </categories>
-
-  <update_contact>luca (at) z3ntu (dot) xyz</update_contact>
 
   <content_rating type="oars-1.1">
     <content_attribute id="violence-cartoon">none</content_attribute>
