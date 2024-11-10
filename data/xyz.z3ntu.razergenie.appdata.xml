@@ -22,6 +22,23 @@
   <url type="translate">https://github.com/z3ntu/RazerGenie/wiki/Translations</url>
 
   <releases>
+    <release version="1.2.0" date="2024-11-10">
+      <description>
+        <ul>
+          <li>Introduce tab layout for different device settings</li>
+          <li>Add support for the 'wheel' effect</li>
+          <li>Add display/controls for battery percent, charging status, idle time and low battery threshold</li>
+          <li>Add percentage display to brightness slider</li>
+          <li>Implement UI for DPI stages</li>
+          <li>Set minimum value for DPI slider &amp; spinbox</li>
+          <li>Hide DPI Y elements when Lock X/Y is enabled</li>
+          <li>Snap the DPI Y value to the current X value if the box was checked</li>
+          <li>Invert 'auto-start daemon on startup' setting</li>
+          <li>Add Bulgarian and Esperanto translation</li>
+          <li>Support translations for strings from libopenrazer</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.0" date="2023-10-13">
       <description>
         <ul>
