@@ -149,7 +149,7 @@ QLayout *CustomEditor::buildKeyboard()
 
     // Otherwise try to get a sane fallback
     QStringList langs({ "US", "German" });
-    for (const QString &lang : qAsConst(langs)) {
+    for (const QString &lang : std::as_const(langs)) {
         if (keyboardKeys.contains(lang)) {
             qWarning("Failed to find a compatible layout for keyboard layout %s, using %s as fallback.", qUtf8Printable(kbdLayout), qUtf8Printable(lang));
             return buildLayoutFromJson(keyboardKeys[lang].toObject());
@@ -366,7 +366,7 @@ void CustomEditor::clearAll()
     device->displayCustomFrame();
 
     // Reset view
-    for (auto matrixPushButton : qAsConst(matrixPushButtons)) {
+    for (auto matrixPushButton : std::as_const(matrixPushButtons)) {
         matrixPushButton->resetButtonColor();
     }
 
