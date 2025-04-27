@@ -7,6 +7,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#define DPI_STEP_SIZE (50)
+
 DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maximumDpi, openrazer::DPI currentDpi, bool activeStage, QWidget *parent)
     : QWidget(parent)
 {
@@ -51,21 +53,21 @@ DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maxim
 
     dpiXSpinBox->setMinimum(minimumDpi);
     dpiYSpinBox->setMinimum(minimumDpi);
-    dpiXSlider->setMinimum(minimumDpi / 100);
-    dpiYSlider->setMinimum(minimumDpi / 100);
+    dpiXSlider->setMinimum(minimumDpi / DPI_STEP_SIZE);
+    dpiYSlider->setMinimum(minimumDpi / DPI_STEP_SIZE);
 
     dpiXSpinBox->setMaximum(maximumDpi);
     dpiYSpinBox->setMaximum(maximumDpi);
-    dpiXSlider->setMaximum(maximumDpi / 100);
-    dpiYSlider->setMaximum(maximumDpi / 100);
+    dpiXSlider->setMaximum(maximumDpi / DPI_STEP_SIZE);
+    dpiYSlider->setMaximum(maximumDpi / DPI_STEP_SIZE);
 
     dpiXSpinBox->setValue(currentDpi.dpi_x);
     dpiYSpinBox->setValue(currentDpi.dpi_y);
-    dpiXSlider->setValue(currentDpi.dpi_x / 100);
-    dpiYSlider->setValue(currentDpi.dpi_y / 100);
+    dpiXSlider->setValue(currentDpi.dpi_x / DPI_STEP_SIZE);
+    dpiYSlider->setValue(currentDpi.dpi_y / DPI_STEP_SIZE);
 
-    dpiXSlider->setTickInterval(10);
-    dpiYSlider->setTickInterval(10);
+    dpiXSlider->setTickInterval(1000 / DPI_STEP_SIZE);
+    dpiYSlider->setTickInterval(1000 / DPI_STEP_SIZE);
     dpiXSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
     dpiYSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
 
@@ -105,7 +107,7 @@ DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maxim
         } else {
             emitDpiChanged();
         }
-        dpiXSpinBox->setValue(sliderValue * 100);
+        dpiXSpinBox->setValue(sliderValue * DPI_STEP_SIZE);
     });
     connect(dpiYSlider, &QSlider::valueChanged, this, [=](int sliderValue) {
         if (syncDpi) {
@@ -113,7 +115,7 @@ DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maxim
         } else {
             emitDpiChanged();
         }
-        dpiYSpinBox->setValue(sliderValue * 100);
+        dpiYSpinBox->setValue(sliderValue * DPI_STEP_SIZE);
     });
 }
 
@@ -188,8 +190,8 @@ openrazer::DPI DpiStageWidget::getDpi()
 
     /* Only provide the value if the stage is enabled */
     if (enableCheckBox->isChecked())
-        dpi = { static_cast<ushort>(dpiXSlider->value() * 100),
-                static_cast<ushort>(dpiYSlider->value() * 100) };
+        dpi = { static_cast<ushort>(dpiXSlider->value() * DPI_STEP_SIZE),
+                static_cast<ushort>(dpiYSlider->value() * DPI_STEP_SIZE) };
 
     return dpi;
 }
