@@ -44,8 +44,6 @@ DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maxim
     // Spinboxes
     dpiXSpinBox = new QSpinBox();
     dpiYSpinBox = new QSpinBox();
-    dpiXSpinBox->setEnabled(false);
-    dpiYSpinBox->setEnabled(false);
 
     // Sliders
     dpiXSlider = new QSlider(Qt::Horizontal);
@@ -102,19 +100,44 @@ DpiStageWidget::DpiStageWidget(int initialStageNumber, int minimumDpi, int maxim
 
     connect(dpiXSlider, &QSlider::valueChanged, this, [=](int sliderValue) {
         dpiXSpinBox->setValue(sliderValue * DPI_STEP_SIZE);
+    });
+    connect(dpiYSlider, &QSlider::valueChanged, this, [=](int sliderValue) {
+        dpiYSpinBox->setValue(sliderValue * DPI_STEP_SIZE);
+    });
+
+    connect(dpiXSpinBox, &QSpinBox::valueChanged, this, [=](int spinboxValue) {
         if (syncDpi) {
-            dpiYSlider->setValue(sliderValue);
+            dpiYSpinBox->setValue(spinboxValue);
             emitDpiChanged();
         } else {
             emitDpiChanged();
         }
+
+        // If the slider value matches the spinbox value +- (step size - 1),
+        // then don't bother setting the slider. Avoids troubles when counting
+        // down.
+        int deviation = (dpiXSlider->value() * DPI_STEP_SIZE) - spinboxValue;
+        if (abs(deviation) > (DPI_STEP_SIZE - 1)) {
+            dpiXSlider->blockSignals(true);
+            dpiXSlider->setValue(spinboxValue / DPI_STEP_SIZE);
+            dpiXSlider->blockSignals(false);
+        }
     });
-    connect(dpiYSlider, &QSlider::valueChanged, this, [=](int sliderValue) {
-        dpiYSpinBox->setValue(sliderValue * DPI_STEP_SIZE);
+    connect(dpiYSpinBox, &QSpinBox::valueChanged, this, [=](int spinboxValue) {
         if (syncDpi) {
-            dpiXSlider->setValue(sliderValue);
+            dpiXSpinBox->setValue(spinboxValue);
         } else {
             emitDpiChanged();
+        }
+
+        // If the slider value matches the spinbox value +- (step size - 1),
+        // then don't bother setting the slider. Avoids troubles when counting
+        // down.
+        int deviation = (dpiYSlider->value() * DPI_STEP_SIZE) - spinboxValue;
+        if (abs(deviation) > (DPI_STEP_SIZE - 1)) {
+            dpiYSlider->blockSignals(true);
+            dpiYSlider->setValue(spinboxValue / DPI_STEP_SIZE);
+            dpiYSlider->blockSignals(false);
         }
     });
 }
@@ -206,6 +229,8 @@ void DpiStageWidget::updateEnabled(bool enabled)
 {
     dpiXSlider->setEnabled(enabled);
     dpiYSlider->setEnabled(enabled);
+    dpiXSpinBox->setEnabled(enabled);
+    dpiYSpinBox->setEnabled(enabled);
     dpiStageButton->setEnabled(enabled);
 
     if (enabled) {
