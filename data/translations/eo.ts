@@ -78,22 +78,27 @@
 <context>
     <name>DeviceWidget</name>
     <message>
-        <location filename="../../src/devicewidget/devicewidget.cpp" line="33"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="38"/>
+        <source>Input remapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="65"/>
         <source>Device Info</source>
         <translation>Aparata informo</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/devicewidget.cpp" line="59"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="89"/>
         <source>Lighting</source>
         <translation>Lumigo</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/devicewidget.cpp" line="70"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="100"/>
         <source>Performance</source>
         <translation>Rendimento</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/devicewidget.cpp" line="81"/>
+        <location filename="../../src/devicewidget/devicewidget.cpp" line="111"/>
         <source>Power</source>
         <translation>Povumo</translation>
     </message>
@@ -138,34 +143,52 @@
     </message>
 </context>
 <context>
+    <name>InputRemappingInfoDialog</name>
+    <message>
+        <location filename="../../src/inputremappinginfodialog.cpp" line="15"/>
+        <source>RazerGenie - Input remapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/inputremappinginfodialog.cpp" line="37"/>
+        <source>Input remapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/inputremappinginfodialog.cpp" line="48"/>
+        <source>OpenRazer and RazerGenie do not support input remapping since it&apos;s not Razer-specific functionality.&lt;br&gt;&lt;br&gt;We recommend &lt;a href=&quot;https://github.com/sezanzeb/input-remapper&quot;&gt;input-remapper&lt;/a&gt; which supports combinations, programmable macros and much more with all of your input devices!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LedWidget</name>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="25"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="27"/>
         <source>Effect %1</source>
         <translation>Efiko %1</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="99"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="101"/>
         <source>Left</source>
         <translation>Maldekstra</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="101"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="103"/>
         <source>Right</source>
         <translation>Dekstra</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="124"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="126"/>
         <source>Brightness</source>
         <translation>Brilecon</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="149"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="151"/>
         <source>Failed to change brightness</source>
         <translation>Malsukcesis agordi brilecon</translation>
     </message>
     <message>
-        <location filename="../../src/devicewidget/ledwidget.cpp" line="325"/>
+        <location filename="../../src/devicewidget/ledwidget.cpp" line="327"/>
         <source>Failed to change effect</source>
         <translation>Malsukcesis ŝanĝi efikon</translation>
     </message>
