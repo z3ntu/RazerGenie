@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de" sourcelanguage="en">
+<TS version="2.1" language="de_DE" sourcelanguage="en_US">
 <context>
     <name>CustomEditor</name>
     <message>
@@ -80,7 +80,7 @@
     <message>
         <location filename="../../src/devicewidget/devicewidget.cpp" line="38"/>
         <source>Input remapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe neu zuordnen</translation>
     </message>
     <message>
         <location filename="../../src/devicewidget/devicewidget.cpp" line="65"/>
@@ -147,17 +147,17 @@
     <message>
         <location filename="../../src/inputremappinginfodialog.cpp" line="15"/>
         <source>RazerGenie - Input remapping</source>
-        <translation type="unfinished"></translation>
+        <translation>RazerGenie - Eingabe neu zuordnen</translation>
     </message>
     <message>
         <location filename="../../src/inputremappinginfodialog.cpp" line="37"/>
         <source>Input remapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe neu zuordnen</translation>
     </message>
     <message>
         <location filename="../../src/inputremappinginfodialog.cpp" line="48"/>
         <source>OpenRazer and RazerGenie do not support input remapping since it&apos;s not Razer-specific functionality.&lt;br&gt;&lt;br&gt;We recommend &lt;a href=&quot;https://github.com/sezanzeb/input-remapper&quot;&gt;input-remapper&lt;/a&gt; which supports combinations, programmable macros and much more with all of your input devices!</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenRazer und RazerGenie unterstützen nicht die Eingabe neu zuzuordnen weil es nicht Razer-spezifische Funktionalität ist.&lt;br&lt;br&gt;Wir empfehlen &lt;a href=&quot;https://github.com/sezanzeb/input-remapper&quot;&gt;input-remapper&lt;/a&gt; welches Kombinationen, programmierbare Makros und viel mehr mit all deinen Eingabegeräten unterstützt!</translation>
     </message>
 </context>
 <context>
