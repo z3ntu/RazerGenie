@@ -135,9 +135,8 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
                     }
                 } else {
                     /* If the currently active stage was disabled, we need to
-                     * find a new one to enable */
+                     * let the UI know */
                     if (dpi.dpi_x == 0 && dpi.dpi_y == 0 && stageNumber == activeStage) {
-                        activeStage = 1;
                         for (DpiStageWidget *widget : dpiStageWidgets) {
                             widget->informStageActive(activeStage);
                         }
@@ -204,6 +203,18 @@ void DpiSliderWidget::handleStageUpdates()
         if (stageWidget->setStageNumber(stageNumber)) {
             stageNumber++;
         }
+    }
+
+    int maxStage = stageNumber - 1;
+
+    /* If activeStage is now out of bounds, we need to find a new one to enable */
+    if (activeStage > maxStage) {
+        activeStage = maxStage;
+    }
+
+    /* Make sure to update the UI for the currently active stage */
+    for (DpiStageWidget *widget : dpiStageWidgets) {
+        widget->informStageActive(activeStage);
     }
 
     /* Disable "Enable" button if last stage active */
