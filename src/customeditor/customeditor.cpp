@@ -360,10 +360,20 @@ void CustomEditor::clearAll()
 
     // Send one request per row
     for (int i = 0; i < dimens.x; i++) {
-        device->defineCustomFrame(i, 0, dimens.y - 1, blankColors);
+        try {
+            device->defineCustomFrame(i, 0, dimens.y - 1, blankColors);
+        } catch (const libopenrazer::DBusException &e) {
+            util::showError(tr("Error updating the lighting data."));
+            return;
+        }
     }
 
-    device->displayCustomFrame();
+    try {
+        device->displayCustomFrame();
+    } catch (const libopenrazer::DBusException &e) {
+        util::showError(tr("Error updating the lighting data."));
+        return;
+    }
 
     // Reset view
     for (auto matrixPushButton : std::as_const(matrixPushButtons)) {

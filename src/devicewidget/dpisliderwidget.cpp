@@ -114,7 +114,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
                     widget->informStageActive(activeStage);
                 }
 
-                device->setDPIStages(activeStage, dpiStages);
+                try {
+                    device->setDPIStages(activeStage, dpiStages);
+                } catch (const libopenrazer::DBusException &e) {
+                    qWarning("Failed to set DPI");
+                    util::showError(tr("Failed to set DPI"));
+                }
             });
 
             connect(stageWidget, &DpiStageWidget::dpiChanged, this, [=](int stageNumber, openrazer::DPI dpi) {
@@ -122,7 +127,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
 
                 /* Apply to device */
                 if (singleStage) {
-                    device->setDPI(dpi);
+                    try {
+                        device->setDPI(dpi);
+                    } catch (const libopenrazer::DBusException &e) {
+                        qWarning("Failed to set DPI");
+                        util::showError(tr("Failed to set DPI"));
+                    }
                 } else {
                     /* If the currently active stage was disabled, we need to
                      * find a new one to enable */
@@ -133,7 +143,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
                         }
                     }
 
-                    device->setDPIStages(activeStage, dpiStages);
+                    try {
+                        device->setDPIStages(activeStage, dpiStages);
+                    } catch (const libopenrazer::DBusException &e) {
+                        qWarning("Failed to set DPI stages");
+                        util::showError(tr("Failed to set DPI stages"));
+                    }
                 }
             });
 
@@ -159,7 +174,12 @@ DpiSliderWidget::DpiSliderWidget(QWidget *parent, libopenrazer::Device *device)
         stageWidget->setSingleStage(true);
         stageWidget->setSyncDpi(isSynced);
         connect(stageWidget, &DpiStageWidget::dpiChanged, this, [=](int /*stageNumber*/, openrazer::DPI dpi) {
-            device->setDPI(dpi);
+            try {
+                device->setDPI(dpi);
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to set DPI");
+                util::showError(tr("Failed to set DPI"));
+            }
         });
 
         verticalLayout->addWidget(stageWidget);
