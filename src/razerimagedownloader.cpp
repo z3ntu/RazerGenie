@@ -57,7 +57,10 @@ void RazerImageDownloader::finished(QNetworkReply *reply)
         return;
     }
 
-    _file->open(QFile::WriteOnly);
+    if (!_file->open(QFile::WriteOnly)) {
+        emit downloadErrored(tr("File Error"), tr("An error occured while opening file %1 for writing.").arg(_file->fileName()));
+        return;
+    }
     _file->write(reply->readAll());
     _file->flush();
     _file->close();
