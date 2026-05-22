@@ -36,6 +36,7 @@ after_build:
   - cmd: copy %QT_ROOT%\bin\Qt6Gui.dll .\RazerGenie\
   - cmd: copy %QT_ROOT%\bin\Qt6Network.dll .\RazerGenie\
   - cmd: copy %QT_ROOT%\bin\Qt6Widgets.dll .\RazerGenie\
+  - cmd: copy %QT_ROOT%\bin\Qt6Xml.dll .\RazerGenie\
   - cmd: mkdir .\RazerGenie\platforms
   - cmd: copy %QT_ROOT%\plugins\platforms\qwindows.dll .\RazerGenie\platforms
   - cmd: 7z a RazerGenie_%compiler%_%arch%.zip .\RazerGenie\*
