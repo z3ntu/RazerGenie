@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <author>Luca Weiss</author>
+ <author>
+SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2016 Luca Weiss luca@lucaweiss.eu
+ </author>
  <class>RazerGenieUi</class>
  <widget class="QWidget" name="RazerGenieUi">
   <property name="geometry">

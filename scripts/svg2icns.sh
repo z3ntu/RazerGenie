@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2022 Luca Weiss <luca@lucaweiss.eu>
 
 # Based on https://gist.github.com/adriansr/1da9b18a8076b0f8a977a5eea0ae41ef
 

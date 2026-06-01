@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2016 Luca Weiss <luca@lucaweiss.eu>
+-->
+
 # RazerGenie
 
 Qt application for configuring your Razer devices under GNU/Linux.

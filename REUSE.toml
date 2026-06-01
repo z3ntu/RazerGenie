@@ -1,0 +1,6 @@
+version = 1
+
+[[annotations]]
+path = "data/matrix_layouts/*.json"
+SPDX-FileCopyrightText = "2017 Luca Weiss <luca@lucaweiss.eu>"
+SPDX-License-Identifier = "GPL-3.0-or-later"

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2017 Luca Weiss <luca@lucaweiss.eu>
+
 # Matrix Layouts
 
 if build_machine.system() == 'darwin'

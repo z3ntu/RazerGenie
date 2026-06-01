@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2023 NorwayFun <72336380+NorwayFun@users.noreply.github.com>
+-->
 <!DOCTYPE TS>
 <TS version="2.1" language="ka_GE">
 <context>

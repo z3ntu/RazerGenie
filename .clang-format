@@ -1,7 +1,5 @@
-# Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-#
-# You may use this file under the terms of the 3-clause BSD license.
-# See the file LICENSE from this package for details.
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2016 Olivier Goffart <ogoffart@woboq.com>
 
 # This is the clang-format configuration style to be used by Qt,
 # based on the rules from https://wiki.qt.io/Qt_Coding_Style and

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2024 Hana <69644134+ShinniUwU@users.noreply.github.com>
+-->
 <!DOCTYPE TS>
 <TS version="2.1" language="bg_BG">
 <context>

@@ -1,4 +1,6 @@
 #!/bin/bash -e
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2018 Luca Weiss <luca@lucaweiss.eu>
 
 echo "Validating json files..."
 for file in ./data/matrix_layouts/*.json; do

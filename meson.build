@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2017 Luca Weiss <luca@lucaweiss.eu>
+
 project('razergenie', 'cpp',
         version : '1.3.0',
         meson_version : '>=0.57.0',
