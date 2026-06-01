@@ -3,7 +3,7 @@
 echo "Validating json files..."
 for file in ./data/matrix_layouts/*.json; do
     echo "Testing file: $file"
-    json_verify < $file
+    json_verify < "$file"
 done
 echo
 

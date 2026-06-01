@@ -23,10 +23,10 @@ OUT="$2"
 BASE=$(basename "$SVG" | sed 's/\.[^\.]*$//')
 ICONSET="$BASE.iconset"
 mkdir -p "$ICONSET"
-for PARAMS in $SIZES; do
-    SIZE=$(echo $PARAMS | cut -d, -f1)
-    LABEL=$(echo $PARAMS | cut -d, -f2)
-    svg2png -w $SIZE -h $SIZE "$SVG" "$ICONSET"/icon_$LABEL.png
+for params in $SIZES; do
+    size=$(echo "$params" | cut -d, -f1)
+    label=$(echo "$params" | cut -d, -f2)
+    svg2png -w "$size" -h "$size" "$SVG" "$ICONSET/icon_$label.png"
 done
 
 iconutil -c icns -o "$OUT" "$ICONSET"
