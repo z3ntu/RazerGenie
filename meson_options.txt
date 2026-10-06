@@ -1,0 +1,2 @@
+option('tests', type: 'boolean', value: false, description: 'Build isolated D-Bus widget tests (requires Python dbus/gi and dbus-run-session)')
+option('test_python', type: 'string', value: 'python3', description: 'Python interpreter with dbus-python and PyGObject for widget tests')

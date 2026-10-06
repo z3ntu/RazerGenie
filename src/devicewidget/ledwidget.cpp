@@ -92,6 +92,17 @@ LedWidget::LedWidget(QWidget *parent, libopenrazer::Led *led)
             connect(colorButton, &QPushButton::clicked, this, &LedWidget::colorButtonClicked);
         }
 
+        if (led->hasFx(openrazer::Effect::Reactive)) {
+            auto *speed = new QComboBox(this);
+            speed->setObjectName("reactiveSpeed");
+            for (int value = 1; value <= 4; ++value)
+                speed->addItem(tr("%1 ms").arg(value * 500), value);
+            speed->setToolTip(tr("Reactive lighting duration"));
+            speed->setVisible(currentEffect == openrazer::Effect::Reactive);
+            lightingHBox->addWidget(speed);
+            connect(speed, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int) { applyEffect(); });
+        }
+
         /* Wave & wheel radio buttons */
         for (int i = 1; i <= 2; i++) {
             QString name;
@@ -218,6 +229,9 @@ void LedWidget::fxComboboxChanged(int index)
         }
     }
 
+    if (auto *speed = findChild<QComboBox *>("reactiveSpeed"))
+        speed->setVisible(capability.getIdentifier() == openrazer::Effect::Reactive);
+
     // Show/hide the wave radiobuttons
     if (capability.getIdentifier() != openrazer::Effect::Wave && capability.getIdentifier() != openrazer::Effect::Wheel) {
         findChild<QRadioButton *>("radiobutton1")->hide();
@@ -307,7 +321,8 @@ void LedWidget::applyEffectStandardLoc(openrazer::Effect effect)
         }
         case openrazer::Effect::Reactive: {
             openrazer::RGB c = getColorForButton(1);
-            mLed->setReactive(c, openrazer::ReactiveSpeed::_500MS); // TODO Configure speed?
+            auto *speed = findChild<QComboBox *>("reactiveSpeed");
+            mLed->setReactive(c, static_cast<openrazer::ReactiveSpeed>(speed ? speed->currentData().toUInt() : 1));
             break;
         }
         case openrazer::Effect::Ripple: {

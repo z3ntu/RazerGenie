@@ -9,6 +9,7 @@
 #include "lightingwidget.h"
 #include "performancewidget.h"
 #include "powerwidget.h"
+#include "scrollwidget.h"
 
 #include <QLabel>
 #include <QProcess>
@@ -98,6 +99,15 @@ DeviceWidget::DeviceWidget(libopenrazer::Device *device)
         scrollArea->setWidget(widget);
 
         tabWidget->addTab(scrollArea, tr("Performance"));
+    }
+
+    /* Scroll wheel tab */
+    if (ScrollWidget::isAvailable(device->objectPath())) {
+        auto widget = new ScrollWidget(device->objectPath());
+        auto scrollArea = new QScrollArea;
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(widget);
+        tabWidget->addTab(scrollArea, tr("Scroll wheel"));
     }
 
     /* Power tab */

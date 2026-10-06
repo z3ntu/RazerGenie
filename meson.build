@@ -22,3 +22,7 @@ endif
 
 subdir('data')
 subdir('src')
+
+if get_option('tests')
+  subdir('tests')
+endif

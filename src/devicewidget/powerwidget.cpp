@@ -5,6 +5,7 @@
 #include "powerwidget.h"
 
 #include "util.h"
+#include "devicecapabilities.h"
 
 #include <QLabel>
 #include <QProgressBar>
@@ -27,18 +28,15 @@ PowerWidget::PowerWidget(libopenrazer::Device *device)
         QLabel *batterHeader = new QLabel(tr("Battery"), this);
         batterHeader->setFont(headerFont);
 
-        bool charging = false;
-        try {
-            charging = device->isCharging();
-        } catch (const libopenrazer::DBusException &e) {
-            qWarning("Failed to get charging status");
-        }
-
         QLabel *chargingLabel = new QLabel(this);
-        if (charging) {
-            chargingLabel->setText(tr("Charging"));
-        } else {
-            chargingLabel->setText(tr("Not Charging"));
+        chargingLabel->setObjectName("chargingStatus");
+        chargingLabel->setText(tr("Charging status unknown"));
+        if (deviceMethods(device->objectPath(), "razer.device.power").contains("isCharging")) {
+            try {
+                chargingLabel->setText(device->isCharging() ? tr("Charging") : tr("Not Charging"));
+            } catch (const libopenrazer::DBusException &e) {
+                qWarning("Failed to get charging status");
+            }
         }
 
         batteryHeaderHBox->addWidget(batterHeader);
